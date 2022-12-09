@@ -378,7 +378,7 @@ for ($i = 0; $i < count($it_id_arr); $i++) {
         '$uid',
         '$io_thezone',
         '$ct_delivery_cnt',
-        '$ct_delivery_price',
+        '{$_POST['it_delivery_price'][$i]}',
         '$ct_delivery_company',
         '{$it['it_is_direct_delivery']}',
         '{$it['it_direct_delivery_partner']}',

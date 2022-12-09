@@ -1346,24 +1346,44 @@ $warehouse_list = get_warehouses();
         </td>
       </tr>
       <tr>
-        <th scope="row"><label for="it_delivery_cnt">배송비 상세조건</label></th>
+        <!-- <th scope="row"><label for="it_delivery_cnt">배송비 상세조건</label></th> -->
+        <th scope="row"><label for="it_delivery_cnt">박스당 개수(쇼핑몰 안내)</label></th>
         <td>
+          본 상품은<input type="text" name="it_delivery_cnt" value="<?php echo $it['it_delivery_cnt']; ?>" id="it_delivery_cnt" class="frm_input" size="8">개 주문 시 한 박스로 포장됩니다.
+
+          <input type="hidden" name="it_delivery_price" value="<?php echo $it['it_delivery_price']; ?>" id="it_delivery_price">
+          <input type="hidden" name="it_delivery_min_cnt" value="<?php echo $it['it_delivery_min_cnt']; ?>" id="it_delivery_min_cnt">
+          <input type="hidden" name="it_delivery_min_price" value="<?php echo $it['it_delivery_min_price']; ?>" id="it_delivery_min_price">
+          <input type="hidden" name="it_delivery_company" value="<?php echo $it['it_delivery_company']; ?>" id="it_delivery_company">
+          
+          <input type="hidden" name="it_delivery_cnt2" value="<?php echo $it['it_delivery_cnt2']; ?>" id="it_delivery_cnt2">
+          <input type="hidden" name="it_delivery_price2" value="<?php echo $it['it_delivery_price2']; ?>" id="it_delivery_price2">
+          <input type="hidden" name="it_delivery_min_cnt2" value="<?php echo $it['it_delivery_min_cnt2']; ?>" id="it_delivery_min_cnt2">
+          <input type="hidden" name="it_delivery_min_price2" value="<?php echo $it['it_delivery_min_price2']; ?>" id="it_delivery_min_price2">
+          <input type="hidden" name="it_delivery_company2" value="<?php echo $it['it_delivery_company2']; ?>" id="it_delivery_company2">
+
+          <!--
           <?php echo help("상품의 박스 수량에 따라 배송비가 부과됩니다."); ?>
-          1박스 기준 <input type="text" name="it_delivery_cnt" value="<?php echo $it['it_delivery_cnt']; ?>" id="it_delivery_cnt" class="frm_input" size="8">개 마다 배송비 <input type="text" name="it_delivery_price" value="<?php echo $it['it_delivery_price']; ?>" id="it_delivery_price" class="frm_input" size="8">원 부과,
-          최소수량 <input type="text" name="it_delivery_min_cnt" value="<?php echo $it['it_delivery_min_cnt']; ?>" id="it_delivery_min_cnt" class="frm_input" size="8">개 이하 <input type="text" name="it_delivery_min_price" value="<?php echo $it['it_delivery_min_price']; ?>" id="it_delivery_min_price" class="frm_input" size="8">원 부과
+          1박스 기준 <input type="text" name="it_delivery_cnt" value="<?php echo $it['it_delivery_cnt']; ?>" id="it_delivery_cnt" class="frm_input" size="8">개 마다 배송비 
+          <input type="text" name="it_delivery_price" value="<?php echo $it['it_delivery_price']; ?>" id="it_delivery_price" class="frm_input" size="8">원 부과,
+          최소수량 <input type="text" name="it_delivery_min_cnt" value="<?php echo $it['it_delivery_min_cnt']; ?>" id="it_delivery_min_cnt" class="frm_input" size="8">개 이하 
+          <input type="text" name="it_delivery_min_price" value="<?php echo $it['it_delivery_min_price']; ?>" id="it_delivery_min_price" class="frm_input" size="8">원 부과
           &nbsp;&nbsp;&nbsp;
           택배사 : <select name="it_delivery_company" id="it_delivery_company">
             <option value="ilogen"<?php echo get_selected('ilogen', $it['it_delivery_company']); ?>>로젠택배</option>
             <option value="lotteglogis"<?php echo get_selected('lotteglogis', $it['it_delivery_company']); ?>>롯데택배</option>
           </select>
           <br>
-          1박스 기준 <input type="text" name="it_delivery_cnt2" value="<?php echo $it['it_delivery_cnt2']; ?>" id="it_delivery_cnt2" class="frm_input" size="8">개 마다 배송비 <input type="text" name="it_delivery_price2" value="<?php echo $it['it_delivery_price2']; ?>" id="it_delivery_price2" class="frm_input" size="8">원 부과,
-          최소수량 <input type="text" name="it_delivery_min_cnt2" value="<?php echo $it['it_delivery_min_cnt2']; ?>" id="it_delivery_min_cnt2" class="frm_input" size="8">개 이하 <input type="text" name="it_delivery_min_price2" value="<?php echo $it['it_delivery_min_price2']; ?>" id="it_delivery_min_price" class="frm_input" size="8">원 부과
+          1박스 기준 <input type="text" name="it_delivery_cnt2" value="<?php echo $it['it_delivery_cnt2']; ?>" id="it_delivery_cnt2" class="frm_input" size="8">개 마다 배송비 
+          <input type="text" name="it_delivery_price2" value="<?php echo $it['it_delivery_price2']; ?>" id="it_delivery_price2" class="frm_input" size="8">원 부과,
+          최소수량 <input type="text" name="it_delivery_min_cnt2" value="<?php echo $it['it_delivery_min_cnt2']; ?>" id="it_delivery_min_cnt2" class="frm_input" size="8">개 이하 
+          <input type="text" name="it_delivery_min_price2" value="<?php echo $it['it_delivery_min_price2']; ?>" id="it_delivery_min_price" class="frm_input" size="8">원 부과
           &nbsp;&nbsp;&nbsp;
           택배사 : <select name="it_delivery_company2" id="it_delivery_company2">
             <option value="ilogen"<?php echo get_selected('ilogen', $it['it_delivery_company2']); ?>>로젠택배</option>
             <option value="lotteglogis"<?php echo get_selected('lotteglogis', $it['it_delivery_company2']); ?>>롯데택배</option>
           </select>
+          -->
         </td>
       </tr>
       <tr>
@@ -1371,20 +1391,20 @@ $warehouse_list = get_warehouses();
         <td>
           <?php echo help("배송비 유형을 선택하면 자동으로 항목이 변환됩니다."); ?>
           <select name="it_sc_type" id="it_sc_type">
-            <option value="0"<?php echo get_selected('0', $it['it_sc_type']); ?>>쇼핑몰 기본설정 사용</option>
-            <option value="1"<?php echo get_selected('1', $it['it_sc_type']); ?>>무료배송</option>
-            <option value="2"<?php echo get_selected('2', $it['it_sc_type']); ?>>조건부 무료배송</option>
-            <option value="3"<?php echo get_selected('3', $it['it_sc_type']); ?>>유료배송</option>
-            <option value="4"<?php echo get_selected('4', $it['it_sc_type']); ?>>수량별 부과</option>
-            <option value="5"<?php echo get_selected('5', $it['it_sc_type']); ?>>홀수/짝수 배송</option>
+            <option value="0"<?php echo get_selected('0', $it['it_sc_type']); ?>>(기본) 쇼핑몰 기본 설정</option>
+            <option value="1"<?php echo get_selected('1', $it['it_sc_type']); ?>>(기본) 무료 배송</option>
+            <!--
+              22.12.07 : 서원 - 플랫폼팀 요청에 의해 해당 기능 사용중지 처리
+            <option value="2"<?php echo get_selected('2', $it['it_sc_type']); ?>>(기본) 조건부 무료 배송</option>
+            <option value="3"<?php echo get_selected('3', $it['it_sc_type']); ?>>(기본) 유료 배송</option>
+            -->
+            <option value="4"<?php echo get_selected('4', $it['it_sc_type']); ?>>(별도) 수량별 유료 배송</option>
+            <option value="5"<?php echo get_selected('5', $it['it_sc_type']); ?>>(별도) 홀수/짝수 배송</option>
+            <option value="6"<?php echo get_selected('6', $it['it_sc_type']); ?>>(별도) 포장수량 무료 배송</option>
           </select>
           <div id="even_odd_wr">
-            <label class="radio-inline">
-              <input type="radio" name="it_even_odd" id="it_even_odd_0" value="0" <?php echo get_checked($it['it_even_odd'], 0); ?>> 홀수
-            </label>
-            <label class="radio-inline">
-              <input type="radio" name="it_even_odd" id="it_even_odd_1" value="1" <?php echo get_checked($it['it_even_odd'], 1); ?>> 짝수
-            </label>
+            <label class="radio-inline"><input type="radio" name="it_even_odd" id="it_even_odd_0" value="0" <?php echo get_checked($it['it_even_odd'], 0); ?>> 홀수</label>
+            <label class="radio-inline"><input type="radio" name="it_even_odd" id="it_even_odd_1" value="1" <?php echo get_checked($it['it_even_odd'], 1); ?>> 짝수</label>
             <input type="text" name="it_even_odd_price" value="<?php echo $it['it_even_odd_price']; ?>" id="it_even_odd_price" class="frm_input" size="8">원
           </div>
         </td>
@@ -1415,10 +1435,13 @@ $warehouse_list = get_warehouses();
       <tr id="sc_con_qty">
         <th scope="row"><label for="it_sc_qty">배송비 상세조건</label></th>
         <td>
-          <?php echo help("상품의 주문 수량에 따라 배송비가 부과됩니다. 예를 들어 기본배송비가 3,000원 수량을 3으로 설정했을 경우 상품의 주문수량이 5개이면 6,000원 배송비가 부과됩니다."); ?>
-          주문수량 <input type="text" name="it_sc_qty" value="<?php echo $it['it_sc_qty']; ?>" id="it_sc_qty" class="frm_input" size="8"> 마다 배송비 부과
+          <div id="sc_con_qty_info1"><?php echo help("상품의 주문 수량에 따라 배송비가 부과됩니다. 예를 들어 기본배송비가 3,000원 수량을 3으로 설정했을 경우 상품의 주문수량이 5개이면 6,000원 배송비가 부과됩니다."); ?></div>
+          <div id="sc_con_qty_info2"><?php echo help("상품의 주문 수량에 따라 배송비가 부과됩니다. 입력된 수량이 배수에 해당하지 않을 경우 배송비가 부과됩니다."); ?></div>
+          주문수량 <input type="text" name="it_sc_qty" value="<?php echo $it['it_sc_qty']; ?>" id="it_sc_qty" class="frm_input" size="8"> 
+          <span id="sc_con_qty_info3">마다 배송비 부과</span>
+          <span id="sc_con_qty_info4">배수 미달시 배송비 부과</span>
         </td>
-      </tr>
+      </tr>  
       <tr>
         <th scope="row"><label for="it_sc_add_sendcost">산간지역 추가 배송비</label></th>
         <td>
@@ -1518,6 +1541,7 @@ $warehouse_list = get_warehouses();
         echo '$("#sc_con_basic").hide();'.PHP_EOL;
         echo '$("#sc_con_minimum").hide();'.PHP_EOL;
         echo '$("#sc_con_qty").hide();'.PHP_EOL;
+        echo '$("#sc_con_qty_info1, #sc_con_qty_info2, #sc_con_qty_info3, #sc_con_qty_info4").hide();'.PHP_EOL;
         echo '$("#sc_grp").attr("rowspan","1");'.PHP_EOL;
         echo '$("#even_odd_wr").hide();'.PHP_EOL;
         break;
@@ -1526,6 +1550,7 @@ $warehouse_list = get_warehouses();
         echo '$("#sc_con_basic").show();'.PHP_EOL;
         echo '$("#sc_con_minimum").show();'.PHP_EOL;
         echo '$("#sc_con_qty").hide();'.PHP_EOL;
+        echo '$("#sc_con_qty_info1, #sc_con_qty_info2, #sc_con_qty_info3, #sc_con_qty_info4").hide();'.PHP_EOL;
         echo '$("#sc_grp").attr("rowspan","4");'.PHP_EOL;
         echo '$("#even_odd_wr").hide();'.PHP_EOL;
         break;
@@ -1534,6 +1559,7 @@ $warehouse_list = get_warehouses();
         echo '$("#sc_con_basic").show();'.PHP_EOL;
         echo '$("#sc_con_minimum").hide();'.PHP_EOL;
         echo '$("#sc_con_qty").hide();'.PHP_EOL;
+        echo '$("#sc_con_qty_info1, #sc_con_qty_info2, #sc_con_qty_info3, #sc_con_qty_info4").hide();'.PHP_EOL;
         echo '$("#sc_grp").attr("rowspan","3");'.PHP_EOL;
         echo '$("#even_odd_wr").hide();'.PHP_EOL;
         break;
@@ -1541,7 +1567,9 @@ $warehouse_list = get_warehouses();
         echo '$("#sc_con_method").show();'.PHP_EOL;
         echo '$("#sc_con_basic").show();'.PHP_EOL;
         echo '$("#sc_con_minimum").hide();'.PHP_EOL;
-        echo '$("#sc_con_qty").show();'.PHP_EOL;
+        echo '$("#sc_con_qty").show();'.PHP_EOL;        
+        echo '$("#sc_con_qty_info1, #sc_con_qty_info3").show();'.PHP_EOL;
+        echo '$("#sc_con_qty_info2, #sc_con_qty_info4").hide();'.PHP_EOL;
         echo '$("#sc_grp").attr("rowspan","4");'.PHP_EOL;
         echo '$("#even_odd_wr").hide();'.PHP_EOL;
         break;
@@ -1550,14 +1578,26 @@ $warehouse_list = get_warehouses();
         echo '$("#sc_con_basic").hide();'.PHP_EOL;
         echo '$("#sc_con_minimum").hide();'.PHP_EOL;
         echo '$("#sc_con_qty").hide();'.PHP_EOL;
+        echo '$("#sc_con_qty_info1, #sc_con_qty_info2, #sc_con_qty_info3, #sc_con_qty_info4").hide();'.PHP_EOL;
         echo '$("#sc_grp").attr("rowspan","2");'.PHP_EOL;
         echo '$("#even_odd_wr").show();'.PHP_EOL;
         break;
+      case "6":
+        echo '$("#sc_con_method").hide();'.PHP_EOL;
+        echo '$("#sc_con_basic").hide();'.PHP_EOL;
+        echo '$("#sc_con_minimum").hide();'.PHP_EOL;
+        echo '$("#sc_con_qty").show();'.PHP_EOL;
+        echo '$("#sc_con_qty_info1, #sc_con_qty_info3").hide();'.PHP_EOL;
+        echo '$("#sc_con_qty_info2, #sc_con_qty_info4").show();'.PHP_EOL;
+        echo '$("#sc_grp").attr("rowspan","4");'.PHP_EOL;
+        echo '$("#even_odd_wr").hide();'.PHP_EOL;
+          break;
       default:
         echo '$("#sc_con_method").hide();'.PHP_EOL;
         echo '$("#sc_con_basic").hide();'.PHP_EOL;
         echo '$("#sc_con_minimum").hide();'.PHP_EOL;
         echo '$("#sc_con_qty").hide();'.PHP_EOL;
+        echo '$("#sc_con_qty_info1, #sc_con_qty_info2, #sc_con_qty_info3, #sc_con_qty_info4").hide();'.PHP_EOL;
         echo '$("#sc_grp").attr("rowspan","2");'.PHP_EOL;
         echo '$("#even_odd_wr").hide();'.PHP_EOL;
         break;
@@ -1609,6 +1649,7 @@ $warehouse_list = get_warehouses();
           $("#sc_con_basic").hide();
           $("#sc_con_minimum").hide();
           $("#sc_con_qty").hide();
+          $("#sc_con_qty_info1, #sc_con_qty_info2, #sc_con_qty_info3, #sc_con_qty_info4").hide(); 
           $("#sc_grp").attr("rowspan","1");
           $("#even_odd_wr").hide();
           break;
@@ -1617,6 +1658,7 @@ $warehouse_list = get_warehouses();
           $("#sc_con_basic").show();
           $("#sc_con_minimum").show();
           $("#sc_con_qty").hide();
+          $("#sc_con_qty_info1, #sc_con_qty_info2, #sc_con_qty_info3, #sc_con_qty_info4").hide(); 
           $("#sc_grp").attr("rowspan","4");
           $("#even_odd_wr").hide();
           break;
@@ -1625,6 +1667,7 @@ $warehouse_list = get_warehouses();
           $("#sc_con_basic").show();
           $("#sc_con_minimum").hide();
           $("#sc_con_qty").hide();
+          $("#sc_con_qty_info1, #sc_con_qty_info2, #sc_con_qty_info3, #sc_con_qty_info4").hide(); 
           $("#sc_grp").attr("rowspan","3");
           $("#even_odd_wr").hide();
           break;
@@ -1633,6 +1676,8 @@ $warehouse_list = get_warehouses();
           $("#sc_con_basic").show();
           $("#sc_con_minimum").hide();
           $("#sc_con_qty").show();
+          $("#sc_con_qty_info1, #sc_con_qty_info3").hide();    
+          $("#sc_con_qty_info2, #sc_con_qty_info4").show();
           $("#sc_grp").attr("rowspan","4");
           $("#even_odd_wr").hide();
           break;
@@ -1640,15 +1685,27 @@ $warehouse_list = get_warehouses();
           $("#sc_con_method").hide();
           $("#sc_con_basic").hide();
           $("#sc_con_minimum").hide();
-          $("#sc_con_qty").hide();
+          $("#sc_con_qty").hide();  
+          $("#sc_con_qty_info1, #sc_con_qty_info2, #sc_con_qty_info3, #sc_con_qty_info4").hide(); 
           $("#sc_grp").attr("rowspan","4");
           $("#even_odd_wr").show();
+          break;
+        case "6":
+          $("#sc_con_method").hide();
+          $("#sc_con_basic").hide();
+          $("#sc_con_minimum").hide();
+          $("#sc_con_qty").show();
+          $("#sc_con_qty_info1, #sc_con_qty_info3").hide();    
+          $("#sc_con_qty_info2, #sc_con_qty_info4").show();
+          $("#sc_grp").attr("rowspan","4");
+          $("#even_odd_wr").hide();
           break;
         default:
           $("#sc_con_method").hide();
           $("#sc_con_basic").hide();
           $("#sc_con_minimum").hide();
           $("#sc_con_qty").hide();
+          $("#sc_con_qty_info1, #sc_con_qty_info2, #sc_con_qty_info3, #sc_con_qty_info4").hide(); 
           $("#sc_grp").attr("rowspan","1");
           $("#even_odd_wr").hide();
           break;

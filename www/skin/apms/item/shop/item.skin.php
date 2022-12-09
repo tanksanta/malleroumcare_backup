@@ -395,6 +395,80 @@ if ($it['ca_id']) {
                 }
               }
             } else { // 파트너 유저 아닐 시
+
+
+              // = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+              // 22.12.09 : 서원 - 배송비 정책 변경에 따른 상품 상세 페이지 안내 문구 변경
+              // = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+              //$it['it_sc_type']=4;
+
+
+              $sc_price_info = "";
+              if( $it['it_sc_type']==1 ) { 
+                // 무료배송
+                $sc_price_info = "무료배송";
+              }
+              elseif( $it['it_sc_type']==2 ) {
+                // (기본) 조건부 무료 배송(X) X - X - X - X - X - X - X - X - X
+                // 22.12.07 : 서원 - 플랫폼팀 요청에 의해 해당 기능 사용중지 처리
+                // = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+
+                $sc_price_info = "<label class='quality-type'>배송비</label><label class='quality-text'>" . number_format($it['it_sc_price']) . "원</label>";
+                $sc_price_info = $sc_price_info ."<br />└ 금액 ". number_format($it['it_sc_minimum']) . "원 이상 주문시 무료배송";
+
+              }
+              elseif( $it['it_sc_type']==3 ) {
+                // (기본) 유료 배송(X) X - X - X - X - X - X - X - X - X - X
+                // 22.12.07 : 서원 - 플랫폼팀 요청에 의해 해당 기능 사용중지 처리
+                // = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+
+                $sc_price_info = "<label class='quality-type'>배송비</label><label class='quality-text'>" . number_format($it['it_sc_price']) . "원</label>";
+              }
+              elseif( $it['it_sc_type']==4 ) {
+                // (별도) 수량별 유료 배송
+                // = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+                
+                $sc_price_info = "<label class='quality-type'>배송비</label><label class='quality-text'>" . number_format($it['it_sc_price']) . "원 <span style='font-size:10px;'>(별도부과)</span></label>";
+                $sc_price_info = $sc_price_info ."<br />└ 수량 ". number_format($it['it_sc_qty']) . "개 이상 주문시 무료배송";
+              }
+              elseif( $it['it_sc_type']==5 ) {
+                // (별도) 홀수/짝수 배송
+                // = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+                
+                $sc_price_info = "<label class='quality-type'>배송비</label><label class='quality-text'>" . number_format($it['it_even_odd_price']) . "원 <span style='font-size:10px;'>(별도부과)</span></label>";
+                if( ($it['it_even_odd'] == 0)) { // 홀수
+                  $sc_price_info = $sc_price_info ."<br />└ 짝수(2,4,6,8...) 수량 주문시 무료배송";
+                } else if( ($it['it_even_odd'] == 1)  ) { // 짝수
+                  $sc_price_info = $sc_price_info ."<br />└ 홀수(1,3,5,7...) 수량 주문시 무료배송";
+                }
+
+              }
+              elseif( $it['it_sc_type']==6 ) {
+                // (별도) 포장수량 무료 배송
+                // = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+
+                $sc_price_info = "<label class='quality-type'>배송비</label><label class='quality-text'>" . number_format($it['it_sc_price']) . "원 <span style='font-size:10px;'>(별도부과)</span></label>";
+                $sc_price_info = $sc_price_info ."<br />└ 수량 ". number_format($it['it_sc_qty']) . "개 단위(" . ($it['it_sc_qty']) .",". ($it['it_sc_qty']*2) .",". ($it['it_sc_qty']*3) .",". ($it['it_sc_qty']*4) . "...) 주문시 무료배송";
+              }
+              else {
+                // (기본) 쇼핑몰 기본 설정
+                // = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+
+                $_cost_limit = explode(";",$default['de_send_cost_limit']);
+                $_cost_list = explode(";",$default['de_send_cost_list']);
+
+                $sc_price_info = "배송비 : <span id='delivery_price'>" . number_format($_cost_list[0]) . "</span>원";     
+                $sc_price_info = $sc_price_info . "<br />└ ".number_format($default['de_send_conditional'])."원 이상 구매시 무료배송";
+              }
+
+              if ($it['it_delivery_cnt'] > 0) {
+                $sc_price_info = $sc_price_info . "<br /><span style=\"font-size:13px; color:#ef7c00;\">└ 본 상품은 {$it['it_delivery_cnt']}개 주문 시 한 박스로 포장됩니다.</span>";
+              }
+
+            }
+
+
+/*
               $sc_price_info = "";
               if($it['it_sc_type'] == 1) {
                 $sc_price_info = "무료배송";
@@ -418,10 +492,6 @@ if ($it['ca_id']) {
                 }
               }
             }
-            ?>
-            <tr>
-              <th><?php echo $ct_send_cost_label; ?></th>
-              <td>
                 <?php
                 $sc_price = 10;
                 if($it['it_sc_type'] < 4 && $it['it_sc_type'] != 1) {
@@ -434,9 +504,12 @@ if ($it['ca_id']) {
                   $sc_price_info = "<span style=\"font-size:13px; color:#ef7c00;\">본 상품은 {$it['it_delivery_cnt']}개 주문 시 한 박스로 포장됩니다.</span><br>".$sc_price_info;
                 }
                 ?>
-                <p class="sc_price_info" style="font-size: 13px">
-                  <?php echo $sc_price_info; ?>
-                </p>
+
+*/
+            ?>
+            <tr>
+              <th><?php echo $ct_send_cost_label; ?></th>
+              <td><p class="sc_price_info" style="font-size: 13px"><?php echo $sc_price_info; ?></p>
               </td>
             </tr>
           </tbody>
@@ -777,6 +850,80 @@ if ($it['ca_id']) {
                     }
                 }
             } else { // 파트너 유저 아닐 시
+
+
+              // = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+              // 22.12.09 : 서원 - 배송비 정책 변경에 따른 상품 상세 페이지 안내 문구 변경
+              // = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+              //$it['it_sc_type']=4;
+
+
+              $sc_price_info = "";
+              if( $it['it_sc_type']==1 ) { 
+                // 무료배송
+                
+                $sc_price_info = "<label class='quality-type'>배송비</label><label class='quality-text'>무료배송</label>";
+              }
+              elseif( $it['it_sc_type']==2 ) {
+                // (기본) 조건부 무료 배송(X) X - X - X - X - X - X - X - X - X
+                // 22.12.07 : 서원 - 플랫폼팀 요청에 의해 해당 기능 사용중지 처리
+                // = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+
+                $sc_price_info = "<label class='quality-type'>배송비</label><label class='quality-text'>" . number_format($it['it_sc_price']) . "원</label>";
+                $sc_price_info = $sc_price_info ."<br />└ 금액 ". number_format($it['it_sc_minimum']) . "원 이상 주문시 무료배송";
+
+              }
+              elseif( $it['it_sc_type']==3 ) {
+                // (기본) 유료 배송(X) X - X - X - X - X - X - X - X - X - X
+                // 22.12.07 : 서원 - 플랫폼팀 요청에 의해 해당 기능 사용중지 처리
+                // = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+
+                $sc_price_info = "<label class='quality-type'>배송비</label><label class='quality-text'>" . number_format($it['it_sc_price']) . "원</label>";
+              }
+              elseif( $it['it_sc_type']==4 ) {
+                // (별도) 수량별 유료 배송
+                // = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+                
+                $sc_price_info = "<label class='quality-type'>배송비</label><label class='quality-text'>" . number_format($it['it_sc_price']) . "원 <span style='font-size:10px;'>(별도부과)</span></label>";
+                $sc_price_info = $sc_price_info ."<br />└ 수량 ". number_format($it['it_sc_qty']) . "개 이상 주문시 무료배송";
+              }
+              elseif( $it['it_sc_type']==5 ) {
+                // (별도) 홀수/짝수 배송
+                // = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+                
+                $sc_price_info = "<label class='quality-type'>배송비</label><label class='quality-text'>" . number_format($it['it_even_odd_price']) . "원 <span style='font-size:10px;'>(별도부과)</span></label>";
+                if( ($it['it_even_odd'] == 0)) { // 홀수
+                  $sc_price_info = $sc_price_info ."<br />└ 짝수(2,4,6,8 ...) 수량 주문시 무료배송";
+                } else if( ($it['it_even_odd'] == 1)  ) { // 짝수
+                  $sc_price_info = $sc_price_info ."<br />└ 홀수(1,3,5,7 ...) 수량 주문시 무료배송";
+                }
+
+              }
+              elseif( $it['it_sc_type']==6 ) {
+                // (별도) 포장수량 무료 배송
+                // = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+              
+                $sc_price_info = "<label class='quality-type'>배송비</label><label class='quality-text'>" . number_format($it['it_sc_price']) . "원 <span style='font-size:10px;'>(별도부과)</span></label>";
+                $sc_price_info = $sc_price_info ."<br />└ 수량 ". number_format($it['it_sc_qty']) . "개 단위(" . ($it['it_sc_qty']) .",". ($it['it_sc_qty']*2) .",". ($it['it_sc_qty']*3) .",". ($it['it_sc_qty']*4) . " ...) 주문시 무료배송";
+              }
+              else {
+                // (기본) 쇼핑몰 기본 설정
+                // = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+
+                $_cost_limit = explode(";",$default['de_send_cost_limit']);
+                $_cost_list = explode(";",$default['de_send_cost_list']);
+
+                $sc_price_info = "<label class='quality-type'>배송비</label><label class='quality-text'>" . number_format($_cost_list[0]) . "원</label>";
+                $sc_price_info = $sc_price_info . "<br />└ ".number_format($default['de_send_conditional'])."원 이상 구매시 무료배송";
+              }
+
+              if ($it['it_delivery_cnt'] > 0) {
+                $sc_price_info = $sc_price_info . "<br /><span style=\"font-size:13px; color:#ef7c00;\">└ 본 상품은 {$it['it_delivery_cnt']}개 주문 시 한 박스로 포장됩니다.</span>";
+              }
+
+            }
+
+/*
                 if ($it['it_sc_type'] == 1)
                     $sc_method = '무료배송';
                 else {
@@ -823,11 +970,7 @@ if ($it['ca_id']) {
                     }
                 }
             }
-      ?>
-      <tr>
-        <th><?php echo $ct_send_cost_label; ?></th>
-        <td>
-          <?php
+            <?php
           echo $sc_method;
           //if ($it['it_sc_minimum']) {
             //$sc_price = ((int)$it['it_sc_minimum'] / 10000);
@@ -843,14 +986,11 @@ if ($it['ca_id']) {
             $sc_price_info = "<span style=\"font-size:13px; color:#ef7c00;\">본 상품은 {$it['it_delivery_cnt']}개 주문 시 한 박스로 포장됩니다.</span><br>".$sc_price_info;
           }
           ?>
-          <p class="sc_price_info" style="font-size: 13px">
-            <?php echo $sc_price_info ?>
-          </p>
-          <p style="font-size: 11px">
-            <!-- * 네이버페이 주문시 배송비는 택배(선불)로만 주문이 가능합니다.<br>
-            * 네이버페이 주문 시 도서산간지역 배송비는 별도로 추가 결제해 주셔야 합니다. -->
-          </p>
-        </td>
+            */
+      ?>
+      <tr>
+        <th><?php echo $ct_send_cost_label; ?></th>
+        <td><p class="sc_price_info" style="font-size: 13px"><?php echo $sc_price_info ?></p></td>
       </tr>
       </tbody>
       </table>

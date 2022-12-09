@@ -34,8 +34,16 @@ if($_POST["it_id"] != ""){//이벤트 상품 구매 조회
 }
 
 $keyword = str_replace(' ', '', trim($keyword));
-
 $eform = $_GET['eform'];
+
+
+// 22.12.07 : 서원 - 검색어가 없을 경우 DB전체 검색되던 부분 중단 처리.
+if( !$keyword ) {
+  $rows = [];
+  echo json_encode($rows);
+  exit();
+}
+
 
 /*
 $prodsupyn_sql = " AND a.prodSupYn = 'Y' ";

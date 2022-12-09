@@ -232,10 +232,99 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
         $result_i = sql_fetch($sql_i);
         $ct_delivery_cnt = $result_i['it_delivery_cnt'] ? ceil($ct_new_v / $result_i['it_delivery_cnt']) : 0;
 
+        // 22.12.09 : 서원 - 배송비 정책관련 처리
+        $ct_delivery_price = $_POST["it_delivery_price{$row["ct_id"]}"];
+
         //신규주문 insert
+        // 22.12.09 : 서원 - 배송비 정책관련 처리(쿼리문형식변경)
         $sql_stock_insert = "
-        INSERT INTO `g5_shop_cart`(`od_id`, `mb_id`, `it_id`, `it_name`, `it_sc_type`, `it_sc_method`, `it_sc_price`, `it_sc_minimum`, `it_sc_qty`, `ct_status`, `ct_next_status`, `ct_history`, `ct_price`, `ct_discount`, `ct_point`, `cp_price`, `ct_point_use`, `ct_stock_use`, `ct_option`, `ct_qty`, `ct_stock_qty`, `ct_barcode`, `ct_notax`, `io_id`, `io_type`, `io_price`, `ct_time`, `ct_ip`, `ct_send_cost`, `ct_sendcost`, `ct_direct`, `ct_select`, `ct_select_time`, `pt_sale`, `pt_commission`, `pt_point`, `pt_incentive`, `pt_net`, `pt_commission_rate`, `pt_incentive_rate`, `pt_it`, `pt_id`, `pt_send`, `pt_send_num`, `pt_datetime`, `pt_msg1`, `pt_msg2`, `pt_msg3`, `mk_id`, `mk_profit`, `mk_benefit`, `mk_profit_rate`, `mk_benefit_rate`, `ct_memo`, `ProductOrderID`, `ClaimType`, `ClaimStatus`, `PlaceOrderStatus`, `DelayedDispatchReason`, `od_naver_orderid`, `ct_price_type`, `pt_old_name`, `pt_old_opt`, `ct_uid`, `prodMemo`, `prodSupYn`, `ordLendStrDtm`, `ordLendEndDtm`, `ct_delivery_yn`, `ct_delivery_company`, `ct_delivery_num`, `ct_delivery_cnt`, `ct_delivery_price`, `ct_hide_control`, `stoId`, `io_thezone`, `ct_admin_new`, `ct_edi_result`, `ct_edi_date`, `ct_edi_msg`, `ct_edi_chk`, `ct_edi_price`, `ct_edi_ea`, `ct_combine_ct_id`)
-        VALUES ('".$r_ss['od_id']."','".$r_ss['mb_id']."','".$r_ss['it_id']."','".$r_ss['it_name']."','".$r_ss['it_sc_type']."','".$r_ss['it_sc_method']."','".$r_ss['it_sc_price']."','".$r_ss['it_sc_minimum']."','".$r_ss['it_sc_qty']."','".$r_ss['ct_status']."','".$r_ss['ct_next_status']."','".$r_ss['ct_history']."','".$r_ss['ct_price']."','".$r_ss['ct_discount']."','".$r_ss['ct_point']."','".$r_ss['cp_price']."','".$r_ss['ct_point_use']."','".$r_ss['ct_stock_use']."','".$r_ss['ct_option']."','".$ct_new_v."','0','".$r_ss['ct_barcode']."','".$r_ss['ct_notax']."','".$r_ss['io_id']."','".$r_ss['io_type']."','".$r_ss['io_price']."','".$r_ss['ct_time']."','".$r_ss['ct_ip']."','".$r_ss['ct_send_cost']."','".$r_ss['ct_sendcost']."','".$r_ss['ct_direct']."','".$r_ss['ct_select']."','".$r_ss['ct_select_time']."','".$r_ss['pt_sale']."','".$r_ss['pt_commission']."','".$r_ss['pt_point']."','".$r_ss['pt_incentive']."','".$r_ss['pt_net']."','".$r_ss['pt_commission_rate']."','".$r_ss['pt_incentive_rate']."','".$r_ss['pt_it']."','".$r_ss['pt_id']."','".$r_ss['pt_send']."','".$r_ss['pt_send_num']."','".$r_ss['pt_datetime']."','".$r_ss['pt_msg1']."','".$r_ss['pt_msg2']."','".$r_ss['pt_msg3']."','".$r_ss['mk_id']."','".$r_ss['mk_profit']."','".$r_ss['mk_benefit']."','".$r_ss['mk_profit_rate']."','".$r_ss['mk_benefit_rate']."','".$r_ss['ct_memo']."','".$r_ss['ProductOrderID']."','".$r_ss['ClaimType']."','".$r_ss['ClaimStatus']."','".$r_ss['PlaceOrderStatus']."','".$r_ss['DelayedDispatchReason']."','".$r_ss['od_naver_orderid']."','".$r_ss['ct_price_type']."','".$r_ss['pt_old_name']."','".$r_ss['pt_old_opt']."','".$r_ss['ct_uid']."','".$r_ss['prodMemo']."','".$r_ss['prodSupYn']."','".$r_ss['ordLendStrDtm']."','".$r_ss['ordLendEndDtm']."','".$r_ss['ct_delivery_yn']."','".$r_ss['ct_delivery_company']."','".$r_ss['ct_delivery_num']."','".$ct_delivery_cnt."','".$r_ss['ct_delivery_price']."','".$r_ss['ct_hide_control']."','".$r_ss['stoId']."','".$r_ss['io_thezone']."','".$r_ss['ct_admin_new']."','".$r_ss['ct_edi_result']."','".$r_ss['ct_edi_date']."','".$r_ss['ct_edi_msg']."','".$r_ss['ct_edi_chk']."','".$r_ss['ct_edi_price']."','".$r_ss['ct_edi_ea']."','".$r_ss['ct_combine_ct_id']."')";
+        INSERT `g5_shop_cart`(
+          SET
+            `od_id`                 =   '".$r_ss['od_id']."',
+            `mb_id`                 =   '".$r_ss['mb_id']."',
+            `it_id`                 =   '".$r_ss['it_id']."',
+            `it_name`               =   '".$r_ss['it_name']."',
+            `it_sc_type`            =   '".$r_ss['it_sc_type']."',
+            `it_sc_method`          =   '".$r_ss['it_sc_method']."',
+            `it_sc_price`           =   '".$r_ss['it_sc_price']."',
+            `it_sc_minimum`         =   '".$r_ss['it_sc_minimum']."',
+            `it_sc_qty`             =   '".$r_ss['it_sc_qty']."',
+            `ct_status`             =   '".$r_ss['ct_status']."',
+            `ct_next_status`        =   '".$r_ss['ct_next_status']."',
+            `ct_history`            =   '".$r_ss['ct_history']."',
+            `ct_price`              =   '".$r_ss['ct_price']."',
+            `ct_discount`           =   '".$r_ss['ct_discount']."',
+            `ct_point`              =   '".$r_ss['ct_point']."',
+            `cp_price`              =   '".$r_ss['cp_price']."',
+            `ct_point_use`          =   '".$r_ss['ct_point_use']."',
+            `ct_stock_use`          =   '".$r_ss['ct_stock_use']."',
+            `ct_option`             =   '".$r_ss['ct_option']."',
+            `ct_qty`                =   '".$ct_new_v."', 
+            `ct_stock_qty`          =   '',
+            `ct_barcode`            =   '".$r_ss['ct_barcode']."',
+            `ct_notax`              =   '".$r_ss['ct_notax']."',
+            `io_id`                 =   '".$r_ss['io_id']."',
+            `io_type`               =   '".$r_ss['io_type']."',
+            `io_price`              =   '".$r_ss['io_price']."',
+            `ct_time`               =   '".$r_ss['ct_time']."',
+            `ct_ip`                 =   '".$r_ss['ct_ip']."',
+            `ct_send_cost`          =   '".$r_ss['ct_send_cost']."',
+            `ct_sendcost`           =   '".$r_ss['ct_sendcost']."',
+            `ct_direct`             =   '".$r_ss['ct_direct']."',
+            `ct_select`             =   '".$r_ss['ct_select']."',
+            `ct_select_time`        =   '".$r_ss['ct_select_time']."',
+            `pt_sale`               =   '".$r_ss['pt_sale']."',
+            `pt_commission`         =   '".$r_ss['pt_commission']."',
+            `pt_point`              =   '".$r_ss['pt_point']."',
+            `pt_incentive`          =   '".$r_ss['pt_incentive']."',
+            `pt_net`                =   '".$r_ss['pt_net']."',
+            `pt_commission_rate`    =   '".$r_ss['pt_commission_rate']."',
+            `pt_incentive_rate`     =   '".$r_ss['pt_incentive_rate']."',
+            `pt_it`                 =   '".$r_ss['pt_it']."',
+            `pt_id`                 =   '".$r_ss['pt_id']."',
+            `pt_send`               =   '".$r_ss['pt_send']."',
+            `pt_send_num`           =   '".$r_ss['pt_send_num']."',
+            `pt_datetime`           =   '".$r_ss['pt_datetime']."',
+            `pt_msg1`               =   '".$r_ss['pt_msg1']."',
+            `pt_msg2`               =   '".$r_ss['pt_msg2']."',
+            `pt_msg3`               =   '".$r_ss['pt_msg3']."',
+            `mk_id`                 =   '".$r_ss['mk_id']."',
+            `mk_profit`             =   '".$r_ss['mk_profit']."',
+            `mk_benefit`            =   '".$r_ss['mk_benefit']."',
+            `mk_profit_rate`        =   '".$r_ss['mk_profit_rate']."',
+            `mk_benefit_rate`       =   '".$r_ss['mk_benefit_rate']."',
+            `ct_memo`               =   '".$r_ss['ct_memo']."',
+            `ProductOrderID`        =   '".$r_ss['ProductOrderID']."',
+            `ClaimType`             =   '".$r_ss['ClaimType']."',
+            `ClaimStatus`           =   '".$r_ss['ClaimStatus']."',
+            `PlaceOrderStatus`      =   '".$r_ss['PlaceOrderStatus']."',
+            `DelayedDispatchReason` =   '".$r_ss['DelayedDispatchReason']."',
+            `od_naver_orderid`      =   '".$r_ss['od_naver_orderid']."',
+            `ct_price_type`         =   '".$r_ss['ct_price_type']."',
+            `pt_old_name`           =   '".$r_ss['pt_old_name']."',
+            `pt_old_opt`            =   '".$r_ss['pt_old_opt']."',
+            `ct_uid`                =   '".$r_ss['ct_uid']."',
+            `prodMemo`              =   '".$r_ss['prodMemo']."',
+            `prodSupYn`             =   '".$r_ss['prodSupYn']."',
+            `ordLendStrDtm`         =   '".$r_ss['ordLendStrDtm']."',
+            `ordLendEndDtm`         =   '".$r_ss['ordLendEndDtm']."',
+            `ct_delivery_yn`        =   '".$r_ss['ct_delivery_yn']."',
+            `ct_delivery_company`   =   '".$r_ss['ct_delivery_company']."',
+            `ct_delivery_num`       =   '".$r_ss['ct_delivery_num']."',
+            `ct_delivery_cnt`       =   '".$ct_delivery_cnt."',
+            `ct_delivery_price`     =   '".$ct_delivery_price."',
+            `ct_hide_control`       =   '".$r_ss['ct_hide_control']."',
+            `stoId`                 =   '".$r_ss['stoId']."',
+            `io_thezone`            =   '".$r_ss['io_thezone']."',
+            `ct_admin_new`          =   '".$r_ss['ct_admin_new']."',
+            `ct_edi_result`         =   '".$r_ss['ct_edi_result']."',
+            `ct_edi_date`           =   '".$r_ss['ct_edi_date']."',
+            `ct_edi_msg`            =   '".$r_ss['ct_edi_msg']."',
+            `ct_edi_chk`            =   '".$r_ss['ct_edi_chk']."',
+            `ct_edi_price`          =   '".$r_ss['ct_edi_price']."',
+            `ct_edi_ea`             =   '".$r_ss['ct_edi_ea']."',
+            `ct_combine_ct_id`      =   '".$r_ss['ct_combine_ct_id']."'
+        )";
         sql_query($sql_stock_insert);
         $new_ct_id = sql_insert_id();
 
@@ -313,7 +402,7 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
         }
       }
 
-      $tmpPrice = $tmpCnt * $row["it_delivery_price"];
+      $tmpPrice = $_POST["it_delivery_price_{$row["ct_id"]}"];
 
       sql_query("
         UPDATE {$g5["g5_shop_cart_table"]} SET
@@ -947,8 +1036,16 @@ if($_POST["od_stock_insert_yn"]){
   $tot_ct_discount=0;
 }
 
+// 22.12.09 : 서원 - 배송비 정책관련 처리
+$_tmp_delivery_price = 0;
+if( is_array($_POST['it_delivery_price']) && COUNT($_POST['it_delivery_price']) ) {
+  foreach($_POST['it_delivery_price'] as $key => $val) {
+    $_tmp_delivery_price += $val;
+  }
+}
+
 // 배송비 renew 210506
-$od_send_cost = get_sendcost_new($tmp_cart_id, 1) ?: 0;
+$od_send_cost = $_POST['od_send_cost'];
 $od_send_cost2 = 0;
 
 // 지역별 추가배송비 적용
