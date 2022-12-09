@@ -1,6 +1,6 @@
 <?php
     $pro_info = [];
-    if($eform['applicantCd']=='01') {
+    if($eform['applicantCd']!='00' && $eform['applicantCd']!='02') {
         $pen = get_recipient($eform['penId']);
 
         if(!$pen)
@@ -23,10 +23,13 @@
         }
 
         for($i =0; $i < count($pros); $i++){
-            //전체 보호자를 불러와서 가장 첫번째 보호자 출력(모든 정보가 입력되어 있지 않으면 다음 보호자 출력, 모든 보호자의 정보가 완전하지 않으면 출력하지 않음)
-            if($pros[$i]['pro_name']||$pros[$i]['pro_hp']||$pros[$i]['pro_addr1']||$pros[$i]['pro_zip']||$pros[$i]['pro_birth']||$pros[$i]['pro_name']||$pros[$i]['pro_type']=='01'){
-                $pro_info = $pros[$i];
-                break;
+            //전체 보호자를 불러와서 일치하는 보호자 정보 출력
+            if($pros[$i]['pro_name']||$pros[$i]['pro_hp']||$pros[$i]['pro_addr1']||$pros[$i]['pro_zip']||$pros[$i]['pro_birth']||$pros[$i]['pro_name']||$pros[$i]['pro_type']!='00'||$pros[$i]['pro_type']!='02'){
+                $pros_name = explode('_',$eform['applicantCd'])[0];
+                if($pros[$i]['pro_name']==$pros_name){
+                    $pro_info = $pros[$i];
+                    break;
+                }
             }
         }
     }
@@ -62,17 +65,17 @@
         <tr>
           <th scope="col" rowspan="3">신청인</th>
           <th scope="col">성명</th>
-          <td><?php if($eform['applicantCd']=='00'){ echo $eform['penNm']; }else if($eform['applicantCd']=='01'){ echo $pro_info['pro_name']; }//02는 공란이라 미출력 ?></td>
+          <td><?php if($eform['applicantCd']=='00'){ echo $eform['penNm']; }else if($eform['applicantCd']!='02'){ echo $pro_info['pro_name']; }//02는 공란이라 미출력 ?></td>
           <th scope="col">생년월일</th>
-          <td><?php if($eform['applicantCd']=='00'){ echo $eform['penBirth']; }else if($eform['applicantCd']=='01'){ echo $pro_info['pro_birth']; }//02는 공란이라 미출력 ?></td>
+          <td><?php if($eform['applicantCd']=='00'){ echo $eform['penBirth']; }else if($eform['applicantCd']!='02'){ echo $pro_info['pro_birth']; }//02는 공란이라 미출력 ?></td>
           <th scope="col">수급자와의<br>관계</th>
-          <td><?php if($eform['applicantCd']=='00'){ echo "본인"; }else if($eform['applicantCd']=='01'){ echo "보호자"; }//02는 공란이라 미출력 ?></td>
+          <td><?php if($eform['applicantCd']=='00'){ echo "본인"; }else if($eform['applicantCd']!='02'){ echo "보호자"; }//02는 공란이라 미출력 ?></td>
         </tr>
         <tr>
           <th scope="col">주소</th>
           <?php if($eform['applicantCd']=='00'){?>
             <td colspan="5">(<?=$eform['penZip']?>) <?=$eform['penAddr']?> <?=$eform['penAddrDtl']?></td>
-          <?php } else if ($eform['applicantCd']=='01'){?>
+          <?php } else if ($eform['applicantCd']!='02'){?>
             <td colspan="5">(<?=$pro_info['pro_zip']?>) <?=$pro_info['pro_addr1']?> <?=$pro_info['pro_addr2']?></td>
           <?php } else {?>
             <td colspan="5"></td>
@@ -80,7 +83,7 @@
         </tr>
         <tr>
           <th scope="col">전화번호</th>
-          <td colspan="5" style="position: relative;"><?php if($eform['applicantCd']=='00'){ echo $eform['penConNum']; }else if($eform['applicantCd']=='01'){ echo $pro_info['pro_hp']; }//02는 공란이라 미출력 ?><div style="position: absolute; bottom: 0; right: 0; padding: 2px 4px;">(휴대전화: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; )</div></td>
+          <td colspan="5" style="position: relative;"><?php if($eform['applicantCd']=='00'){ echo $eform['penConNum']; }else if($eform['applicantCd']!='02'){ echo $pro_info['pro_hp']; }//02는 공란이라 미출력 ?><div style="position: absolute; bottom: 0; right: 0; padding: 2px 4px;">(휴대전화: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; )</div></td>
         </tr>
       </tbody>
     </table>
@@ -142,7 +145,7 @@
         <tr>
           <td>&nbsp;</td>
           <th scope="col" class="right">신청인:</th>
-          <td style="font-size: 16px;"><?php if($eform['applicantCd']=='00'){ echo $eform['penNm']; }else if($eform['applicantCd']=='01'){ echo $pro_info['pro_name']; }//02는 공란이라 미출력 ?></td>
+          <td style="font-size: 16px;"><?php if($eform['applicantCd']=='00'){ echo $eform['penNm']; }else if($eform['applicantCd']!='02'){ echo $pro_info['pro_name']; }//02는 공란이라 미출력 ?></td>
           <td class="sign-desc sign-form" data-id="sign_101_1">(서명 또는 인)</td>
         </tr>
         <tr>
@@ -192,7 +195,7 @@
         <tr>
           <td>&nbsp;</td>
           <th scope="col" class="center">신청인</th>
-          <td style="font-size: 16px;"><?php if($eform['applicantCd']=='00'){ echo $eform['penNm']; }else if($eform['applicantCd']=='01'){ echo $pro_info['pro_name']; }//02는 공란이라 미출력 ?></td>
+          <td style="font-size: 16px;"><?php if($eform['applicantCd']=='00'){ echo $eform['penNm']; }else if($eform['applicantCd']!='02'){ echo $pro_info['pro_name']; }//02는 공란이라 미출력 ?></td>
           <td class="sign-desc sign-form" data-id="sign_101_3">(서명 또는 인)</td>
         </tr>
       </tbody>
