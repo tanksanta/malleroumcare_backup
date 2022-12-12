@@ -549,7 +549,7 @@ if($od["od_b_tel"]) {
               <?php } ?>
             </select>
               <?php if (!$_GET['partner']) { ?>
-                <input type="text" value="<?=$options[$k]["ct_delivery_num"]?>" name="ct_delivery_num_<?=$options[$k]["ct_id"]?>" placeholder="송장번호 입력">
+                <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" value="<?=$options[$k]["ct_delivery_num"]?>" name="ct_delivery_num_<?=$options[$k]["ct_id"]?>" placeholder="송장번호 입력">
                 <img src="<?=G5_IMG_URL?>/bacod_img.png" class="nativeDeliveryPopupOpenBtn">
               <?php } ?>
               <?php if ($_GET['partner']) { ?>
