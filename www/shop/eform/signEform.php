@@ -121,14 +121,14 @@ sql_query("INSERT INTO `eform_document_log` SET
 		return new Promise(function(resolve, reject) {
 			setTimeout(function() {
 				Swal.fire({
-		  			title: "수급자께 계약서 작성 메시지를 보내시겠습니까?",
+		  			title: "수급자에게 '계약서 작성 완료' 안내 메시지를 보내시겠습니까?",
 					//text: "삭제하시면 다시 복구시킬 수 없습니다.",
 		  			//icon: 'warning',
 		  			showCancelButton: true,
 		 			confirmButtonColor: '#3085d6',
 		  			cancelButtonColor: '#d33',
-		  			confirmButtonText: '보내기',
-		  			cancelButtonText: '안보내기'
+		  			confirmButtonText: '예',
+		  			cancelButtonText: '아니오'
 				}).then((result) => {
 		  			if (result.value) {
          			   //"보내기" 버튼을 눌렀을 때  
@@ -141,7 +141,7 @@ sql_query("INSERT INTO `eform_document_log` SET
 		});
 	}
   $(function() {
-    var isGicho = <?=($is_gicho ? 'true' : 'false')?>;
+	var isGicho = <?=($is_gicho ? 'true' : 'false')?>;
     <?php if($dc_id) { ?>
     var od_url = '/shop/electronic_manage.php';
     <?php } else { ?>
@@ -238,7 +238,8 @@ sql_query("INSERT INTO `eform_document_log` SET
 
       var todos = getTodos();
 	  var smsFlag = true;
-      if(todos.current < todos.total) {
+      
+	  if(todos.current < todos.total) {
         return alert('현재 단계에서 모든 입력을 완료해주세요.');
       }
 
@@ -271,6 +272,7 @@ sql_query("INSERT INTO `eform_document_log` SET
           		$(this).prop('disabled', false);
           		var data = $xhr.responseJSON;
           		alert(data && data.message);
+          		location.href = '/shop/electronic_manage.php';
         	});
 		  }, function (error) {
 			console.error(error)
@@ -285,7 +287,11 @@ sql_query("INSERT INTO `eform_document_log` SET
     });
 
     function closeSignPopup() {
-      $('body').removeClass('modal-open');
+      var todos = getTodos();
+	  if(todos.current == todos.total) {
+        $('#btnNext').addClass('primary');
+      }
+	  $('body').removeClass('modal-open');
       var $popUp = $('#popup-sign');
       resizeHandler();
       $popUp.data('id', '');
@@ -516,14 +522,14 @@ sql_query("INSERT INTO `eform_document_log` SET
 
     function repaint() {
       // 현재 단계만 보여주기
-      $('.a4').css({ display: 'none' });
+	  $('.a4').css({ display: 'none' });
       var currentDocument = getCurrentDocument();
       if(currentDocument === '001') $('#thk001_1, #thk001_2').css({ display: 'block' });
       else $('#thk' + currentDocument).css({ display: 'block' });
 
       // 마지막 단계면 작성완료 버튼으로 변경
       if(currentStage === totalStage) {
-        $('#btnNext').addClass('primary').text('완료');
+        $('#btnNext').removeClass('primary').text('완료');
       } else {
         $('#btnNext').removeClass('primary').text('다음단계');
       }
@@ -597,7 +603,9 @@ sql_query("INSERT INTO `eform_document_log` SET
 
       // 입력 상태
       var todos = getTodos();
-
+		if(todos.current == todos.total && currentStage !== totalStage) {
+        $('#btnNext').addClass('primary');
+      }
       $('.sign-eform-foot .desc').text(todos.total + '건 중 ' + todos.current + '건 완료되었습니다.');
 
       if(todos.current === todos.total) {
