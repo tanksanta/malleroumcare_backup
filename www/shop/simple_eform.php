@@ -89,7 +89,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
   <!-- hula1202_1637198335.gif -->
     <?php if(!$member['sealFile']) { ?>
     <div class="se_seal_wr">
-      <form action="ajax.member.seal_upload.php" method="POST" id="form_seal" onsubmit="return false;">
+      <form action="ajax.member.seal_upload.php" method="POST" id="form_seal" onsubmit="return false;" onkeydown="if(event.keyCode==13) return false;">
         <div class="se_seal_desc">
           등록된 사업소 직인이 없습니다.<br>
           계약서 작성을 위해선 직인 이미지를 등록해주세요.
@@ -100,7 +100,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
       </form>
     </div>
     <?php } ?>
-    <form id="form_simple_eform" method="POST" class="form-horizontal" autocomplete="off" onsubmit="return false;">
+    <form id="form_simple_eform" method="POST" class="form-horizontal" autocomplete="off" onsubmit="return false;" onkeydown="if(event.keyCode==13) return false;">
       <input type="hidden" name="w" value="<?php if($dc) echo 'u'; ?>">
       <input type="hidden" name="dc_id" value="<?php if($dc) echo $dc['uuid']; ?>">
       <input type="hidden" name="penRecTypeCd" id="penRecTypeCd" value="<?php if(!$dc) echo '02'; if($dc) echo $dc['penRecTypeCd']; ?>">

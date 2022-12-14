@@ -17,7 +17,7 @@ add_javascript(G5_POSTCODE_JS, 0);
 <section class="wrap">
     <div class="sub_section_tit">간편 보유재고 등록</div>
     <div class="inner">
-        <form id="simple_stock" name="fstockform" class="form-horizontal" action="simple_stock_result.php" method="post" onsubmit="return form_submit(this);">
+        <form id="simple_stock" name="fstockform" class="form-horizontal" action="simple_stock_result.php" method="post" onsubmit="return form_submit(this);" onkeydown="if(event.keyCode==13) return false;">
         <div class="panel panel-default">
             <div class="panel-body">
                 <div class="ss_desc_wr">

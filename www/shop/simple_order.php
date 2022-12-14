@@ -23,7 +23,7 @@ add_javascript(G5_POSTCODE_JS, 0);
 <input type="hidden" name="checkUnload" id="checkUnload" value="0">
   <div class="sub_section_tit">간편 주문서 신청</div>
   <div class="inner">
-  <form id="simple_order" name="forderform" class="form-horizontal" action="orderformupdate.php" method="post" onsubmit="return form_submit(this);">
+  <form id="simple_order" name="forderform" class="form-horizontal" action="orderformupdate.php" method="post" onsubmit="return form_submit(this);" onkeydown="if(event.keyCode==13) return false;">
       <input type="hidden" name="org_od_price" value="0">
       <input type="hidden" name="od_price" value="0">
       <input type="hidden" name="od_settle_case" value="월 마감 정산">
@@ -99,7 +99,7 @@ add_javascript(G5_POSTCODE_JS, 0);
               <strong>포인트</strong>
             </label>
             <div class="col-sm-8">
-              <input type="text" name="od_temp_point" id="od_temp_point" class="form-control input-sm" value="0">
+              <input type="text" name="od_temp_point" id="od_temp_point" class="form-control input-sm" value="0" onkeydown="if(event.keyCode==13) return false;">
               <label for="chk_point_all">
                 <input type="checkbox" id="chk_point_all" data-point="<?=($member['mb_point'] ?: 0)?>">
                 전액사용 (보유: <strong><?=number_format($member['mb_point']);?></strong>P)

@@ -141,7 +141,7 @@ add_javascript(G5_POSTCODE_JS, 0);
 <section class="wrap">
   <div class="sub_section_tit">주문서 수정</div>
   <div class="inner">
-    <form id="simple_order" name="forderform" class="form-horizontal" action="order_edit_result.php" method="post" onsubmit="return form_submit(this);">
+    <form id="simple_order" name="forderform" class="form-horizontal" action="order_edit_result.php" method="post" onsubmit="return form_submit(this);" onkeydown="if(event.keyCode==13) return false;">
       <input type="hidden" name="org_od_price" value="0">
       <input type="hidden" name="od_price" value="0">
       <input type="hidden" name="od_settle_case" value="월 마감 정산">
