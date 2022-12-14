@@ -65,8 +65,11 @@ if($_POST['ct_id'] && $_POST['step']) {
     }
 
     if(in_array($result_ct_s['ct_status'], ['배송','완료'])) {
-      if(!in_array($_POST['step'], ['출고준비', '취소', '주문무효'])) {
-        echo('"출고완료/배송완료" 된 상품의 경우 "출고준비/취소/주문무효" 단계로만 변경 가능 합니다.'); exit();
+      if(!in_array($_POST['step'], ['출고준비', '완료', '취소', '주문무효'])) {
+        echo("상품 상태값 제한적 변경 가능 안내.
+
+          * 출고완료 => 출고준비, 배송완료, 취소, 주문무효
+          * 배송완료 => 출고준비, 취소, 주문무효"); exit();
       }
     }
     else if(in_array($result_ct_s['ct_status'], ['취소', '주문무효'])) {
