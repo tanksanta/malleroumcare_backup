@@ -1583,8 +1583,8 @@ $warehouse_list = get_warehouses();
         echo '$("#even_odd_wr").show();'.PHP_EOL;
         break;
       case "6":
-        echo '$("#sc_con_method").hide();'.PHP_EOL;
-        echo '$("#sc_con_basic").hide();'.PHP_EOL;
+        echo '$("#sc_con_method").show();'.PHP_EOL;
+        echo '$("#sc_con_basic").show();'.PHP_EOL;
         echo '$("#sc_con_minimum").hide();'.PHP_EOL;
         echo '$("#sc_con_qty").show();'.PHP_EOL;
         echo '$("#sc_con_qty_info1, #sc_con_qty_info3").hide();'.PHP_EOL;
@@ -1676,8 +1676,8 @@ $warehouse_list = get_warehouses();
           $("#sc_con_basic").show();
           $("#sc_con_minimum").hide();
           $("#sc_con_qty").show();
-          $("#sc_con_qty_info1, #sc_con_qty_info3").hide();    
-          $("#sc_con_qty_info2, #sc_con_qty_info4").show();
+          $("#sc_con_qty_info1, #sc_con_qty_info3").show();    
+          $("#sc_con_qty_info2, #sc_con_qty_info4").hide();
           $("#sc_grp").attr("rowspan","4");
           $("#even_odd_wr").hide();
           break;
@@ -1691,8 +1691,8 @@ $warehouse_list = get_warehouses();
           $("#even_odd_wr").show();
           break;
         case "6":
-          $("#sc_con_method").hide();
-          $("#sc_con_basic").hide();
+          $("#sc_con_method").show();
+          $("#sc_con_basic").show();
           $("#sc_con_minimum").hide();
           $("#sc_con_qty").show();
           $("#sc_con_qty_info1, #sc_con_qty_info3").hide();    
@@ -2666,6 +2666,11 @@ function fitemformcheck(f)
     }
 
     if(f.it_sc_type.value == "4" && (!f.it_sc_qty.value || f.it_sc_qty.value == "0")) {
+      alert("배송비 상세조건의 주문수량을 입력해 주십시오.");
+      return false;
+    }
+
+    if(f.it_sc_type.value == "6" && (!f.it_sc_qty.value || f.it_sc_qty.value == "0")) {
       alert("배송비 상세조건의 주문수량을 입력해 주십시오.");
       return false;
     }
