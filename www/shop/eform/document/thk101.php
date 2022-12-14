@@ -69,7 +69,48 @@
           <th scope="col">생년월일</th>
           <td><?php if($eform['applicantCd']=='00'){ echo $eform['penBirth']; }else if($eform['applicantCd']!='02'){ echo $pro_info['pro_birth']; }//02는 공란이라 미출력 ?></td>
           <th scope="col">수급자와의<br>관계</th>
-          <td><?php if($eform['applicantCd']=='00'){ echo "본인"; }else if($eform['applicantCd']!='02'){ echo "보호자"; }//02는 공란이라 미출력 ?></td>
+          <td><?php if($eform['applicantCd']=='00'){ echo "본인"; }else if($eform['applicantCd']!='02'){
+              switch ($pro_info['pro_rel_type']) {  // 수급자와 어떤 보호자 관계인지 출력. 관계 코드가 없거나, 직접 입력을 선택했지만 정보가 없을 시, "보호자"라고 출력
+                case '00' :
+                    echo "처";
+                    break;
+                case '01' :
+                    echo "남편";
+                    break;
+                case '02' :
+                    echo "자";
+                    break;
+                case '03' :
+                    echo "자부";
+                    break;
+                case '04' :
+                    echo "사위";
+                    break;
+                case '05' :
+                    echo "형제";
+                    break;
+                case '06' :
+                    echo "자매";
+                    break;
+                case '07' :
+                    echo "손";
+                    break;
+                case '08' :
+                    echo "배우자 형제자매";
+                    break;
+                case '09' :
+                    echo "외손";
+                    break;
+                case '10' :
+                    echo "부모";
+                    break;
+                case '11' :
+                    if($pro_info['pro_rel']) echo $pro_info['pro_rel'];
+                    else echo "보호자"; // 직접입력을 선택했지만 보호자와의 관계를 입력하지 않은 경우, "보호자"로 출력
+                    break;
+                default :
+                    echo "보호자";
+            } }//02는 공란이라 미출력 ?></td>
         </tr>
         <tr>
           <th scope="col">주소</th>
