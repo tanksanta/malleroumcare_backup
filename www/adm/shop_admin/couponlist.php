@@ -408,12 +408,12 @@ $qstr = "type={$type}&amp;cp_expiration={$cp_expiration}&amp;sel_cp_method={$sel
             <td class="td_category1"><a href="couponlist.php?type=user&sel_field=cp_id&search=<?php echo $row['cp_id']; ?>"><?php echo $row['cp_id']; ?></a></td> <!-- 쿠폰번호 -->
             <td class="td_mng_l td_center"><?php echo $row['cp_subject']; ?></td> <!-- 쿠폰이름 -->
             <td class="td_category3"><?php echo $cp_method; ?></td> <!-- 쿠폰종류 -->
-            <td class="td_cntsmall td_price"><?=$cp_price?></td> <!-- 쿠폰금액 -->
-            <td class="td_cntsmall"><?=$total_count?></td> <!-- 발행인원 -->
-            <td class="td_cntsmall td_price"><?=$total_cp_price?></td> <!-- 총발행금액 -->
-            <td class="td_cntsmall"><?=$used_count?></td> <!-- 시용인원 -->
-            <td class="td_cntsmall td_price"><?=$total_used_price?></td> <!-- 총 사용금액 -->
-            <td class="td_cntsmall td_price"><?php if($interval=='기간만료'){ echo $interval; } else{ echo ($interval->days+1).'일';} ?></td> <!-- 남은기간 -->
+            <td class="td_send td_price"><?=$cp_price?></td> <!-- 쿠폰금액 -->
+            <td class="td_send"><?=$total_count?></td> <!-- 발행인원 -->
+            <td class="td_send td_price"><?=$total_cp_price?></td> <!-- 총발행금액 -->
+            <td class="td_send"><?=$used_count?></td> <!-- 시용인원 -->
+            <td class="td_send td_price"><?=$total_used_price?></td> <!-- 총 사용금액 -->
+            <td class="td_send td_price"><?php if($interval=='기간만료'){ echo $interval; } else{ echo ($interval->days+1).'일';} ?></td> <!-- 남은기간 -->
             <td class="td_datetime"><?php echo $row['cp_start']; ?> ~ <?php echo $row['cp_end']; ?></td> <!-- 시용가능일자 -->
             <td class="td_date"><?php echo date("Y-m-d H:m:i", strtotime($row['cp_datetime'])); ?></td> <!-- 생성일자 -->
             <td class="td_mng td_mng_s">
@@ -516,8 +516,8 @@ $qstr = "type={$type}&amp;cp_expiration={$cp_expiration}&amp;sel_cp_method={$sel
             <td class="cp_user_name td_type td_center"><?php echo $row['coupon_user_name']; ?></td> <!-- 쿠폰받은 회원 이름 -->
             <td class="cp_subject td_mng_l td_center"><?php echo $row['cp_subject']; ?></td> <!-- 쿠폰이름 -->
             <td class="cp_method td_category3"><?php echo $cp_method; ?></td> <!-- 쿠폰종류 -->
-            <td class="cp_price td_cntsmall td_price"><?php echo $cp_price; ?></td> <!-- 쿠폰금액 -->
-            <td class="cp_interval td_cntsmall td_price"><?php if($interval=='기간만료'){ echo $interval; } else{ echo ($interval->days+1).'일';} ?></td> <!-- 남은기간 -->
+            <td class="cp_price td_send td_price"><?php echo $cp_price; ?></td> <!-- 쿠폰금액 -->
+            <td class="cp_interval td_send td_price"><?php if($interval=='기간만료'){ echo $interval; } else{ echo ($interval->days+1).'일';} ?></td> <!-- 남은기간 -->
             <td class="cp_using_date td_datetime"><?php echo $row['cp_start']; ?> ~ <?php echo $row['cp_end']; ?></td> <!-- 사용가능일자 -->
             <td class="cp_datetime td_delicom td_center"><?php echo date("Y-m-d H:m:i", strtotime($row['cp_datetime'])); ?></td> <!-- 생성일자 -->
             <td class="cp_used_datetime td_delicom td_center"><?php if($used_date){ echo date("Y-m-d H:m:i", strtotime($used_date)); } ?></td> <!-- 사용일자 -->
