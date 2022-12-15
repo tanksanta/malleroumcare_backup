@@ -2981,11 +2981,26 @@ function create_partner_install_schedule($od_id) {
  * 마지막 수정일자 : 2022-11-21
  * 설명 : 설치파트너 매니저 설치 일정 상태 수정
  * @param integer $ct_id
- * @param string $status 출고준비|출고완료|취소|주문무효
+ * @param string $status 출고준비|출고완료|취소|주문무효|완료
  * @return boolean 
  */
 function update_partner_install_schedule_status_by_ct_id($ct_id, $status) {
   $sql = "UPDATE `partner_inst_sts` SET status = '$status' WHERE ct_id = $ct_id";
+  return sql_query($sql);
+}
+
+/**
+ * 작성자 : 임근석
+ * 작성일자 : 2022-12-16
+ * 마지막 수정자 : 임근석
+ * 마지막 수정일자 : 2022-12-16
+ * 설명 : 설치파트너 매니저 설치 일정 상태 수정
+ * @param integer[] $od_id
+ * @param string $status 출고준비|출고완료|취소|주문무효|완료
+ * @return boolean
+ */
+function update_partner_install_schedule_status_by_od_id($od_id, $status) {
+  $sql = "UPDATE `partner_inst_sts` SET status = '$status' WHERE od_id = $od_id";
   return sql_query($sql);
 }
 
@@ -2996,7 +3011,7 @@ function update_partner_install_schedule_status_by_ct_id($ct_id, $status) {
  * 마지막 수정일자 : 2022-11-21
  * 설명 : 설치파트너 매니저 설치 일정 상태 수정
  * @param integer[] $ct_id
- * @param string $status 출고준비|출고완료|취소|주문무효
+ * @param string $status 출고준비|출고완료|취소|주문무효|완료
  * @return boolean 
  */
 function update_partner_install_schedule_status_by_ct_id_array($ct_id, $status) {
@@ -3400,7 +3415,7 @@ function get_partner_schedule_by_mb_id($od_mb_id) {
  * 작성자 : 임근석
  * 작성일자 : 2022-11-02
  * 마지막 수정자 : 임근석
- * 마지막 수정일자 : 2022-11-28
+ * 마지막 수정일자 : 2022-12-15
  * 설명 : 설치파트너 매니저 일정 조회
  * @param string $partner_mb_id
  * @param string $member
@@ -3431,6 +3446,33 @@ function get_partner_schedule_by_partner_mb_id($partner_mb_id, $member) {
     INNER JOIN `g5_shop_cart` AS ct ON ct.ct_id = s.ct_id 
     LEFT JOIN `g5_member` AS mb ON mb.mb_id = s.partner_mb_id 
     WHERE delivery_date != '' 
+    AND delivery_datetime != '' 
+    AND (status = '출고준비' OR status = '완료');";
+  } else if($member['mb_type'] == 'manager') {
+    $sql = "SELECT 
+      status, 
+      s.delivery_date, 
+      s.delivery_datetime, 
+      s.od_id, 
+      ct.ct_qty, 
+      s.it_name, 
+      m.mb_manager AS 'partner_mb_id', 
+      s.partner_manager_mb_id, 
+      s.partner_manager_mb_name, 
+      mb.mb_hp, 
+      s.od_mb_id, 
+      s.od_mb_ent_name, 
+      s.od_b_name, 
+      s.od_b_hp, 
+      s.od_b_addr1, 
+      s.od_b_addr2, 
+      s.prodMemo
+    FROM `partner_inst_sts` as s
+    LEFT JOIN `g5_member` AS m ON m.mb_id = s.partner_manager_mb_id
+    INNER JOIN `g5_shop_cart` AS ct ON ct.ct_id = s.ct_id 
+    LEFT JOIN `g5_member` AS mb ON mb.mb_id = s.partner_mb_id 
+    WHERE partner_manager_mb_id = '$partner_mb_id' 
+    AND delivery_date != '' 
     AND delivery_datetime != '' 
     AND (status = '출고준비' OR status = '완료');";
   } else {
@@ -3516,7 +3558,6 @@ function get_partner_schedule_by_partner_mb_id($partner_mb_id, $member) {
   }
   return $return_list;
 }
-
 /**
  * 작성자 : 임근석
  * 작성일자 : 2022-11-02
