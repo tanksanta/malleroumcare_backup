@@ -153,6 +153,8 @@ $(function(){
 });
 </script>
 <!-- 210326 배송정보팝업 -->
+<script src="/js/detectmobilebrowser.js">
+</script>
 
 <section id="pro-order" class="wrap order-list">
   <div class="sub_section_tit">주문내역</div>
@@ -632,7 +634,7 @@ $(function(){
               <?php if($row["ct_delivery_num"] != null) { ?>
                 <div style="margin-top: 6px;">
                 <?php if($delivery_company[$row["ct_delivery_company"]]){ ?>
-                  <a href="https://tracker.delivery/#/<?=$delivery_company[$row["ct_delivery_company"]]?>/<?=$row["ct_delivery_num"]?>" class="btn-01 btn-0 btn_delivery_tracking_y" style="font-size: 12px; color: #666" target="_blank">배송조회</a>
+                  <a href="https://tracker.delivery/#/<?=$delivery_company[$row["ct_delivery_company"]]?>/<?=str_replace('-','',$row["ct_delivery_num"])?>" class="btn-01 btn-0 btn_delivery_tracking_y" style="font-size: 12px; color: #666" target="_blank">배송조회</a>
                 <?php } else {?>
                   <a href="/#/" class="btn-01 btn-0 btn_delivery_tracking_n" style="font-size: 12px; color: #666">배송조회</a>
                 <?php }?>
@@ -666,7 +668,12 @@ $(function(){
 <script type="text/javascript">
 function showSchdule(url) {
     let opt = "width=1360,height=780,left=0,top=10";
-    window.open(url, "win_schedule", opt);
+    let _url = url;
+    if (jQuery.browser.mobile) {
+        opt = "";
+        _url = _url.replace("index.php", "m_index.php");
+    }
+    window.open(_url, "win_schedule", opt);
     return false;
 }
 
