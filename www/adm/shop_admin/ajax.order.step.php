@@ -260,7 +260,6 @@ if( $_POST['od_id'] && $_POST['step'] ) {
       $OrderList[ $i ][ 'stoId' ] = $result['stoId'];
       $OrderList[ $i ][ 'OrderStatus' ] = $state_cd;
 
-
       // wmds에서 바코드에 대한 정보 값을 받기 위해 API 호출 ( 기존 통합 1회 호출에서 주문건별 호출로 변경 바코드 재고관련 프로세스)
       $result_api = get_eroumcare(EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP, $OrderList[ $i ]);
       $OrderList[ $i ][ 'api' ] = $result_api[ 'data' ];
@@ -300,110 +299,101 @@ if( $_POST['od_id'] && $_POST['step'] ) {
           unset($t_result_ct); // 임시 사용변수 제거
 
         }
+      }
+
+      // 시작  -->
+      // story.sw : 22.08.24 - BarCode 데이터 수동 출고 처리에 따른 불편함 해소 요청건
+      //        "[관리자_물류팀]출고처리시 상품재고관리 바코드 재고 차감 요청"
+      //
+      // 설명 : 주문내역상 상품의 상태 값이 '출고완료' 또는 '배송완료' 처리 될 경우 해당 상품에 입력되어 있던 바코드 정보를 찾아
+      //        g5_cart_barcode 테이블에서 해당 바코드 데이터를 출고 처리하고, 이와 관련된 바코드 처리내역을 g5_cart_barcode_log테이블에 저장 한다.
+      //        또한, '출고완료'또는 '배송완료' 이후 상품이 회수되어 '주문취소'나 '주문무효' 처리될 경우 해당 상품의 바코드 정보의 상태가 복원 된다.
+      //
+      // 의견 : 추후 mall DB쪽에도 주문상품에 입력된 바코드 값이 같이 저장 되어야할 것 같음.
+      //         어떠한 의미에서 출고 입력된 바코드 정보를 API를 통해서 WMDSDB에서만 관리 하는지 확인 불가.
+      //
+      // 기타 : 파일(ajax.cart_status.php)이 수정되면 다른 파일(ajax.order.step.php)도 수정또는 동일 적용검토 필요.
+      //        ajax.cart_status.php : 주문번호를 통한 주문내역(상세)에서 상태값을 변경 할 경우 사용.
+      //        ajax.order.step.php : 주문내역(리스트)에서 상태값을 변경 할 경우 사용.
+      //
+      // 시작  -->
+
+      if( in_array($_POST['step'], ['배송', '완료', '출고준비', '취소', '주문무효']) ) {
+
+        if( is_array($result_api) ) {
+
+          // story.sw : 22.08.25 - API에서 받아온 data 수량 만큼 데이터 체크
+          foreach ($result_api['data'] as $key => $val) {
+            if( !$val['prodBarNum'] ) {continue;}
+
+            $t_content = "";
+            if( in_array($_POST['step'], ['배송', '완료']) ) {   // 바코드 정상 처리
+              $t_content = "재고관리 - 출고처리(" . $_POST['step'] . ")";
+              $_where = "AND `bc_del_yn`='N'";
+            }
+            else if( in_array($_POST['step'], ['출고준비', '취소', '주문무효']) ) { // 완료 처리 이후 주문취소 또는 무효이벤트 발생시 해당 바코드 복원
+              $t_content = "재고관리 - 상태복원(" . $_POST['step'] . ")";
+              $_where = "AND `bc_del_yn`='Y' AND `ct_id`='" . $result['ct_id'] . "'";
+            }
 
 
-        // 시작  -->
-        // story.sw : 22.08.24 - BarCode 데이터 수동 출고 처리에 따른 불편함 해소 요청건
-        //        "[관리자_물류팀]출고처리시 상품재고관리 바코드 재고 차감 요청"
-        //
-        // 설명 : 주문내역상 상품의 상태 값이 '출고완료' 또는 '배송완료' 처리 될 경우 해당 상품에 입력되어 있던 바코드 정보를 찾아
-        //        g5_cart_barcode 테이블에서 해당 바코드 데이터를 출고 처리하고, 이와 관련된 바코드 처리내역을 g5_cart_barcode_log테이블에 저장 한다.
-        //        또한, '출고완료'또는 '배송완료' 이후 상품이 회수되어 '주문취소'나 '주문무효' 처리될 경우 해당 상품의 바코드 정보의 상태가 복원 된다.
-        //
-        // 의견 : 추후 mall DB쪽에도 주문상품에 입력된 바코드 값이 같이 저장 되어야할 것 같음.
-        //         어떠한 의미에서 출고 입력된 바코드 정보를 API를 통해서 WMDSDB에서만 관리 하는지 확인 불가.
-        //
-        // 기타 : 파일(ajax.cart_status.php)이 수정되면 다른 파일(ajax.order.step.php)도 수정또는 동일 적용검토 필요.
-        //        ajax.cart_status.php : 주문번호를 통한 주문내역(상세)에서 상태값을 변경 할 경우 사용.
-        //        ajax.order.step.php : 주문내역(리스트)에서 상태값을 변경 할 경우 사용.
-        //
-        // 시작  -->
-
-        if( in_array($_POST['step'], ['배송', '완료', '취소', '주문무효']) ) {
-
-          if( is_array($result_api) ) {
-
-            // story.sw : 22.08.25 - API에서 받아온 data 수량 만큼 데이터 체크
-            foreach ($result_api['data'] as $key => $val) {
-              if( !$val['prodBarNum'] ) {continue;}
-
-              $t_content = "";
-
-              if( in_array($_POST['step'], ['배송', '완료']) ) {   // 바코드 정상 처리
-                $t_content = "재고관리 - 출고처리(" . $_POST['step'] . ")";
-                $_where = "AND `bc_del_yn`='N'";
-              }
-              else if( in_array($_POST['step'], ['취소', '주문무효']) ) { // 완료 처리 이후 주문취소 또는 무효이벤트 발생시 해당 바코드 복원
-                $t_content = "재고관리 - 상태복원(" . $_POST['step'] . ")";
-                $_where = "AND `bc_del_yn`='Y' AND `ct_id`='" . $result['ct_id'] . "'";
-              }
+            // 기존 g5_cart_barcode 테이블에 해당 제품의 바코드 유뮤 확인(검색).
+            $bc_data = sql_fetch("
+              SELECT *
+              FROM `g5_cart_barcode`
+              WHERE `it_id` ='" . $val['prodId'] . "'
+                AND `bc_barcode`='" . $val['prodBarNum'] . "' " . $_where
+            );
 
 
-              // 기존 g5_cart_barcode 테이블에 해당 제품의 바코드 유뮤 확인(검색).
-              $t_data = sql_fetch("
-                SELECT *
-                FROM `g5_cart_barcode`
+            // story.sw : 22.08.24 - 바코드 출고되지 않은 바코드데이터가 존재하는 경우.
+            if( is_array($bc_data) ) {
+
+              // story.sw : 22.08.24 - 바코드 로그 삽입
+              $sql_barcode[] = "
+                INSERT INTO
+                  g5_cart_barcode_log
+                SET
+                  ct_id = '" . $result['ct_id'] . "',
+                  it_id = '" . $result['it_id'] . "',
+                  io_id = '" . $result['io_id'] . "',
+                  bc_id = '" . $bc_data['bc_id'] . "',
+                  bch_status = '" . ( ($bc_data['bc_del_yn']=="N")?("출고"):("정상") ) . "',
+                  bch_barcode = '" . $bc_data['bc_barcode'] . "',
+                  bch_content = '" . $t_content . "',
+                  created_by = '" . $member['mb_id'] . "',
+                  created_at = NOW()
+              ";
+
+              // story.sw : 22.08.24 - 바코드 데이터 업데이트(출고처리)
+              $sql_barcode[] = "
+                UPDATE g5_cart_barcode
+                SET
+                  ct_id = '" . ( ($bc_data['bc_del_yn']=="N")?($result['ct_id']):(0) ) . "',
+                  bc_del_yn = '" . ( ($bc_data['bc_del_yn']=="N")?("Y"):("N") ) . "',
+                  bc_status = '" . ( ($bc_data['bc_del_yn']=="N")?("출고"):("정상") ) . "',
+                  released_by = '" . $member['mb_id'] . "',
+                  released_at = NOW()
                 WHERE `it_id` ='" . $val['prodId'] . "'
-                  AND `bc_barcode`='" . $val['prodBarNum'] . "' " . $_where
-              );
-
-
-              // story.sw : 22.08.24 - 바코드 출고되지 않은 바코드데이터가 존재하는 경우.
-              if( is_array($t_data) ) {
-
-                // story.sw : 22.08.24 - 바코드 로그 삽입
-                $sql_barcode[] = "
-                  INSERT INTO
-                    g5_cart_barcode_log
-                  SET
-                    bc_id = '" . $result['bc_id'] . "',
-                    ct_id = '" . $result['ct_id'] . "',
-                    it_id = '" . $result['it_id'] . "',
-                    io_id = '" . $result['io_id'] . "',
-                    bch_status = '" . ( ($t_data['bc_del_yn']=="N")?("출고"):("정상") ) . "',
-                    bch_barcode = '" . $t_data['bc_barcode'] . "',
-                    bch_content = '" . $t_content . "',
-                    created_by = '" . $member['mb_id'] . "',
-                    created_at = NOW()
-                ";
-
-                // story.sw : 22.08.24 - 바코드 데이터 업데이트(출고처리)
-                $sql_barcode[] = "
-                  UPDATE g5_cart_barcode
-                  SET
-                    ct_id = '" . ( ($t_data['bc_del_yn']=="N")?($result['ct_id']):(0) ) . "',
-                    bc_del_yn = '" . ( ($t_data['bc_del_yn']=="N")?("Y"):("N") ) . "',
-                    bc_status = '" . ( ($t_data['bc_del_yn']=="N")?("출고"):("정상") ) . "',
-                    released_by = '" . $member['mb_id'] . "',
-                    released_at = NOW()
-                  WHERE `it_id` ='" . $val['prodId'] . "'
-                    AND `bc_barcode`='" . $val['prodBarNum'] . "'
-                    AND `bc_del_yn`='" . $t_data['bc_del_yn'] . "'
-                ";
-              }
-
+                  AND `bc_barcode`='" . $val['prodBarNum'] . "'
+                  AND `bc_del_yn`='" . $bc_data['bc_del_yn'] . "'
+              ";
             }
 
           }
 
         }
-
-        // 종료  -->
-        // story.sw : 22.08.24 - BarCode 데이터 수동 출고 처리에 따른 불편함 해소 요청건
-        //        "[관리자_물류팀]출고처리시 상품재고관리 바코드 재고 차감 요청"
-        // 종료  -->
-
-
       }
-
+      // 종료  -->
+      // story.sw : 22.08.24 - BarCode 데이터 수동 출고 처리에 따른 불편함 해소 요청건
+      //        "[관리자_물류팀]출고처리시 상품재고관리 바코드 재고 차감 요청"
+      // 종료  -->
+      
     }
 
     // ====================================================================================================================================================
 
   }
-  //var_dump( $sql_stock );
-  //var_dump( $result );
-  //var_dump( $_POST );
 
   if ($flag) {
 

@@ -61,15 +61,23 @@ if($_POST['ct_id'] && $_POST['step']) {
 
     $od = sql_fetch(" select * from g5_shop_order where od_id = '$od_id' ");
     if($od['od_is_editing'] == 1) {
-      echo '해당 주문은 사업소에서 수정 중이므로 주문단계가 변경되지 않았습니다.';
-      exit;
+      echo('해당 주문은 사업소에서 수정 중이므로 주문단계가 변경되지 않았습니다.'); exit();
     }
 
-    if(in_array($result_ct_s['ct_status'], ['취소', '주문무효'])) {
-      echo '취소된 주문은 상태변경이 불가능합니다.';
-      exit;
+    if(in_array($result_ct_s['ct_status'], ['배송','완료'])) {
+      if(!in_array($_POST['step'], ['출고준비', '완료', '취소', '주문무효'])) {
+        echo("상품 상태값 제한적 변경 가능 안내.
+
+          * 출고완료 => 출고준비, 배송완료, 취소, 주문무효
+          * 배송완료 => 출고준비, 취소, 주문무효"); exit();
+      }
+    }
+    else if(in_array($result_ct_s['ct_status'], ['취소', '주문무효'])) {
+      echo('취소된 주문은 상태변경이 불가능합니다.'); exit();
     }
     
+
+  
     $content=$result_ct_s['it_name'];
     if($result_ct_s['it_name'] !== $result_ct_s['ct_option']){
       $content = $content."(".$result_ct_s['ct_option'].")";
@@ -274,7 +282,7 @@ if($_POST['ct_id'] && $_POST['step']) {
   $tmpData = get_eroumcare(EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP, $sendData);
 
   $_barCode_Sql = [];
-  if($_POST['step'] == '배송' || $_POST['step'] == '완료' || $_POST['step'] == '취소' || $_POST['step'] == '주문무효' ) {
+  if( in_array($_POST['step'], ['배송', '완료', '출고준비', '취소', '주문무효']) ) {
     if( is_array($tmpData) && $tmpData['errorYN']=="N" ) {
       
       // story.sw : 22.08.25 - API에서 받아온 data 수량 만큼 데이터 체크
@@ -283,30 +291,35 @@ if($_POST['ct_id'] && $_POST['step']) {
 
         $bch_content = "";
       
-        if($_POST['step'] == '배송' || $_POST['step'] == '완료') {   // 바코드 정상 처리
+        if( in_array($_POST['step'], ['배송', '완료']) ) {   // 바코드 정상 처리
           $bch_content = "재고관리 - 출고처리(" . $_POST['step'] . ")";
           $_where = "AND `bc_del_yn`='N'";
         }        
-        else if($_POST['step'] == '취소' || $_POST['step'] == '주문무효') { // 완료 처리 이후 주문취소 또는 무효이벤트 발생시 해당 바코드 복원
+        else if( in_array($_POST['step'], ['출고준비', '취소', '주문무효']) ) { // 완료 처리 이후 주문취소 또는 무효이벤트 발생시 해당 바코드 복원
           $bch_content = "재고관리 - 상태복원(" . $_POST['step'] . ")";
           $_where = "AND `bc_del_yn`='Y' AND `ct_id`='" . $stoIdList[$val['stoId']] . "'";
         }
 
-        // story.sw : 22.08.25 - 기존 g5_cart_barcode 테이블에 해당 제품의 바코드 유뮤 확인(검색).
-        $_result = sql_fetch("select * from `g5_cart_barcode` where `it_id` ='" . $val['prodId'] . "' AND `bc_barcode`='" . $val['prodBarNum'] . "' " . $_where );
+        // 기존 g5_cart_barcode 테이블에 해당 제품의 바코드 유뮤 확인(검색).
+        $bc_data = sql_fetch("
+          SELECT *
+          FROM `g5_cart_barcode`
+          WHERE `it_id` ='" . $val['prodId'] . "'
+            AND `bc_barcode`='" . $val['prodBarNum'] . "' " . $_where
+        );
 
         // story.sw : 22.08.24 - 바코드 출고되지 않은 바코드데이터가 존재하는 경우.
-        if( is_array($_result) ) {
+        if( is_array($bc_data) ) {
           // story.sw : 22.08.24 - 바코드 로그 삽입
           $_barCode_Sql[] = "
             insert into g5_cart_barcode_log
             set
-              bc_id = '{$_result['bc_id']}',
+              bc_id = '{$bc_data['bc_id']}',
               ct_id = '{$stoIdList[$val['stoId']]}',
-              it_id = '{$_result['it_id']}',
-              io_id = '{$_result['io_id']}',
-              bch_status = '" . ( ($_result['bc_del_yn']=="N")?("출고"):("정상") ) . "',
-              bch_barcode = '{$_result['bc_barcode']}',
+              it_id = '{$bc_data['it_id']}',
+              io_id = '{$bc_data['io_id']}',
+              bch_status = '" . ( ($bc_data['bc_del_yn']=="N")?("출고"):("정상") ) . "',
+              bch_barcode = '{$bc_data['bc_barcode']}',
               bch_content = '{$bch_content}',
               created_by = '{$member['mb_id']}',
               created_at = NOW()
@@ -316,12 +329,12 @@ if($_POST['ct_id'] && $_POST['step']) {
           $_barCode_Sql[] = "
             update g5_cart_barcode
             set
-              ct_id = '" . ( ($_result['bc_del_yn']=="N")?($stoIdList[$val['stoId']]):(0) ) . "',
-              bc_del_yn = '" . ( ($_result['bc_del_yn']=="N")?("Y"):("N") ) . "',
-              bc_status = '" . ( ($_result['bc_del_yn']=="N")?("출고"):("정상") ) . "',
+              ct_id = '" . ( ($bc_data['bc_del_yn']=="N")?($stoIdList[$val['stoId']]):(0) ) . "',
+              bc_del_yn = '" . ( ($bc_data['bc_del_yn']=="N")?("Y"):("N") ) . "',
+              bc_status = '" . ( ($bc_data['bc_del_yn']=="N")?("출고"):("정상") ) . "',
               released_by = '{$member['mb_id']}',
               released_at = NOW()
-              where `it_id` ='" . $val['prodId'] . "' AND `bc_barcode`='" . $val['prodBarNum'] . "' AND `bc_del_yn`='" . $_result['bc_del_yn'] . "'
+              where `it_id` ='" . $val['prodId'] . "' AND `bc_barcode`='" . $val['prodBarNum'] . "' AND `bc_del_yn`='" . $bc_data['bc_del_yn'] . "'
           "; 
         }
 
