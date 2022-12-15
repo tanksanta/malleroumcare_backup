@@ -22,8 +22,8 @@ if ($b_end_page > $total_page){
 }
 $total_block = ceil($total_page/$b_pageNum_listCnt);
 ?>
-<?php if($pageNum >$b_pageNum_listCnt){ ?><a href="javascript:open_log(null,'<?=$_POST['stoId']?>','log_<?=$_POST['stoId']?>','1','page_<?=$_POST['stoId']?>','2')"><img src="<?=G5_IMG_URL?>/icon_04.png" alt=""></a><?php } ?>
-<?php if($block > 1){ ?><a href="javascript:open_log(null,'<?=$_POST['stoId']?>','log_<?=$_POST['stoId']?>','<?=($b_start_page-1)?>','page_<?=$_POST['stoId']?>','2')"><img src="<?=G5_IMG_URL?>/icon_05.png" alt=""></a><?php } ?>
-<?php for($j = $b_start_page; $j <=$b_end_page; $j++){ ?><a href="javascript:open_log(null,'<?=$_POST['stoId']?>','log_<?=$_POST['stoId']?>','<?=$j?>','page_<?=$_POST['stoId']?>','2')"><?=$j?></a><?php } ?>
-<?php if($block < $total_block){ ?><a href="javascript:open_log(null,'<?=$_POST['stoId']?>','log_<?=$_POST['stoId']?>','<?=($b_end_page+1)?>','page_<?=$_POST['stoId']?>','2')"><img src="<?=G5_IMG_URL?>/icon_06.png" alt=""></a><?php } ?>
-<?php if($block < $total_block){ ?><a href="javascript:open_log(null,'<?=$_POST['stoId']?>','log_<?=$_POST['stoId']?>','<?=$total_page?>','page_<?=$_POST['stoId']?>','2')"><img src="<?=G5_IMG_URL?>/icon_07.png" alt=""></a><?php } ?>
+<?php if($pageNum >$b_pageNum_listCnt){ ?><a href="javascript:open_log(null,'<?=$_POST['stoId']?>','log_<?=$_POST['stoId']?>','1','page_<?=$_POST['stoId']?>','2','<?=$_POST['barcode']?>')"><img src="<?=G5_IMG_URL?>/icon_04.png" alt=""></a><?php } ?>
+<?php if($block > 1){ ?><a href="javascript:open_log(null,'<?=$_POST['stoId']?>','log_<?=$_POST['stoId']?>','<?=($b_start_page-1)?>','page_<?=$_POST['stoId']?>','2','<?=$_POST['barcode']?>')"><img src="<?=G5_IMG_URL?>/icon_05.png" alt=""></a><?php } ?>
+<?php for($j = $b_start_page; $j <=$b_end_page; $j++){ ?><a href="javascript:open_log(null,'<?=$_POST['stoId']?>','log_<?=$_POST['stoId']?>','<?=$j?>','page_<?=$_POST['stoId']?>','2','<?=$_POST['barcode']?>')"><?=$j?></a><?php } ?>
+<?php if($block < $total_block){ ?><a href="javascript:open_log(null,'<?=$_POST['stoId']?>','log_<?=$_POST['stoId']?>','<?=($b_end_page+1)?>','page_<?=$_POST['stoId']?>','2','<?=$_POST['barcode']?>')"><img src="<?=G5_IMG_URL?>/icon_06.png" alt=""></a><?php } ?>
+<?php if($block < $total_block){ ?><a href="javascript:open_log(null,'<?=$_POST['stoId']?>','log_<?=$_POST['stoId']?>','<?=$total_page?>','page_<?=$_POST['stoId']?>','2','<?=$_POST['barcode']?>')"><img src="<?=G5_IMG_URL?>/icon_07.png" alt=""></a><?php } ?>
