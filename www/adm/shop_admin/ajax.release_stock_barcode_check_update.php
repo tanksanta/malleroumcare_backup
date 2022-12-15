@@ -193,8 +193,9 @@ $sql = "
 sql_query($sql);
 
 
-// 신규 바코드 재고로 추가
-if ($add_qty > 0) {
+// 22.12.15 : 서원 - 바코드 수량(추가/삭제) 변경에 따른 재고 수량 변경.
+if ( ($add_qty > 0) || ($delete_qty > 0)  ) {
+
   $wh_name = '검단창고';
   if ($stock_info_row['it_warehousing_warehouse']) {
     $wh_name = $stock_info_row['it_warehousing_warehouse'];
@@ -208,20 +209,33 @@ if ($add_qty > 0) {
       io_type = '0',
       it_name = '{$stock_info_row['it_name']}',
       ws_option = '{$option_text}',
-      ws_qty = '{$add_qty}',
       ws_scheduled_qty = '0',
       mb_id = '{$member['mb_id']}',
-      ws_memo = '신규 바코드 재고로 추가',
       wh_name = '{$wh_name}',
       od_id = '0',
       ct_id = '0',
       inserted_from = 'barcode_check',
       ws_created_at = NOW(),
-      ws_updated_at = NOW()
+      ws_updated_at = NOW(),
   ";
-  sql_query($sql);
+
+  if( $add_qty > 0 ) {
+    $_add_sql = "
+      ws_qty = {$add_qty},
+      ws_memo = '신규 바코드 재고 추가'
+    ";
+    sql_query($sql.$_add_sql);
+  }
+  
+  if( $delete_qty > 0 ) {  
+    $_add_sql = "
+      ws_qty = -{$delete_qty},
+      ws_memo = '기존 바코드 재고 삭제'
+    ";
+    sql_query($sql.$_add_sql);
+  }
+
+
 }
 
 json_response(200, '완료되었습니다.', $data);
-
-
