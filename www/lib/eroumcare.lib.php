@@ -3727,3 +3727,93 @@ function get_item_delivery_cost( $it_id, $qty, $_price=0 ) {
 
   return $_result;
 }
+
+
+/*
+ *
+ * 작성자 : 박서원
+ * 작성일자 : 2022-12-15
+ * 마지막 수정자 : 박서원
+ * 마지막 수정일자 : 2022-12-16
+ * 설명 : 암호화/복호화에 필요한 기본 키값
+ * @return string : 32바이트 키값
+ *
+ */
+function security_key() {
+  $_result ="";
+  $_key = 'EroumCare_security!KEY'; 
+  // ** 추후 회원 개별 키값으로 변경 필요.
+  // ** 소스에서 키값이 유출되더라도 회원 개별 키값으로 복구 불가능하게 적용 해야함.
+
+  // 256 bit 키를 만들기 위해서 비밀번호를 해시해서 첫 32바이트를 사용합니다.
+  $_result = substr(hash('sha256', $_key, true), 0, 32);
+  return $_result;
+}
+
+
+/*
+*
+* 작성자 : 박서원
+* 작성일자 : 2022-12-15
+* 마지막 수정자 : 박서원
+* 마지막 수정일자 : 2022-12-16
+* 설명 : 암호화/복호화에 필요한 기본 Initial Vector
+* @return string : 128 bit(16 byte)
+*
+*/
+function security_iv() {
+  $_result ="";
+
+  // ** 추후 벡터 정보의 경우 바이너리파일에서 읽어 사용하는 방식으로 변경 필요.
+
+  // Initial Vector(IV)는 128 bit(16 byte)입니다.
+  $_result = chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0);
+  return $_result;
+}
+
+
+/*
+*
+* 작성자 : 박서원
+* 작성일자 : 2022-12-15
+* 마지막 수정자 : 박서원
+* 마지막 수정일자 : 2022-12-16
+* 설명 : 암호화
+* @param string $msg : 메시지
+* @param string $key : 암호화 키값
+* @param string $Iv : Initial Vector
+* @return string : encryption
+* 사용 : $result = encryption_AES256( 평문텍스트, security_key(), security_iv() );
+*
+*/
+function encryption_AES256( $msg, $key, $Iv ){
+  $_result ="";
+
+  // 암호화
+  $_result = base64_encode(openssl_encrypt($msg, 'aes-256-cbc', $key, OPENSSL_RAW_DATA, $Iv));    
+  return $_result;
+}
+
+
+/*
+*
+* 작성자 : 박서원
+* 작성일자 : 2022-12-15
+* 마지막 수정자 : 박서원
+* 마지막 수정일자 : 2022-12-16
+* 설명 : 복호화
+* @param string $msg : 메시지
+* @param string $key : 암호화 키값
+* @param string $Iv : Initial Vector
+* @return string : decryption
+* 사용 : $result = decryption_AES256( 암호화된텍스트, security_key(), security_iv() );
+* 
+*/
+function decryption_AES256( $msg, $key, $Iv ){
+  $_result ="";
+
+  // 복호화
+  $_result = openssl_decrypt(base64_decode($msg), 'aes-256-cbc', $key, OPENSSL_RAW_DATA, $Iv);    
+  return $_result;
+}
+
