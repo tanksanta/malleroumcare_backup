@@ -74,7 +74,7 @@ $msg_url = "eroumcare.com/shop/item_msg.php?url={$ms['ms_url']}&show_expected={$
 $mode = $_POST['mode'];
 if($mode === 'alim') {
   // 알림톡 발송
-  send_alim_talk('ITEM_MSG_'.$ms_id, $ms['ms_pen_hp'], 'pen_item_msg', "[이로움 장기요양기관 통합관리시스템]\n\n{$ms['ms_pen_nm']}님에게 {$member['mb_entNm']} 사업소에서 추천 품목이 전송되었습니다.\n전송된 품목을 확인해주세요.\n\n전송 링크 : https://{$msg_url}", array(
+  send_alim_talk('ITEM_MSG_'.$ms_id, $ms['ms_pen_hp'], 'pen_item_msg', "[이로움 장기요양기관 통합관리시스템]\n\n수급자 {$ms['ms_pen_nm']}님이 {$member['mb_entNm']}사업소에 요청하신 제안 품목이 전송되었습니다. 전송된 품목을 확인해주세요\n\n전송 링크 : https://{$msg_url}", array(
     'button' => [
       array(
         'name' => '품목 확인하기',
@@ -87,7 +87,7 @@ if($mode === 'alim') {
   // 문자 전송
   include_once(G5_LIB_PATH.'/icode.lms.lib.php');
 
-  $msg = "[이로움 장기요양기관 통합관리시스템]\n\n{$ms['ms_pen_nm']}님에게 {$member['mb_entNm']} 사업소에서 추천 품목이 전송되었습니다.\n전송된 품목을 확인해주세요.\n\n전송 링크 : https://{$msg_url}";
+  $msg = "[이로움 장기요양기관 통합관리시스템]\n\n수급자 {$ms['ms_pen_nm']}님이 {$member['mb_entNm']}사업소에 요청하신 제안 품목이 전송되었습니다. 전송된 품목을 확인해주세요\n\n전송 링크 : https://{$msg_url}";
 
   $send_hp = '02-830-1301';
   $recv_hp = $ms['ms_pen_hp'];

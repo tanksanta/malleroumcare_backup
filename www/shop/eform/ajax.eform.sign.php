@@ -9,6 +9,8 @@ if(!$is_member) {
 
 $uuid = $_POST['uuid'];
 $state = json_decode(stripslashes($_POST['state']), true);
+$smsFlag = $_POST['sms'];
+
 if(!$uuid || !$state) {
   json_response(400, '잘못된 요청입니다.');
 }
@@ -300,9 +302,10 @@ $recv_hp = str_replace('-', '', $recv_hp);
 $link = G5_SHOP_URL.'/eform/eformInquiry.php?id='.$uuid;
 $msg = "[이로움]\n{$eform['penNm']}님 '".mb_substr($eform['entNm'], 0, 8, 'utf-8')."' 사업소와 전자계약이 체결되었습니다.\n\n* 문서확인 : {$link}";
 
+
 $dc_send_sms = 'FALSE';
 $port_setting = get_icode_port_type($config['cf_icode_id'], $config['cf_icode_pw']);
-if($port_setting !== false && $recv_hp) {
+if($port_setting !== false && $recv_hp && $smsFlag != 'false') {
     $SMS = new LMS;
     $SMS->SMS_con($config['cf_icode_server_ip'], $config['cf_icode_id'], $config['cf_icode_pw'], $port_setting);
 
@@ -364,7 +367,7 @@ if ($alimtalk_result['responseCode'] == "1000") {
   $dc_send_kakao = "1"; //성공
 }
 
-send_alim_talk('ENT_EFORM_'.$uuid, $ent['mb_hp'], 'ent_eform_result', "[이로움]\n\n{$eform['penNm']}님과 전자계약이 체결되었습니다.");
+send_alim_talk('ENT_EFORM_'.$uuid, $ent['mb_hp'], 'ent_eform_result', "\"[이로움]\n\n{$eform['penNm']}님과 전자계약이 체결되었습니다.\"");
 
 $dc_status = '2';
 if($is_simple_efrom) {
