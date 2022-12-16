@@ -146,7 +146,8 @@ define('EROUMCARE_API_STOCK_SELECT_BARNUM_LIST',                EROUMCARE_API_HO
 define('BIZTALK_API_HOST', 'https://www.biztalk-api.com');
 define('BIZTALK_API_BS_ID', 'thkc1300');
 define('BIZTALK_API_BS_PWD', 'd267d7b9d328031338f3bdffc9c1a7345b182ef8');
-define('BIZTALK_API_SENDER_KEY', '34fbabc21279a4883a334bbe8509cc90f0c373a3');
+define('BIZTALK_API_SENDER_KEY', '4034a64c0543fbef8c1eb5647972105343cdd69d'); // 채널 키값 - (아이디) @eroumcare
+//define('BIZTALK_API_SENDER_KEY', '34fbabc21279a4883a334bbe8509cc90f0c373a3'); // 채널 키값 - (아이디) @thkc1300
 
 // 카카오 디벨로퍼스 REST API 연동
 define('KAKAO_DEVELOPERS_REST_API_KEY', '7a991b6e94ba43c5d266d9aa4a2edca1');
