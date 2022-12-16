@@ -2,109 +2,6 @@
 include_once("./_common.php");
 ?>
 
-<style>
-[x-cloak] {
-  display: none;
-}
-
-.popModal {
-  font-size: 12px;
-  line-height: 22px;
-  padding: 10px;
-  cursor: default;
-}
-
-.popModal .popModal_content {
-  margin: 0;
-}
-
-.popModal .title {
-  color: #666;
-  margin-bottom: 5px;
-}
-
-.popModal input[type="text"] {
-  background: #fff;
-  color: #666;
-  border: 1px solid #ddd;
-  text-align: center;
-  width: 110px;
-}
-
-.popModal select {
-  background: #fff;
-  color: #666;
-  border: 1px solid #ddd;
-  height: 24px;
-  width: 55px;
-}
-
-.popModal .btn_submit {
-  display: block;
-  padding: 4px;
-  border-radius: 3px;
-  background: #f1a73a;
-  color: #fff;
-  margin: 5px auto 0 auto;
-  width: 100px;
-}
-
-.modal-open div.popup_box {
-  position: fixed;
-  width: 100vw;
-  height: 100vh;
-  left: 0;
-  top: 0;
-  z-index: 99999999;
-  background-color: rgba(0, 0, 0, 0.6);
-  display: table;
-  table-layout: fixed;
-  opacity: 0;
-}
-
-.modal-open div.popup_box>div {
-  width: 100%;
-  height: 100%;
-  display: table-cell;
-  vertical-align: middle;
-}
-
-.modal-open div.popup_box iframe {
-  position: relative;
-  width: 600px;
-  height: 700px;
-  border: 0;
-  background-color: #FFF;
-  left: 50%;
-  margin-left: -250px;
-}
-
-.ct_status_mode_wr {
-  display: inline-block;
-  margin: 0 !important;
-}
-
-.ct_status_mode_wr input[type="radio"] {
-  margin: 8px 0;
-  width: 14px;
-  height: 14px;
-}
-
-.ct_status_mode_wr label {
-  margin: 5px 10px 5px 0;
-  line-height: 20px;
-}
-
-@media (max-width : 750px) {
-  .modal-open div.popup_box iframe {
-    width: 100%;
-    height: 100%;
-    left: 0;
-    margin-left: 0;
-  }
-}
-</style>
-
 <div class="antialiased sans-serif flex items-center justify-center" x-data="global()">
   <div x-data="app()" x-init="[initDate(), getNoOfDays()]" x-cloak>
     <div x-data="select({ value: 'all', valueInModal: '', placeholder: '담당자' })" x-init="init()"
@@ -224,12 +121,12 @@ include_once("./_common.php");
               <div class="flex-1 flex items-center justify-start">
                 <a tabindex="0"
                   class="focus:outline-none text-lg font-medium leading-5 text-gray-800 dark:text-gray-100 mt-2"
-                  x-text="(item.status === '출고완료' ? '[설치 완료]' : '[설치 예정]') + item.it_name + ' ' + item.ct_qty + '개'"></a>
+                  x-text="((item.status === '완료' || item.status === '작성') ? '[설치완료]' : '[설치 예정]') + item.it_name + ' ' + item.ct_qty + '개'"></a>
               </div>
-              <div class="basis-30 flex items-center justify-end" :class="{'hidden': mb_type !== 'manager'}">
+              <div class="basis-30 flex items-center justify-end">
                 <button type="button"
                   class="border rounded-lg px-2 py-1 flex justify-center items-center text-base hover:bg-blue-100 transition-colors duration-300"
-                  @click="goToUrl(item.od_id)" x-text="'설치결과 보고서등록'">
+                  @click="goToUrl(item.od_id)" x-text="'설치결과보고서'">
                 </button>
               </div>
             </div>
@@ -437,9 +334,9 @@ include_once("./_common.php");
   </div>
 
   <script>
-  var target = document.getElementById("root");
+  let target = document.getElementById("root");
   // 변경을 감지했을 때 실행할 부분
-  var observer = new MutationObserver(mutations => {
+  let observer = new MutationObserver(mutations => {
     mutations.forEach(mutation => {
       if (!mutation.target.className.endsWith("modal-open")) {
         if ($(".popup_box")) {
@@ -450,7 +347,7 @@ include_once("./_common.php");
     });
   });
   // 감지 설정
-  var config = {
+  let config = {
     childList: true, // 타겟의 하위 요소 추가 및 제거 감지
     attributes: true, // 타켓의 속성 변경를 감지
     characterData: false, // 타겟의 데이터 변경 감지
@@ -471,7 +368,6 @@ include_once("./_common.php");
   }
 
   function goToUrl(od_id) {
-    // location.href = '/shop/popup.partner_installreport.php?od_id=' + od_id;
     $("body").addClass('modal-open');
     $(".popup_box > div").html('<iframe src="/shop/popup.partner_installreport.php?od_id=' + od_id +
       '">');
@@ -816,9 +712,9 @@ include_once("./_common.php");
         let daysInMonth = new Date(year, month + 1, 0).getDate();
         let dayOfWeek = new Date(year, month).getDay();
         let blankDaysArray = [];
-        for (var i = 1; i <= dayOfWeek; i++) blankDaysArray.push(i);
+        for (let i = 1; i <= dayOfWeek; i++) blankDaysArray.push(i);
         let daysArray = [];
-        for (var i = 1; i <= daysInMonth; i++) daysArray.push(i);
+        for (let i = 1; i <= daysInMonth; i++) daysArray.push(i);
         this.month = month;
         this.year = year;
         this.blankDays = blankDaysArray;
@@ -837,9 +733,9 @@ include_once("./_common.php");
         let daysInMonth = new Date(year, month + 1, 0).getDate();
         let dayOfWeek = new Date(year, month).getDay();
         let blankDaysArray = [];
-        for (var i = 1; i <= dayOfWeek; i++) blankDaysArray.push(i);
+        for (let i = 1; i <= dayOfWeek; i++) blankDaysArray.push(i);
         let daysArray = [];
-        for (var i = 1; i <= daysInMonth; i++) daysArray.push(i);
+        for (let i = 1; i <= daysInMonth; i++) daysArray.push(i);
         this.month = month;
         this.year = year;
         this.blankDays = blankDaysArray;
@@ -858,9 +754,9 @@ include_once("./_common.php");
         let daysInMonth = new Date(year, month + 1, 0).getDate();
         let dayOfWeek = new Date(year, month).getDay();
         let blankDaysArray = [];
-        for (var i = 1; i <= dayOfWeek; i++) blankDaysArray.push(i);
+        for (let i = 1; i <= dayOfWeek; i++) blankDaysArray.push(i);
         let daysArray = [];
-        for (var i = 1; i <= daysInMonth; i++) daysArray.push(i);
+        for (let i = 1; i <= daysInMonth; i++) daysArray.push(i);
         this.month = month;
         this.year = year;
         this.blankDays = blankDaysArray;

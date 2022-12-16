@@ -19,12 +19,15 @@ alert("파트너 회원만 접근 가능한 페이지입니다.");
 <html>
 
 <head>
-    <title>파트너 일정표 > 이로움 장기요양기관 통합관리시스템</title>
-    <?php include("include.php"); ?>
+  <title>파트너 일정표 > 이로움 장기요양기관 통합관리시스템</title>
+  <?php include("include.php"); ?>
 </head>
 
-<body class="h-screen overflow-hidden flex items-center justify-center" style="background: #edf2f7;">
-    <?php include("calendar.php"); ?>
+<body id="root" class="h-screen overflow-hidden flex items-center justify-center" style="background: #edf2f7;">
+  <?php include("calendar.php"); ?>
+  <div class="popup_box">
+    <div></div>
+  </div>
 </body>
 
 </html>
