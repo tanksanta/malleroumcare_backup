@@ -1729,9 +1729,13 @@ function check_input_completed() {
 }
 
 // 보유재고관리에서 넘어온 경우 상품 바코드 선택
-function select_barcode(barcode) {
+function select_barcode(barcode,gubun) {
   setTimeout(function() {
-	  $('input:radio[name="barcode_0_type"]:radio[value="1"]').prop('checked', true);
+	  if(gubun == "01"){//대여
+		$('input:radio[name="barcode_0000_type"]:radio[value="1"]').prop('checked', true);
+	  }else{//판매
+		$('input:radio[name="barcode_0_type"]:radio[value="1"]').prop('checked', true);
+	  }
 	  $('.it_barcode').val(barcode).prop("selected", true);
 	  update_barcode_field();
   }, 2000);
@@ -1911,7 +1915,7 @@ if($_POST['penId_r']){
     $it['gubun'] = $gubun_text;
 
     echo 'select_item(' . json_encode($it) . ');'.PHP_EOL;
-    echo 'select_barcode(' . json_encode($_POST['barcode_r']) . ');'.PHP_EOL;
+    echo 'select_barcode(' . json_encode($_POST['barcode_r']) . ',"'.$gubun.'");'.PHP_EOL;
   
   }
 
