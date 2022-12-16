@@ -367,7 +367,7 @@ if ($alimtalk_result['responseCode'] == "1000") {
   $dc_send_kakao = "1"; //성공
 }
 
-send_alim_talk('ENT_EFORM_'.$uuid, $ent['mb_hp'], 'ent_eform_result', "[이로움]\n\n{$eform['penNm']}님과 전자계약이 체결되었습니다.");
+send_alim_talk('ENT_EFORM_'.$uuid, $ent['mb_hp'], 'ent_eform_result', "\"[이로움]\n\n{$eform['penNm']}님과 전자계약이 체결되었습니다.\"");
 
 $dc_status = '2';
 if($is_simple_efrom) {
