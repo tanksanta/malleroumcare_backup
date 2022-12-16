@@ -129,7 +129,16 @@ else if($type == 'photo') {
       return $new;
     }
 
-    $photos = $_FILES['file_photo'] ? re_array_files($_FILES['file_photo']) : [];
+    if ($img_type == "추가사진") {
+      $photos = $_FILES['file_photo4'] ? re_array_files($_FILES['file_photo4']) : [];
+    } else if ($img_type == "설치ㆍ회수ㆍ소독확인서") {
+      $photos = $_FILES['file_photo3'] ? re_array_files($_FILES['file_photo3']) : [];
+    } else if ($img_type == "실물바코드사진") {
+      $photos = $_FILES['file_photo2'] ? re_array_files($_FILES['file_photo2']) : [];
+    } else {
+      $photos = $_FILES['file_photo1'] ? re_array_files($_FILES['file_photo1']) : [];
+    }
+    
     foreach($photos as $photo) {
       if(!$photo['name']) continue;
       $src_name = get_search_string($photo['name']);
@@ -144,6 +153,7 @@ else if($type == 'photo') {
           od_id = '{$od_id}',
           mb_id = '{$report['mb_id']}',
           ip_photo_name = '{$src_name}',
+          img_type = '{$img_type}',
           ip_photo_url = '{$dest_name}',
           ip_created_at = NOW()
       ");
@@ -157,6 +167,7 @@ else if($type == 'photo') {
     $return_result = sql_query("
       SELECT * FROM partner_install_photo
       WHERE od_id = '{$od_id}' {$check_member}
+      AND img_type = '{$img_type}'
       ORDER BY ip_id ASC
     ");
     while($row = sql_fetch_array($return_result)) {
