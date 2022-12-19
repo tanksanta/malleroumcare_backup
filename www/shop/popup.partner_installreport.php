@@ -440,6 +440,8 @@ while($ct = sql_fetch_array($result)) {
 
   .form_file_photo {
     flex: 1;
+    display: flex;
+    justify-content: flex-end;
   }
 
   .btn_photo {
@@ -449,6 +451,8 @@ while($ct = sql_fetch_array($result)) {
     border-radius: 3px;
   }
   </style>
+  <script src="/js/detectmobilebrowser.js">
+  </script>
 </head>
 
 <body>
@@ -583,7 +587,7 @@ while($ct = sql_fetch_array($result)) {
               </button>
             </li>
             <?php }} else { ?>
-            <p id="fileDragDesc" class="image_wrap_placeholder">파일을 업로드 하려면 클릭 하거나 드래그 앤 드롭 해주세요.</p>
+            <p id="fileDragDesc" class="image_wrap_placeholder">첨부할 파일을 마우스로 끌어오세요.</p>
             <?php } ?>
           </ul>
         </td>
@@ -618,7 +622,7 @@ while($ct = sql_fetch_array($result)) {
               </button>
             </li>
             <?php }} else { ?>
-            <p id="fileDragDesc" class="image_wrap_placeholder">파일을 업로드 하려면 클릭 하거나 드래그 앤 드롭 해주세요.</p>
+            <p id="fileDragDesc" class="image_wrap_placeholder">첨부할 파일을 마우스로 끌어오세요.</p>
             <?php } ?>
           </ul>
         </td>
@@ -632,7 +636,7 @@ while($ct = sql_fetch_array($result)) {
             <input type="hidden" name="img_type" value="설치ㆍ회수ㆍ소독확인서">
             <input type="hidden" name="od_id" value="<?=$od_id?>">
             <input type="hidden" name="m" value="u">
-            <input type="file" class="ipt_file" name="file_photo4[]" id="file_photo4" accept="image/*,.pdf" multiple>
+            <input type="file" class="ipt_file" name="file_photo3[]" id="file_photo3" accept="image/*,.pdf" multiple>
             <button class="btn_photo" id="btn_photo3">파일 선택</button>
           </form>
         </th>
@@ -653,7 +657,7 @@ while($ct = sql_fetch_array($result)) {
               </button>
             </li>
             <?php }} else { ?>
-            <p id="fileDragDesc" class="image_wrap_placeholder">파일을 업로드 하려면 클릭 하거나 드래그 앤 드롭 해주세요.</p>
+            <p id="fileDragDesc" class="image_wrap_placeholder">첨부할 파일을 마우스로 끌어오세요.</p>
             <?php } ?>
           </ul>
         </td>
@@ -688,7 +692,7 @@ while($ct = sql_fetch_array($result)) {
               </button>
             </li>
             <?php }} else { ?>
-            <p id="fileDragDesc" class="image_wrap_placeholder">파일을 업로드 하려면 클릭 하거나 드래그 앤 드롭 해주세요.</p>
+            <p id="fileDragDesc" class="image_wrap_placeholder">첨부할 파일을 마우스로 끌어오세요.</p>
             <?php } ?>
           </ul>
         </td>
@@ -719,6 +723,13 @@ while($ct = sql_fetch_array($result)) {
     $("#popup_box", parent.document).find("iframe").remove();
   }
   $(function() {
+    [1, 2, 3, 4].map((item) => {
+      if (jQuery.browser.mobile) {
+        $("#list_file_photo" + item + " >.image_wrap_placeholder").text("파일 선택 버튼을 눌러 첨부파일을 업로드 해주세요.");
+      } else {
+        $("#list_file_photo" + item + " >.image_wrap_placeholder").text("첨부할 파일을 마우스로 끌어오세요.");
+      }
+    });
     $(document).on("DOMNodeInserted", '.mfp-content', function() {
       window.wheelzoom($('.mfp-img'));
     });
@@ -746,6 +757,7 @@ while($ct = sql_fetch_array($result)) {
     // 결과보고서 작성 취소 버튼
     $('.btn_ir_unsign').click(function(e) {
       e.preventDefault();
+
 
       if (!confirm('정말 작성된 결과보고서를 삭제하시겠습니까?'))
         return;
@@ -956,8 +968,8 @@ while($ct = sql_fetch_array($result)) {
   });
 
   function fileClick(id) {
-
-    $('#btn_photo' + id).on('click', function() {
+    $('#btn_photo' + id).on('click', function(e) {
+      e.preventDefault();
       $('#file_photo' + id).click();
     });
     $('#file_photo' + id).on('change', function() {
