@@ -208,6 +208,7 @@ while($ct = sql_fetch_array($result)) {
     float: right;
   }
 
+
   #popupHeaderTopWrap>.close>a {
     color: #FFF;
     font-size: 40px;
