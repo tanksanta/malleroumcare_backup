@@ -165,7 +165,6 @@ while($ct = sql_fetch_array($result)) {
     box-sizing: border-box;
     position: relative;
   }
-<<<<<<< HEAD
 
   html,
   body {
@@ -370,211 +369,6 @@ while($ct = sql_fetch_array($result)) {
     padding: 10px;
   }
 
-=======
-
-  html,
-  body {
-    width: 100%;
-    min-width: 100%;
-    float: left;
-    margin: 0 !important;
-    padding: 0;
-    font-family: "Noto Sans KR", sans-serif;
-    font-size: 13px;
-  }
-
-  body {
-    padding: 60px 0;
-  }
-
-  #popupHeaderTopWrap {
-    position: fixed;
-    width: 100%;
-    height: 60px;
-    left: 0;
-    top: 0;
-    z-index: 10;
-    background-color: #333;
-    padding: 0 20px;
-  }
-
-  #popupHeaderTopWrap>div {
-    height: 100%;
-    line-height: 60px;
-  }
-
-  #popupHeaderTopWrap>.title {
-    float: left;
-    font-weight: bold;
-    color: #FFF;
-    font-size: 22px;
-  }
-
-  #popupHeaderTopWrap>.close {
-    float: right;
-  }
-
-  #popupHeaderTopWrap>.close>a {
-    color: #FFF;
-    font-size: 40px;
-    top: -2px;
-  }
-
-  #table_ir {
-    width: 100%;
-  }
-
-  #table_ir .ipt_file {
-    display: none;
-  }
-
-  #table_ir .label_file {
-    display: inline-block;
-    border: 1px solid #d7d7d7;
-    color: #666;
-    border-radius: 3px;
-    padding: 10px 30px;
-    cursor: pointer;
-  }
-
-  #table_ir .tr_content {
-    border-bottom: 1px solid #ccc;
-  }
-
-  #table_ir .tr_head {
-    border: none;
-  }
-
-  #table_ir th,
-  #table_ir td,
-  .issue_wrap {
-    padding: 15px;
-    text-align: left;
-    vertical-align: top;
-  }
-
-  #table_ir .tr_head th,
-  #table_ir .tr_head td {
-    padding-bottom: 0;
-  }
-
-  #table_ir .tr_content th,
-  #table_ir .tr_content td {
-    padding-top: 0;
-  }
-
-  .section_head {
-    font-weight: 700;
-    padding: 5px 0 0 5px;
-    flex: 2;
-  }
-
-  #txt_issue {
-    width: 100%;
-    margin-top: 15px;
-    border: 1px solid #d7d7d7;
-    border-radius: 3px;
-    padding: 6px;
-    resize: vertical;
-  }
-
-  .list_file {
-    margin-top: 10px;
-    display: flex;
-    overflow-x: auto;
-    max-width: calc(100vw - 45px);
-    min-height: 112px;
-    cursor: pointer;
-  }
-
-  .list_file li {
-    padding: 5px;
-    vertical-align: middle;
-  }
-
-  .list_file li a.view_image {
-    display: block;
-    width: 100px;
-    min-width: 100px;
-    max-width: 100px;
-    height: 100px;
-    border: 1px solid #ddd;
-    margin-bottom: 3px;
-  }
-
-  .list_file li a.view_image img {
-    width: 100%;
-    height: 100%;
-  }
-
-  .btn_remove {
-    margin-left: 10px;
-    width: 25px;
-    height: 25px;
-    background-color: #000;
-    border-radius: 3px;
-    color: #fff;
-    font-size: 15px;
-  }
-
-  #popupFooterBtnWrap {
-    position: fixed;
-    width: 100%;
-    height: 70px;
-    background-color: #000;
-    bottom: 0px;
-    z-index: 10;
-  }
-
-  #popupFooterBtnWrap>button {
-    font-size: 18px;
-    font-weight: bold;
-  }
-
-  #popupFooterBtnWrap>.savebtn {
-    float: left;
-    width: 75%;
-    height: 100%;
-    background-color: #000;
-    color: #FFF;
-  }
-
-  #popupFooterBtnWrap>.cancelbtn {
-    float: right;
-    width: 25%;
-    height: 100%;
-    color: #666;
-    background-color: #DDD;
-  }
-
-  input[type="checkbox"],
-  label {
-    vertical-align: middle;
-  }
-
-  label {
-    margin-right: 10px;
-  }
-
-  #table_ir .tbl_barcode {
-    width: 100%;
-    margin-top: 15px;
-  }
-
-  #table_ir .tbl_barcode thead th {
-    background: #eee;
-    border-top: 1px solid #e3e3e3;
-    padding: 5px 10px;
-    text-align: center;
-  }
-
-  #table_ir .tbl_barcode tbody td {
-    background: #f5f5f5;
-    border-top: 1px solid #e3e3e3;
-    padding: 10px;
-  }
-
->>>>>>> 32cf24ae1a95f800853ecd85f03323e8a7077339
   #table_ir .tbl_barcode input[type="text"] {
     display: block;
     width: 100%;
@@ -647,11 +441,8 @@ while($ct = sql_fetch_array($result)) {
 
   .form_file_photo {
     flex: 1;
-<<<<<<< HEAD
-=======
     display: flex;
     justify-content: flex-end;
->>>>>>> 32cf24ae1a95f800853ecd85f03323e8a7077339
   }
 
   .btn_photo {
@@ -772,14 +563,6 @@ while($ct = sql_fetch_array($result)) {
         <th class="th_col">
           <div class="section_head">설치 사진 등록(필수)</div>
           <form id="form_file_photo1" class="form_file_photo">
-<<<<<<< HEAD
-            <input type="hidden" name="type" value="photo">
-            <input type="hidden" name="img_type" value="설치사진">
-            <input type="hidden" name="od_id" value="<?=$od_id?>">
-            <input type="hidden" name="m" value="u">
-            <input type="file" class="ipt_file" name="file_photo1[]" id="file_photo1" accept="image/*,.pdf" multiple>
-            <button class="btn_photo" id="btn_photo1">파일 선택</button>
-=======
             <input type="hidden" name="type" value="photo">
             <input type="hidden" name="img_type" value="설치사진">
             <input type="hidden" name="od_id" value="<?=$od_id?>">
@@ -821,21 +604,14 @@ while($ct = sql_fetch_array($result)) {
             <input type="hidden" name="m" value="u">
             <input type="file" class="ipt_file" name="file_photo2[]" id="file_photo2" accept="image/*,.pdf" multiple>
             <button class="btn_photo" id="btn_photo2">파일 선택</button>
->>>>>>> 32cf24ae1a95f800853ecd85f03323e8a7077339
           </form>
         </th>
       </tr>
       <tr class="tr_content report-img-wrap">
         <td colspan="1">
-<<<<<<< HEAD
-          <ul id="list_file_photo1" class="list_file">
-            <?php if ($photos1) { ?>
-            <?php foreach($photos1 as $photo) { ?>
-=======
           <ul id="list_file_photo2" class="list_file">
             <?php if ($photos2) { ?>
             <?php foreach($photos2 as $photo) { ?>
->>>>>>> 32cf24ae1a95f800853ecd85f03323e8a7077339
             <li>
               <a href="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" target="_blank" class="view_image">
                 <img src="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>"
@@ -847,11 +623,7 @@ while($ct = sql_fetch_array($result)) {
               </button>
             </li>
             <?php }} else { ?>
-<<<<<<< HEAD
-            <p id="fileDragDesc" class="image_wrap_placeholder">파일을 업로드 하려면 클릭 하거나 드래그 앤 드롭 해주세요.</p>
-=======
             <p id="fileDragDesc" class="image_wrap_placeholder">첨부할 파일을 마우스로 끌어오세요.</p>
->>>>>>> 32cf24ae1a95f800853ecd85f03323e8a7077339
             <?php } ?>
           </ul>
         </td>
@@ -859,55 +631,13 @@ while($ct = sql_fetch_array($result)) {
 
       <tr class="tr_head">
         <th class="th_col">
-<<<<<<< HEAD
-          <div class="section_head">실물바코드사진(필수)</div>
-          <form id="form_file_photo2" class="form_file_photo">
-            <input type="hidden" name="type" value="photo">
-            <input type="hidden" name="img_type" value="실물바코드사진">
-            <input type="hidden" name="od_id" value="<?=$od_id?>">
-            <input type="hidden" name="m" value="u">
-            <input type="file" class="ipt_file" name="file_photo2[]" id="file_photo2" accept="image/*,.pdf" multiple>
-            <button class="btn_photo" id="btn_photo2">파일 선택</button>
-          </form>
-        </th>
-      </tr>
-      <tr class="tr_content report-img-wrap">
-        <td colspan="1">
-          <ul id="list_file_photo2" class="list_file">
-            <?php if ($photos2) { ?>
-            <?php foreach($photos2 as $photo) { ?>
-            <li>
-              <a href="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" target="_blank" class="view_image">
-                <img src="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>"
-                  onerror="this.src='<? if (strpos($photo['ip_photo_name'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo '/shop/img/no_image.gif'; ?>';">
-              </a>
-              <?=$photo['ip_photo_name']?>
-              <button class="btn_remove" data-type="photo" data-id="<?=$photo['ip_id']?>">
-                <i class="fa fa-times" aria-hidden="true"></i>
-              </button>
-            </li>
-            <?php }} else { ?>
-            <p id="fileDragDesc" class="image_wrap_placeholder">파일을 업로드 하려면 클릭 하거나 드래그 앤 드롭 해주세요.</p>
-            <?php } ?>
-          </ul>
-        </td>
-      </tr>
-
-      <tr class="tr_head">
-        <th class="th_col">
-=======
->>>>>>> 32cf24ae1a95f800853ecd85f03323e8a7077339
           <div class="section_head">설치ㆍ회수ㆍ소독확인서(필수)</div>
           <form id="form_file_photo3" class="form_file_photo">
             <input type="hidden" name="type" value="photo">
             <input type="hidden" name="img_type" value="설치ㆍ회수ㆍ소독확인서">
             <input type="hidden" name="od_id" value="<?=$od_id?>">
             <input type="hidden" name="m" value="u">
-<<<<<<< HEAD
-            <input type="file" class="ipt_file" name="file_photo4[]" id="file_photo4" accept="image/*,.pdf" multiple>
-=======
             <input type="file" class="ipt_file" name="file_photo3[]" id="file_photo3" accept="image/*,.pdf" multiple>
->>>>>>> 32cf24ae1a95f800853ecd85f03323e8a7077339
             <button class="btn_photo" id="btn_photo3">파일 선택</button>
           </form>
         </th>
@@ -917,7 +647,6 @@ while($ct = sql_fetch_array($result)) {
           <ul id="list_file_photo3" class="list_file">
             <?php if ($photos3) { ?>
             <?php foreach($photos3 as $photo) { ?>
-<<<<<<< HEAD
             <li>
               <a href="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" target="_blank" class="view_image">
                 <img src="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>"
@@ -929,46 +658,6 @@ while($ct = sql_fetch_array($result)) {
               </button>
             </li>
             <?php }} else { ?>
-            <p id="fileDragDesc" class="image_wrap_placeholder">파일을 업로드 하려면 클릭 하거나 드래그 앤 드롭 해주세요.</p>
-            <?php } ?>
-          </ul>
-        </td>
-      </tr>
-
-      <tr class="tr_head">
-        <th class="th_col">
-          <div class="section_head">추가사진(선택) 상품변경 혹은 특이사항 발생 시</div>
-          <form id="form_file_photo4" class="form_file_photo">
-            <input type="hidden" name="type" value="photo">
-            <input type="hidden" name="img_type" value="추가사진">
-            <input type="hidden" name="od_id" value="<?=$od_id?>">
-            <input type="hidden" name="m" value="u">
-            <input type="file" class="ipt_file" name="file_photo4[]" id="file_photo4" accept="image/*,.pdf" multiple>
-            <button class="btn_photo" id="btn_photo4">파일 선택</button>
-          </form>
-        </th>
-      </tr>
-      <tr class="tr_content report-img-wrap">
-        <td colspan="1">
-          <ul id="list_file_photo4" class="list_file">
-            <?php if ($photos4) { ?>
-            <?php foreach($photos4 as $photo) { ?>
-=======
->>>>>>> 32cf24ae1a95f800853ecd85f03323e8a7077339
-            <li>
-              <a href="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" target="_blank" class="view_image">
-                <img src="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>"
-                  onerror="this.src='<? if (strpos($photo['ip_photo_name'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo '/shop/img/no_image.gif'; ?>';">
-              </a>
-              <?=$photo['ip_photo_name']?>
-              <button class="btn_remove" data-type="photo" data-id="<?=$photo['ip_id']?>">
-                <i class="fa fa-times" aria-hidden="true"></i>
-              </button>
-            </li>
-            <?php }} else { ?>
-<<<<<<< HEAD
-            <p id="fileDragDesc" class="image_wrap_placeholder">파일을 업로드 하려면 클릭 하거나 드래그 앤 드롭 해주세요.</p>
-=======
             <p id="fileDragDesc" class="image_wrap_placeholder">첨부할 파일을 마우스로 끌어오세요.</p>
             <?php } ?>
           </ul>
@@ -1005,7 +694,6 @@ while($ct = sql_fetch_array($result)) {
             </li>
             <?php }} else { ?>
             <p id="fileDragDesc" class="image_wrap_placeholder">첨부할 파일을 마우스로 끌어오세요.</p>
->>>>>>> 32cf24ae1a95f800853ecd85f03323e8a7077339
             <?php } ?>
           </ul>
         </td>
@@ -1036,8 +724,6 @@ while($ct = sql_fetch_array($result)) {
     $("#popup_box", parent.document).find("iframe").remove();
   }
   $(function() {
-<<<<<<< HEAD
-=======
     [1, 2, 3, 4].map((item) => {
       if (jQuery.browser.mobile) {
         $("#list_file_photo" + item + " >.image_wrap_placeholder").text("파일 선택 버튼을 눌러 첨부파일을 업로드 해주세요.");
@@ -1045,7 +731,6 @@ while($ct = sql_fetch_array($result)) {
         $("#list_file_photo" + item + " >.image_wrap_placeholder").text("첨부할 파일을 마우스로 끌어오세요.");
       }
     });
->>>>>>> 32cf24ae1a95f800853ecd85f03323e8a7077339
     $(document).on("DOMNodeInserted", '.mfp-content', function() {
       window.wheelzoom($('.mfp-img'));
     });
@@ -1058,27 +743,6 @@ while($ct = sql_fetch_array($result)) {
 
       closePopup();
     });
-<<<<<<< HEAD
-
-    $('#prodBarNumSaveBtn').click(function() {
-      $('#form_partner_installreport').submit();
-    });
-
-    // 설치상품 변경 버튼, 결과보고서 다운로드 버튼
-    $('.btn_od_edit, .btn_ir_download').click(function(e) {
-      e.preventDefault();
-
-      parent.location.href = $(this).attr('href');
-    });
-
-    // 결과보고서 작성 취소 버튼
-    $('.btn_ir_unsign').click(function(e) {
-      e.preventDefault();
-
-      if (!confirm('정말 작성된 결과보고서를 삭제하시겠습니까?'))
-        return;
-
-=======
 
     $('#prodBarNumSaveBtn').click(function() {
       $('#form_partner_installreport').submit();
@@ -1099,7 +763,6 @@ while($ct = sql_fetch_array($result)) {
       if (!confirm('정말 작성된 결과보고서를 삭제하시겠습니까?'))
         return;
 
->>>>>>> 32cf24ae1a95f800853ecd85f03323e8a7077339
       var url = $(this).attr('href');
       $.get(url, {}, 'json')
         .done(function() {
@@ -1253,73 +916,6 @@ while($ct = sql_fetch_array($result)) {
           });
       } else if (type === 'photo') {
         var $li = $(this).closest('li');
-<<<<<<< HEAD
-
-        // 설치사진
-        var ip_id = $(this).data('id');
-        $.post('ajax.partner_installphoto.php', {
-            od_id: '<?=$od_id?>',
-            type: 'photo',
-            m: 'd',
-            ip_id: ip_id
-          }, 'json')
-          .done(function(result) {
-            $li.remove();
-          })
-          .fail(function($xhr) {
-            var data = $xhr.responseJSON;
-            alert(data && data.message);
-          });
-      }
-    });
-
-    $('#form_partner_installreport').on('submit', function(e) {
-      e.preventDefault();
-    });
-  });
-  </script>
-
-  <script>
-  // 파일 리스트 번호
-  var fileIndex = 0;
-  // 등록할 전체 파일 사이즈
-  var totalFileSize = 0;
-  // 파일 리스트
-  var fileList = new Array();
-  // 파일 사이즈 리스트
-  var fileSizeList = new Array();
-  // 등록 가능한 파일 사이즈 MB
-  var uploadSize = 50;
-  // 등록 가능한 총 파일 사이즈 MB
-  var maxUploadSize = 500;
-
-  $(function() {
-    // 파일 드롭 다운
-    fileDropDown("#list_file_photo", "1");
-    fileDropDown("#list_file_photo", "2");
-    fileDropDown("#list_file_photo", "3");
-    fileDropDown("#list_file_photo", "4");
-
-    fileClick("1");
-    fileClick("2");
-    fileClick("3");
-    fileClick("4");
-  });
-
-  function fileClick(id) {
-
-    $('#btn_photo' + id).on('click', function() {
-      $('#file_photo' + id).click();
-    });
-    $('#file_photo' + id).on('change', function() {
-      if ($(this).val()) {
-        $('#form_file_photo' + id).submit();
-      }
-    });
-    $('#form_file_photo' + id).on('submit', function(e) {
-      e.preventDefault();
-
-=======
 
         // 설치사진
         var ip_id = $(this).data('id');
@@ -1385,7 +981,6 @@ while($ct = sql_fetch_array($result)) {
     $('#form_file_photo' + id).on('submit', function(e) {
       e.preventDefault();
 
->>>>>>> 32cf24ae1a95f800853ecd85f03323e8a7077339
       $.ajax({
           url: 'ajax.partner_installphoto.php',
           type: 'POST',
@@ -1428,7 +1023,7 @@ while($ct = sql_fetch_array($result)) {
 
   function fileDropDown(id_str, id) {
     var dropZone = $(id_str + id);
-    //Drag기능
+    //Drag기능 
     dropZone.on('dragenter', function(e) {
       e.stopPropagation();
       e.preventDefault();
@@ -1575,7 +1170,7 @@ while($ct = sql_fetch_array($result)) {
         var fileSizeMb = fileSizeKb / 1024; // 파일 사이즈(단위 :Mb)
 
         var fileSizeStr = "";
-        if ((1024 * 1024) <= fileSize) { // 파일 용량이 1메가 이상인 경우
+        if ((1024 * 1024) <= fileSize) { // 파일 용량이 1메가 이상인 경우 
           console.log("fileSizeMb=" + fileSizeMb.toFixed(2));
           fileSizeStr = fileSizeMb.toFixed(2) + " Mb";
         } else if ((1024) <= fileSize) {
