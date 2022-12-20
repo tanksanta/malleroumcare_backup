@@ -209,6 +209,7 @@ while($ct = sql_fetch_array($result)) {
     float: right;
   }
 
+
   #popupHeaderTopWrap>.close>a {
     color: #FFF;
     font-size: 40px;
@@ -1427,7 +1428,7 @@ while($ct = sql_fetch_array($result)) {
 
   function fileDropDown(id_str, id) {
     var dropZone = $(id_str + id);
-    //Drag기능 
+    //Drag기능
     dropZone.on('dragenter', function(e) {
       e.stopPropagation();
       e.preventDefault();
@@ -1574,7 +1575,7 @@ while($ct = sql_fetch_array($result)) {
         var fileSizeMb = fileSizeKb / 1024; // 파일 사이즈(단위 :Mb)
 
         var fileSizeStr = "";
-        if ((1024 * 1024) <= fileSize) { // 파일 용량이 1메가 이상인 경우 
+        if ((1024 * 1024) <= fileSize) { // 파일 용량이 1메가 이상인 경우
           console.log("fileSizeMb=" + fileSizeMb.toFixed(2));
           fileSizeStr = fileSizeMb.toFixed(2) + " Mb";
         } else if ((1024) <= fileSize) {
