@@ -743,6 +743,7 @@ a.btn_schedule {
                                     </p>
                                     <?php } ?>
                                     <p style="margin-top: 5px;">
+                                        <?php if($_check_ct_status != '출고준비') { ?>
                                         <?php if($row['ct_is_direct_delivery'] == 2) { ?>
                                         <?php if($row['report'] && ($row['report']['ir_cert_url'] || $row['report']['ir_file_url'])) { ?>
                                         <button type="button" class="report-btn btn_install_report done"
@@ -750,6 +751,7 @@ a.btn_schedule {
                                         <?php } else { ?>
                                         <button type="button" class="report-btn btn_install_report"
                                             data-id="<?=$row['od_id']?>">설치결과보고서 등록</button>
+                                        <?php } ?>
                                         <?php } ?>
                                         <?php } ?>
                                         <?php
