@@ -2,12 +2,6 @@
 include_once("./_common.php");
 ?>
 
-<style>
-[x-cloak] {
-  display: none;
-}
-</style>
-
 <div class="antialiased sans-serif bg-gray-100 max-h-screen" x-data="global()">
   <div x-data="app()" x-init="[initDate(), getNoOfDays()]" x-cloak class="px-4 py-2">
     <div x-data="select({ value: 'all', valueInModal: '' })" x-init="init()"
@@ -247,9 +241,15 @@ include_once("./_common.php");
               x-for="(item, index) in filter_mb_id == '' ? schedules.filter(e => e.type == 'schedule') : schedules.filter(e => e.type === 'schedule').filter(e => mb_type === 'default' ? <?php if ($member["mb_type"] === "default" && $member["mb_level"] >= 9) echo 'e.partner_mb_id'; else echo 'e.od_b_name'; ?> == filter_mb_id : e.partner_manager_mb_id === filter_mb_id)"
               :key="index">
               <li class="min-h-64 flex flex-col mb-4 px-4">
-                <div class="basis-12 flex flex-col align-center px-4">
+                <div class="basis-12 flex flex-row align-center">
                   <p class="flex-1 inline-flex items-center text-lg font-bold"
-                    x-text="item.status === '출고완료' ? '설치완료' : '설치예정 : ' + item.delivery_datetime" />
+                    x-text="(item.status === '완료' || item.status === '작성') ? '설치완료' : '설치예정 : ' + item.delivery_datetime" />
+                  <div class="basis-30 flex items-center justify-start">
+                    <button type="button"
+                      class="border rounded-lg px-2 py-1 flex justify-center items-center text-base hover:bg-blue-100 transition-colors duration-300"
+                      @click="goToUrl(item.od_id)" x-text="'설치결과보고서'">
+                    </button>
+                  </div>
                 </div>
 
                 <div class="flex-1 flex flex-col border">
@@ -496,6 +496,40 @@ include_once("./_common.php");
   </div>
 
   <script>
+  let target = document.getElementById("root");
+  // 변경을 감지했을 때 실행할 부분
+  let observer = new MutationObserver(mutations => {
+    mutations.forEach(mutation => {
+      if (!mutation.target.className.endsWith("modal-open")) {
+        if ($(".popup_box")) {
+          $(".popup_box").css("opacity", 0);
+          $(".popup_box").css("display", 'none');
+        }
+      }
+    });
+  });
+  // 감지 설정
+  let config = {
+    childList: true, // 타겟의 하위 요소 추가 및 제거 감지
+    attributes: true, // 타켓의 속성 변경를 감지
+    characterData: false, // 타겟의 데이터 변경 감지
+    subtree: false, // 타겟의 자식 노드 아래로도 모두 감지
+    attributeOldValue: false, // 타겟의 속성 변경 전 속성 기록
+    characterDataOldValue: false // 타겟의 데이터 변경 전 데이터 기록
+  };
+  observer.observe(target, config);
+
+  function goToUrl(od_id) {
+    $("body").addClass('modal-open');
+    $(".popup_box > div").html('<iframe src="/shop/popup.partner_installreport.php?od_id=' + od_id +
+      '">');
+    $(".popup_box iframe").load(function() {
+      $(".popup_box").show();
+      $(".popup_box").css("opacity", 1);
+      $(".popup_box").css("display", 'table');
+    });
+  }
+
   window.touchtime = 0;
 
   function global() {
@@ -772,7 +806,7 @@ include_once("./_common.php");
         res = result.data;
       },
       error: ($xhr) => {
-        var message = $xhr.responseJSON.message;
+        let message = $xhr.responseJSON.message;
         if (message) {
           $('#code_keyup').text('* ' + message).css('color', '#d44747');
           ret = message;
@@ -821,9 +855,9 @@ include_once("./_common.php");
         let daysInMonth = new Date(year, month + 1, 0).getDate();
         let dayOfWeek = new Date(year, month).getDay();
         let blankDaysArray = [];
-        for (var i = 1; i <= dayOfWeek; i++) blankDaysArray.push(i);
+        for (let i = 1; i <= dayOfWeek; i++) blankDaysArray.push(i);
         let daysArray = [];
-        for (var i = 1; i <= daysInMonth; i++) daysArray.push(i);
+        for (let i = 1; i <= daysInMonth; i++) daysArray.push(i);
         this.month = month;
         this.year = year;
         this.blankDays = blankDaysArray;
@@ -842,9 +876,9 @@ include_once("./_common.php");
         let daysInMonth = new Date(year, month + 1, 0).getDate();
         let dayOfWeek = new Date(year, month).getDay();
         let blankDaysArray = [];
-        for (var i = 1; i <= dayOfWeek; i++) blankDaysArray.push(i);
+        for (let i = 1; i <= dayOfWeek; i++) blankDaysArray.push(i);
         let daysArray = [];
-        for (var i = 1; i <= daysInMonth; i++) daysArray.push(i);
+        for (let i = 1; i <= daysInMonth; i++) daysArray.push(i);
         this.month = month;
         this.year = year;
         this.blankDays = blankDaysArray;
@@ -863,9 +897,9 @@ include_once("./_common.php");
         let daysInMonth = new Date(year, month + 1, 0).getDate();
         let dayOfWeek = new Date(year, month).getDay();
         let blankDaysArray = [];
-        for (var i = 1; i <= dayOfWeek; i++) blankDaysArray.push(i);
+        for (let i = 1; i <= dayOfWeek; i++) blankDaysArray.push(i);
         let daysArray = [];
-        for (var i = 1; i <= daysInMonth; i++) daysArray.push(i);
+        for (let i = 1; i <= daysInMonth; i++) daysArray.push(i);
         this.month = month;
         this.year = year;
         this.blankDays = blankDaysArray;
@@ -983,7 +1017,7 @@ include_once("./_common.php");
             this.check = true;
           },
           error: ($xhr) => {
-            var message = $xhr.responseJSON.message;
+            let message = $xhr.responseJSON.message;
             if (message) {
               $('#code_keyup').text('* ' + message).css('color', '#d44747');
               ret = message;

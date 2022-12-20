@@ -555,31 +555,30 @@ function form_check(act) {
     </div>
   </div>
 
-  <div class="rep_update">
+<!--  <div class="rep_update">-->
         <!--- <a class = "btn_update" href="./my_recipient_update.php?id=<?=$pen['penId']?>" >변경내역 업데이트</a> -->
         <!-- <p class="final_update">최종 업데이트 YYYY-MM-DD</p> -->
-      <table >
-          <th>
-            <div>
-              <p class="con_top">계약 가능 금액</p>
-              <p class="con_mid" style="color: #ee0000;"><?php echo number_format($total_amt_pention_in_list); ?></p>
-              <p class="con_bot">* 등록된 전체 수급자의 잔여금액 합계</p>
-              <p class="con_bot">(유효 적용기간 기준)</p>
-            </div>
-          </th>
-          <th>
-              <p class="con_top">적용구간 종료 30일 이내</p>
-      		  <p class="con_mid"><a href="my_recipient_list.php?option=expire"><?php echo $count_on_deadline ?>명</a></p>
-              <p class="con_bot">* 조회일이 포함된 적용구간 기준</p>
-          </th>
-          <th>
-              <p class="con_top">대여기간 종료 30일 이내</p>
+<!--      <table >-->
+<!--          <th>-->
+<!--            <div>-->
+<!--              <p class="con_top">계약 가능 금액</p>-->
+<!--              <p class="con_mid" style="color: #ee0000;">--><?php //echo " - "; // number_format($total_amt_pention_in_list); ?><!--</p>-->
+<!--              <p class="con_bot">* 등록된 전체 수급자의 잔여금액 합계</p>-->
+<!--              <p class="con_bot">(유효 적용기간 기준)</p>-->
+<!--            </div>-->
+<!--          </th>-->
+<!--          <th>-->
+<!--              <p class="con_top">적용구간 종료 30일 이내</p>-->
+<!--      		  <p class="con_mid"><a href="my_recipient_list.php?option=expire">--><?php ////echo $count_on_deadline ?><!--명</a></p>-->
+<!--              <p class="con_bot">* 조회일이 포함된 적용구간 기준</p>-->
+<!--          </th>-->
+<!--          <th>-->
+<!--              <p class="con_top">대여기간 종료 30일 이내</p>-->
               <!-- <p class="con_mid"><a href="my_recipient_list.php?option=rental"><?php echo count($rental_list_within_period)?>명</p> -->
-              <p class="con_mid"><a href="my_recipient_list.php?option=rental"><?php echo count($arr_rental)?>명</p>
-              <p class="con_bot">* 재계약 가능 금액 : <?php echo number_format($total_rental_price)?>원</p>
-          </th>
-      </table>
-  </div>
+<!--              <p class="con_bot">* 재계약 가능 금액 : --><?php //echo number_format($total_rental_price)?><!--원</p>-->
+<!--          </th>-->
+<!--      </table>-->
+<!--  </div>-->
 <!--
   <div style="position: relative; width: 100%; height: 250px; padding-top: 30px; margin-bottom: 30px;">
       <div>
@@ -672,9 +671,9 @@ function form_check(act) {
       <a href="./my_recipient_write.php" class="btn eroumcare_btn2" title="수급자 등록">수급자 등록</a>
     </div>
   </form>
-  
+
   <?php
-  if (!get_tutorial('recipient_list_tooltip')) { 
+  if (!get_tutorial('recipient_list_tooltip')) {
     set_tutorial('recipient_list_tooltip', 1);
   ?>
   <script>
@@ -691,7 +690,7 @@ function form_check(act) {
 
   <div class="list_box pc">
     <form name="fmemberlist" id="fmemberlist" action="#" onsubmit="return fmemberlist_submit(this);" method="post">
-    <div class="table_box" style="display:none;">  
+    <div class="table_box" style="display:none;">
       <table class = "rep_list">
         <tr>
           <th id="mb_list_chk">
@@ -702,7 +701,7 @@ function form_check(act) {
           <th>수급자 정보</th>
           <th>장기요양정보</th>
           <!--<th>관리내역</th> -->
-          <th>급여내역</th>
+<!--          <th>급여내역</th>-->
           <th>장바구니</th>
           <th>욕구사정기록지</th>
         </tr>
@@ -712,7 +711,7 @@ function form_check(act) {
         var list__ = <?=json_encode($list)?>;
         console.log("list__ : ", list__);
         </script>
-        
+
         <?php foreach($list as $data) { ?>
         <?php $i++; ?>
         <tr>
@@ -754,31 +753,34 @@ function form_check(act) {
               <span class="data_penNum"><?php echo $data["penLtmNum"]; ?></span>
               (<?php if($data["penRecGraNm"]==''){echo str_replace('0','',$data["penRecGraCd"])."등급";} else {echo $data["penRecGraNm"];} ?><?php echo $pen_type_cd[$data['penTypeCd']] ? '/' . $pen_type_cd[$data['penTypeCd']] : ''; ?>)
               <br/>
-			  적용구간 : 
-              <?php 
-                $apped = substr($data['penAppEdDtm'], 0, 4).'-'.substr($data['penAppEdDtm'], 4, 2).'-'.substr($data['penAppEdDtm'], 6, 2); 
-                $appst = date('Y-m-d', strtotime("-1 years +1 days",strtotime($apped))); 
+			  적용구간 :
+              <?php
+                $apped = substr($data['penAppEdDtm'], 0, 4).'-'.substr($data['penAppEdDtm'], 4, 2).'-'.substr($data['penAppEdDtm'], 6, 2);
+                $appst = date('Y-m-d', strtotime("-1 years +1 days",strtotime($apped)));
                 while($appst > date('Y-m-d')){
-                  $apped = date('Y-m-d', strtotime("-1 years",strtotime($apped))); 
-                  $appst = date('Y-m-d', strtotime("-1 years",strtotime($appst))); 
+                  $apped = date('Y-m-d', strtotime("-1 years",strtotime($apped)));
+                  $appst = date('Y-m-d', strtotime("-1 years",strtotime($appst)));
                 }
                 echo $appst.' ~ '.$apped;?>
+              <!--
               <br/>
               최근 조회일 : <?php echo substr($remainAmtList[$data["penLtmNum"]]["updatedDate"],0,10); ?>
+              -->
             <?php }else{ ?>
               예비수급자
             <?php } ?>
           </td>
+            <!--
           <td style="text-align:center;">
             <span class="Pention_Amount"> 잔액 :  <?php echo number_format($remainAmtList[$data["penLtmNum"]]["remainAmt"]); ?>원 </span>
 			</br>
             <span class="Pention_Amount"> 사용 : <?php echo number_format(1600000-$remainAmtList[$data["penLtmNum"]]["remainAmt"]); ?>원 </span>
-
+-->
             <!--<span class="<?php echo $data['per_year']['sum_price'] > 1400000 ? 'red' : ''; ?>"><?php echo number_format($res_arr[$data['penLtmNum']]['transaction_amt']); ?>원</span>
             <br/>
             계약 <?php echo $res_arr[$data['penLtmNum']]['contract']; ?>건, 판매 <?php echo $res_arr[$data['penLtmNum']]['purchase']?>건, 대여 <?php echo $res_arr[$data['penLtmNum']]['rental'] ?>건
 			-->
-          </td>
+<!--          </td>-->
           <td style="text-align:center;">
 			<style>
 				a:link { color : black; }

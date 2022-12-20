@@ -188,7 +188,8 @@ input[type="number"]::-webkit-inner-spin-button {
 
               <input type="number" maxlength="10" oninput="maxLengthCheck(this)" id="penLtmNum" name="penLtmNum" class="form-control input-sm" style="width: calc(100% - 15px);" value="<?=preg_replace("/[^0-9]*/s", "", get_text($_GET['penLtmNum'])) ?: ''?>">
 
-              <button type="button" id="btn_pen_update" class="btn btn-color btn-sm" style="margin-left: 15px;">요양정보 조회</button>
+<!--              <button type="button" id="btn_pen_update" class="btn btn-color btn-sm" style="margin-left: 15px;">요양정보 조회</button>-->
+              <button type="button" id="btn_pen_duplicate" class="btn btn-color btn-sm" style="margin-left: 15px;">중복확인</button> <!-- 임시 -->
             </div>
           </div>
 
@@ -198,11 +199,21 @@ input[type="number"]::-webkit-inner-spin-button {
             </label>
             <div class="col-sm-3">
 
-              <input readonly type="text" name="penRecGraCd" value="<?=get_text($_GET['penRecGraCd']) ?: ''?>" class="form-control input-sm">
+<!-- 기존(장기요양정보조회)              <input readonly type="text" name="penRecGraCd" value="--><?//=get_text($_GET['penRecGraCd']) ?: ''?><!--" class="form-control input-sm">-->
+              <select class="form-control input-sm penProRel" name="penRecGraCd" id="penRecGraCd" style="margin-bottom: 5px;"> <!-- 임시 -->
+                <option value="00">등급외</option>
+                <option value="01">1등급</option>
+                <option value="02">2등급</option>
+                <option value="03">3등급</option>
+                <option value="04">4등급</option>
+                <option value="05">5등급</option>
+                <option value="06">6등급</option>
+              </select>
 
             </div>
           </div>
 
+<!-- 기존(장기요양정보조회)
           <div class="form-group has-feedback">
             <label class="col-sm-2 control-label">
               <b>대상자구분</b>
@@ -213,14 +224,21 @@ input[type="number"]::-webkit-inner-spin-button {
               <input type="hidden" id="SbaCd" name="SbaCd" value="<?=get_text($_GET['SbaCd']) ?: ''?>">
             </div>
           </div>
+-->
 
           <div class="form-group has-feedback">
             <label class="col-sm-2 control-label">
               <b>본인부담률</b>
             </label>
             <div class="col-sm-3">
-
-              <input readonly type="text" name="penPayRate" value="<?=get_text($_GET['penPayRate']) ?: ''?>" class="form-control input-sm">
+<!-- 기존(장기요양정보조회)              <input readonly type="text" name="penPayRate" value="--><?//=get_text($_GET['penPayRate']) ?: ''?><!--" class="form-control input-sm">-->
+              <select class="form-control input-sm penProRel" name="penPayRate" id="penPayRate" style="margin-bottom: 5px;"> <!-- 임시 -->
+                <option value="00">일반 15%</option>
+                <option value="01">감경 9%</option>
+                <option value="02">감경 6%</option>
+                <option value="03">의료 6%</option>
+                <option value="04">기초 0%</option>
+              </select>
 
             </div>
           </div>
@@ -231,8 +249,11 @@ input[type="number"]::-webkit-inner-spin-button {
             </label>
             <div class="col-sm-4">
 
-              <input readonly type="text" name="penExpiStDtm" class="form-control input-sm" dateonly2 style="display: inline-block;width:47%;" value="<?=get_text($_GET['penExpiStDtm']) ?: ''?>"> ~
-              <input readonly type="text" name="penExpiEdDtm" class="form-control input-sm" dateonly style="display: inline-block;width:48%;" value="<?=get_text($_GET['penExpiEdDtm']) ?: ''?>">
+              <input type="text" autocomplete="off" name="penExpiStDtm" class="form-control input-sm" dateonly2 style="display: inline-block;width:47%;" value="<?=get_text($_GET['penExpiStDtm']) ?: ''?>"> ~ <!-- 임시 -->
+              <input type="text" autocomplete="off" name="penExpiEdDtm" class="form-control input-sm" dateonly style="display: inline-block;width:48%;" value="<?=get_text($_GET['penExpiEdDtm']) ?: ''?>"> <!-- 임시 -->
+
+<!-- 기존(장기요양정보조회)              <input readonly type="text" name="penExpiStDtm" class="form-control input-sm" dateonly2 style="display: inline-block;width:47%;" value="--><?//=get_text($_GET['penExpiStDtm']) ?: ''?><!--"> ~-->
+<!-- 기존(장기요양정보조회)              <input readonly type="text" name="penExpiEdDtm" class="form-control input-sm" dateonly style="display: inline-block;width:48%;" value="--><?//=get_text($_GET['penExpiEdDtm']) ?: ''?><!--">-->
 
             </div>
           </div>
@@ -243,8 +264,11 @@ input[type="number"]::-webkit-inner-spin-button {
             </label>
             <div class="col-sm-4">
 
-              <input readonly type="text" name="penApplyStDtm" class="form-control input-sm" dateonly2 style="display: inline-block;width:47%;" value="<?=get_text($_GET['penExpiStDtm']) ?: ''?>"> ~
-              <input readonly type="text" name="penApplyEdDtm" class="form-control input-sm" dateonly style="display: inline-block;width:48%;" value="<?=get_text($_GET['penExpiEdDtm']) ?: ''?>">
+              <input type="text" autocomplete="off" name="penApplyStDtm" class="form-control input-sm" dateonly2 style="display: inline-block;width:47%;" value="<?=get_text($_GET['penExpiStDtm']) ?: ''?>"> ~ <!-- 임시 -->
+              <input type="text" autocomplete="off" name="penApplyEdDtm" class="form-control input-sm" dateonly style="display: inline-block;width:48%;" value="<?=get_text($_GET['penExpiEdDtm']) ?: ''?>"> <!-- 임시 -->
+
+<!-- 기존(장기요양정보조회)              <input readonly type="text" name="penApplyStDtm" class="form-control input-sm" dateonly2 style="display: inline-block;width:47%;" value="--><?//=get_text($_GET['penExpiStDtm']) ?: ''?><!--"> ~-->
+<!-- 기존(장기요양정보조회)              <input readonly type="text" name="penApplyEdDtm" class="form-control input-sm" dateonly style="display: inline-block;width:48%;" value="--><?//=get_text($_GET['penExpiEdDtm']) ?: ''?><!--">-->
 
             </div>
           </div>
@@ -255,7 +279,8 @@ input[type="number"]::-webkit-inner-spin-button {
             </label>
             <div class="col-sm-3">
 
-              <input readonly type="number" maxlength="8" oninput="maxLengthCheck(this)" id="penBirth" name="penBirth" min="0"  class="form-control input-sm" value="<?=get_text(str_replace('.','',$_GET['penBirth']))?>">
+              <input type="text" autocomplete="off" maxlength="8" oninput="maxLengthCheck(this)" id="penBirth" name="penBirth" min="0"  class="form-control input-sm" dateonly2 value="<?=get_text(str_replace('.','',$_GET['penBirth']))?>"> <!-- 임시 -->
+<!-- 기존(장기요양정보조회)              <input readonly type="number" maxlength="8" oninput="maxLengthCheck(this)" id="penBirth" name="penBirth" min="0"  class="form-control input-sm" value="--><?//=get_text(str_replace('.','',$_GET['penBirth']))?><!--">-->
               <input type="hidden" maxlength="6" oninput="maxLengthCheck(this)" id="penJumin1" name="penJumin1" min="0"  class="form-control input-sm" value="<?=get_text($_GET['penJumin'])?>">
               <input type="hidden" id="BDay" name="BDay" value="<?=get_text(str_replace('.','',$_GET['penBirth'])) ?: ''?>">
 
@@ -532,7 +557,8 @@ input[type="number"]::-webkit-inner-spin-button {
               $sale_ids[${'sale_product_name'. $i}] = ${'sale_product_id'.$i};
           ?>
           <label class="checkbox-inline dealing" id="sale" style="margin-left: 0px; width:146px;">
-            <input disabled type="checkbox" class="chk_sale_product chk_sale_product_child" name="<?=${'sale_product_id'.$i}; ?>" id="<?="sale_product_id".$i; ?>" value="<?=${'sale_product_id'.$i}; ?>" style="" ><?=${'sale_product_name'. $i}; ?>
+            <input type="checkbox" class="chk_sale_product chk_sale_product_child" name="<?=${'sale_product_id'.$i}; ?>" id="<?="sale_product_id".$i; ?>" value="<?=${'sale_product_id'.$i}; ?>" style="" ><?=${'sale_product_name'. $i}; ?>
+<!-- 기존(장기요양정보조회)            <input disabled type="checkbox" class="chk_sale_product chk_sale_product_child" name="--><?//=${'sale_product_id'.$i}; ?><!--" id="--><?//="sale_product_id".$i; ?><!--" value="--><?//=${'sale_product_id'.$i}; ?><!--" style="" >--><?//=${'sale_product_name'. $i}; ?>
           </label>
           <?php } ?>
         </div>
@@ -557,7 +583,8 @@ input[type="number"]::-webkit-inner-spin-button {
               $rent_ids[${'rental_product_name'. $i}] = ${'rental_product_id'.$i};
           ?>
           <label class="checkbox-inline dealing" id="rental" style="margin-left: 0px; width:146px;">
-            <input disabled type="checkbox" class="chk_sale_product chk_sale_product_child" name="<?=${'rental_product_id'. $i}; ?>" id="<?='rental_product_id'.$i; ?>" value="<?=${'rental_product_id'. $i}; ?>" style="" ><?=${'rental_product_name'. $i}; ?>
+            <input type="checkbox" class="chk_sale_product chk_sale_product_child" name="<?=${'rental_product_id'. $i}; ?>" id="<?='rental_product_id'.$i; ?>" value="<?=${'rental_product_id'. $i}; ?>" style="" ><?=${'rental_product_name'. $i}; ?>
+<!-- 기존(장기요양정보조회)            <input disabled type="checkbox" class="chk_sale_product chk_sale_product_child" name="--><?//=${'rental_product_id'. $i}; ?><!--" id="--><?//='rental_product_id'.$i; ?><!--" value="--><?//=${'rental_product_id'. $i}; ?><!--" style="" >--><?//=${'rental_product_name'. $i}; ?>
           </label>
         <?php } ?>
         </div>
@@ -735,7 +762,7 @@ for(var i = 0; i < Object.keys(item_arr).length; i++){
 }
 
 
-function recipientNumCheck(penLtmNum) {
+function recipientNumCheck(penLtmNum, status = "c") {
   var checking = true;
   if (penLtmNum.length == 10) {
     $.post('./ajax.my.recipient.num.check.php', {
@@ -744,9 +771,16 @@ function recipientNumCheck(penLtmNum) {
     .done(function(result) {
       var ent_pen = result.data.ent_pen;
       if (ent_pen) {
-        alert('이미 등록된 수급자 입니다.');
-        checking = false;
-        return window.location.href = "./my_recipient_view.php?id="+ent_pen['penId'];
+        if (!confirm("이미 등록된 수급자 입니다. 수급자 수정으로 이동하시겠습니까?")) {  // 임시 : 멘트 변경
+            return false;
+        } else {
+            checking = false;
+            return window.location.href = "./my_recipient_view.php?id="+ent_pen['penId'];
+        }
+      } else {  // 임시 : 멘트 추가
+          if(status != "w"){
+            alert('중복된 값이 없습니다.');
+          }
       }
     })
     .fail(function($xhr) {
@@ -926,7 +960,7 @@ $(function(){
   $("#btn_submit").click(function() {
     var penLtmNum = $("#penLtmNum").val();
 
-    if(!recipientNumCheck(penLtmNum)){
+    if(!recipientNumCheck(penLtmNum, "w")){
       return false;
     }
     
@@ -946,11 +980,15 @@ $(function(){
       }
     }
 
-    var penJumin =  $(".register-form input[name='BDay']").val().substr(2, 6);
-    
-    var penBirth = $(".register-form input[name='BDay']").val().substr(0,4)+'-'+$(".register-form input[name='BDay']").val().substr(4,2)+'-'+$(".register-form input[name='BDay']").val().substr(6,2);
+    var penJumin =  $(".register-form input[name='penBirth']").val().replace(/-/g, '').substr(2, 6); //임시
+    // var penJumin =  $(".register-form input[name='BDay']").val().substr(2, 6); // 기존
+
+    var penBirth = $(".register-form input[name='penBirth']").val().replace(/-/g, '').substr(0,4)+'-'+$(".register-form input[name='penBirth']").val().replace(/-/g, '').substr(4,2)+'-'+$(".register-form input[name='penBirth']").val().replace(/-/g, '').substr(6,2); // 임시
+    // var penBirth = $(".register-form input[name='BDay']").val().substr(0,4)+'-'+$(".register-form input[name='BDay']").val().substr(4,2)+'-'+$(".register-form input[name='BDay']").val().substr(6,2); // 기존
+
     var penLtmNum =  document.getElementById('penLtmNum');
 
+    /* 기존
     var pentype = $(".register-form input[name='SbaCd']").val();
     var penTypeCd = ''; //코드 일반15:00/감경9:01/감경6:02/의료6:03/기초0:04;
     var penTypeNm = ''; //형식 일반 15%, 감경 9%, 기초 0%
@@ -967,6 +1005,17 @@ $(function(){
     var recgrd = $(".register-form input[name='penRecGraCd']").val().replace(/[^0-9]/g, '') == '' ? '0' : $(".register-form input[name='penRecGraCd']").val().replace(/[^0-9]/g, '');
     var penRecGraNm = $(".register-form input[name='penRecGraCd']").val();
     var penRecGraCd = '0'+recgrd;
+    */
+
+    // 임시
+    var penType = document.getElementById("penPayRate");
+    var penTypeCd = penType.options[penType.selectedIndex].value; //코드 일반15:00/감경9:01/감경6:02/의료6:03/기초0:04;
+    var penTypeNm = penType.options[penType.selectedIndex].text; //형식 일반 15%, 감경 9%, 기초 0%
+
+   // 임시
+    var penRecGra = document.getElementById("penRecGraCd");
+    var penRecGraCd = penRecGra.options[penRecGra.selectedIndex].value;
+    var penRecGraNm = penRecGra.options[penRecGra.selectedIndex].text;
 
     var penSpare = $(".register-form input[name='penSpare']:checked").val();
     if(penSpare != '1') {
@@ -1058,6 +1107,7 @@ $(function(){
     }, 'json')
     .done(function(result) {      
       // macro_request 상태 업데이트
+      /*
       $.post('./ajax.macro_update.php', {
         mb_id : "<?=$member['mb_id']?>",
         recipient_name : $(".register-form input[name='penNm']").val(),
@@ -1109,6 +1159,7 @@ $(function(){
       .always(function() {
         loading = false;
       });
+*/
 
       var data = result.data;
 
@@ -1153,6 +1204,12 @@ $(function(){
       var data = $xhr.responseJSON;
       alert(data && data.message);
     });
+  });
+
+  // 중복확인 btn_pen_duplicate
+  $('#btn_pen_duplicate').click(function() {
+      var str_id = $("input[name='penLtmNum']")[0].value;
+      recipientNumCheck(str_id);
   });
 
 

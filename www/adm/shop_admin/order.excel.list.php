@@ -354,9 +354,10 @@
   for($ii = 0; $ii < count($ct_id); $ii++) {
 
     $it = sql_fetch("
-      SELECT cart.*, item.it_thezone2
+      SELECT cart.*, item.it_thezone2, o.io_thezone, o.io_thezone as io_thezone2, item.ca_id, it_standard, io_standard
       FROM g5_shop_cart as cart
       INNER JOIN g5_shop_item as item ON cart.it_id = item.it_id
+      LEFT JOIN g5_shop_item_option o ON (cart.it_id = o.it_id and cart.io_id = o.io_id)
       WHERE cart.ct_id = '{$ct_id[$ii]}'
       ORDER BY cart.ct_id ASC
     ");
@@ -398,7 +399,7 @@
     // 종료 -->
 
     $it_name = $it["it_name"];
-    if($it_name != $it["ct_option"]){ $it_name .= " [{$it["ct_option"]}]";}
+    //if($it_name != $it["ct_option"]){ $it_name .= " [{$it["ct_option"]}]";}
 
     $addr="";
     if($od_b_zip1){$addr= "(".$od_b_zip1.$od_b_zip2.")";}
@@ -415,39 +416,95 @@
     $_ct_direct_delivery_date = ($it["ct_direct_delivery_date"])?mb_substr($it["ct_direct_delivery_date"],0,10):" ";
     $_ct_ex_date = ($it["ct_ex_date"])?mb_substr($it["ct_ex_date"],0,10):" ";
 
+    // 22.12.20 : 서원 - 주문내역 엑셀 양식 컬럼 추가 및 데이터 요청
+    $thezone_code = $it['io_thezone2'] ?: $it['io_thezone'] ?: $it['it_thezone2'];
+    $standard = $it['io_standard'] ?: $it['it_standard']; // 규격
+    $_price = $it['ct_price'] + $it['io_price'];
+    
+    // 22.12.20 : 서원 - 주문내역 엑셀 양식 컬럼 추가 및 데이터 요청
+    $total_price = $it["ct_qty"]*(int)$_price;
+    $_notax_price = $_tax = 0;
+    if( $it['ct_notax'] ) {
+      $_notax_price = $total_price;
+    } else {
+      $_notax_price = (round($total_price / 1.1)); //공급가액
+      $_tax = ($total_price - round($total_price / 1.1)); //부가세
+    }
+
     $rows[] = [ 
-      ' '.$it['od_id'],
-      date("Y-m-d", strtotime($od["od_time"]))."-".($i),
-      $_ct_direct_delivery_date, /* 22.11.15 : 서원 - 주문내역 다운로드용 엑셀 양식 수정 */
-      $_ct_ex_date, /* 22.11.15 : 서원 - 주문내역 다운로드용 엑셀 양식 수정 */
-      $it_name,
-      $it["ct_qty"],
-      $it_name." / ".$it["ct_qty"].' EA',
-      $od["od_b_name"],
-      ' '.$_thezone,
-      $od["od_name"],
-      $it['sale_manager'],
-      $it['addr'],
-      $od["od_b_tel"],
-      $od["od_b_hp"],
-      $it["prodMemo"],
-      $od["od_memo"],
-      $report['ir_issue'], /* 22.11.15 : 서원 - 주문내역 다운로드용 엑셀 양식 수정 */
-      $it['ct_id'],
-      $ct_delivery_company,
-      $it['ct_delivery_num']
+      ' '.$it['od_id'],    /* "주문번호"   */
+      date("Y-m-d", strtotime($od["od_time"]))."-".($i),    /* "일자-No"    */
+      $_ct_direct_delivery_date,    /* "출고예정일"   */
+      $_ct_ex_date,    /* "출고완료일"   */
+      $it_name,    /* "품목명"   */
+      $standard,    /* "규격"   */
+      $thezone_code,    /* "품목코드"   */
+      $it["ct_qty"],    /* "수량"   */
+      ($it['ct_notax']?"비과세":"과세"),    /* "과세여부"   */
+      $_price,    /* "단가"   */
+      $_notax_price,    /* "공급가"   */
+      $_tax,    /* "부가세"   */
+      $total_price,    /* "합계"   */
+      $od["od_b_name"],    /* "배송지명"   */
+      ' '.$_thezone,    /* "사업자코드"   */
+      $od["od_b_name"],    /* "주문회원"   */
+      $it['sale_manager'],    /* "영업담당자"   */
+      $it['addr'],    /* "배송처"   */
+      $od["od_b_tel"],    /* "연락처"   */
+      $od["od_b_hp"],    /* "휴대폰"   */
+      $it["prodMemo"],    /* "적요"   */
+      $od["od_memo"],    /* "배송지요청사항"   */
+      $report['ir_issue'],    /* "메모"   */
+      $it['ct_id'],    /* "카트ID"   */
+      $ct_delivery_company,    /* "택배사"   */
+      $it['ct_delivery_num'],    /* "송장번호"   */
+      $it['ct_status']    /* "배송상태"   */
+      
     ];
   }
 
-
-  $headers = array("주문번호", "일자-No.", "출고예정일", "출고완료일", "품목명[규격]", "수량", "품목&수량", "배송지명", "사업자코드", "주문회원", "영업담당자", "배송처", "연락처", "휴대폰", "적요", "배송지요청사항", "메모", "카트ID", "택배사", "송장번호");
+  // 22.12.14 : 서원 - 엑셀 컬럼 명칭
+  $headers = array(
+    "주문번호",
+    "일자-No.",
+    "출고예정일",
+    "출고완료일",
+    "품목명",
+    "규격",
+    "품목코드",
+    "수량",
+    "과세여부",    
+    "단가",
+    "공급가",
+    "부가세",
+    "합계",
+    "배송지명",
+    "사업자코드",
+    "주문회원",
+    "영업담당자",
+    "배송처",
+    "연락처",
+    "휴대폰",
+    "적요",
+    "배송지요청사항",
+    "메모",
+    "카트ID",
+    "택배사",
+    "송장번호",
+    "배송상태"
+  );
   $data = array_merge(array($headers), $rows);
-    
-  $widths  = array(20, 20, 20, 20, 50, 10, 30, 30, 30, 30, 50, 20, 20, 10, 20, 20, 10, 15, 20);
+  
+  // 22.12.14 : 서원 - 엑셀 컬럼 사이즈
+  /*
+  $widths  = array( 10 );
   $header_bgcolor = 'FFABCDEF';
   $last_char = column_char(count($headers) - 1);
+  */
 
   $excel = new PHPExcel();
+  
+  /*
   $excel->setActiveSheetIndex(0)
     ->getStyle( "A1:${last_char}1" )
     ->getFill()
@@ -460,8 +517,9 @@
     ->getAlignment()
     ->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER)
     ->setWrapText(true);
+  */
 
-  foreach($widths as $i => $w) $excel->setActiveSheetIndex(0)->getColumnDimension( column_char($i) )->setWidth($w);
+  //foreach($widths as $i => $w) $excel->setActiveSheetIndex(0)->getColumnDimension( column_char($i) )->setWidth($w);
   $excel->getActiveSheet()->fromArray($data,NULL,'A1');
 
   header("Content-Type: application/octet-stream");

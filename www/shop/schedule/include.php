@@ -78,6 +78,111 @@
   </script>"
 ?>
 <?php
+  echo "<style>
+  [x-cloak] {
+    display: none;
+  }
+  
+  .popModal {
+    font-size: 12px;
+    line-height: 22px;
+    padding: 10px;
+    cursor: default;
+  }
+  
+  .popModal .popModal_content {
+    margin: 0;
+  }
+  
+  .popModal .title {
+    color: #666;
+    margin-bottom: 5px;
+  }
+  
+  .popModal input[type=\"text\"] {
+    background: #fff;
+    color: #666;
+    border: 1px solid #ddd;
+    text-align: center;
+    width: 110px;
+  }
+  
+  .popModal select {
+    background: #fff;
+    color: #666;
+    border: 1px solid #ddd;
+    height: 24px;
+    width: 55px;
+  }
+  
+  .popModal .btn_submit {
+    display: block;
+    padding: 4px;
+    border-radius: 3px;
+    background: #f1a73a;
+    color: #fff;
+    margin: 5px auto 0 auto;
+    width: 100px;
+  }
+  
+  .modal-open div.popup_box {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    left: 0;
+    top: 0;
+    z-index: 99999999;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: table;
+    table-layout: fixed;
+    opacity: 0;
+  }
+  
+  .modal-open div.popup_box>div {
+    width: 100%;
+    height: 100%;
+    display: table-cell;
+    vertical-align: middle;
+  }
+  
+  .modal-open div.popup_box iframe {
+    position: relative;
+    width: 600px;
+    height: 700px;
+    border: 0;
+    background-color: #FFF;
+    left: 50%;
+    margin-left: -250px;
+  }
+  
+  .ct_status_mode_wr {
+    display: inline-block;
+    margin: 0 !important;
+  }
+  
+  .ct_status_mode_wr input[type=\"radio\"] {
+    margin: 8px 0;
+    width: 14px;
+    height: 14px;
+  }
+  
+  .ct_status_mode_wr label {
+    margin: 5px 10px 5px 0;
+    line-height: 20px;
+  }
+  
+  @media (max-width : 750px) {
+    .modal-open div.popup_box iframe {
+      width: 100%;
+      height: 100%;
+      left: 0;
+      margin-left: 0;
+    }
+  }
+  </style>";
+
+?>
+<?php
 if ($_SESSION['ss_manager_mb_id']) {
   $member = get_member($_SESSION['ss_manager_mb_id']);
 } else {
