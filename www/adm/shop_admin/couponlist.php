@@ -42,10 +42,10 @@ if($type == "group"){
     $sql_group = "";
 
     $sql_select = "
-        select cpl.cl_datetime, cm.mb_id as coupon_user_id, m.mb_name as coupon_user_name, c.*, x.mb_name as mb_name
+        select cpl.cl_datetime, CAST(cpl.od_id AS CHAR(16)) AS fod, cm.mb_id as coupon_user_id, m.mb_name as coupon_user_name, c.*, x.mb_name as mb_name
     ";
 
-    $colspan = 12;
+    $colspan = 13;
 }
 
 $sql_search = ' where (1) ';
@@ -91,7 +91,7 @@ if ($sel_field) {
   } else {
       switch ($sel_field) {
         case 'cp_all' :
-          $sql_search .= " and ( m.mb_id like '%{$search}%' or m.mb_name like '%{$search}%' or c.cp_id like '%{$search}%' or c.cp_subject like '%{$search}%' ) ";
+          $sql_search .= " and ( m.mb_id like '%{$search}%' or m.mb_name like '%{$search}%' or c.cp_id like '%{$search}%' or c.cp_subject like '%{$search}%' or  cpl.od_id = '{$search}') ";
           break;
         case 'mb_id' :
           $sql_search .= " and ( m.mb_id like '%{$search}%' ) ";
@@ -104,6 +104,9 @@ if ($sel_field) {
           break;
         case 'cp_name' :
           $sql_search .= " and ( c.cp_subject like '%{$search}%' ) ";
+          break;
+        case 'od_id' :
+          $sql_search .= " and ( cpl.od_id = '{$search}' ) ";
           break;
       }
   }
@@ -284,6 +287,7 @@ $qstr = "type={$type}&amp;cp_expiration={$cp_expiration}&amp;sel_cp_method={$sel
                             <option value="cp_name" <?php echo get_selected($sel_field, 'cp_name'); ?>>쿠폰 이름</option>
                             <option value="mb_id" <?php echo get_selected($sel_field, 'mb_id'); ?>>회원 ID</option>
                             <option value="mb_name" <?php echo get_selected($sel_field, 'mb_name'); ?>>회원 이름</option>
+                            <option value="od_id" <?php echo get_selected($sel_field, 'od_id'); ?>>주문번호</option>
                         </select>
                     <?php } ?>
                     <input type="text" name="search" value="<?php echo $search; ?>" id="search" class="frm_input" autocomplete="off" style="width:200px;">
@@ -449,6 +453,7 @@ $qstr = "type={$type}&amp;cp_expiration={$cp_expiration}&amp;sel_cp_method={$sel
             <th scope="col">사용가능일자</th>
             <th scope="col">생성일자</th>
             <th scope="col">사용일자</th>
+            <th scope="col">주문번호</th>
             <th scope="col">비고</th>
         </tr>
         </thead>
@@ -521,6 +526,7 @@ $qstr = "type={$type}&amp;cp_expiration={$cp_expiration}&amp;sel_cp_method={$sel
             <td class="cp_using_date td_datetime"><?php echo $row['cp_start']; ?> ~ <?php echo $row['cp_end']; ?></td> <!-- 사용가능일자 -->
             <td class="cp_datetime td_delicom td_center"><?php echo date("Y-m-d H:m:i", strtotime($row['cp_datetime'])); ?></td> <!-- 생성일자 -->
             <td class="cp_used_datetime td_delicom td_center"><?php if($used_date){ echo date("Y-m-d H:m:i", strtotime($used_date)); } ?></td> <!-- 사용일자 -->
+            <td class="td_odrnum3"><?php if($row['fod']) echo '<a href="./samhwa_orderform.php?od_id='.$row['fod'].'&sub_menu=400400">'.$row['fod'].'</a>'; ?></td> <!-- 주문번호 -->
             <td class="cp_etc td_mng td_mng_s"> <!-- 비고 : 이미 사용한 쿠폰은 삭제할 수 없다. -->
                 <?php if(!$used_date){ ?><a href="./couponlist_delete.php?cp_no=<?php echo $row['cp_no']; ?>&amp;mb_id=<?php echo $row['coupon_user_id']; ?>&amp;<?php echo $qstr; ?>" class="btn btn_03"><span class="sound_only"><?php echo $row['cp_id']; ?> </span>삭제</a> <?php } ?>
             </td>
