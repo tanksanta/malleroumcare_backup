@@ -6,6 +6,7 @@ if(!$is_samhwa_partner && !$is_admin) {
 }
 
 $od_id = get_search_string($_GET['od_id']);
+$ct_id = get_search_string($_GET['ct_id']);
 if(!$od_id) {
   alert('정상적인 접근이 아닙니다.');
 }
@@ -109,6 +110,7 @@ $sql = "
     WHERE
         od_id = '$od_id' and
         ct_direct_delivery_partner = '{$member['mb_id']}' and
+		ct_id = '$ct_id' and 
         ct_status IN('준비', '출고준비', '배송', '완료')
     ORDER BY
         ct_id ASC

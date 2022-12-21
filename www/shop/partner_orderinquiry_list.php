@@ -743,14 +743,14 @@ a.btn_schedule {
                                     </p>
                                     <?php } ?>
                                     <p style="margin-top: 5px;">
-                                        <?php if($_check_ct_status != '출고준비') { ?>
+                                        <?php if($_check_ct_status == '출고완료' || $_check_ct_status == '배송완료' ) { ?>
                                         <?php if($row['ct_is_direct_delivery'] == 2) { ?>
                                         <?php if($row['report'] && ($row['report']['ir_cert_url'] || $row['report']['ir_file_url'])) { ?>
                                         <button type="button" class="report-btn btn_install_report done"
-                                            data-id="<?=$row['od_id']?>">설치결과보고서 완료</button>
+                                            data-odid="<?=$row['od_id']?>" data-ctid="<?=$row['ct_id']?>">설치결과보고서 완료</button>
                                         <?php } else { ?>
                                         <button type="button" class="report-btn btn_install_report"
-                                            data-id="<?=$row['od_id']?>">설치결과보고서 등록</button>
+                                            data-odid="<?=$row['od_id']?>" data-ctid="<?=$row['ct_id']?>">설치결과보고서 등록</button>
                                         <?php } ?>
                                         <?php } ?>
                                         <?php } ?>
@@ -1055,9 +1055,13 @@ $(function() {
         e.preventDefault();
         e.stopPropagation();
 
-        var od_id = $(this).data('id');
+        var od_id = $(this).data('odid');
+        var ct_id = $(this).data('ctid');
+		console.log(od_id);
+		console.log(ct_id);
+
         $("body").addClass('modal-open');
-        $("#popup_box > div").html('<iframe src="popup.partner_installreport.php?od_id=' + od_id +
+        $("#popup_box > div").html('<iframe src="popup.partner_installreport.php?od_id=' + od_id +'&ct_id='+ct_id+ 
             '">');
         $("#popup_box iframe").load(function() {
             $("#popup_box").show();
