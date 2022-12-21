@@ -3817,3 +3817,126 @@ function decryption_AES256( $msg, $key, $Iv ){
   return $_result;
 }
 
+
+/*
+*
+* 작성자 : 박서원
+* 작성일자 : 2022-12-20
+* 마지막 수정자 : 박서원
+* 마지막 수정일자 : 2022-12-20
+* 설명 : 연락처 마스킹 처리
+* @param string $str : 연락처
+* @return string : 010-****-1234 / 02***1234
+* 사용 : $result = Masking_Tel( "010-1234-5678" );
+* 
+*/
+function Masking_Tel($str){ 
+  $_result = "";
+  $_array = explode("-", $str);
+
+  if( (COUNT($_array)>1) && is_array( $_array ) ) {
+    
+    $strlen = mb_strlen($_array[1], 'utf-8');
+    switch($strlen){
+      case 3: $_result = $_array[0]."-***-".$_array[2]; break;
+      case 4: $_result = $_array[0]."-****-".$_array[2]; break;
+      case 0: $_result =''; break;
+    }
+
+  } else {
+
+    $strlen = mb_strlen($str, 'utf-8');
+    switch($strlen){
+      case 9: $_result = mb_substr($str,0,2)."***".mb_substr($str,5,4); break;
+      case 10: $_result = mb_substr($str,0,3)."***".mb_substr($str,6,4); break;
+      case 11: $_result = mb_substr($str,0,3)."****".mb_substr($str,7,4); break;
+      case 0: $_result =''; break;
+    }
+
+  }
+
+  return $_result;
+}
+
+
+/*
+*
+* 작성자 : 박서원
+* 작성일자 : 2022-12-20
+* 마지막 수정자 : 박서원
+* 마지막 수정일자 : 2022-12-20
+* 설명 : 문자열 전체 마스킹
+* @param string $str : 문자열
+* @return string : *************************
+* 사용 : $result = Masking_All( "이로움장기요양기관통합관리시스템" );
+* 
+*/
+// 문자열 전체 마스킹
+function Masking_All($str){ 
+  $_result = preg_replace('/(.*?)/', '*', $str);
+  return $_result;
+}
+
+
+/*
+*
+* 작성자 : 박서원
+* 작성일자 : 2022-12-20
+* 마지막 수정자 : 박서원
+* 마지막 수정일자 : 2022-12-20
+* 설명 : 이름 마스킹
+* @param string $str : 문자열
+* @return string : *************************
+* 사용 : $result = Masking_Name( "홍길동" );
+* 
+*/
+function Masking_Name($str) {
+  $str = trim($str);
+  $strlen = mb_strlen($str, 'utf-8');
+  $_result = $str;
+
+  if ($strlen <= 2) {
+    // 한두 글자면 그냥 뒤에 별표 붙여서 내보낸다.
+    $_result = mb_substr($str, 0, 1, 'utf-8') . '*';
+  }
+  else if ($strlen >= 3) {
+    // 3으로 나눠서 앞뒤.
+    $leave_strlen = floor($strlen/3); // 남겨 둘 길이
+    $asterisk_strlen = $strlen - ($leave_strlen * 2);
+    $offset = $leave_strlen + $asterisk_strlen;
+    $head = mb_substr($str, 0, $leave_strlen, 'utf-8');
+    $tail = mb_substr($str, $offset, $leave_strlen, 'utf-8');
+    $_result = $head . implode('', array_fill(0, $asterisk_strlen, '*')) . $tail;
+  }
+
+  return $_result;
+}
+
+
+/*
+*
+* 작성자 : 박서원
+* 작성일자 : 2022-12-20
+* 마지막 수정자 : 박서원
+* 마지막 수정일자 : 2022-12-20
+* 설명 : 문자열 커스텀 마스킹
+* @param string $str : 문자열
+* @return string : 이로움장기요양기관통*****템
+* 사용 : $result = Masking_Custom( "이로움장기요양기관통합관리시스템", 10 , 5 );
+* 
+*/
+function Masking_Custom($str, $start, $len) {
+  $_result = "";
+  $strlen = mb_strlen($str, 'utf-8');
+
+  $head = mb_substr($str, 0, $start, 'utf-8');  
+  $tail = mb_substr($str, ($start+$len), ($strlen-($start+$len)), 'utf-8');
+  
+  $masking = mb_substr($str, $start, $len, 'utf-8');  
+  $strlen = mb_strlen($masking, 'utf-8');
+  $masking = implode('', array_fill(0, $strlen, '*'));
+
+  $_result = $head . $masking . $tail;
+  
+  return $_result;
+}
