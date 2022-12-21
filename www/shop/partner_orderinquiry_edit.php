@@ -86,7 +86,8 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
 <section class="wrap">
   <div class="sub_section_tit">주문 수정</div>
   <div class="inner">
-    <form id="simple_order" name="forderform" class="form-horizontal" action="partner_orderinquiry_edit_result.php" method="post">
+    <form id="simple_order" name="forderform" class="form-horizontal" action="partner_orderinquiry_edit_result.php"
+      method="post">
       <input type="hidden" name="od_id" value="<?=$od_id?>">
       <div class="panel panel-default">
         <div class="panel-body">
@@ -118,7 +119,7 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
         <div class="so_sch_wr">
           <div class="so_sch_hd">상품정보</div>
           <div class="ipt_so_sch_wr">
-            <img src="<?php echo THEMA_URL; ?>/assets/img/icon_search.png" >
+            <img src="<?php echo THEMA_URL; ?>/assets/img/icon_search.png">
             <input type="text" id="ipt_so_sch" class="ipt_so_sch" placeholder="여기에 추가할 상품명을 입력해주세요">
           </div>
           <div class="so_sch_pop">
@@ -159,19 +160,22 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
                   판매가 : <?=number_format($ct['it_cust_price'])?>원
                 </p>
                 <div class="flex">
-                    <div class="prod_memo_hd">요청사항</div>
-                    <input type="text" class="ipt_prod_memo" name="prodMemo[]" value="<?=$ct['prodMemo']?>" placeholder="상품관련 요청사항을 입력하세요.">
+                  <div class="prod_memo_hd">요청사항</div>
+                  <input type="text" class="ipt_prod_memo" name="prodMemo[]" value="<?=$ct['prodMemo']?>"
+                    placeholder="상품관련 요청사항을 입력하세요.">
                 </div>
               </div>
             </div>
             <div class="it_qty_wr">
               <div class="input-group">
                 <div class="input-group-btn">
-                  <button type="button" class="it_qty_minus btn btn-lightgray btn-sm"><i class="fa fa-minus"></i><span class="sound_only">감소</span></button>
+                  <button type="button" class="it_qty_minus btn btn-lightgray btn-sm"><i class="fa fa-minus"></i><span
+                      class="sound_only">감소</span></button>
                 </div>
                 <input type="text" name="ct_qty[]" value="<?=$ct['ct_qty']?>" class="form-control input-sm">
                 <div class="input-group-btn">
-                  <button type="button" class="it_qty_plus btn btn-lightgray btn-sm"><i class="fa fa-plus"></i><span class="sound_only">증가</span></button>
+                  <button type="button" class="it_qty_plus btn btn-lightgray btn-sm"><i class="fa fa-plus"></i><span
+                      class="sound_only">증가</span></button>
                 </div>
               </div>
             </div>
@@ -180,17 +184,12 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
                 <p class="it_price">단가 : <span><?=number_format($ct['it_cust_price'])?>원</span></p>
                 <p class="ct_price">0원</p>
               </div>
-<<<<<<< HEAD
-              <!--button type="button" class="btn_del_item">삭제</button-->
-=======
               <!-- button type="button" class="btn_del_item">삭제</button -->
->>>>>>> 48ceeaabcccc6e4e5e35985519e5b786c81f67e7
-            </div>
           </li>
           <?php } ?>
         </ul>
         <div class="total_price_wr">
-          총 결제 금액 : 
+          총 결제 금액 :
           <span class="total_price">0원</span>
         </div>
 
@@ -204,7 +203,7 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js"></script>');
 function select_item(obj, io_id, ct_qty) {
   var $li = $('<li class="flex">');
   $li.append('<input type="hidden" name="it_id[]" value="' + obj.it_id + '">')
-  .append('<input type="hidden" name="it_price[]" value="' + obj.it_cust_price + '">')
+    .append('<input type="hidden" name="it_price[]" value="' + obj.it_cust_price + '">')
 
   var $info_wr = $('<div class="it_info_wr">');
   $info_wr.append('<img class="it_img" src="/data/item/' + obj.it_img + '" onerror="this.src=\'/img/no_img.png\';">');
@@ -217,11 +216,12 @@ function select_item(obj, io_id, ct_qty) {
   var ct_price = it_price;
   if (obj.options.length) {
     var option_html = "<select name=\"io_id[]\">";
-    for(var i = 0; i < obj.options.length; i++) {
+    for (var i = 0; i < obj.options.length; i++) {
       if (i === 0) {
         ct_price += parseInt(obj.options[i]['io_price']);
       }
-      option_html += "<option data\-price=\"" + obj.options[i]['io_price'] + "\" value=\"" + obj.options[i]['io_id'] + "\">" + obj.options[i]['io_id'].replace(//gi, " > ") + "</option>";
+      option_html += "<option data\-price=\"" + obj.options[i]['io_price'] + "\" value=\"" + obj.options[i]['io_id'] +
+        "\">" + obj.options[i]['io_id'].replace(//gi, " > ") + "</option>";
     }
     option_html += "</select>";
     $it_name.append(option_html);
@@ -240,11 +240,11 @@ function select_item(obj, io_id, ct_qty) {
   );
 
   $info.append(
-    $it_name,
-    $it_price,
-    $prod_memo
+      $it_name,
+      $it_price,
+      $prod_memo
     )
-  .appendTo($info_wr);
+    .appendTo($info_wr);
   $li.append($info_wr);
 
   var $qty_wr = $('<div class="it_qty_wr">');
@@ -263,21 +263,21 @@ function select_item(obj, io_id, ct_qty) {
 
   var $price_wr = $('<div class="it_price_wr flex space-between">');
   $price_wr
-  .append(
-    '<div><p class="it_price">단가 : <span>' + number_format(it_price) + '원</span></p>' +
-    '<p class="ct_price">' + number_format(ct_price) + '원</p></div>',
-    '<input type="hidden" name="ct_price[]" value="' + ct_price + '">',
-    '<button type="button" class="btn_del_item">삭제</button>'
-  )
-  .appendTo($li);
+    .append(
+      '<div><p class="it_price">단가 : <span>' + number_format(it_price) + '원</span></p>' +
+      '<p class="ct_price">' + number_format(ct_price) + '원</p></div>',
+      '<input type="hidden" name="ct_price[]" value="' + ct_price + '">',
+      '<button type="button" class="btn_del_item">삭제</button>'
+    )
+    .appendTo($li);
 
   $('#so_item_list').append($li);
 
-  if(io_id) {
+  if (io_id) {
     $li.find('select[name="io_id[]"]').val(io_id);
   }
 
-  if(ct_qty) {
+  if (ct_qty) {
     $li.find('input[name="ct_qty[]"]').val(ct_qty);
   }
 
@@ -294,19 +294,19 @@ $('#ipt_so_sch').flexdatalist({
     noResultsText: '"{keyword}"으로 검색된 내용이 없습니다.',
     selectionRequired: true,
     focusFirstResult: true,
-    searchIn: ["it_name","it_model","id", "it_name_no_space"],
+    searchIn: ["it_name", "it_model", "id", "it_name_no_space"],
     visibleCallback: function($li, item, options) {
-        var $item = {};
-        $item = $('<span>')
+      var $item = {};
+      $item = $('<span>')
         .html("[" + item.gubun + "] " + item.it_name + " (" + number_format(item.it_price) + "원)");
 
-        $item.appendTo($li);
-        return $li;
+      $item.appendTo($li);
+      return $li;
     },
-})
-.on("select:flexdatalist", function(event, obj, options) {
+  })
+  .on("select:flexdatalist", function(event, obj, options) {
     select_item(obj);
-});
+  });
 
 // 주문금액계산
 function calculate_order_price() {
@@ -315,15 +315,15 @@ function calculate_order_price() {
   var order_price = 0;
   $li.each(function() {
     var it_id = $(this).find('input[name="it_id[]"]').val();
-    var it_price = parseInt ( $(this).find('input[name="it_price[]"]').val() || 0 );
-    var io_price = parseInt( $(this).find('select[name="io_id[]"] option:selected').data('price') || 0 );
-    var ct_qty = parseInt( $(this).find('input[name="ct_qty[]"]').val() || 0 );
+    var it_price = parseInt($(this).find('input[name="it_price[]"]').val() || 0);
+    var io_price = parseInt($(this).find('select[name="io_id[]"] option:selected').data('price') || 0);
+    var ct_qty = parseInt($(this).find('input[name="ct_qty[]"]').val() || 0);
     var deleted = $(this).find('input[name="deleted[]"]').val() == '1';
 
-    if(deleted)
+    if (deleted)
       return;
 
-    var ct_price = ( it_price + io_price ) * ct_qty;
+    var ct_price = (it_price + io_price) * ct_qty;
     $(this).find('.it_price_wr .it_price span').text(number_format(it_price + io_price) + '원');
     $(this).find('.it_price_wr .ct_price').text(number_format(ct_price) + '원');
     $(this).find('input[name="ct_price[]"]').val(ct_price);
@@ -334,8 +334,8 @@ function calculate_order_price() {
   $('#order_price').text(number_format(order_price));
 
   // 총 결제금액
-  $('#total_price').text(number_format( order_price ));
-  $('.total_price_wr .total_price').text(number_format( order_price ) + '원');
+  $('#total_price').text(number_format(order_price));
+  $('.total_price_wr .total_price').text(number_format(order_price) + '원');
 }
 
 // 상품수량변경
@@ -344,14 +344,14 @@ $(document).on('click', '.it_qty_wr button', function() {
   var this_qty;
   var $ct_qty = $(this).closest('.it_qty_wr').find('input[name^=ct_qty]');
 
-  switch(mode) {
+  switch (mode) {
     case '증가':
       this_qty = parseInt($ct_qty.val().replace(/[^0-9]/, "")) + 1;
       $ct_qty.val(this_qty);
       break;
     case '감소':
       this_qty = parseInt($ct_qty.val().replace(/[^0-9]/, "")) - 1;
-      if(this_qty < 1) this_qty = 1
+      if (this_qty < 1) this_qty = 1
       $ct_qty.val(this_qty);
       break;
   }
@@ -359,7 +359,7 @@ $(document).on('click', '.it_qty_wr button', function() {
   calculate_order_price();
 });
 $(document).on('change paste keyup', 'input[name="ct_qty[]"]', function() {
-  if($(this).val() < 1)
+  if ($(this).val() < 1)
     $(this).val(1);
 
   calculate_order_price();
@@ -368,7 +368,7 @@ $(document).on('change paste keyup', 'input[name="ct_qty[]"]', function() {
 // 품목 삭제
 $(document).on('click', '.btn_del_item', function() {
   var $li = $(this).closest('li');
-  if($li.find('input[name="ct_id[]"]').length > 0) {
+  if ($li.find('input[name="ct_id[]"]').length > 0) {
     // 기존 주문 상품이면
     $li.find('input[name="deleted[]"]').val('1');
     $li.hide();
