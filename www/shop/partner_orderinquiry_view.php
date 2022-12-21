@@ -216,11 +216,7 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.magnific-popup.js"></script>',
             <div class="report-img">
               <a href="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" target="_blank" class="view_image">
                 <img src="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>"
-<<<<<<< HEAD
-                  onerror="this.src='/shop/img/no_image.gif';">
-=======
                   onerror="this.src='<? if (strpos($photo['ip_photo_name'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo '/shop/img/no_image.gif'; ?>';">
->>>>>>> 32cf24ae1a95f800853ecd85f03323e8a7077339
               </a>
             </div>
           </div>
@@ -235,11 +231,7 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.magnific-popup.js"></script>',
             <div class="report-img">
               <a href="<?=G5_DATA_URL.'/partner/img/'.$report['ir_cert_url']?>" target="_blank" class="view_image">
                 <img src="<?=G5_DATA_URL.'/partner/img/'.$report['ir_cert_url']?>"
-<<<<<<< HEAD
-                  onerror="this.src='/shop/img/no_image.gif';">
-=======
                   onerror="this.src='<? if (strpos($photo['ip_photo_name'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo '/shop/img/no_image.gif'; ?>';">
->>>>>>> 32cf24ae1a95f800853ecd85f03323e8a7077339
               </a>
             </div>
           </div>
@@ -249,11 +241,7 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.magnific-popup.js"></script>',
             <div class="report-img">
               <a href="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" target="_blank" class="view_image">
                 <img src="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>"
-<<<<<<< HEAD
-                  onerror="this.src='/shop/img/no_image.gif';">
-=======
                   onerror="this.src='<? if (strpos($photo['ip_photo_name'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo '/shop/img/no_image.gif'; ?>';">
->>>>>>> 32cf24ae1a95f800853ecd85f03323e8a7077339
               </a>
             </div>
           </div>
@@ -268,11 +256,7 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.magnific-popup.js"></script>',
             <div class="report-img">
               <a href="<?=G5_DATA_URL.'/partner/img/'.$report['ir_cert_url']?>" target="_blank" class="view_image">
                 <img src="<?=G5_DATA_URL.'/partner/img/'.$report['ir_cert_url']?>"
-<<<<<<< HEAD
-                  onerror="this.src='/shop/img/no_image.gif';">
-=======
                   onerror="this.src='<? if (strpos($photo['ip_photo_name'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo '/shop/img/no_image.gif'; ?>';">
->>>>>>> 32cf24ae1a95f800853ecd85f03323e8a7077339
               </a>
             </div>
           </div>
@@ -282,11 +266,7 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.magnific-popup.js"></script>',
             <div class="report-img">
               <a href="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" target="_blank" class="view_image">
                 <img src="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>"
-<<<<<<< HEAD
-                  onerror="this.src='/shop/img/no_image.gif';">
-=======
                   onerror="this.src='<? if (strpos($photo['ip_photo_name'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo '/shop/img/no_image.gif'; ?>';">
->>>>>>> 32cf24ae1a95f800853ecd85f03323e8a7077339
               </a>
             </div>
           </div>
@@ -301,11 +281,7 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.magnific-popup.js"></script>',
             <div class="report-img">
               <a href="<?=G5_DATA_URL.'/partner/img/'.$report['ir_cert_url']?>" target="_blank" class="view_image">
                 <img src="<?=G5_DATA_URL.'/partner/img/'.$report['ir_cert_url']?>"
-<<<<<<< HEAD
-                  onerror="this.src='/shop/img/no_image.gif';">
-=======
                   onerror="this.src='<? if (strpos($photo['ip_photo_name'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo '/shop/img/no_image.gif'; ?>';">
->>>>>>> 32cf24ae1a95f800853ecd85f03323e8a7077339
               </a>
             </div>
           </div>
@@ -315,11 +291,7 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.magnific-popup.js"></script>',
             <div class="report-img">
               <a href="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" target="_blank" class="view_image">
                 <img src="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>"
-<<<<<<< HEAD
-                  onerror="this.src='/shop/img/no_image.gif';">
-=======
                   onerror="this.src='<? if (strpos($photo['ip_photo_name'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo '/shop/img/no_image.gif'; ?>';">
->>>>>>> 32cf24ae1a95f800853ecd85f03323e8a7077339
               </a>
             </div>
           </div>
