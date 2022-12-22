@@ -228,18 +228,22 @@ for($i = 0; $row = sql_fetch_array($result); $i++) {
               echo "ERROR {$row['ct_is_direct_delivery']}";
             }
           }
-          if ($row['inserted_from'] == 'purchase_cart') {
+          else if ($row['inserted_from'] == 'purchase_cart') {
             echo '발주';
           }
-          if ($row['inserted_from'] == 'stock_move') {
+          else if ($row['inserted_from'] == 'stock_move') {
             echo '창고이동';
           }
-          if ($row['inserted_from'] == 'stock_edit') {
+          else if ($row['inserted_from'] == 'stock_edit') {
             echo '입출관리';
           }
-          if ($row['inserted_from'] == 'stock_edit_excel') {
+          else if ($row['inserted_from'] == 'stock_edit_excel') {
             echo '입출관리(엑셀)';
           }
+          else if ($row['inserted_from'] == 'stock_add') {
+            echo '재고등록';
+          }
+          
           ?>
         </td>
         <td class="td_center td_mng_m"><?=$row['wh_name']?></td>
