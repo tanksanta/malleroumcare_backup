@@ -202,7 +202,7 @@ for($i = 0; $row = sql_fetch_array($result); $i++) {
   <?php
   if($row['dc_status'] == '2') { // 이전 계약서는 감사추적인증서가 없음
     echo '<br><a href="' . G5_SHOP_URL . '/eform/downloadCert.php?od_id=' . $row["od_id"] . '" class="btn_basic">감사추적 인증서</a>';
-  } else if($row['dc_status'] == '3' && !$row['od_id']) {
+  } else if($row['dc_status'] == '3' && file_exists(G5_DATA_PATH.'/eform/cert/'.$row['dc_cert_pdf_file'])) {
     echo '<br><a href="' . G5_SHOP_URL . '/eform/downloadCert.php?dc_id=' . $row["uuid"] . '" class="btn_basic">감사추적 인증서</a>';
   }
   ?>
@@ -224,7 +224,7 @@ for($i = 0; $row = sql_fetch_array($result); $i++) {
     echo '수급자 휴대폰으로<br>' . '<span style="color:#6e9254; font-weight: bold;">계약서 재 전송완료</span><br>';
   }
   if($row['dc_status'] != '11') {
-    echo '<a href="javascript:void(0);" class="btn_basic btn_resend_eform" data-id="' . $row["uuid"] . '" data-name="' . $row["penNm"] . '" data-hp="' . $row["penConNum"] . '" data-mail="' . $row["penMail"] . '">계약서 재전송</a>';
+    echo '<a href="javascript:void(0);" class="btn_basic btn_resend_eform" data-id="' . $row["uuid"] . '" data-name="' . $row["penNm"] . '" data-hp="' . $row["penConNum"] . '" data-mail="' . $row["penMail"] . '">계약서 전송</a>';
   }
   ?>
 </td>
