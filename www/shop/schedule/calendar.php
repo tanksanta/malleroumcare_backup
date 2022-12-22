@@ -267,7 +267,7 @@ include_once("./_common.php");
                   <div class="flex-1 flex flex-row border-b">
                     <div class="basis-24 min-w-24 flex pl-2 justify-start items-center border-r bg-gray-100">
                       <span class=" font-bold"
-                        x-text="<?php if ($member["mb_level"] < 9 && $member["mb_type"] === 'default') echo 'true'; else echo 'false'; ?> ? '담당업체' : '담당자'" />
+                        x-text="<?php if ($member["mb_level"] < 9 && $member["mb_type"] === 'default') echo 'true'; else echo 'false'; ?> ? '설치담당자' : '담당업체'" />
                     </div>
                     <div class="flex-1 flex items-center px-4 py-2">
                       <span x-text="item.partner_manager_mb_name" />
@@ -276,7 +276,8 @@ include_once("./_common.php");
                   <div class="flex-1 flex flex-row border-b"
                     :class="{'hidden': <?php if ($member["mb_level"] < 9 && $member["mb_type"] === 'default') echo 'false'; else echo 'true'; ?>">
                     <div class="basis-24 min-w-24 flex pl-2 justify-start items-center border-r bg-gray-100">
-                      <span class="font-bold" x-text="'업체연락처'" />
+                      <span class="font-bold"
+                        x-text="'<?php if ($member["mb_level"] < 9 && $member["mb_type"] === 'default') echo '담당연락처'; else echo '업체연락처'; ?>'" />
                     </div>
                     <div class="flex-1 flex items-center px-4 py-2">
                       <span x-text="item.partner_hp ? item.partner_hp : '없음'" />

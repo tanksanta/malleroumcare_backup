@@ -136,11 +136,12 @@ include_once("./_common.php");
               x-text="'연락처 : ' + item.od_b_hp"></p>
             <p class="text-sm pt-2 leading-4 leading-none text-gray-800 dark:text-gray-100"
               :class="{'hidden': <?php if ($member["mb_level"] < 9 && $member["mb_type"] === 'default') echo 'false'; else echo 'true'; ?>}"
-              x-text="'담당업체 : ' + (item.partner_manager_mb_name ? item.partner_manager_mb_name : '미정')">
+              x-text="'<?php if ($member["mb_level"] < 9 && $member["mb_type"] === 'default') echo '설치담당자'; else echo '담당업체'; ?> : ' + (item.partner_manager_mb_name ? item.partner_manager_mb_name : '미정')">
             </p>
             <p class="text-sm pt-2 leading-4 leading-none text-gray-800 dark:text-gray-100"
               :class="{'hidden': <?php if ($member["mb_level"] < 9 && $member["mb_type"] === 'default') echo 'false'; else echo 'true'; ?>}"
-              x-text="'업체연락처 : ' + (item.partner_hp ? item.partner_hp : '없음')"></p>
+              x-text="'<?php if ($member["mb_level"] < 9 && $member["mb_type"] === 'default') echo '담당연락처'; else echo '업체연락처'; ?> : ' + (item.partner_hp ? item.partner_hp : '없음')">
+            </p>
             <p class="text-sm pt-2 leading-4 leading-none text-gray-800 dark:text-gray-100"
               x-text="'배송지 : ' + item.od_b_addr1 + (item.od_b_addr2 ? item.od_b_addr2 :'')"></p>
             <p class=" text-sm pt-2 leading-4 leading-none text-gray-800 dark:text-gray-100"
