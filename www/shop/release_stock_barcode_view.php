@@ -766,10 +766,10 @@ if (!$member['mb_id']) {
         sel_field: 'bc_barcode',
         search_text: $('#search_text').val(),
         only_not_deleted_barcode: 'true',
-		page:a,
+		    page:a
       },
       dataType: 'json',
-      async: false,
+      async: false
     })
     .done(function(result) {
       data = result.data;
@@ -788,17 +788,20 @@ if (!$member['mb_id']) {
   function renderData(a) {
     var data;
     var html;
-	if(a != 1){
-		$('.listContent').empty();
-		page = 1;
-	}else{
-		page = page+1;
-	}
 
-    data = getData(page);
-    console.log(data);
+    if(a != 1){
+      $('.listContent').empty();
+      page = 1;
+    }else{
+      page = page+1;
+    }
 
-    if (data.length > 0) {
+    if( !$('#_empty').length ) {
+      data = getData(page);
+      console.log(data);
+    }
+
+    if ( data && data.length > 0) {
       var check_status;
 
       for (var i = 0; i < data.length; i++) {
@@ -842,7 +845,9 @@ if (!$member['mb_id']) {
         $('.listContent').append(html)
       }
     } else {
-      $('.listContent').append('<li>등록된 바코드가 없습니다.</li>')
+      if( !$('#_empty').length ) {
+        $('.listContent').append('<li style="padding: 13px 0;"><span id="_empty">등록된 바코드가 없습니다.</span></li>');
+      }
     }
   }
 

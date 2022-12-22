@@ -142,7 +142,7 @@ $prod_pay_code = sql_fetch("SELECT * FROM g5_shop_item WHERE it_id = '{$it_id}'"
     }
 
     #popupBody #searchForm {
-      padding: 20px;
+      padding: 10px 20px;
     }
 
     #popupBody #searchForm input[type="checkbox"] {
@@ -215,7 +215,7 @@ $prod_pay_code = sql_fetch("SELECT * FROM g5_shop_item WHERE it_id = '{$it_id}'"
     }
 
     #popupBody #content {
-      margin-top:30px;padding: 20px;
+      padding: 10px 20px;
     }
 
     #popupBody .listContent li {
@@ -761,6 +761,7 @@ if ($option) {
 
 <div id="popupBody">
   <div id="searchForm">
+
     <div class="searchFormTop flex-row justify-space-between">
       <div style="width: 100%">
         <?php echo $full_it_name ?><br/>
@@ -778,15 +779,19 @@ if ($option) {
       </select>
     </div>
 
-    <div>
+    <div class="flex-row" >
       <button class="add_barcode_btn" onclick="showPopBarcodeList(true)">바코드 재고 추가</button>
     </div>
-	<span class="barcode-area" style="display: block">
-        <input type="text" class="all" placeholder="일괄 등록수식 입력 (예시1) 20120000000^1-3 | 예시2) 20120000000^1,3,5)" style="width:78%">
-        <button type="button" class="barNumCustomSubmitBtn" onclick="inputRegexBarcode(this)">등록</button>
-        <img src="/img/ask_btn.png" alt="" class="barNumGuideOpenBtn" onclick="showPopup(true)" title="바코드 일괄등록 방법">
-      </span>
+
+    <div class="flex-row barcode-area" >
+      <input type="text" class="all" placeholder="일괄 등록수식 입력 (예시1) 20120000000^1-3 | 예시2) 20120000000^1,3,5)" style="width:78%">
+      <button type="button" class="barNumCustomSubmitBtn" onclick="inputRegexBarcode(this)">등록</button>
+      <img src="/img/ask_btn.png" alt="" class="barNumGuideOpenBtn" onclick="showPopup(true)" title="바코드 일괄등록 방법" style="width:35px; height:35px;">
+    </div>
+
   </div>
+
+
 
   <div id="content">
     <ul class="listContent">
@@ -1490,15 +1495,15 @@ if (!$member['mb_id']) {
 
         if (DATA[i].bc_del_yn === 'Y') {
           check_status = '<span>삭제됨</span>';
-          status_class = 'deleted'
+          status_class = 'deleted';
           if (DATA[i].origin_del_yn === 'Y') {
-            status_class = 'deleted originDeleted'
+            status_class = 'deleted originDeleted';
           }
           allBarcodeCnt--;
 
         } else if (DATA[i].bc_id === '0') {
           check_status = '<span>신규</span>';
-          status_class = 'newAdd'
+          status_class = 'newAdd';
           checkedBarcodeCnt++;
 
         /*
@@ -1516,12 +1521,12 @@ if (!$member['mb_id']) {
         // 페이지 진입 시 무조건 미확인으로 표기
         } else if (DATA[i].checked_at === 'currentDate') {
           check_status = '<img src="/img/barcode_icon_1.png"/>';
-          status_class = 'checked'
+          status_class = 'checked';
           checkedBarcodeCnt++;
 
         } else {
           check_status = '<span>미확인</span>';
-          status_class = 'unchecked'
+          status_class = 'unchecked';
         }
 
         html = '<li class="item item_' + i + ' flex-row align-center ' + status_class + '" data-index="' + i + '" data-bc_id="' + DATA[i].bc_id + '">';
@@ -1537,7 +1542,7 @@ if (!$member['mb_id']) {
         }
         html += '  </div>';
         html += '</li>';
-        $('.listContent').append(html)
+        $('.listContent').append(html);
 
         check_status = '';
         status_class = '';
@@ -1546,7 +1551,9 @@ if (!$member['mb_id']) {
       $('#checkedBarcodeCnt').text(checkedBarcodeCnt);
       $('#allBarcodeCnt').text(allBarcodeCnt);
     } else {
-      $('.listContent').append('<li style="padding: 13px 0;">등록된 바코드가 없습니다.</li>')
+      if( !$('#_empty').length ) {
+        $('.listContent').append('<li style="padding: 13px 0;"><span id="_empty">등록된 바코드가 없습니다.</span></li>');
+      }
     }
 
     $('#selectActWrap').hide();
