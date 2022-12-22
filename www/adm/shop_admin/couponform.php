@@ -19,8 +19,13 @@ if ($w == 'u') {
     $mb_id_arr = [];
     $cp;
     while($row = sql_fetch_array($cp_result)) {
-      if(!$mb_id_arr)
-        $mb_id_arr[] = $row['mb_id'];
+        /**
+         * (22/12/06) 쿠폰 내 개별 삭제가 생성되며 발생된 이슈
+         * 기존의 쿠폰 정책에서는 회원 개별 삭제가 없다보니 쿠폰에 책정된 모든 인원이 삭제되면 쿠폰 수신자 중 가장 상단에 있는 수신자가 다시 화면에 보이게 되는 현상
+         * 수정 사항 : $mb_id_arr(쿠폰 수신자 리스트) 내에 g5_shop_coupon의 mb_id가 들어가는게 아니라 mb_id_sub만 들어갈 수 있도록
+         */
+//      if(!$mb_id_arr)
+//        $mb_id_arr[] = $row['mb_id'];
       if($row['mb_id_sub'] && !in_array($row['mb_id_sub'], $mb_id_arr))
         $mb_id_arr[] = $row['mb_id_sub'];
       $cp = $row;
@@ -96,8 +101,8 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
             <input type="text" name="mb_id" value="<?php echo stripslashes($cp['mb_id']); ?>" id="mb_id" class="frm_input">
             <button type="button" id="sch_member" class="btn_frmline">회원검색</button>
             <button type="button" id="batch_reg_member" class="btn_frmline">회원일괄등록</button>
-            <input type="checkbox" name="chk_all_mb" id="chk_all_mb" value="1">
-            <label for="chk_all_mb">전체회원</label>
+<!--            <input type="checkbox" name="chk_all_mb" id="chk_all_mb" value="1">-->
+<!--            <label for="chk_all_mb">전체회원</label>-->
         </td>
     </tr>
     <tr>
@@ -210,10 +215,10 @@ $(function() {
     });
 
     $("#sch_member").click(function() {
-        if($("#chk_all_mb").is(":checked")) {
-            alert("전체회원 체크를 해제 후 이용해 주십시오.");
-            return false;
-        }
+        // if($("#chk_all_mb").is(":checked")) {
+        //     alert("전체회원 체크를 해제 후 이용해 주십시오.");
+        //     return false;
+        // }
 
         var opt = "left=50,top=50,width=520,height=600,scrollbars=1";
         var url = "./couponmember.php";
@@ -221,10 +226,10 @@ $(function() {
     });
 
     $("#batch_reg_member").click(function() {
-        if($("#chk_all_mb").is(":checked")) {
-            alert("전체회원 체크를 해제 후 이용해 주십시오.");
-            return false;
-        }
+        // if($("#chk_all_mb").is(":checked")) {
+        //     alert("전체회원 체크를 해제 후 이용해 주십시오.");
+        //     return false;
+        // }
 
         var opt = "left=50,top=50,width=520,height=660,scrollbars=1";
         var url = "./couponbatchregist.php";
@@ -275,7 +280,11 @@ function form_check(f)
     var cp_type = sel_type.options[sel_type.selectedIndex].value;
     var cp_price = f.cp_price.value;
 
-    if(!f.chk_all_mb.checked && f.mb_id.value == "") {
+    // if(!f.chk_all_mb.checked && f.mb_id.value == "") {
+    //     alert("회원아이디를 입력해 주십시오.");
+    //     return false;
+    // }
+    if(f.mb_id.value == "") {
         alert("회원아이디를 입력해 주십시오.");
         return false;
     }
@@ -297,10 +306,10 @@ function form_check(f)
     }
 
     // 전체회원일 때 쿠폰알림 체크되어 있으면 확인창
-    if(f.chk_all_mb.checked && (f.cp_sms_send.checked || f.cp_email_send.checked)) {
-        if(!confirm("전체회원에게 쿠폰발행알림을 발송하시겠습니까?"))
-            return false;
-    }
+    // if(f.chk_all_mb.checked && (f.cp_sms_send.checked || f.cp_email_send.checked)) {
+    //     if(!confirm("전체회원에게 쿠폰발행알림을 발송하시겠습니까?"))
+    //         return false;
+    // }
 
     return true;
 }
