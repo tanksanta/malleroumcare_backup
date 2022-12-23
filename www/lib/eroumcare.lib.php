@@ -2935,7 +2935,9 @@ function create_partner_install_schedule($od_id) {
   g5_shop_cart AS ct
   LEFT JOIN g5_shop_order AS od ON ct.od_id = od.od_id
   LEFT JOIN g5_member AS mb ON mb.mb_id = od.mb_id
-  WHERE od.od_id = $od_id AND (ct.ct_status = '출고준비' OR ct.ct_status = '완료');";
+  WHERE od.od_id = $od_id AND 
+  (ct.ct_status = '작성' OR t.ct_status = '완료' OR t.ct_status = '배송' OR t.ct_status = '출고준비' OR 
+  od.od_status = '작성' OR od.od_status = ' 배송' OR od.od_status = '완료' OR od.od_status = '출고준비');";
   $cart_result = sql_query($sql);
   if (mysqli_num_rows($cart_result) < 1) return false;
 
