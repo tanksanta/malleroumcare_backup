@@ -6,7 +6,6 @@ if(!$is_samhwa_partner && !$is_admin) {
 }
 
 $od_id = get_search_string($_GET['od_id']);
-$ct_id = get_search_string($_GET['ct_id']);
 if(!$od_id) {
   alert('정상적인 접근이 아닙니다.');
 }
@@ -110,7 +109,6 @@ $sql = "
     WHERE
         od_id = '$od_id' and
         ct_direct_delivery_partner = '{$member['mb_id']}' and
-		ct_id = '$ct_id' and 
         ct_status IN('준비', '출고준비', '배송', '완료')
     ORDER BY
         ct_id ASC
@@ -209,7 +207,6 @@ while($ct = sql_fetch_array($result)) {
   #popupHeaderTopWrap>.close {
     float: right;
   }
-
 
   #popupHeaderTopWrap>.close>a {
     color: #FFF;
@@ -765,7 +762,7 @@ while($ct = sql_fetch_array($result)) {
       if (!confirm('정말 작성된 결과보고서를 삭제하시겠습니까?'))
         return;
 
-      var url = $(this).attr('href');
+      let url = $(this).attr('href');
       $.get(url, {}, 'json')
         .done(function() {
           $.post('/shop/schedule/ajax.update_schedule_status.php', {
@@ -776,12 +773,12 @@ while($ct = sql_fetch_array($result)) {
               window.location.reload();
             })
             .fail(function($xhr) {
-              var data = $xhr.responseJSON;
+              let data = $xhr.responseJSON;
               alert(data && data.message);
             });
         })
         .fail(function($xhr) {
-          var data = $xhr.responseJSON;
+          let data = $xhr.responseJSON;
           alert(data && data.message);
         });
     });
@@ -794,12 +791,12 @@ while($ct = sql_fetch_array($result)) {
           "#list_file_photo3").children().length > 0)) {
         return alert('필수 파일들을 모두 업로드해야 결과보고서 작성이 가능합니다.');
       } else {
-        var sign_url = $(this).attr('href');
+        let sign_url = $(this).attr('href');
 
         // 바코드 전부 입력되었는지 체크
-        var is_barcode_completed = true;
+        let is_barcode_completed = true;
         $('input[name^="barcode"]').each(function() {
-          var barcode = $(this).val();
+          let barcode = $(this).val();
 
           if (barcode.length != 12)
             is_barcode_completed = false;
@@ -813,7 +810,7 @@ while($ct = sql_fetch_array($result)) {
             parent.location.href = sign_url;
           })
           .fail(function($xhr) {
-            var data = $xhr.responseJSON;
+            let data = $xhr.responseJSON;
             alert(data && data.message);
           });
       }
@@ -829,7 +826,7 @@ while($ct = sql_fetch_array($result)) {
       $.post('ajax.partner_installbarcode.php', $('#form_barcode').serializeObject(), 'json')
         .done(function() {
 
-          var data = $.extend(
+          let data = $.extend(
             $('#form_partner_installreport2').serializeObject(),
             $('#form_partner_installreport').serializeObject(),
           );
@@ -840,13 +837,13 @@ while($ct = sql_fetch_array($result)) {
               parent.window.location.reload();
             })
             .fail(function($xhr) {
-              var data = $xhr.responseJSON;
+              let data = $xhr.responseJSON;
               alert(data && data.message);
             });
 
         })
         .fail(function($xhr) {
-          var data = $xhr.responseJSON;
+          let data = $xhr.responseJSON;
           alert(data && data.message);
         });
     });
@@ -870,7 +867,7 @@ while($ct = sql_fetch_array($result)) {
           dataType: 'json'
         })
         .done(function(result) {
-          var photo = result.data;
+          let photo = result.data;
 
           $('#list_file_cert').html('\
             <li>\
@@ -888,7 +885,7 @@ while($ct = sql_fetch_array($result)) {
           ');
         })
         .fail(function($xhr) {
-          var data = $xhr.responseJSON;
+          let data = $xhr.responseJSON;
           alert(data && data.message);
         })
         .always(function() {
@@ -900,7 +897,7 @@ while($ct = sql_fetch_array($result)) {
     $(document).on('click', '.btn_remove', function() {
       if (!confirm('정말 파일을 삭제하시겠습니까?')) return;
 
-      var type = $(this).data('type');
+      let type = $(this).data('type');
 
       if (type === 'cert') {
         // 설치확인서
@@ -913,14 +910,14 @@ while($ct = sql_fetch_array($result)) {
             $('#list_file_cert').empty();
           })
           .fail(function($xhr) {
-            var data = $xhr.responseJSON;
+            let data = $xhr.responseJSON;
             alert(data && data.message);
           });
       } else if (type === 'photo') {
-        var $li = $(this).closest('li');
+        let $li = $(this).closest('li');
 
         // 설치사진
-        var ip_id = $(this).data('id');
+        let ip_id = $(this).data('id');
         $.post('ajax.partner_installphoto.php', {
             od_id: '<?=$od_id?>',
             type: 'photo',
@@ -931,7 +928,7 @@ while($ct = sql_fetch_array($result)) {
             $li.remove();
           })
           .fail(function($xhr) {
-            var data = $xhr.responseJSON;
+            let data = $xhr.responseJSON;
             alert(data && data.message);
           });
       }
@@ -945,17 +942,17 @@ while($ct = sql_fetch_array($result)) {
 
   <script>
   // 파일 리스트 번호
-  var fileIndex = 0;
+  let fileIndex = 0;
   // 등록할 전체 파일 사이즈
-  var totalFileSize = 0;
+  let totalFileSize = 0;
   // 파일 리스트
-  var fileList = new Array();
+  let fileList = new Array();
   // 파일 사이즈 리스트
-  var fileSizeList = new Array();
+  let fileSizeList = new Array();
   // 등록 가능한 파일 사이즈 MB
-  var uploadSize = 50;
+  let uploadSize = 50;
   // 등록 가능한 총 파일 사이즈 MB
-  var maxUploadSize = 500;
+  let maxUploadSize = 500;
 
   $(function() {
     // 파일 드롭 다운
@@ -982,21 +979,22 @@ while($ct = sql_fetch_array($result)) {
     });
     $('#form_file_photo' + id).on('submit', function(e) {
       e.preventDefault();
-
+      const formdata = new FormData(this);
       $.ajax({
           url: 'ajax.partner_installphoto.php',
           type: 'POST',
-          data: new FormData(this),
+          data: formdata,
           cache: false,
           processData: false,
           contentType: false,
           dataType: 'json'
         })
         .done(function(result) {
-          var photos = result.data;
-          var list_photo_html = '';
-          for (var i = 0; i < photos.length; i++) {
-            var photo = photos[i];
+          let photos = result.data;
+          let list_photo_html = '';
+          formdata.delete('file_photo' + id + '[]');
+          for (let i = 0; i < photos.length; i++) {
+            let photo = photos[i];
             list_photo_html += '\
               <li>\
                 <a href="/bbs/view_image.php?open_safari=1&fn=' + encodeURIComponent('/data/partner/img/' + photo[
@@ -1014,7 +1012,7 @@ while($ct = sql_fetch_array($result)) {
           }
         })
         .fail(function($xhr) {
-          var data = $xhr.responseJSON;
+          let data = $xhr.responseJSON;
           alert(data && data.message);
         })
         .always(function() {
@@ -1024,7 +1022,7 @@ while($ct = sql_fetch_array($result)) {
   }
 
   function fileDropDown(id_str, id) {
-    var dropZone = $(id_str + id);
+    let dropZone = $(id_str + id);
     //Drag기능 
     dropZone.on('dragenter', function(e) {
       e.stopPropagation();
@@ -1049,14 +1047,15 @@ while($ct = sql_fetch_array($result)) {
       // 드롭다운 영역 css
       dropZone.css('background-color', '#FFFFFF');
 
-      var files = e.originalEvent.dataTransfer.files;
+      let files = e.originalEvent.dataTransfer.files;
       if (files != null) {
         if (files.length < 1) {
           /* alert("폴더 업로드 불가"); */
-          console.log("폴더 업로드 불가");
           return;
         } else {
-          selectFile(files, id)
+          selectFile(files, id);
+          fileList = new Array();
+          fileSizeList = new Array();
         }
       } else {
         alert("ERROR");
@@ -1088,10 +1087,10 @@ while($ct = sql_fetch_array($result)) {
         break;
     }
 
-    var uploadFileList = Object.keys(fileList);
-    var form = $('#form_file_photo' + id);
-    var formData = new FormData(form[0]);
-    for (var i = 0; i < uploadFileList.length; i++) {
+    let uploadFileList = Object.keys(fileList);
+    let form = $('#form_file_photo' + id);
+    let formData = new FormData(form[0]);
+    for (let i = 0; i < uploadFileList.length; i++) {
       formData.append('file_photo' + id + '[]', fileList[uploadFileList[i]]);
     }
 
@@ -1105,10 +1104,10 @@ while($ct = sql_fetch_array($result)) {
         dataType: 'json'
       })
       .done(function(result) {
-        var photos = result.data;
-        var list_photo_html = '';
-        for (var i = 0; i < photos.length; i++) {
-          var photo = photos[i];
+        let photos = result.data;
+        let list_photo_html = '';
+        for (let i = 0; i < photos.length; i++) {
+          let photo = photos[i];
           list_photo_html += '\
               <li>\
                 <a href="/bbs/view_image.php?open_safari=1&fn=' + encodeURIComponent('/data/partner/img/' + photo[
@@ -1126,7 +1125,7 @@ while($ct = sql_fetch_array($result)) {
         }
       })
       .fail(function($xhr) {
-        var data = $xhr.responseJSON;
+        let data = $xhr.responseJSON;
         alert(data && data.message);
       })
       .always(function() {
@@ -1136,7 +1135,7 @@ while($ct = sql_fetch_array($result)) {
 
   // 파일 선택시
   function selectFile(fileObject, id) {
-    var files = null;
+    let files = null;
 
     if (fileObject != null) {
       // 파일 Drag 이용하여 등록시
@@ -1154,32 +1153,27 @@ while($ct = sql_fetch_array($result)) {
         $("#fileDragDesc" + id).show();
       }
 
-      for (var i = 0; i < files.length; i++) {
+      for (let i = 0; i < files.length; i++) {
         // 파일 이름
-        var fileName = files[i].name;
-        var fileNameArr = fileName.split("\.");
+        let fileName = files[i].name;
+        let fileNameArr = fileName.split("\.");
         // 확장자
-        var ext = fileNameArr[fileNameArr.length - 1];
+        let ext = fileNameArr[fileNameArr.length - 1];
 
-        var fileSize = files[i].size; // 파일 사이즈(단위 :byte)
-        console.log("fileSize=" + fileSize);
+        let fileSize = files[i].size; // 파일 사이즈(단위 :byte)
         if (fileSize <= 0) {
-          console.log("0kb file return");
           return;
         }
 
-        var fileSizeKb = fileSize / 1024; // 파일 사이즈(단위 :kb)
-        var fileSizeMb = fileSizeKb / 1024; // 파일 사이즈(단위 :Mb)
+        let fileSizeKb = fileSize / 1024; // 파일 사이즈(단위 :kb)
+        let fileSizeMb = fileSizeKb / 1024; // 파일 사이즈(단위 :Mb)
 
-        var fileSizeStr = "";
+        let fileSizeStr = "";
         if ((1024 * 1024) <= fileSize) { // 파일 용량이 1메가 이상인 경우 
-          console.log("fileSizeMb=" + fileSizeMb.toFixed(2));
           fileSizeStr = fileSizeMb.toFixed(2) + " Mb";
         } else if ((1024) <= fileSize) {
-          console.log("fileSizeKb=" + parseInt(fileSizeKb));
           fileSizeStr = parseInt(fileSizeKb) + " kb";
         } else {
-          console.log("fileSize=" + parseInt(fileSize));
           fileSizeStr = parseInt(fileSize) + " byte";
         }
 
@@ -1215,10 +1209,10 @@ while($ct = sql_fetch_array($result)) {
       image: {
         titleSrc: function(item) {
 
-          var $div = $('<div>');
+          let $div = $('<div>');
 
           // 원본크기
-          var $btn_zoom_orig = $(
+          let $btn_zoom_orig = $(
               '<button type="button" class="btn-bottom btn-zoom-orig">원본크기</button>')
             .click(function() {
               $btn_zoom_orig.hide();
@@ -1229,7 +1223,7 @@ while($ct = sql_fetch_array($result)) {
             });
 
           // 창맞추기
-          var $btn_zoom_fit = $(
+          let $btn_zoom_fit = $(
               '<button type="button" class="btn-bottom btn-zoom-fit">창맞추기</button>"')
             .hide()
             .click(function() {
@@ -1241,13 +1235,13 @@ while($ct = sql_fetch_array($result)) {
             });
 
           // 다운로드
-          var $btn_download = $('<a class="btn-bottom btn-download">다운로드</a>')
+          let $btn_download = $('<a class="btn-bottom btn-download">다운로드</a>')
             .attr('href', item.src)
             .attr('download', '설치이미지_' + item.index + '.jpg');
 
           // 회전
-          var rotate_deg = 0;
-          var $btn_rotate = $(
+          let rotate_deg = 0;
+          let $btn_rotate = $(
               '<button type="button" class="btn-bottom btn-rotate">회전</button>')
             .click(function() {
               rotate_deg = (rotate_deg + 90) % 360;
