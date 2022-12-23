@@ -139,7 +139,7 @@ input[type="number"]::-webkit-inner-spin-button {
         </label>
         <div class="col-sm-3">
           <input type="text" name="penNm" value="<?=$data["penNm"]?>" class="form-control input-sm">
-          <i class="fa fa-check form-control-feedback"></i>
+<!--          <i class="fa fa-check form-control-feedback"></i>-->
         </div>
         <div class="col-sm-3" style="display: flex">
           <label class="checkbox-inline dealing" style="margin-left: 0px; width:146px; padding: 5px 0px;">
@@ -157,7 +157,7 @@ input[type="number"]::-webkit-inner-spin-button {
             <div class="col-sm-4"  style="display: flex">
               <span style="float: left; width: 10px; height: 30px; line-height: 30px; margin-right: 5px;">L</span>
 
-              <input type="number" maxlength="10" oninput="maxLengthCheck(this)" id="penLtmNum" name="penLtmNum" class="form-control input-sm" style="width: calc(100% - 15px);" value="<?=str_replace("L", "", $data["penLtmNum"])?>">
+              <input disabled type="number" maxlength="10" oninput="maxLengthCheck(this)" id="penLtmNum" name="penLtmNum" class="form-control input-sm" style="width: calc(100% - 15px);" value="<?=str_replace("L", "", $data["penLtmNum"])?>">
 
 <!--              <button type="button" id="btn_pen_update" class="btn btn-color btn-sm" style="margin-left: 15px;">요양정보 업데이트</button>-->
             </div>
@@ -165,19 +165,19 @@ input[type="number"]::-webkit-inner-spin-button {
 
           <div class="form-group has-feedback">
             <label class="col-sm-2 control-label">
-              <b>인정등급</b>
+              <b>인정등급</b><strong id="asterisk">*</strong>
             </label>
             <div class="col-sm-3">
 
 <!-- 기존(장기요양정보조회)              <input readonly type="text" name="penRecGraCd" value="--><?//=$data["penRecGraNm"]?><!--" class="form-control input-sm">-->
               <select class="form-control input-sm penProRel" name="penRecGraCd" id="penRecGraCd" style="margin-bottom: 5px;"> <!-- 임시 -->
-                <option value="00" <?php echo option_selected('등급외', $data["penRecGraNm"], "등급외"); ?>></option>
-                <option value="01" <?php echo option_selected('1등급', $data["penRecGraNm"], "1등급"); ?>></option>
-                <option value="02" <?php echo option_selected('2등급', $data["penRecGraNm"], "2등급"); ?>></option>
-                <option value="03" <?php echo option_selected('3등급', $data["penRecGraNm"],"3등급"); ?>></option>
-                <option value="04" <?php echo option_selected('4등급', $data["penRecGraNm"],"4등급"); ?>></option>
-                <option value="05" <?php echo option_selected('5등급', $data["penRecGraNm"], "5등급"); ?>></option>
-                <option value="06" <?php echo option_selected('6등급', $data["penRecGraNm"], "6등급"); ?>></option>
+                <option value="00" <?php echo option_selected('00', $data["penRecGraCd"], "등급외"); ?>>등급외</option>
+                <option value="01" <?php echo option_selected('01', $data["penRecGraCd"], "1등급"); ?>>1등급</option>
+                <option value="02" <?php echo option_selected('02', $data["penRecGraCd"], "2등급"); ?>>2등급</option>
+                <option value="03" <?php echo option_selected('03', $data["penRecGraCd"],"3등급"); ?>>3등급</option>
+                <option value="04" <?php echo option_selected('04', $data["penRecGraCd"],"4등급"); ?>>4등급</option>
+                <option value="05" <?php echo option_selected('05', $data["penRecGraCd"], "5등급"); ?>>5등급</option>
+                <option value="06" <?php echo option_selected('06', $data["penRecGraCd"], "6등급"); ?>>6등급</option>
               </select>
 
             </div>
@@ -198,7 +198,7 @@ input[type="number"]::-webkit-inner-spin-button {
 
           <div class="form-group has-feedback">
             <label class="col-sm-2 control-label">
-              <b>본인부담률</b>
+              <b>본인부담률</b><strong id="asterisk">*</strong>
             </label>
             <div class="col-sm-3">
 <!-- 기존(장기요양정보조회)              <input readonly type="text" name="penPayRate" value="--><?//=substr($data["penTypeNm"], 7);?><!--" class="form-control input-sm">-->
@@ -215,7 +215,7 @@ input[type="number"]::-webkit-inner-spin-button {
 
           <div class="form-group has-feedback">
             <label class="col-sm-2 control-label">
-              <b>유효기간</b>
+              <b>유효기간</b><strong id="asterisk">*</strong>
             </label>
             <div class="col-sm-4">
 
@@ -230,7 +230,7 @@ input[type="number"]::-webkit-inner-spin-button {
 
           <div class="form-group has-feedback">
             <label class="col-sm-2 control-label">
-              <b>적용기간</b>
+              <b>적용기간</b><strong id="asterisk">*</strong>
             </label>
             <div class="col-sm-4">
 
@@ -244,7 +244,7 @@ input[type="number"]::-webkit-inner-spin-button {
 
           <div class="form-group has-feedback">
             <label class="col-sm-2 control-label">
-              <b>생년월일</b>
+              <b>생년월일</b><strong id="asterisk">*</strong>
             </label>
             <div class="col-sm-3">
 
@@ -624,7 +624,12 @@ input[type="number"]::-webkit-inner-spin-button {
         <label class="col-sm-2 control-label">
           <b>판매품목</b>
         </label>
+
         <div class="col-sm-3 col-dealing">
+          <label class="checkbox-inline dealing" style="margin-left: 0px; width:146px;">
+            <input type="checkbox" class="chk_sale_product chk_sale_product_all" data-isall="1">전체
+          </label>
+          <br/>
           <?php
           // $sale_product_name0="미분류"; $sale_product_id0="ITM2021021300001";
           $sale_product_name1="경사로(실내용)"; $sale_product_id1="ITM2021010800001";
@@ -641,14 +646,39 @@ input[type="number"]::-webkit-inner-spin-button {
           $sale_product_name12="목욕의자"; $sale_product_id12="ITM2020092200002";
           $sale_product_name13="이동변기"; $sale_product_id13="ITM2020092200001";
           for($i=1; $i<14; $i++) {
-            $sale_ids[${'sale_product_name'. $i}] = ${'sale_product_id'.$i};
           ?>
           <label class="checkbox-inline dealing" style="margin-left: 0px; width:146px;">
-            <input  type="checkbox" class="chk_sale_product chk_sale_product_child" name="<?=${'sale_product_id'.$i}; ?>" id="<?="sale_product_id".$i; ?>" value="<?=${'sale_product_id'.$i}; ?>" style="" ><?=${'sale_product_name'. $i}; ?>
-<!-- 기존(장기요양정보조회)            <input disabled type="checkbox" class="chk_sale_product chk_sale_product_child" name="--><?//=${'sale_product_id'.$i}; ?><!--" id="--><?//="sale_product_id".$i; ?><!--" value="--><?//=${'sale_product_id'.$i}; ?><!--" style="" >--><?//=${'sale_product_name'. $i}; ?>
+            <input type="checkbox" class="chk_sale_product chk_sale_product_child" name="<?=${'sale_product_id'.$i}; ?>" id="<?="sale_product_id".$i; ?>" value="<?=${'sale_product_id'.$i}; ?>" style="" ><?=${'sale_product_name'. $i}; ?>
           </label>
           <?php } ?>
         </div>
+
+<!--        기존(장기요양정보조회)-->
+<!--        <div class="col-sm-3 col-dealing">-->
+<!--          --><?php
+//          // $sale_product_name0="미분류"; $sale_product_id0="ITM2021021300001";
+//          $sale_product_name1="경사로(실내용)"; $sale_product_id1="ITM2021010800001";
+//          $sale_product_name2="욕창예방매트리스"; $sale_product_id2="ITM2020092200020";
+//          $sale_product_name3="요실금팬티"; $sale_product_id3="ITM2020092200011";
+//          $sale_product_name4="자세변환용구"; $sale_product_id4="ITM2020092200010";
+//          $sale_product_name5="욕창예방방석"; $sale_product_id5="ITM2020092200009";
+//          $sale_product_name6="지팡이"; $sale_product_id6="ITM2020092200008";
+//          $sale_product_name7="간이변기"; $sale_product_id7="ITM2020092200007";
+//          $sale_product_name8="미끄럼방지용품(매트)"; $sale_product_id8="ITM2020092200006";
+//          $sale_product_name9="미끄럼방지용품(양말)"; $sale_product_id9="ITM2020092200005";
+//          $sale_product_name10="안전손잡이"; $sale_product_id10="ITM2020092200004";
+//          $sale_product_name11="성인용보행기"; $sale_product_id11="ITM2020092200003";
+//          $sale_product_name12="목욕의자"; $sale_product_id12="ITM2020092200002";
+//          $sale_product_name13="이동변기"; $sale_product_id13="ITM2020092200001";
+//          for($i=1; $i<14; $i++) {
+//            $sale_ids[${'sale_product_name'. $i}] = ${'sale_product_id'.$i};
+//          ?>
+<!--          <label class="checkbox-inline dealing" style="margin-left: 0px; width:146px;">-->
+<!--            <input disabled type="checkbox" class="chk_sale_product chk_sale_product_child" name="--><?//=${'sale_product_id'.$i}; ?><!--" id="--><?//="sale_product_id".$i; ?><!--" value="--><?//=${'sale_product_id'.$i}; ?><!--" style="" >--><?//=${'sale_product_name'. $i}; ?>
+<!--          </label>-->
+<!--          --><?php //} ?>
+<!--        </div>-->
+
       </div>
 
 
@@ -656,7 +686,12 @@ input[type="number"]::-webkit-inner-spin-button {
         <label class="col-sm-2 control-label">
           <b>대여품목</b>
         </label>
+
         <div class="col-sm-3 col-dealing">
+          <label class="checkbox-inline dealing" style="margin-left: 0px; width:146px;">
+            <input type="checkbox" class="chk_sale_product chk_sale_product_all" data-isall="1">전체
+          </label>
+          <br/>
           <?php
           $rental_product_name0="욕창예방매트리스"; $rental_product_id0="ITM2020092200019";
           $rental_product_name1="경사로(실외용)"; $rental_product_id1="ITM2020092200018";
@@ -667,14 +702,33 @@ input[type="number"]::-webkit-inner-spin-button {
           $rental_product_name6="전동침대"; $rental_product_id6="ITM2020092200013";
           $rental_product_name7="수동휠체어"; $rental_product_id7="ITM2020092200012";
           for($i=0; $i<8; $i++) {
-            $rent_ids[${'rental_product_name'. $i}] = ${'rental_product_id'.$i};
           ?>
           <label class="checkbox-inline dealing" style="margin-left: 0px; width:146px;">
             <input type="checkbox" class="chk_sale_product chk_sale_product_child" name="<?=${'rental_product_id'. $i}; ?>" id="<?='rental_product_id'.$i; ?>" value="<?=${'rental_product_id'. $i}; ?>" style="" ><?=${'rental_product_name'. $i}; ?>
-<!-- 기존(장기요양정보조회)            <input disabled type="checkbox" class="chk_sale_product chk_sale_product_child" name="--><?//=${'rental_product_id'. $i}; ?><!--" id="--><?//='rental_product_id'.$i; ?><!--" value="--><?//=${'rental_product_id'. $i}; ?><!--" style="" >--><?//=${'rental_product_name'. $i}; ?>
           </label>
           <?php } ?>
         </div>
+
+<!--        기존(장기요양정보조회)-->
+<!--        <div class="col-sm-3 col-dealing">-->
+<!--          --><?php
+//          $rental_product_name0="욕창예방매트리스"; $rental_product_id0="ITM2020092200019";
+//          $rental_product_name1="경사로(실외용)"; $rental_product_id1="ITM2020092200018";
+//          $rental_product_name2="배회감지기"; $rental_product_id2="ITM2020092200017";
+//          $rental_product_name3="목욕리프트"; $rental_product_id3="ITM2020092200016";
+//          $rental_product_name4="이동욕조"; $rental_product_id4="ITM2020092200015";
+//          $rental_product_name5="수동침대"; $rental_product_id5="ITM2020092200014";
+//          $rental_product_name6="전동침대"; $rental_product_id6="ITM2020092200013";
+//          $rental_product_name7="수동휠체어"; $rental_product_id7="ITM2020092200012";
+//          for($i=0; $i<8; $i++) {
+//            $rent_ids[${'rental_product_name'. $i}] = ${'rental_product_id'.$i};
+//          ?>
+<!--          <label class="checkbox-inline dealing" style="margin-left: 0px; width:146px;">-->
+<!--             <input disabled type="checkbox" class="chk_sale_product chk_sale_product_child" name="--><?//=${'rental_product_id'. $i}; ?><!--" id="--><?//='rental_product_id'.$i; ?><!--" value="--><?//=${'rental_product_id'. $i}; ?><!--" style="" >--><?//=${'rental_product_name'. $i}; ?>
+<!--          </label>-->
+<!--          --><?php //} ?>
+<!--        </div>-->
+
       </div>
     </div>
   </div>
@@ -813,6 +867,41 @@ input[type="number"]::-webkit-inner-spin-button {
 var zipPopupDom = document.getElementById("zipAddrPopupIframe");
 
 $(document).ready(function() {
+
+// ============================ 임시 변경
+  setTimeout(function() {
+    var parent = $('.sale-product-form');
+    var total = $(parent).find('.chk_sale_product_child').length;
+    var checkedTotal = $(parent).find('.chk_sale_product_child:checked').length;
+    $(parent).find('.chk_sale_product_all').prop('checked', total <= checkedTotal);
+  })
+
+  setTimeout(function() {
+    var parent = $('.rental-product-form');
+    var total = $(parent).find('.chk_sale_product_child').length;
+    var checkedTotal = $(parent).find('.chk_sale_product_child:checked').length;
+    $(parent).find('.chk_sale_product_all').prop('checked', total <= checkedTotal);
+  })
+
+  $('.chk_sale_product').click(function() {
+
+    var parent = $(this).closest('div');
+
+    if ($(this).data('isall')) {
+      var checked = $(this).is(":checked");
+      $(parent).find(".chk_sale_product").prop('checked', checked);
+      return;
+    }
+
+    var total = $(parent).find('.chk_sale_product_child').length;
+    var checkedTotal = $(parent).find('.chk_sale_product_child:checked').length;
+
+    $(parent).find('.chk_sale_product_all').prop('checked', total <= checkedTotal);
+
+    return;
+  });
+// ============================ 임시 변경
+
   setDateBox();
   //생년월일 세팅
   var penBirth = "<?=get_text($data['penBirth'])?>".split('.');

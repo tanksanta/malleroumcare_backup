@@ -723,7 +723,7 @@ function form_check(act) {
             <label for="spare_chk_<?php echo $i; ?>" class="sound_only"><?php echo get_text($row['mb_name']); ?> <?php echo get_text($row['mb_nick']); ?>님</label>
             <input type="checkbox" name="chk[]" value="<?php echo $data['penId'] . '|' . $contract_sell['sell_count'] ?>" id="chk_<?php echo $i ?>">
           </td>
-          <td>
+          <td style="text-align:center;">
             <?php echo $total_count - (($page - 1) * $page_rows) - $i; ?>
           </td>
           <td>
