@@ -4,6 +4,7 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 // add_stylesheet('css 구문', 출력순서); 숫자가 작을 수록 먼저 출력됨
 add_stylesheet('<link rel="stylesheet" href="'.$skin_url.'/style.css" media="screen">', 0);
 add_stylesheet('<link rel="stylesheet" href="'.G5_CSS_URL.'/magnific-popup.css">', 0);
+add_javascript('<script src="'.G5_JS_URL.'/jquery.wheelzoom.js"></script>', 0);
 add_javascript('<script src="'.G5_JS_URL.'/jquery.magnific-popup.js"></script>', 0);
 
 // 목록헤드
@@ -149,36 +150,59 @@ if($od["od_penId"]) {
 }
 
 # 설치결과보고서
-$reports = [];
-$report_result = sql_query("
+$report = sql_fetch("
     SELECT * FROM partner_install_report
     WHERE od_id = '$od_id'
 ");
-while($report = sql_fetch_array($report_result)) {
+$report['issue'] = [];
+if($report['ir_is_issue_1'])
+  $report['issue'][] = '상품변경';
+if($report['ir_is_issue_2'])
+  $report['issue'][] = '상품추가';
+if($report['ir_is_issue_3'])
+  $report['issue'][] = '미설치';
+  
+$report_mb = get_member($report['mb_id']);
+$report['member'] = $report_mb;
 
-  $report_mb = get_member($report['mb_id']);
-  $report['member'] = $report_mb;
+$photo_result = sql_query("
+  SELECT * FROM partner_install_photo
+  WHERE od_id = '$od_id' AND mb_id = '{$member['mb_id']}' AND img_type = '설치사진'
+  ORDER BY ip_id ASC
+", true);
+$report['photo'] = [];
+while($photo = sql_fetch_array($photo_result)) {
+  $report['photo'][] = $photo;
+}
 
-  $report['issue'] = [];
-  if($report['ir_is_issue_1'])
-    $report['issue'][] = '상품변경';
-  if($report['ir_is_issue_2'])
-    $report['issue'][] = '상품추가';
-  if($report['ir_is_issue_3'])
-    $report['issue'][] = '미설치';
+$photo_result2 = sql_query("
+  SELECT * FROM partner_install_photo
+  WHERE od_id = '$od_id' AND mb_id = '{$member['mb_id']}' AND img_type = '실물바코드사진'
+  ORDER BY ip_id ASC
+", true);
+$report['photo2'] = [];
+while($photo = sql_fetch_array($photo_result2)) {
+  $report['photo2'][] = $photo;
+}
 
-  $photo_result = sql_query("
-      SELECT * FROM partner_install_photo
-      WHERE od_id = '$od_id' and mb_id = '{$report['mb_id']}'
-      ORDER BY ip_id ASC
-  ");
+$photo_result3 = sql_query("
+  SELECT * FROM partner_install_photo
+  WHERE od_id = '$od_id' AND mb_id = '{$member['mb_id']}' AND img_type = '설치ㆍ회수ㆍ소독확인서'
+  ORDER BY ip_id ASC
+", true);
+$report['photo3'] = [];
+while($photo = sql_fetch_array($photo_result3)) {
+  $report['photo3'][] = $photo;
+}
 
-  $report['photo'] = [];
-  while($photo = sql_fetch_array($photo_result)) {
-      $report['photo'][] = $photo;
-  }
-
-  $reports[] = $report;
+$photo_result4 = sql_query("
+  SELECT * FROM partner_install_photo
+  WHERE od_id = '$od_id' AND mb_id = '{$member['mb_id']}' AND img_type = '추가사진'
+  ORDER BY ip_id ASC
+", true);
+$report['photo4'] = [];
+while($photo = sql_fetch_array($photo_result4)) {
+  $report['photo4'][] = $photo;
 }
 ?>
 
@@ -196,12 +220,43 @@ if (document.referrer.indexOf("shop/orderform.php") >= 0) {
 </div>
 
 <style>
-.listPopupBoxWrap { position: fixed; width: 100vw; height: 100vh; left: 0; top: 0; z-index: 99999999; background-color: rgba(0, 0, 0, 0.6); display: table; table-layout: fixed; opacity: 0; }
-.listPopupBoxWrap > div { width: 100%; height: 100%; display: table-cell; vertical-align: middle; }
-.listPopupBoxWrap iframe { position: relative; width: 500px; height: 700px; border: 0; background-color: #FFF; left: 50%; margin-left: -250px; }
+.listPopupBoxWrap {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  left: 0;
+  top: 0;
+  z-index: 99999999;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: table;
+  table-layout: fixed;
+  opacity: 0;
+}
 
-@media (max-width : 750px){
-  .listPopupBoxWrap iframe { width: 100%; height: 100%; left: 0; margin-left: 0; }
+.listPopupBoxWrap>div {
+  width: 100%;
+  height: 100%;
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.listPopupBoxWrap iframe {
+  position: relative;
+  width: 500px;
+  height: 700px;
+  border: 0;
+  background-color: #FFF;
+  left: 50%;
+  margin-left: -250px;
+}
+
+@media (max-width : 750px) {
+  .listPopupBoxWrap iframe {
+    width: 100%;
+    height: 100%;
+    left: 0;
+    margin-left: 0;
+  }
 }
 </style>
 
@@ -214,7 +269,8 @@ $(function() {
     e.preventDefault();
 
     var od = $(this).attr("data-od");
-    $("#popupProdDeliveryInfoBox > div").append("<iframe src='/shop/popup.prodDeliveryInfo.php?od_id=" + od + "'>");
+    $("#popupProdDeliveryInfoBox > div").append("<iframe src='/shop/popup.prodDeliveryInfo.php?od_id=" + od +
+      "'>");
     $("#popupProdDeliveryInfoBox iframe").load(function() {
       $("#popupProdDeliveryInfoBox").show();
     });
@@ -356,63 +412,156 @@ $(function() {
     <div class="detail-wrap">
       <div class="name-top<?=($od["recipient_yn"] == "N") ? " gray" : ""?>">
         <div>
-        <?php if($od["recipient_yn"] == "Y"){ ?>
+          <?php if($od["recipient_yn"] == "Y"){ ?>
           <p>수급자 주문</p>
           <a href="javascript;;" style="display: none;">계약서</a>
-        <?php }else if($od["od_stock_insert_yn"] == "Y"){ ?>
+          <?php }else if($od["od_stock_insert_yn"] == "Y"){ ?>
           <p>보유재고 등록</p>
           <a href="javascript;;" style="display: none;">보유재고등록</a>
-        <?php } else { ?>
+          <?php } else { ?>
           <p>상품 주문</p>
           <a href="javascript;;" style="display: none;">재고확인</a>
-        <?php } ?>
+          <?php } ?>
         </div>
       </div>
-      <?php foreach($reports as $report) { ?>
       <div class="install-report">
-          <div class="top-wrap row justify-space-between">
-              <span>설치결과보고서</span>
-              <p><?=$report['member']['mb_name']?></p>
-          </div>
-          <?php if($report) { ?>
-          <div class="mid-wrap">
-            <?php if($report['ir_file_url']) { ?>
-            <a href="<?=G5_SHOP_URL."/eform/install_report_download.php?od_id={$od_id}"?>" class="btn_ir_download">결과보고서 다운로드</a>
-            <?php } ?>
-            <?php if($report['issue']) { ?>
-            <div class="issue">
-              이슈사항 (<?php echo implode(', ', $report['issue']); ?>)
-            </div>
-            <?php } ?>
-          </div>
-          <div class="row report-img-wrap">
-            <?php if($report['ir_cert_url']) { ?>
-            <div class="col">
-                <div class="report-img">
-                  <a href="<?=G5_DATA_URL.'/partner/img/'.$report['ir_cert_url']?>" target="_blank" class="view_image">
-                      <img src="<?=G5_DATA_URL.'/partner/img/'.$report['ir_cert_url']?>" onerror="this.src='/shop/img/no_image.gif';">
-                  </a>
-                </div>
-            </div>
-            <?php } ?>
-            <?php foreach($report['photo'] as $photo) { ?>
-            <div class="col">
-                <div class="report-img">
-                <a href="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" target="_blank" class="view_image">
-                    <img src="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" onerror="this.src='/shop/img/no_image.gif';">
-                </a>
-                </div>
-            </div>
-            <?php } ?>
-            <div class="col issue-wrap">
-                <p class="issue">
-                  <?=nl2br($report['ir_issue'])?>
-                </p>
+        <div class="top-wrap row justify-space-between">
+          <span>설치결과보고서</span>
+          <p><?=$report['member']['mb_name']?></p>
+        </div>
+        <?php if($report) { ?>
+        <div class="mid-wrap">
+          <?php if($report['ir_file_url']) { ?>
+          <a href="<?=G5_SHOP_URL."/eform/install_report_download.php?od_id={$od_id}"?>" class="btn_ir_download">결과보고서
+            다운로드</a>
+          <?php } ?>
+        </div>
+
+        <div class="row report-img-wrap">
+          <?php if($report['ir_cert_url']) { ?>
+          <div class="col">
+            <div class="report-img">
+              <a href="<?=G5_DATA_URL.'/partner/img/'.$report['ir_cert_url']?>" target="_blank" class="view_image">
+                <img src="<?=G5_DATA_URL.'/partner/img/'.$report['ir_cert_url']?>"
+                  onerror="this.src='/shop/img/no_image.gif';">
+              </a>
             </div>
           </div>
           <?php } ?>
+
+          <?php foreach($report['photo'] as $photo) { ?>
+          <div class="col">
+            <div class="report-img">
+              <a href="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" target="_blank" class="view_image">
+                <img src="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>"
+                  onerror="this.src='<? if (strpos($photo['ip_photo_name'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo '/shop/img/no_image.gif'; ?>';">
+              </a>
+            </div>
+          </div>
+          <?php } ?>
+        </div>
+        <div class="col title-wrap">
+          설치 사진(필수)
+        </div>
+
+        <div class="row report-img-wrap">
+          <?php if($report['ir_cert_url']) { ?>
+          <div class="col">
+            <div class="report-img">
+              <a href="<?=G5_DATA_URL.'/partner/img/'.$report['ir_cert_url']?>" target="_blank" class="view_image">
+                <img src="<?=G5_DATA_URL.'/partner/img/'.$report['ir_cert_url']?>"
+                  onerror="this.src='<? if (strpos($photo['ip_photo_name'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo '/shop/img/no_image.gif'; ?>';">
+              </a>
+            </div>
+          </div>
+          <?php } ?>
+          <?php foreach($report['photo2'] as $photo) { ?>
+          <div class="col">
+            <div class="report-img">
+              <a href="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" target="_blank" class="view_image">
+                <img src="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>"
+                  onerror="this.src='<? if (strpos($photo['ip_photo_name'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo '/shop/img/no_image.gif'; ?>';">
+              </a>
+            </div>
+          </div>
+          <?php } ?>
+        </div>
+        <div class="col title-wrap">
+          실물 바코드 사진(필수)
+        </div>
+
+        <div class="row report-img-wrap">
+          <?php if($report['ir_cert_url']) { ?>
+          <div class="col">
+            <div class="report-img">
+              <a href="<?=G5_DATA_URL.'/partner/img/'.$report['ir_cert_url']?>" target="_blank" class="view_image">
+                <img src="<?=G5_DATA_URL.'/partner/img/'.$report['ir_cert_url']?>"
+                  onerror="this.src='<? if (strpos($photo['ip_photo_name'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo '/shop/img/no_image.gif'; ?>';">
+              </a>
+            </div>
+          </div>
+          <?php } ?>
+          <?php foreach($report['photo3'] as $photo) { ?>
+          <div class="col">
+            <div class="report-img">
+              <a href="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" target="_blank" class="view_image">
+                <img src="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>"
+                  onerror="this.src='<? if (strpos($photo['ip_photo_name'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo '/shop/img/no_image.gif'; ?>';">
+              </a>
+            </div>
+          </div>
+          <?php } ?>
+        </div>
+        <div class="col title-wrap">
+          설치ㆍ회수ㆍ소독확인서 사진(필수)
+        </div>
+
+        <div class="row report-img-wrap">
+          <?php if($report['ir_cert_url']) { ?>
+          <div class="col">
+            <div class="report-img">
+              <a href="<?=G5_DATA_URL.'/partner/img/'.$report['ir_cert_url']?>" target="_blank" class="view_image">
+                <img src="<?=G5_DATA_URL.'/partner/img/'.$report['ir_cert_url']?>"
+                  onerror="this.src='<? if (strpos($photo['ip_photo_name'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo '/shop/img/no_image.gif'; ?>';">
+              </a>
+            </div>
+          </div>
+          <?php } ?>
+          <?php foreach($report['photo4'] as $photo) { ?>
+          <div class="col">
+            <div class="report-img">
+              <a href="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" target="_blank" class="view_image">
+                <img src="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>"
+                  onerror="this.src='<? if (strpos($photo['ip_photo_name'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo '/shop/img/no_image.gif'; ?>';">
+              </a>
+            </div>
+          </div>
+          <?php } ?>
+        </div>
+        <div class="col title-wrap">
+          추가사진(선택) - 상품변경 혹은 특이사항 발생 시
+        </div>
+        <?php } ?>
       </div>
-      <?php } ?>
+
+      <div class="col issue-wrap">
+        <div class="col title-wrap">
+          이슈사항
+        </div>
+        <div class="issue-select">
+          이슈사항 (
+          <?php if($report['issue']) { ?>
+          <?php echo implode(' /', $report['issue']); ?>
+          <?php } ?>
+          )
+        </div>
+        <div class="issue">
+          <p>
+            <?=nl2br($report['ir_issue'])?>
+          </p>
+        </div>
+      </div>
+
       <h4>상품 정보</h4>
       <div class="info-wrap">
         <div class="table-list2">
@@ -451,7 +600,8 @@ $(function() {
             <ul class="cb">
               <li class="pro">
                 <div class="img">
-                  <a href="<?=G5_SHOP_URL?>/item.php?it_id=<?=$item[$i]['it_id']?>&ca_id=<?=substr($item[$i]["ca_id"], 0, 2) ?>">
+                  <a
+                    href="<?=G5_SHOP_URL?>/item.php?it_id=<?=$item[$i]['it_id']?>&ca_id=<?=substr($item[$i]["ca_id"], 0, 2) ?>">
                     <img src="/data/item/<?=$item[$i]['thumbnail']?>" onerror="this.src = '/shop/img/no_image.gif';">
                   </a>
                 </div>
@@ -471,7 +621,8 @@ $(function() {
                     <?php } ?>
                   </div>
                   <div class="name">
-                    <a href="<?=G5_SHOP_URL?>/item.php?it_id=<?=$item[$i]['it_id']?>&ca_id=<?=substr($item[$i]["ca_id"], 0, 2) ?>">
+                    <a
+                      href="<?=G5_SHOP_URL?>/item.php?it_id=<?=$item[$i]['it_id']?>&ca_id=<?=substr($item[$i]["ca_id"], 0, 2) ?>">
                       <?php echo $item[$i]['it_name']; ?>
                       <?php if($item[$i]['opt'][$k]['ct_stock_qty']) echo '[재고소진]'; ?>
                     </a>
@@ -517,7 +668,7 @@ $(function() {
               </li>
               <li class="delivery-price m_none">
                 <p>
-                    <?php
+                  <?php
                       if($od["od_stock_insert_yn"] == "Y"){
                       echo "등록완료";
                       }else{
@@ -546,11 +697,13 @@ $(function() {
                         }
                       }
                     ?>
-                  </p>
+                </p>
               </li>
               <li class="barcode">
                 <?php if($item[$i]['opt'][$k]['ct_status'] !== "취소" && $item[$i]['opt'][$k]['ct_status'] !== "주문무효" && !is_benefit_item($item[$i]) &&  $item[$i]['opt'][$k]['io_type'] == '0'){ ?>
-                  <a href="#" class="btn-01 btn-0 popupProdBarNumInfoBtn" data-id="<?=$od["od_id"]?>" data-ct-id="<?=$item[$i]['opt'][$k]["ct_id"]?>" ><img src="<?=$SKIN_URL?>/image/icon_02.png" alt=""> 바코드 확인</a>
+                <a href="#" class="btn-01 btn-0 popupProdBarNumInfoBtn" data-id="<?=$od["od_id"]?>"
+                  data-ct-id="<?=$item[$i]['opt'][$k]["ct_id"]?>"><img src="<?=$SKIN_URL?>/image/icon_02.png" alt="">
+                  바코드 확인</a>
                 <?php } ?>
               </li>
             </ul>
@@ -599,64 +752,64 @@ $(function() {
       <?php } ?>
 
       <style>
-        .btn_od_edit {
-          display: block;
-          border: 1px solid #ee8102;
-          border-radius: 3px;
-          background-color: #ffffff;
-          margin: 20px auto 20px auto;
-          padding: 15px;
-          max-width: 250px;
-          text-align: center;
-          color: #ee8102 !important;
-          font-weight: bold;
-        }
+      .btn_od_edit {
+        display: block;
+        border: 1px solid #ee8102;
+        border-radius: 3px;
+        background-color: #ffffff;
+        margin: 20px auto 20px auto;
+        padding: 15px;
+        max-width: 250px;
+        text-align: center;
+        color: #ee8102 !important;
+        font-weight: bold;
+      }
 
-        #frmorderinquiryviewdeliveryform .shbtn {
-          border: 1px solid #cccccc;
-          font-size: 12px;
-          cursor: pointer;
-          padding: 0 13px;
-          height: 29px;
-          line-height: 29px;
-          display: inline-block;
-          color: #656565;
-          background-color: white;
-          vertical-align: middle;
-        }
+      #frmorderinquiryviewdeliveryform .shbtn {
+        border: 1px solid #cccccc;
+        font-size: 12px;
+        cursor: pointer;
+        padding: 0 13px;
+        height: 29px;
+        line-height: 29px;
+        display: inline-block;
+        color: #656565;
+        background-color: white;
+        vertical-align: middle;
+      }
 
-        #frmorderinquiryviewdeliveryform tbody td input[type="text"] {
-          background-color: white !important;
-          padding: 0px 8px;
-          height: 28px;
-          min-width: 150px;
-          background: none !important;
-          vertical-align: middle;
-        }
+      #frmorderinquiryviewdeliveryform tbody td input[type="text"] {
+        background-color: white !important;
+        padding: 0px 8px;
+        height: 28px;
+        min-width: 150px;
+        background: none !important;
+        vertical-align: middle;
+      }
 
-        #frmorderinquiryviewdeliveryform #delivery_info_btn {
-          margin: 20px auto;
-          color: white;
-          background-color: #454545;
-          border: none;
-          display: block;
-          font-size: 15px;
-          padding: 8px 15px;
-          font-weight: bold;
-        }
+      #frmorderinquiryviewdeliveryform #delivery_info_btn {
+        margin: 20px auto;
+        color: white;
+        background-color: #454545;
+        border: none;
+        display: block;
+        font-size: 15px;
+        padding: 8px 15px;
+        font-weight: bold;
+      }
 
-        .popupDeliveryInfoBtn {
-          margin-bottom: 6px;
-          display: block;
-          vertical-align: top;
-          width: 100px;
-          border: 1px solid #ddd;
-          padding: 3px 0;
-          border-radius: 5px;
-          font-size: 14px;
-          text-align: center;
-          background: #ddd;
-        }
+      .popupDeliveryInfoBtn {
+        margin-bottom: 6px;
+        display: block;
+        vertical-align: top;
+        width: 100px;
+        border: 1px solid #ddd;
+        padding: 3px 0;
+        border-radius: 5px;
+        font-size: 14px;
+        text-align: center;
+        background: #ddd;
+      }
       </style>
 
       <?php add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js ?>
@@ -665,65 +818,78 @@ $(function() {
         <div class="top">
           <h5>받으시는 분</h5>
           <?php if ($isDeliveryInfo) { ?>
-            <a href="#" class="btn-02 btn-0 popupDeliveryInfoBtn" data-od="<?php echo $od['od_id']; ?>">배송정보</a>
+          <a href="#" class="btn-02 btn-0 popupDeliveryInfoBtn" data-od="<?php echo $od['od_id']; ?>">배송정보</a>
           <?php } ?>
         </div>
         <?php if ($isReceiverEdit) { ?>
 
-        <form id="frmorderinquiryviewdeliveryform" name="frmorderinquiryviewdeliveryform" action="./orderinquiryview_delivery.php" method="POST">
+        <form id="frmorderinquiryviewdeliveryform" name="frmorderinquiryviewdeliveryform"
+          action="./orderinquiryview_delivery.php" method="POST">
           <div class="tbl_frm01">
-              <table>
+            <table>
               <colgroup>
-                  <col class="grid_4">
-                  <col>
+                <col class="grid_4">
+                <col>
               </colgroup>
               <tbody>
-              <tr>
+                <tr>
                   <th scope="row"><label for="od_b_name"><span class="sound_only">받으시는 분 </span>이름</label></th>
-                  <td colspan="3"><input type="text" name="od_b_name" value="<?php echo get_text($od['od_b_name']); ?>" id="od_b_name" required class="frm_input required"></td>
-              </tr>
-              <tr>
+                  <td colspan="3"><input type="text" name="od_b_name" value="<?php echo get_text($od['od_b_name']); ?>"
+                      id="od_b_name" required class="frm_input required"></td>
+                </tr>
+                <tr>
                   <th scope="row"><label for="od_b_tel"><span class="sound_only">받으시는 분 </span>전화번호</label></th>
-                  <td colspan="3"><input type="text" name="od_b_tel" value="<?php echo get_text($od['od_b_tel']); ?>" id="od_b_tel" required class="frm_input required"></td>
-              </tr>
-              <tr>
+                  <td colspan="3"><input type="text" name="od_b_tel" value="<?php echo get_text($od['od_b_tel']); ?>"
+                      id="od_b_tel" required class="frm_input required"></td>
+                </tr>
+                <tr>
                   <th scope="row"><label for="od_b_hp"><span class="sound_only">받으시는 분 </span>핸드폰</label></th>
-                  <td colspan="3"><input type="text" name="od_b_hp" value="<?php echo get_text($od['od_b_hp']); ?>" id="od_b_hp" class="frm_input required"></td>
-              </tr>
-              <tr>
+                  <td colspan="3"><input type="text" name="od_b_hp" value="<?php echo get_text($od['od_b_hp']); ?>"
+                      id="od_b_hp" class="frm_input required"></td>
+                </tr>
+                <tr>
                   <th scope="row"><span class="sound_only">받으시는 분 </span>주소</th>
                   <td class="od_b_address" colspan="3">
-                  <label for="od_b_zip" class="sound_only">우편번호</label>
-                  <input type="text" name="od_b_zip" value="<?php echo get_text($od['od_b_zip1']).get_text($od['od_b_zip2']); ?>" id="od_b_zip" required class="frm_input required" size="35">
-                  <button type="button" class="shbtn" onclick="win_zip('frmorderinquiryviewdeliveryform', 'od_b_zip', 'od_b_addr1', 'od_b_addr2', 'od_b_addr3', 'od_b_addr_jibeon');">주소 검색</button><br>
-                  <input type="text" name="od_b_addr1" value="<?php echo get_text($od['od_b_addr1']); ?>" id="od_b_addr1" required class="frm_input required" size="35" placeholder="기본주소" readonly>
-                  <input type="text" name="od_b_addr2" value="<?php echo get_text($od['od_b_addr2']); ?>" id="od_b_addr2" class="frm_input" size="35" placeholder="상세주소">
-                  <br/><input type="hidden" name="od_b_addr3" value="<?php echo get_text($od['od_b_addr3']); ?>" id="od_b_addr3" class="frm_input" size="35" placeholder="참고항목" readonly >
-                  <input type="hidden" name="od_b_addr_jibeon" value="<?php echo get_text($od['od_b_addr_jibeon']); ?>">
-                  <?php
+                    <label for="od_b_zip" class="sound_only">우편번호</label>
+                    <input type="text" name="od_b_zip"
+                      value="<?php echo get_text($od['od_b_zip1']).get_text($od['od_b_zip2']); ?>" id="od_b_zip"
+                      required class="frm_input required" size="35">
+                    <button type="button" class="shbtn"
+                      onclick="win_zip('frmorderinquiryviewdeliveryform', 'od_b_zip', 'od_b_addr1', 'od_b_addr2', 'od_b_addr3', 'od_b_addr_jibeon');">주소
+                      검색</button><br>
+                    <input type="text" name="od_b_addr1" value="<?php echo get_text($od['od_b_addr1']); ?>"
+                      id="od_b_addr1" required class="frm_input required" size="35" placeholder="기본주소" readonly>
+                    <input type="text" name="od_b_addr2" value="<?php echo get_text($od['od_b_addr2']); ?>"
+                      id="od_b_addr2" class="frm_input" size="35" placeholder="상세주소">
+                    <br /><input type="hidden" name="od_b_addr3" value="<?php echo get_text($od['od_b_addr3']); ?>"
+                      id="od_b_addr3" class="frm_input" size="35" placeholder="참고항목" readonly>
+                    <input type="hidden" name="od_b_addr_jibeon"
+                      value="<?php echo get_text($od['od_b_addr_jibeon']); ?>">
+                    <?php
                   $szip = get_text($od['od_b_zip1']).get_text($od['od_b_zip2']);
                   $sql = "SELECT * FROM g5_shop_sendcost WHERE sc_zip1 <= '{$szip}' AND sc_zip2 >= '{$szip}'";
                   $szip_result = sql_fetch($sql);
 
                   if ( $szip_result['sc_id'] ) {
                   ?>
-                  <div class="add_sendcost_address">
+                    <div class="add_sendcost_address">
                       <span class="red">* 도서산간지역</span>
-                  </div>
-                  <?php } ?>
+                    </div>
+                    <?php } ?>
                   </td>
-              </tr>
-              <tr>
+                </tr>
+                <tr>
                   <th scope="row"><label for="od_memo"><span class="sound_only">받으시는 분 </span>배송요청사항</label></th>
-                  <td colspan="3"><input type="text" name="od_memo" value="<?php echo get_text($od['od_memo']); ?>" id="od_memo" class="frm_input"></td>
-              </tr>
+                  <td colspan="3"><input type="text" name="od_memo" value="<?php echo get_text($od['od_memo']); ?>"
+                      id="od_memo" class="frm_input"></td>
+                </tr>
               </tbody>
             </table>
           </div>
           <input type="hidden" name="od_id" value="<?php echo $od['od_id']; ?>">
           <button id="delivery_info_btn">배송정보 수정</button>
         </form>
-        
+
         <?php } else { ?>
         <div class="table-list3">
           <ul>
@@ -748,7 +914,9 @@ $(function() {
             <li>
               <strong>주소</strong>
               <div>
-                <p><?php echo get_text(sprintf("(%s%s)", $od['od_b_zip1'], $od['od_b_zip2']).' '.print_address($od['od_b_addr1'], $od['od_b_addr2'], $od['od_b_addr3'], $od['od_b_addr_jibeon'])); ?></p>
+                <p>
+                  <?php echo get_text(sprintf("(%s%s)", $od['od_b_zip1'], $od['od_b_zip2']).' '.print_address($od['od_b_addr1'], $od['od_b_addr2'], $od['od_b_addr3'], $od['od_b_addr_jibeon'])); ?>
+                </p>
               </div>
             </li>
             <li>
@@ -776,7 +944,7 @@ $(function() {
       <?php if(!$result_od['od_hide_control']) { ?>
       <div class="list-more">
         <p><a href="javascript:void(0)" onclick="hide_control('<?=$od["od_id"] ?>')">주문내역 숨김처리</a></p>
-        <p >*해당 주문을 숨김처리하면 주문내역에 노출되지 않습니다.<br>*숨김처리는 주문취소가 되지 않습니다.</p>
+        <p>*해당 주문을 숨김처리하면 주문내역에 노출되지 않습니다.<br>*숨김처리는 주문취소가 되지 않습니다.</p>
       </div>
       <?php } ?>
     </div>
@@ -887,8 +1055,8 @@ $(function() {
             <div>
               <b>매출증빙</b>
               <span><?php echo $typereceipt['name']; ?>
-            <?php echo $typereceipt['ot_bnum'] ? '( ' . $typereceipt['ot_bnum'] : ''; ?>
-            <?php echo $typereceipt['ot_bnum'] ? ')': ''; ?></span>
+                <?php echo $typereceipt['ot_bnum'] ? '( ' . $typereceipt['ot_bnum'] : ''; ?>
+                <?php echo $typereceipt['ot_bnum'] ? ')': ''; ?></span>
             </div>
           </li>
           <?php } ?>
@@ -940,7 +1108,7 @@ $(function() {
             </div>
           </li>
           <?php } ?>
-                    <?php if ($od['od_send_cost2'] > 0) { ?>
+          <?php if ($od['od_send_cost2'] > 0) { ?>
           <li>
             <div>
               <b>추가배송비</b>
@@ -954,14 +1122,14 @@ $(function() {
               <span><?php echo number_format($od['od_send_cost']); ?> 원</span>
             </div>
           </li>
-        <?php if($od['od_sales_discount']) { ?>
-        <li>
+          <?php if($od['od_sales_discount']) { ?>
+          <li>
             <div>
               <b>매출할인</b>
               <span>- <?php echo number_format($od['od_sales_discount']); ?> 원</span>
             </div>
           </li>
-        <?php } ?>
+          <?php } ?>
         </ul>
         <?php 
         // $total_price = $tot_price - $od['od_cart_discount'] - $od['od_cart_discount2'] ;
@@ -1009,18 +1177,21 @@ $(function() {
           }
         ?>
         <?php if($od["od_stock_insert_yn"] !== "Y"&&$flag&&!$cancel_request_row['od_id']) {  ?>
-        <a href="#" id="cancel_btn" type="button" data-toggle="collapse" href="#sod_fin_cancelfrm" aria-expanded="false" aria-controls="sod_fin_cancelfrm"><?php echo $btn_name ?></a>
+        <a href="#" id="cancel_btn" type="button" data-toggle="collapse" href="#sod_fin_cancelfrm" aria-expanded="false"
+          aria-controls="sod_fin_cancelfrm"><?php echo $btn_name ?></a>
         <div class="h15"></div>
         <div id="sod_fin_cancelfrm" class="collapse">
           <div class="well">
-            <form class="form" role="form" method="post" action="<?php echo $action_url ?>" onsubmit="return fcancel_check(this);">
-            <input type="hidden" name="od_id"  value="<?php echo $od['od_id']; ?>">
-            <input type="hidden" name="token"  value="<?php echo $token; ?>">
-            <input type="hidden" name="type" value="<?php echo $type ?>">
-            <input type="hidden" name="to" value="<?php echo $to ?>">
+            <form class="form" role="form" method="post" action="<?php echo $action_url ?>"
+              onsubmit="return fcancel_check(this);">
+              <input type="hidden" name="od_id" value="<?php echo $od['od_id']; ?>">
+              <input type="hidden" name="token" value="<?php echo $token; ?>">
+              <input type="hidden" name="type" value="<?php echo $type ?>">
+              <input type="hidden" name="to" value="<?php echo $to ?>">
               <div class="input-group input-group-sm">
                 <!--<span class="input-group-addon">사유</span>-->
-                <select name="request_reason_type" class="form-control" style="display: table-cell; width: 100px; margin-right: 10px;">
+                <select name="request_reason_type" class="form-control"
+                  style="display: table-cell; width: 100px; margin-right: 10px;">
                   <option value="단순변심">단순변심</option>
                   <option value="제품파손">제품파손</option>
                   <option value="제품하자">제품하자</option>
@@ -1029,7 +1200,8 @@ $(function() {
                   <option value="A/S">A/S</option>
                   <option value="기타">기타</option>
                 </select>
-                <input type="text" name="cancel_memo" id="cancel_memo" required class="form-control input-sm" size="40" maxlength="100" style="width: calc(100% - 110px); float: none;">
+                <input type="text" name="cancel_memo" id="cancel_memo" required class="form-control input-sm" size="40"
+                  maxlength="100" style="width: calc(100% - 110px); float: none;">
                 <span class="input-group-btn">
                   <button type="submit" class="btn btn-black btn-sm">확인</button>
                 </span>
@@ -1048,16 +1220,17 @@ $(function() {
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span
+            class="sr-only">Close</span></button>
         <h4 class="modal-title" id="myModalLabel">상태설명</h4>
       </div>
       <div class="modal-body">
         <ul>
-        <li>주문 : 주문이 접수되었습니다.</li>
-        <li>입금 : 입금(결제)이 완료 되었습니다.</li>
-        <li>준비 : 상품 준비 중입니다.</li>
-        <li>배송 : 상품 배송 중입니다.</li>
-        <li>완료 : 상품 배송이 완료 되었습니다.</li>
+          <li>주문 : 주문이 접수되었습니다.</li>
+          <li>입금 : 입금(결제)이 완료 되었습니다.</li>
+          <li>준비 : 상품 준비 중입니다.</li>
+          <li>배송 : 상품 배송 중입니다.</li>
+          <li>완료 : 상품 배송이 완료 되었습니다.</li>
         </ul>
         <br>
         <p class="text-center">
@@ -1074,34 +1247,65 @@ $(function() {
   </div>
 </div>
 <div id="popupProdBarNumInfoBox" class="listPopupBoxWrap">
-    <div></div>
+  <div></div>
 </div>
 
 <style>
-#send_statementBox { position: fixed; width: 100vw; height: 100vh; left: 0; top: 0; z-index: 5000; background-color: rgba(0, 0, 0, 0.6); display: table; table-layout: fixed; opacity: 0; }
-#send_statementBox > div { width: 100%; height: 100%; display: table-cell; vertical-align: middle; }
-#send_statementBox iframe { position: relative; width: 730px; height: 800px; border: 0; background-color: #FFF; left: 50%; margin-left: -365px; }
+#send_statementBox {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  left: 0;
+  top: 0;
+  z-index: 5000;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: table;
+  table-layout: fixed;
+  opacity: 0;
+}
+
+#send_statementBox>div {
+  width: 100%;
+  height: 100%;
+  display: table-cell;
+  vertical-align: middle;
+}
+
+#send_statementBox iframe {
+  position: relative;
+  width: 730px;
+  height: 800px;
+  border: 0;
+  background-color: #FFF;
+  left: 50%;
+  margin-left: -365px;
+}
 
 @media (max-width : 750px) {
-  #send_statementBox iframe { width: 100%; height: 100%; left: 0; margin-left: 0; }
+  #send_statementBox iframe {
+    width: 100%;
+    height: 100%;
+    left: 0;
+    margin-left: 0;
+  }
 }
 </style>
 
 <script>
 function hide_control(od_id) {
   $.ajax({
-    method: "POST",
-    url: "./ajax.hide_control.php",
-    data: {
-      od_id: od_id
-    }
-  })
-  .done(function(data) {
-    if(data=="S") {
-      alert('해당 주문건이 숨김 처리되었습니다.');
-      location.href="<?=G5_URL?>/shop/orderinquiry.php"; 
-    }
-});
+      method: "POST",
+      url: "./ajax.hide_control.php",
+      data: {
+        od_id: od_id
+      }
+    })
+    .done(function(data) {
+      if (data == "S") {
+        alert('해당 주문 건이 숨김 처리되었습니다.');
+        location.href = "<?=G5_URL?>/shop/orderinquiry.php";
+      }
+    });
 }
 
 $(".popupProdBarNumInfoBtn").click(function(e) {
@@ -1110,8 +1314,10 @@ $(".popupProdBarNumInfoBtn").click(function(e) {
   var od_id = $(this).attr("data-id");
   var ct_id = $(this).attr("data-ct-id");
 
-  $("#popupProdBarNumInfoBox > div").append("<iframe src='<?php echo G5_URL?>/adm/shop_admin/popup.prodBarNum.form_4.php?od_id=" + od_id +  "&ct_id=" + ct_id +"'>");
-  $("#popupProdBarNumInfoBox iframe").load(function(){
+  $("#popupProdBarNumInfoBox > div").append(
+    "<iframe src='<?php echo G5_URL?>/adm/shop_admin/popup.prodBarNum.form_4.php?od_id=" + od_id + "&ct_id=" +
+    ct_id + "'>");
+  $("#popupProdBarNumInfoBox iframe").load(function() {
     $("#popupProdBarNumInfoBox").show();
   });
 });
@@ -1121,11 +1327,11 @@ function fcancel_check(f) {
   var btn_text = $('#cancel_btn').text();
   var strArray = btn_text.split('하기');
 
-  if(!confirm(strArray[0] + " 하시겠습니까?"))
+  if (!confirm(strArray[0] + " 하시겠습니까?"))
     return false;
 
   var memo = f.cancel_memo.value;
-  if(memo == "") {
+  if (memo == "") {
     alert("사유를 입력해 주십시오.");
     return false;
   }
@@ -1133,18 +1339,25 @@ function fcancel_check(f) {
   return true;
 }
 
-$(function(){
-  $("#cancel_btn").click(function(e){
+$(function() {
+  $("#cancel_btn").click(function(e) {
     e.preventDefault();
 
     $("#sod_fin_cancelfrm").toggleClass("collapse");
   });
 
-  $(".delivery-confirm").click(function(){
-    if(confirm("상품을 수령하셨습니까?\n\n확인시 배송완료 처리가됩니다.")) {
+  $(".delivery-confirm").click(function() {
+    if (confirm("상품을 수령하셨습니까?\n\n확인시 배송완료 처리가됩니다.")) {
       return true;
     }
     return false;
+  });
+
+  $(document).on("DOMNodeInserted", '.mfp-content', function() {
+    window.wheelzoom($('.mfp-img'));
+  });
+  $('.report-img-wrap').click(function() {
+    window.wheelzoom($('.mfp-img'));
   });
 
   // 거래명세서 출력
@@ -1162,12 +1375,43 @@ $(function(){
 </div>
 
 <style>
-#popupEformWrite { position: fixed; width: 100%; height: 100%; left: 0; top: 0; z-index: 99999999; background-color: rgba(0, 0, 0, 0.6); display: table; table-layout: fixed; opacity: 0; }
-#popupEformWrite > div { width: 100%; height: 100%; display: table-cell; vertical-align: middle; }
-#popupEformWrite iframe { position: relative; width: 1024px; height: 700px; border: 0; background-color: #FFF; left: 50%; margin-left: -512px; }
+#popupEformWrite {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  z-index: 99999999;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: table;
+  table-layout: fixed;
+  opacity: 0;
+}
 
-@media (max-width : 1240px){
-  #popupEformWrite iframe { width: 100%; height: 100%; left: 0; margin-left: 0; }
+#popupEformWrite>div {
+  width: 100%;
+  height: 100%;
+  display: table-cell;
+  vertical-align: middle;
+}
+
+#popupEformWrite iframe {
+  position: relative;
+  width: 1024px;
+  height: 700px;
+  border: 0;
+  background-color: #FFF;
+  left: 50%;
+  margin-left: -512px;
+}
+
+@media (max-width : 1240px) {
+  #popupEformWrite iframe {
+    width: 100%;
+    height: 100%;
+    left: 0;
+    margin-left: 0;
+  }
 }
 
 body.modal-open {
@@ -1181,8 +1425,8 @@ $(function() {
   $("#popupEformWrite").css("opacity", 1);
 
   function writeEform(od_id) {
-    $("#popupEformWrite > div").html("<iframe src='/shop/eform/popup.writeEform.php?od_id="+od_id+"'>");
-    $("#popupEformWrite iframe").load(function(){
+    $("#popupEformWrite > div").html("<iframe src='/shop/eform/popup.writeEform.php?od_id=" + od_id + "'>");
+    $("#popupEformWrite iframe").load(function() {
       $("body").addClass('modal-open');
       $("#popupEformWrite").show();
     });
@@ -1198,14 +1442,14 @@ $(function() {
     e.preventDefault();
 
     var od = $(this).data('od');
-    location.href = '/shop/eform/signEform.php?od_id='+od;
+    location.href = '/shop/eform/signEform.php?od_id=' + od;
   });
   $('.linkEformEdit').click(function(e) { // 내용변경 버튼
     e.preventDefault();
 
     var od = $(this).data('od');
-    $("#popupEformWrite > div").html("<iframe src='/shop/eform/popup.editEform.php?od_id="+od+"'>");
-    $("#popupEformWrite iframe").load(function(){
+    $("#popupEformWrite > div").html("<iframe src='/shop/eform/popup.editEform.php?od_id=" + od + "'>");
+    $("#popupEformWrite iframe").load(function() {
       $("body").addClass('modal-open');
       $("#popupEformWrite").show();
     });
@@ -1214,20 +1458,20 @@ $(function() {
     e.preventDefault();
 
     var od = $(this).data('od');
-    window.open('/shop/eform/downloadEform.php?od_id='+od);
+    window.open('/shop/eform/downloadEform.php?od_id=' + od);
   });
 
   <?php
   if($_GET['result'] == 'writeEform' && (!$eform["dc_id"] || $eform["dc_status"] == '0')) {
   ?>
-  if(confirm('수급자 주문이 완료되었습니다.\n계약서를 생성하시겠습니까?')) {
+  if (confirm('수급자 주문이 완료되었습니다.\n계약서를 생성하시겠습니까?')) {
     writeEform('<?=$od["od_id"]?>');
   }
   <?php
   } else if($_GET['result'] == 'writeEform' && $eform["dc_status"] == '1') {
   ?>
-  if(confirm('계약서가 생성되었습니다.\n계약서를 작성하시겠습니까?')) {
-    location.href = '/shop/eform/signEform.php?od_id='+<?=$od["od_id"]?>;
+  if (confirm('계약서가 생성되었습니다.\n계약서를 작성하시겠습니까?')) {
+    location.href = '/shop/eform/signEform.php?od_id=' + <?=$od["od_id"]?>;
   }
   <?php
   }
@@ -1247,7 +1491,7 @@ $(function() {
 
   if($eform_check['uuid']) {
   ?>
-  if(confirm('수급자 계약서를 작성하시겠습니까?')) {
+  if (confirm('수급자 계약서를 작성하시겠습니까?')) {
     window.location.href = 'simple_eform.php?dc_id=<?=$eform_check['uuid']?>';
   }
   <?php
@@ -1319,7 +1563,7 @@ $(function() {
         var $btn_download = $('<a class="btn-bottom btn-download">다운로드</a>')
           .attr('href', item.src)
           .attr('download', '설치이미지_' + item.index + '.jpg');
-        
+
         // 회전
         var rotate_deg = 0;
         var $btn_rotate = $('<button type="button" class="btn-bottom btn-rotate">회전</button>')
@@ -1335,8 +1579,8 @@ $(function() {
           $btn_rotate);
       },
     },
-    gallery:{
-      enabled:true,
+    gallery: {
+      enabled: true,
       tPrev: '이전', // title for left button
       tNext: '다음', // title for right button
       tCounter: '%curr% / %total%'
