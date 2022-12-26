@@ -121,7 +121,7 @@ include_once("./_common.php");
               <div class="flex-1 flex items-center justify-start">
                 <a tabindex="0"
                   class="focus:outline-none text-lg font-medium leading-5 text-gray-800 dark:text-gray-100 mt-2"
-                  x-text="((item.status === '완료' || item.status === '작성') ? '[설치완료]' : '[설치 예정]') + item.it_name + ' ' + item.ct_qty + '개'"></a>
+                  x-text="((item.status === '완료') ? '[설치완료]' : '[설치 예정]') + item.it_name + ' ' + item.ct_qty + '개'"></a>
               </div>
               <div class="basis-30 flex items-center justify-end">
                 <button type="button"
@@ -369,14 +369,26 @@ include_once("./_common.php");
   }
 
   function goToUrl(od_id) {
-    $("body").addClass('modal-open');
-    $(".popup_box > div").html('<iframe src="/shop/popup.partner_installreport.php?od_id=' + od_id +
-      '">');
-    $(".popup_box iframe").load(function() {
-      $(".popup_box").show();
-      $(".popup_box").css("opacity", 1);
-      $(".popup_box").css("display", 'table');
-    });
+    <?php
+    if ($member["mb_type"] == "partner" || $member["mb_type"] == "manager") { // 설치파트너 & 매니저
+      echo "$('body').addClass('modal-open');\n";
+      echo "$('.popup_box > div').html('<iframe src=/shop/popup.partner_installreport.php?od_id=' + od_id + '\">');\n";
+      echo "$('.popup_box iframe').load(function() {\n";
+      echo "$('.popup_box').show();\n";
+      echo "$('.popup_box').css('opacity', 1);\n";
+      echo "$('.popup_box').css('display', 'table');\n";
+      echo "});";
+    } else {
+      echo "let opt = 'width=1360,height=780,left=0,top=10';\n";
+      echo "if (jQuery.browser.mobile) {\nopt = '';\n}\n";
+      if ($member["mb_level"] >= 9) { // 관리자
+        echo "const _url = '/adm/shop_admin/samhwa_orderform.php?od_id=' + od_id + '&sub_menu=400400';\n";
+      } else { // 사업소
+        echo "const _url = '/shop/orderinquiryview.php?od_id=' + od_id;\n";
+      }
+      echo "window.open(_url, 'win_schedule', opt);\n";
+    }
+    ?>
   }
 
   window.touchtime = 0;
