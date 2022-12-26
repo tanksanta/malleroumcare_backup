@@ -155,7 +155,7 @@ $(function() {
         .done(function() {
             $.post('/shop/schedule/ajax.update_schedule_status.php', {
               od_id: '<?=$od_id?>',
-              status: '작성'
+              status: '완료'
             }, 'json')
             .done(function() {
               alert('계약서 작성이 완료되었습니다.');

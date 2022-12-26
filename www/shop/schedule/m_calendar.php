@@ -121,7 +121,7 @@ include_once("./_common.php");
               <div class="flex-1 flex items-center justify-start">
                 <a tabindex="0"
                   class="focus:outline-none text-lg font-medium leading-5 text-gray-800 dark:text-gray-100 mt-2"
-                  x-text="((item.status === '완료' || item.status === '작성') ? '[설치완료]' : '[설치 예정]') + item.it_name + ' ' + item.ct_qty + '개'"></a>
+                  x-text="((item.status === '완료') ? '[설치완료]' : '[설치 예정]') + item.it_name + ' ' + item.ct_qty + '개'"></a>
               </div>
               <div class="basis-30 flex items-center justify-end">
                 <button type="button"

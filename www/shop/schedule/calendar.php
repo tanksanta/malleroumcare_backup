@@ -243,7 +243,7 @@ include_once("./_common.php");
               <li class="min-h-64 flex flex-col mb-4 px-4">
                 <div class="basis-12 flex flex-row align-center">
                   <p class="flex-1 inline-flex items-center text-lg font-bold"
-                    x-text="(item.status === '완료' || item.status === '작성') ? '설치완료' : '설치예정 : ' + item.delivery_datetime" />
+                    x-text="(item.status === '완료') ? '설치완료' : '설치예정 : ' + item.delivery_datetime" />
                   <div class="basis-30 flex items-center justify-start">
                     <button type="button"
                       class="border rounded-lg px-2 py-1 flex justify-center items-center text-base hover:bg-blue-100 transition-colors duration-300"
