@@ -2945,22 +2945,22 @@ function create_partner_install_schedule($od_id) {
     $delivery_datetime .= ":00";
   }
 
-  if ($cart["ct_is_direct_delivery"] == 2) {
-    $sql = "INSERT INTO `partner_inst_sts` 
-    (
-      status, 
-      ct_id, 
-      it_name, 
-      od_id, 
-      od_mb_id,
-      od_mb_ent_name, 
-      od_b_name, 
-      od_b_hp, 
-      od_b_addr1, 
-      od_b_addr2, 
-      prodMemo
-    ) VALUES ";
-    while ($cart = sql_fetch_array($cart_result)) {
+  $sql = "INSERT INTO `partner_inst_sts` 
+  (
+    status, 
+    ct_id, 
+    it_name, 
+    od_id, 
+    od_mb_id,
+    od_mb_ent_name, 
+    od_b_name, 
+    od_b_hp, 
+    od_b_addr1, 
+    od_b_addr2, 
+    prodMemo
+  ) VALUES ";
+  while ($cart = sql_fetch_array($cart_result)) {
+    if ($cart["ct_is_direct_delivery"] == 2) {
       if ($cart["ct_status"] == '완료') {
         $sql = $sql."('완료',"
         ."'".$cart["ct_id"]."',"
@@ -2986,12 +2986,12 @@ function create_partner_install_schedule($od_id) {
         ."'".$cart["od_b_addr2"]."',"
         ."'".$cart["prodMemo"]."'),";
       }
+    } else {
+      return true;
     }
-    $sql = substr($sql, 0, -1).";";
-    return sql_query($sql);
-  } else {
-    return true;
   }
+  $sql = substr($sql, 0, -1).";";
+  return sql_query($sql);
 }
 
 /**
