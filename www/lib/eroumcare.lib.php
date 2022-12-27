@@ -3087,11 +3087,11 @@ function update_partner_install_schedule_partner_by_ct_id($ct_id, $partner_manag
  * 작성자 : 임근석
  * 작성일자 : 2022-11-28
  * 마지막 수정자 : 임근석
- * 마지막 수정일자 : 2022-11-28
+ * 마지막 수정일자 : 2022-12-27
  * 설명 : 일정 수정 사항 및 삭제 내역 체크
  * @param string $mb_id
  * @param string $member
- * @return mixed 
+ * @return mixed
  */
 function validate_schedule($mb_id, $member) {
   # 개수 체크
@@ -3278,8 +3278,11 @@ function validate_schedule($mb_id, $member) {
   }
   $result = sql_query($sql);
   while ($item = sql_fetch_array($result)) {
-    if ($item["s_status"] != $item["ct_status"]) {
-      $sql = "UPDATE `partner_inst_sts` SET status = '".$item['ct_status']."' WHERE id = ".$item['s_id'].";";
+    if ($item["ct_status"] == '롼료' && $item["s_status"] != $item["ct_status"]) {
+      $sql = "UPDATE `partner_inst_sts` SET status = '롼료' WHERE id = ".$item['s_id'].";";
+      sql_query($sql);
+    } else if (($item["ct_status"] == "준비" || $item["ct_status"] == "출고준비" || $item["ct_status"] == "배송") && $item["s_status"] != "준비") {
+      $sql = "UPDATE `partner_inst_sts` SET status = '준비' WHERE id = ".$item['s_id'].";";
       sql_query($sql);
     }
     if ($item["s_delivery_date"] != $item["ct_delivery_date"]) {
