@@ -116,7 +116,6 @@ $count_delivery_inserted = 0; // 배송비 정보 입력된 숫자
 
 $carts = [];
 $has_install = false; // 설치 상품 있는지 여부
-$cart_status = 'READY'; // ready to install or not
 while($row = sql_fetch_array($cart_result)) {
   if($row['ct_delivery_num'])
     $count_delivery_inserted++;
@@ -141,10 +140,6 @@ while($row = sql_fetch_array($cart_result)) {
 
   $row['price_p'] = $price_p;
   $row['price_s'] = $price_s;
-
-  if ($row['ct_status'] == '출고준비' || $row['ct_status'] == '취소') {
-	$cart_status = 'NOT_READY'; // ready to install or not
-  }
 
   $carts[] = $row;
 }
@@ -192,10 +187,8 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.magnific-popup.js"></script>',
 
   <section class="row no-gutter justify-space-between container">
     <div class="left-wrap">
-      <?php if($has_install) { ?>
+      <?php if($report['photo'] || $report['photo2'] || $report['photo3'] || $report['photo4']) { ?>
       <div class="install-report">
-		<?php if($cart_status == 'READY') { ?>
-
         <div class="top-wrap row no-gutter justify-space-between">
           <span>설치결과보고서</span>
           <button type="button" class="report-btn btn_install_report">결과보고서 작성</button>
@@ -206,9 +199,10 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.magnific-popup.js"></script>',
           <a href="<?=G5_SHOP_URL."/eform/install_report_download.php?od_id={$od_id}"?>" class="btn_ir_download">결과보고서
             다운로드</a>
           <?php } ?>
-
-          <?php } ?>
         </div>
+        <?php } ?>
+
+        <?php if($report['photo']) {?>
         <div class="row report-img-wrap">
           <?php if($report['ir_cert_url']) { ?>
           <div class="col">
@@ -234,6 +228,9 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.magnific-popup.js"></script>',
         <div class="col title-wrap">
           설치 사진(필수)
         </div>
+        <?php } ?>
+
+        <?php if($report['photo2']) {?>
         <div class="row report-img-wrap">
           <?php if($report['ir_cert_url']) { ?>
           <div class="col">
@@ -259,6 +256,9 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.magnific-popup.js"></script>',
         <div class="col title-wrap">
           실물 바코드 사진(필수)
         </div>
+        <?php } ?>
+
+        <?php if($report['photo3']) {?>
         <div class="row report-img-wrap">
           <?php if($report['ir_cert_url']) { ?>
           <div class="col">
@@ -284,6 +284,9 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.magnific-popup.js"></script>',
         <div class="col title-wrap">
           설치ㆍ회수ㆍ소독확인서 사진(필수)
         </div>
+        <?php } ?>
+
+        <?php if($report['photo4']) {?>
         <div class="row report-img-wrap">
           <?php if($report['ir_cert_url']) { ?>
           <div class="col">
@@ -313,15 +316,14 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.magnific-popup.js"></script>',
       </div>
       <?php } ?>
 
+      <?php if($report['issue']) { ?>
       <div class="col issue-wrap">
         <div class="col title-wrap">
           이슈사항
         </div>
         <div class="issue-select">
           이슈사항 (
-          <?php if($report['issue']) { ?>
           <?php echo implode(' /', $report['issue']); ?>
-          <?php } ?>
           )
         </div>
         <div class="issue">
@@ -330,6 +332,8 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.magnific-popup.js"></script>',
           </p>
         </div>
       </div>
+      <?php } ?>
+
       <form id="form_ct_status">
         <div class="top row no-gutter justify-space-between align-center">
           <div class="col title">

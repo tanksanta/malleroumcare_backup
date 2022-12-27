@@ -167,7 +167,7 @@ $report['member'] = $report_mb;
 
 $photo_result = sql_query("
   SELECT * FROM partner_install_photo
-  WHERE od_id = '$od_id' AND mb_id = '{$member['mb_id']}' AND img_type = '설치사진'
+  WHERE od_id = '$od_id' AND img_type = '설치사진'
   ORDER BY ip_id ASC
 ", true);
 $report['photo'] = [];
@@ -177,7 +177,7 @@ while($photo = sql_fetch_array($photo_result)) {
 
 $photo_result2 = sql_query("
   SELECT * FROM partner_install_photo
-  WHERE od_id = '$od_id' AND mb_id = '{$member['mb_id']}' AND img_type = '실물바코드사진'
+  WHERE od_id = '$od_id' AND img_type = '실물바코드사진'
   ORDER BY ip_id ASC
 ", true);
 $report['photo2'] = [];
@@ -187,7 +187,7 @@ while($photo = sql_fetch_array($photo_result2)) {
 
 $photo_result3 = sql_query("
   SELECT * FROM partner_install_photo
-  WHERE od_id = '$od_id' AND mb_id = '{$member['mb_id']}' AND img_type = '설치ㆍ회수ㆍ소독확인서'
+  WHERE od_id = '$od_id' AND img_type = '설치ㆍ회수ㆍ소독확인서'
   ORDER BY ip_id ASC
 ", true);
 $report['photo3'] = [];
@@ -197,7 +197,7 @@ while($photo = sql_fetch_array($photo_result3)) {
 
 $photo_result4 = sql_query("
   SELECT * FROM partner_install_photo
-  WHERE od_id = '$od_id' AND mb_id = '{$member['mb_id']}' AND img_type = '추가사진'
+  WHERE od_id = '$od_id' AND img_type = '추가사진'
   ORDER BY ip_id ASC
 ", true);
 $report['photo4'] = [];
@@ -424,6 +424,7 @@ $(function() {
           <?php } ?>
         </div>
       </div>
+      <?php if($report['photo'] || $report['photo2'] || $report['photo3'] || $report['photo4']) { ?>
       <div class="install-report">
         <div class="top-wrap row justify-space-between">
           <span>설치결과보고서</span>
@@ -436,7 +437,9 @@ $(function() {
             다운로드</a>
           <?php } ?>
         </div>
+        <?php } ?>
 
+        <?php if($report['photo']) { ?>
         <div class="row report-img-wrap">
           <?php if($report['ir_cert_url']) { ?>
           <div class="col">
@@ -463,7 +466,9 @@ $(function() {
         <div class="col title-wrap">
           설치 사진(필수)
         </div>
+        <?php } ?>
 
+        <?php if($report['photo2']) { ?>
         <div class="row report-img-wrap">
           <?php if($report['ir_cert_url']) { ?>
           <div class="col">
@@ -489,7 +494,9 @@ $(function() {
         <div class="col title-wrap">
           실물 바코드 사진(필수)
         </div>
+        <?php } ?>
 
+        <?php if($report['photo3']) { ?>
         <div class="row report-img-wrap">
           <?php if($report['ir_cert_url']) { ?>
           <div class="col">
@@ -515,7 +522,9 @@ $(function() {
         <div class="col title-wrap">
           설치ㆍ회수ㆍ소독확인서 사진(필수)
         </div>
+        <?php } ?>
 
+        <?php if($report['photo4']) { ?>
         <div class="row report-img-wrap">
           <?php if($report['ir_cert_url']) { ?>
           <div class="col">
@@ -543,16 +552,16 @@ $(function() {
         </div>
         <?php } ?>
       </div>
+      <?php } ?>
 
+      <?php if($report['issue']) { ?>
       <div class="col issue-wrap">
         <div class="col title-wrap">
           이슈사항
         </div>
         <div class="issue-select">
           이슈사항 (
-          <?php if($report['issue']) { ?>
           <?php echo implode(' /', $report['issue']); ?>
-          <?php } ?>
           )
         </div>
         <div class="issue">
@@ -561,6 +570,7 @@ $(function() {
           </p>
         </div>
       </div>
+      <?php } ?>
 
       <h4>상품 정보</h4>
       <div class="info-wrap">

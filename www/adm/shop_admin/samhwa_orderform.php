@@ -1513,6 +1513,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
           <span>추가사진(선택) - 상품변경 혹은 특이사항 발생 시</span>
         </div>
 
+        <?php if($report['issue']) { ?>
         <div class="col report-img-wrap">
           <div class="report-issue">
             이슈사항
@@ -1530,6 +1531,7 @@ var od_id = '<?php echo $od['od_id']; ?>';
             </p>
           </div>
         </div>
+        <?php } ?>
 
         <?php } ?>
       </div>
