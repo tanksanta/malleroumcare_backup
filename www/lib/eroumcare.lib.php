@@ -2913,7 +2913,7 @@ function duplicate_partner_deny_schedule($partner_manager_mb_id, $delivery_date)
  * 작성자 : 임근석
  * 작성일자 : 2022-11-02
  * 마지막 수정자 : 임근석
- * 마지막 수정일자 : 2022-12-26
+ * 마지막 수정일자 : 2022-12-27
  * 설명 : 설치파트너 매니저 설치 일정 생성
  * @param integer $od_id
  * @return boolean
@@ -2924,6 +2924,7 @@ function create_partner_install_schedule($od_id) {
     ct.ct_id,
     ct.it_name,
     ct.prodMemo, 
+    ct.ct_is_direct_delivery, 
     od.od_id, 
     od.od_b_hp, 
     od.od_b_name,
@@ -2944,49 +2945,53 @@ function create_partner_install_schedule($od_id) {
     $delivery_datetime .= ":00";
   }
 
-  $sql = "INSERT INTO `partner_inst_sts` 
-  (
-    status, 
-    ct_id, 
-    it_name, 
-    od_id, 
-    od_mb_id,
-    od_mb_ent_name, 
-    od_b_name, 
-    od_b_hp, 
-    od_b_addr1, 
-    od_b_addr2, 
-    prodMemo
-  ) VALUES ";
-  while ($cart = sql_fetch_array($cart_result)) {
-    if ($cart["ct_status"] == '완료') {
-      $sql = $sql."('완료',"
-      ."'".$cart["ct_id"]."',"
-      ."'".$cart["it_name"]."',"
-      ."'".$cart["od_id"]."',"
-      ."'".$cart["mb_id"]."',"
-      ."'".$cart["mb_entNm"]."',"
-      ."'".$cart["od_b_name"]."',"
-      ."'".$cart["od_b_hp"]."',"
-      ."'".$cart["od_b_addr1"]."',"
-      ."'".$cart["od_b_addr2"]."',"
-      ."'".$cart["prodMemo"]."'),";
-    } else {
-      $sql = $sql."('준비',"
-      ."'".$cart["ct_id"]."',"
-      ."'".$cart["it_name"]."',"
-      ."'".$cart["od_id"]."',"
-      ."'".$cart["mb_id"]."',"
-      ."'".$cart["mb_entNm"]."',"
-      ."'".$cart["od_b_name"]."',"
-      ."'".$cart["od_b_hp"]."',"
-      ."'".$cart["od_b_addr1"]."',"
-      ."'".$cart["od_b_addr2"]."',"
-      ."'".$cart["prodMemo"]."'),";
+  if ($cart["ct_is_direct_delivery"] == 2) {
+    $sql = "INSERT INTO `partner_inst_sts` 
+    (
+      status, 
+      ct_id, 
+      it_name, 
+      od_id, 
+      od_mb_id,
+      od_mb_ent_name, 
+      od_b_name, 
+      od_b_hp, 
+      od_b_addr1, 
+      od_b_addr2, 
+      prodMemo
+    ) VALUES ";
+    while ($cart = sql_fetch_array($cart_result)) {
+      if ($cart["ct_status"] == '완료') {
+        $sql = $sql."('완료',"
+        ."'".$cart["ct_id"]."',"
+        ."'".$cart["it_name"]."',"
+        ."'".$cart["od_id"]."',"
+        ."'".$cart["mb_id"]."',"
+        ."'".$cart["mb_entNm"]."',"
+        ."'".$cart["od_b_name"]."',"
+        ."'".$cart["od_b_hp"]."',"
+        ."'".$cart["od_b_addr1"]."',"
+        ."'".$cart["od_b_addr2"]."',"
+        ."'".$cart["prodMemo"]."'),";
+      } else {
+        $sql = $sql."('준비',"
+        ."'".$cart["ct_id"]."',"
+        ."'".$cart["it_name"]."',"
+        ."'".$cart["od_id"]."',"
+        ."'".$cart["mb_id"]."',"
+        ."'".$cart["mb_entNm"]."',"
+        ."'".$cart["od_b_name"]."',"
+        ."'".$cart["od_b_hp"]."',"
+        ."'".$cart["od_b_addr1"]."',"
+        ."'".$cart["od_b_addr2"]."',"
+        ."'".$cart["prodMemo"]."'),";
+      }
     }
+    $sql = substr($sql, 0, -1).";";
+    return sql_query($sql);
+  } else {
+    return true;
   }
-  $sql = substr($sql, 0, -1).";";
-  return sql_query($sql);
 }
 
 /**
@@ -3170,7 +3175,8 @@ function validate_schedule($mb_id, $member) {
     LEFT JOIN `g5_shop_order` AS `od` ON od.od_id = s.od_id
     LEFT JOIN `g5_member` AS `od_mb` ON od_mb.mb_id = od.mb_id
     LEFT JOIN `g5_member` AS `p_mb` ON p_mb.mb_id = ct.ct_direct_delivery_partner
-    LEFT JOIN `g5_member` AS `m_mb` ON m_mb.mb_id = od.od_partner_manager;";
+    LEFT JOIN `g5_member` AS `m_mb` ON m_mb.mb_id = od.od_partner_manager
+    WHERE `ct`.ct_is_direct_delivery = 2;";
   }
   # 사업소 계정
   else if ($member['mb_type'] === 'default' && $member['mb_level'] < 9) {
@@ -3222,7 +3228,7 @@ function validate_schedule($mb_id, $member) {
     LEFT JOIN `g5_member` AS `od_mb` ON od_mb.mb_id = od.mb_id
     LEFT JOIN `g5_member` AS `p_mb` ON p_mb.mb_id = ct.ct_direct_delivery_partner
     LEFT JOIN `g5_member` AS `m_mb` ON m_mb.mb_id = od.od_partner_manager
-    WHERE `od_mb`.mb_id = '$mb_id';";
+    WHERE `od_mb`.mb_id = '$mb_id' AND `ct`.ct_is_direct_delivery = 2;";
   }
   # 설치파트너 계정 && 설치파트너 매니저 계정
   else {
@@ -3274,7 +3280,7 @@ function validate_schedule($mb_id, $member) {
     LEFT JOIN `g5_member` AS `od_mb` ON od_mb.mb_id = od.mb_id
     LEFT JOIN `g5_member` AS `p_mb` ON p_mb.mb_id = ct.ct_direct_delivery_partner
     LEFT JOIN `g5_member` AS `m_mb` ON m_mb.mb_id = od.od_partner_manager
-    WHERE `p_mb`.mb_id = '$mb_id';";
+    WHERE `p_mb`.mb_id = '$mb_id' AND `ct`.ct_is_direct_delivery = 2;";
   }
   $result = sql_query($sql);
   while ($item = sql_fetch_array($result)) {
