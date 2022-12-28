@@ -2937,6 +2937,7 @@ function create_partner_install_schedule($od_id) {
   LEFT JOIN g5_shop_order AS od ON ct.od_id = od.od_id
   LEFT JOIN g5_member AS mb ON mb.mb_id = od.mb_id
   WHERE od.od_id = $od_id AND 
+  ct.ct_is_direct_delivery = 2 AND 
   (ct.ct_status = '준비' OR ct.ct_status = '출고준비' OR ct.ct_status = '완료' OR ct.ct_status = '배송');";
   $cart_result = sql_query($sql);
   if (mysqli_num_rows($cart_result) < 1) return false;

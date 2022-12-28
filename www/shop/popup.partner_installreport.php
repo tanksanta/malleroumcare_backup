@@ -786,7 +786,9 @@ while($ct = sql_fetch_array($result)) {
     // 결과보고서 작성 버튼
     $('.btn_ir_sign').click(function(e) {
       e.preventDefault();
-
+      console.log($("#list_file_photo1").children());
+      console.log($("#list_file_photo2").children());
+      console.log($("#list_file_photo3").children().length);
       if (!($("#list_file_photo1").children().length > 0 && $("#list_file_photo2").children().length > 0 && $(
           "#list_file_photo3").children().length > 0)) {
         return alert('필수 파일들을 모두 업로드해야 결과보고서 작성이 가능합니다.');
@@ -1177,10 +1179,8 @@ while($ct = sql_fetch_array($result)) {
           fileSizeStr = parseInt(fileSize) + " byte";
         }
 
-        if ($.inArray(ext, ['png', 'pdf', 'jpg', 'jpeg']) <= 0) {
+        if ($.inArray(ext.trim().toLowerCase(), ['png', 'pdf', 'jpg', 'jpeg']) == -1) {
           // 확장자 체크
-          /* alert("등록이 불가능한 파일 입니다.");
-          break; */
           alert("등록이 불가능한 파일 입니다.(" + fileName + ")");
         } else if (fileSizeMb > uploadSize) {
           // 파일 사이즈 체크
