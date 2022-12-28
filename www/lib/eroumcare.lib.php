@@ -3284,8 +3284,8 @@ function validate_schedule($mb_id, $member) {
   }
   $result = sql_query($sql);
   while ($item = sql_fetch_array($result)) {
-    if ($item["ct_status"] == '롼료' && $item["s_status"] != $item["ct_status"]) {
-      $sql = "UPDATE `partner_inst_sts` SET status = '롼료' WHERE id = ".$item['s_id'].";";
+    if ($item["ct_status"] == '완료' && $item["s_status"] != $item["ct_status"]) {
+      $sql = "UPDATE `partner_inst_sts` SET status = '완료' WHERE id = ".$item['s_id'].";";
       sql_query($sql);
     } else if (($item["ct_status"] == "준비" || $item["ct_status"] == "출고준비" || $item["ct_status"] == "배송") && $item["s_status"] != "준비") {
       $sql = "UPDATE `partner_inst_sts` SET status = '준비' WHERE id = ".$item['s_id'].";";
