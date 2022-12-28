@@ -2960,7 +2960,7 @@ function create_partner_install_schedule($od_id) {
     prodMemo
   ) VALUES ";
   while ($cart = sql_fetch_array($cart_result)) {
-    if ($cart["ct_is_direct_delivery"] == 2) {
+    if ($cart["ct_is_direct_delivery"] == '2') {
       if ($cart["ct_status"] == '완료') {
         $sql = $sql."('완료',"
         ."'".$cart["ct_id"]."',"
