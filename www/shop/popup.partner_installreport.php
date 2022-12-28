@@ -786,11 +786,9 @@ while($ct = sql_fetch_array($result)) {
     // 결과보고서 작성 버튼
     $('.btn_ir_sign').click(function(e) {
       e.preventDefault();
-      console.log($("#list_file_photo1").children());
-      console.log($("#list_file_photo2").children());
-      console.log($("#list_file_photo3").children().length);
-      if (!($("#list_file_photo1").children().length > 0 && $("#list_file_photo2").children().length > 0 && $(
-          "#list_file_photo3").children().length > 0)) {
+      if (!($("#list_file_photo1").children("li, a").length > 0 && $("#list_file_photo2").children("li, a")
+          .length > 0 && $(
+            "#list_file_photo3").children("li, a").length > 0)) {
         return alert('필수 파일들을 모두 업로드해야 결과보고서 작성이 가능합니다.');
       } else {
         let sign_url = $(this).attr('href');
