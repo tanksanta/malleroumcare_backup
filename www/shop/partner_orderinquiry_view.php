@@ -218,7 +218,8 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.magnific-popup.js"></script>',
           <div class="col">
             <div class="report-img">
               <a href="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" target="_blank" class="view_image">
-                <img src="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>"
+                <img
+                  src="<? if (str_ends_with($photo['ip_photo_url'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']; ?>"
                   onerror="this.src='<? if (strpos($photo['ip_photo_name'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo '/shop/img/no_image.gif'; ?>';">
               </a>
             </div>
@@ -246,7 +247,8 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.magnific-popup.js"></script>',
           <div class="col">
             <div class="report-img">
               <a href="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" target="_blank" class="view_image">
-                <img src="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>"
+                <img
+                  src="<? if (str_ends_with($photo['ip_photo_url'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']; ?>"
                   onerror="this.src='<? if (strpos($photo['ip_photo_name'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo '/shop/img/no_image.gif'; ?>';">
               </a>
             </div>
@@ -274,7 +276,8 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.magnific-popup.js"></script>',
           <div class="col">
             <div class="report-img">
               <a href="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" target="_blank" class="view_image">
-                <img src="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>"
+                <img
+                  src="<? if (str_ends_with($photo['ip_photo_url'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']; ?>"
                   onerror="this.src='<? if (strpos($photo['ip_photo_name'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo '/shop/img/no_image.gif'; ?>';">
               </a>
             </div>
@@ -302,7 +305,8 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.magnific-popup.js"></script>',
           <div class="col">
             <div class="report-img">
               <a href="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" target="_blank" class="view_image">
-                <img src="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>"
+                <img
+                  src="<? if (str_ends_with($photo['ip_photo_url'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']; ?>"
                   onerror="this.src='<? if (strpos($photo['ip_photo_name'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo '/shop/img/no_image.gif'; ?>';">
               </a>
             </div>
@@ -864,8 +868,9 @@ $(function() {
     send_data['delivery_date'] = obj[2].value;
     send_data['delivery_datetime'] = obj[3].value + ":00";
     send_data['partner_manager_mb_id'] = $('.sel_manager').val();
+    const send_data2 = $(this).serialize();
     $.post('schedule/ajax.schedule.php', send_data, 'json').done(function() {
-      $.post('ajax.partner_deliverydate.php', $(this).serialize(), 'json')
+      $.post('ajax.partner_deliverydate.php', send_data2, 'json')
         .done(function() {
           alert('변경이 완료되었습니다.');
           window.location.reload();

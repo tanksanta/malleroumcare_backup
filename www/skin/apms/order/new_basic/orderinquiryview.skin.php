@@ -456,7 +456,8 @@ $(function() {
           <div class="col">
             <div class="report-img">
               <a href="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" target="_blank" class="view_image">
-                <img src="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>"
+                <img
+                  src="<? if (str_ends_with($photo['ip_photo_url'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']; ?>"
                   onerror="this.src='<? if (strpos($photo['ip_photo_name'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo '/shop/img/no_image.gif'; ?>';">
               </a>
             </div>
@@ -484,7 +485,8 @@ $(function() {
           <div class="col">
             <div class="report-img">
               <a href="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" target="_blank" class="view_image">
-                <img src="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>"
+                <img
+                  src="<? if (str_ends_with($photo['ip_photo_url'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']; ?>"
                   onerror="this.src='<? if (strpos($photo['ip_photo_name'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo '/shop/img/no_image.gif'; ?>';">
               </a>
             </div>
@@ -512,7 +514,8 @@ $(function() {
           <div class="col">
             <div class="report-img">
               <a href="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" target="_blank" class="view_image">
-                <img src="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>"
+                <img
+                  src="<? if (str_ends_with($photo['ip_photo_url'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']; ?>"
                   onerror="this.src='<? if (strpos($photo['ip_photo_name'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo '/shop/img/no_image.gif'; ?>';">
               </a>
             </div>
@@ -540,7 +543,8 @@ $(function() {
           <div class="col">
             <div class="report-img">
               <a href="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" target="_blank" class="view_image">
-                <img src="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>"
+                <img
+                  src="<? if (str_ends_with($photo['ip_photo_url'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']; ?>"
                   onerror="this.src='<? if (strpos($photo['ip_photo_name'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo '/shop/img/no_image.gif'; ?>';">
               </a>
             </div>

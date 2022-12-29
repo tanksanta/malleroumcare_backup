@@ -246,7 +246,7 @@ include_once("./_common.php");
                     x-text="(item.status === '완료') ? '설치완료' : '설치예정 : ' + item.delivery_datetime" />
                   <div class="basis-30 flex items-center justify-start">
                     <button type="button"
-                      class="border rounded-lg px-2 py-1 flex justify-center items-center text-base hover:bg-blue-100 transition-colors duration-300" <?php if ($member["mb_type"] !== 'partner' && $member["mb_type"] !== 'manager') {
+                      class="border rounded-lg px-2 py-1 flex justify-center items-center text-base hover:bg-blue-100 transition-colors duration-300" <?php if ($member["mb_type"] !== 'manager') {
                         echo ":class=\"{ 'bg-gray-100': item.status !== '완료', 'hover:bg-gray-100': item.status !== '완료', 'cursor-not-allowed':item.status !== '완료' }\"";
                         echo "x-bind:disabled=\"item.status !== '완료'\"";
                       } ?> @click="goToUrl(item.od_id)" x-text="'설치결과보고서'">
