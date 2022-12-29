@@ -16,6 +16,24 @@ if($dc_id) {
 
   if(!$dc['uuid'])
     unset($dc);
+
+  // 보호자 정보 가져오기(장기요양입소이용신청서용)
+  $pen = get_recipient($dc['penId']);
+  $pros = get_pros_by_recipient($dc['penId']);
+  if($pen['penProNm']) {
+    array_unshift($pros, [
+        'pro_name' => $pen['penProNm'],
+        'pro_type' => $pen['penProTypeCd'],
+        'pro_rel_type' => $pen['penProRel'],
+        'pro_rel' => $pen['penProRelEtc'],
+        'pro_birth' => $pen['penProBirth'],
+        'pro_hp' => $pen['penProConNum'],
+        'pro_tel' => $pen['penProConPnum'],
+        'pro_zip' => $pen['penProZip'],
+        'pro_addr1' => $pen['penProAddr'],
+        'pro_addr2' => $pen['penProAddrDtl']
+    ]);
+  }
 }
 
 // 이전에 저장했던 간편계약서 삭제
@@ -71,7 +89,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
   <!-- hula1202_1637198335.gif -->
     <?php if(!$member['sealFile']) { ?>
     <div class="se_seal_wr">
-      <form action="ajax.member.seal_upload.php" method="POST" id="form_seal" onsubmit="return false;">
+      <form action="ajax.member.seal_upload.php" method="POST" id="form_seal" onsubmit="return false;" onkeydown="if(event.keyCode==13) return false;">
         <div class="se_seal_desc">
           등록된 사업소 직인이 없습니다.<br>
           계약서 작성을 위해선 직인 이미지를 등록해주세요.
@@ -82,7 +100,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
       </form>
     </div>
     <?php } ?>
-    <form id="form_simple_eform" method="POST" class="form-horizontal" autocomplete="off" onsubmit="return false;">
+    <form id="form_simple_eform" method="POST" class="form-horizontal" autocomplete="off" onsubmit="return false;" onkeydown="if(event.keyCode==13) return false;">
       <input type="hidden" name="w" value="<?php if($dc) echo 'u'; ?>">
       <input type="hidden" name="dc_id" value="<?php if($dc) echo $dc['uuid']; ?>">
       <input type="hidden" name="penRecTypeCd" id="penRecTypeCd" value="<?php if(!$dc) echo '02'; if($dc) echo $dc['penRecTypeCd']; ?>">
@@ -158,7 +176,11 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
             <div class="col-md-3" id="select_applicantCd" >
               <select name="applicantCd" id="applicantCd" class="form-control input-sm" <?php if(!$dc['applicantCd']) echo 'style="display: none"'; ?>>
                 <option value="00" <?php if($dc) echo get_selected($dc['applicantCd'], '00'); ?>>본인</option>
-                <option value="01" <?php if($dc) echo get_selected($dc['applicantCd'], '01'); ?>>보호자</option>
+                <?php if($dc) { // 계약서 수정인 경우 ?>
+                  <?php for($i = 0; $i < count($pros); $i++){ ?>
+                    <?php if(!empty($pros[$i]['pro_name'])&&!empty($pros[$i]['pro_hp'])&&!empty($pros[$i]['pro_addr1'])&&!empty($pros[$i]['pro_zip'])&&!empty($pros[$i]['pro_birth'])&&$pros[$i]['pro_type']!='02'){ // 정보가 완전하고 요양보호사가 아닌 경우 ?>
+                        <option value=<?php echo "\"".$pros[$i]['pro_name']."_".$pros[$i]['pro_birth']."\" ".get_selected(explode('_', $dc['applicantCd'])[0], $pros[$i]['pro_name']);  ?> >보호자<?php echo "(".$pros[$i]['pro_name'].") ";  ?></option>
+                 <?php  } } } ?>
                 <option value="02" <?php if($dc) echo get_selected($dc['applicantCd'], '02'); ?>>공란</option>
               </select>
             </div>
@@ -1170,10 +1192,11 @@ function select_recipient(obj) {
                 //전체 보호자를 불러와서 가장 첫번째 보호자 출력(모든 정보가 입력되어 있지 않으면 다음 보호자 출력, 모든 보호자의 정보가 완전하지 않으면 출력하지 않음)
                 if(!!prosArr[i]['pro_name']&&!!prosArr[i]['pro_hp']&&!!prosArr[i]['pro_addr1']&&!!prosArr[i]['pro_zip']&&!!prosArr[i]['pro_birth']&&!!prosArr[i]['pro_name']){
                     if(prosArr[i]['pro_type']!='02'){ //요양보호사는 건너뛴다다
-                       console.log("protype : ", prosArr[i]['pro_type']);
+                       var applicant_cd_name = "<?=explode('_',$dc['applicantCd'])[0];?>";
+                       var selected_value = applicant_cd_name == prosArr[i]['pro_name'] ? ' selected="selected"':"";
                         row += `
-                            <option value="01" <?php if($dc) echo get_selected($dc['applicantCd'], '01'); ?>>보호자(${prosArr[i]['pro_name']})</option>`;
-                        break;
+                            <option value="${prosArr[i]['pro_name']}_${prosArr[i]['pro_birth']}"${selected_value}>보호자(${prosArr[i]['pro_name']})</option>`;
+                        // break; // break 하면 조건에 맞는 가장 최초의 보호자만 출력
                     }
                 }
             }
@@ -1706,9 +1729,13 @@ function check_input_completed() {
 }
 
 // 보유재고관리에서 넘어온 경우 상품 바코드 선택
-function select_barcode(barcode) {
+function select_barcode(barcode,gubun) {
   setTimeout(function() {
-	  $('input:radio[name="barcode_0_type"]:radio[value="1"]').prop('checked', true);
+	  if(gubun == "01"){//대여
+		$('input:radio[name="barcode_0000_type"]:radio[value="1"]').prop('checked', true);
+	  }else{//판매
+		$('input:radio[name="barcode_0_type"]:radio[value="1"]').prop('checked', true);
+	  }
 	  $('.it_barcode').val(barcode).prop("selected", true);
 	  update_barcode_field();
   }, 2000);
@@ -1888,7 +1915,7 @@ if($_POST['penId_r']){
     $it['gubun'] = $gubun_text;
 
     echo 'select_item(' . json_encode($it) . ');'.PHP_EOL;
-    echo 'select_barcode(' . json_encode($_POST['barcode_r']) . ');'.PHP_EOL;
+    echo 'select_barcode(' . json_encode($_POST['barcode_r']) . ',"'.$gubun.'");'.PHP_EOL;
   
   }
 
