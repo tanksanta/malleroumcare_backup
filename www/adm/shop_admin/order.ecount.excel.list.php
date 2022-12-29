@@ -363,7 +363,11 @@
     }
     
     $od = sql_fetch(" 
-      SELECT * FROM g5_shop_order WHERE od_id = '".$it['od_id']."'
+      SELECT o.*, cp.cp_subject
+      FROM g5_shop_order o
+        LEFT JOIN g5_shop_coupon_log cp_log ON o.od_id = cp_log.od_id
+        LEFT JOIN g5_shop_coupon cp ON cp_log.cp_id = cp.cp_id
+      WHERE o.od_id = '".$it['od_id']."'
     ");
 
     if ($count_od_id !== $it['od_id']) {
@@ -381,10 +385,12 @@
     $res = get_eroumcare(EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP, $sendData);
     $result_again = $res;
     $result_again =$result_again['data'];
-
-    for($k=0; $k < count($result_again); $k++) {
-      if($result_again[$k]['prodBarNum']) {
-        array_push($barcode,$result_again[$k]['prodBarNum']);
+    
+    if( is_array($result_again) && count($result_again) ) {
+      for($k=0; $k < count($result_again); $k++) {
+        if($result_again[$k]['prodBarNum']) {
+          array_push($barcode,$result_again[$k]['prodBarNum']);
+        }
       }
     }
     asort($barcode);
@@ -649,6 +655,19 @@
       // 쿠폰할인
       $coupon_price = $od['od_cart_coupon'] + $od['od_coupon'] + $od['od_send_coupon'];
       if ($coupon_price > 0) {
+
+        // 22.12.19 : 서원 - 주문내역 이카운트 엑셀다운로드 쿠폰정보에 쿠폰이름 매핑입력요청
+        // 창고명 하드코딩 요청.
+        $it['ct_warehouse'] = "검단창고";
+
+        // 22.12.19 : 서원 - 주문내역 이카운트 엑셀다운로드 쿠폰정보에 쿠폰이름 매핑입력요청
+        if( $od['cp_subject'] ) {
+          // 쿠폰명칭 추가
+          $abstract .= " ({$od['cp_subject']})";
+          //쿠폰이 존재할 경우 쿠폰명으로 대체
+          $standard = $od['cp_subject'];
+        }
+
         $rows[] = [
           'od_id' => $od['od_id'],
           'value' => [
@@ -657,7 +676,7 @@
             $mb['mb_thezone'],
             '',
             $od_sales_manager['mb_name'],
-            '',
+            $it['ct_warehouse'], // 출하창고
             '',
             '',
             '',
@@ -670,7 +689,7 @@
             '10000', //부서
             '04378', // 품목코드(쿠폰할인)
             '',
-            '',
+            $standard,
             '1',
             -($coupon_price), // 단가(vat포함)
             '',
@@ -730,7 +749,36 @@
     ");
     set_order_admin_log($od['od_id'], '이카운트 엑셀 다운로드 : ' . $it_name);
   }
-  $headers = array("일자", "순서", "거래처코드", "거래처명","담당자", "출하창고", "거래유형","통화", "환율","성명(상호명)", "배송처", "전잔액", "후잔액", "특이사항", "참고사항", "부서", "품목코드", "품목명", "규격", "수량", "단가(vat포함)", "외화금액", "공급가액", "부가세", "바코드", "로젠 송장번호", "적요", "생산전표생성");
+  $headers = array(
+    "일자",
+    "순서",
+    "거래처코드",
+    "거래처명",
+    "담당자",
+    "출하창고",
+    "거래유형",
+    "통화",
+    "환율",
+    "성명(상호명)",
+    "배송처",
+    "전잔액",
+    "후잔액",
+    "특이사항",
+    "참고사항",
+    "부서",
+    "품목코드",
+    "품목명",
+    "규격",
+    "수량",
+    "단가(vat포함)",
+    "외화금액",
+    "공급가액",
+    "부가세",
+    "바코드",
+    "로젠 송장번호",
+    "적요",
+    "생산전표생성
+  ");
 
   usort($rows, function($item1, $item2) {
     return $item1['od_id'] <=> $item2['od_id'];
