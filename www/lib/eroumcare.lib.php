@@ -3359,12 +3359,13 @@ function validate_schedule($mb_id, $member) {
  * 작성자 : 임근석
  * 작성일자 : 2022-11-14
  * 마지막 수정자 : 임근석
- * 마지막 수정일자 : 2022-12-26
+ * 마지막 수정일자 : 2022-12-30
  * 설명 : 사업소 기준으로 설치파트너 매니저 일정 
- * @param string $od_mb_id
+ * @param string $member
  * @return mixed
  */
-function get_partner_schedule_by_mb_id($od_mb_id) {
+function get_partner_schedule_by_mb_id($member) {
+  $od_mb_id = $member['mb_id'];
   $sql = "SELECT 
     s.status, 
     s.delivery_date, 
@@ -3448,14 +3449,17 @@ function get_partner_schedule_by_mb_id($od_mb_id) {
  * 작성자 : 임근석
  * 작성일자 : 2022-11-02
  * 마지막 수정자 : 임근석
- * 마지막 수정일자 : 2022-12-26
- * 설명 : 설치파트너 매니저 일정 조회
- * @param string $partner_mb_id
+ * 마지막 수정일자 : 2022-12-30
+ * 설명 : 설치파트너 & 설치파트너 매니저 & 관리자 계정으로 설치 일정 조회
  * @param string $member
  * @return mixed
  */
-function get_partner_schedule_by_partner_mb_id($partner_mb_id, $member) {
-  if ($member['mb_level'] >= 9) {
+function get_partner_schedule_by_partner_mb_id($member) {
+  $mb_id = $member['mb_id'];
+  $mb_type = $member['mb_type'];
+  $mb_level = $member['mb_level'];
+  if ($mb_level >= 9 && $mb_type === 'default') {
+    // 관리자 계정
     $sql = "SELECT 
       status, 
       s.delivery_date, 
@@ -3481,7 +3485,8 @@ function get_partner_schedule_by_partner_mb_id($partner_mb_id, $member) {
     WHERE delivery_date != '' 
     AND delivery_datetime != '' 
     AND (status = '준비' OR status = '완료');";
-  } else if($member['mb_type'] == 'manager') {
+  } else if($mb_type == 'manager') {
+    // 설치파트너 매니저 계정
     $sql = "SELECT 
       status, 
       s.delivery_date, 
@@ -3504,11 +3509,12 @@ function get_partner_schedule_by_partner_mb_id($partner_mb_id, $member) {
     LEFT JOIN `g5_member` AS m ON m.mb_id = s.partner_manager_mb_id
     INNER JOIN `g5_shop_cart` AS ct ON ct.ct_id = s.ct_id 
     LEFT JOIN `g5_member` AS mb ON mb.mb_id = s.partner_mb_id 
-    WHERE partner_manager_mb_id = '$partner_mb_id' 
+    WHERE partner_manager_mb_id = '$mb_id' 
     AND delivery_date != '' 
     AND delivery_datetime != '' 
     AND (status = '준비' OR status = '완료');";
   } else {
+    // 설치파트너 계정
     $sql = "SELECT 
       status, 
       s.delivery_date, 
@@ -3531,7 +3537,7 @@ function get_partner_schedule_by_partner_mb_id($partner_mb_id, $member) {
     LEFT JOIN `g5_member` AS m ON m.mb_id = s.partner_manager_mb_id
     INNER JOIN `g5_shop_cart` AS ct ON ct.ct_id = s.ct_id 
     LEFT JOIN `g5_member` AS mb ON mb.mb_id = s.partner_mb_id 
-    WHERE partner_mb_id = '$partner_mb_id' 
+    WHERE partner_mb_id = '$mb_id' 
     AND delivery_date != '' 
     AND delivery_datetime != '' 
     AND (status = '준비' OR status = '완료');";
