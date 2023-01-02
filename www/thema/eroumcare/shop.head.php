@@ -48,7 +48,7 @@ if($member['mb_id']) {
     left join g5_shop_coupon_member m on c.cp_no = m.cp_no
     where
       (
-        c.mb_id IN ( '{$member['mb_id']}', '전체회원' ) or
+        -- c.mb_id IN ( '{$member['mb_id']}', '전체회원' ) or
         m.mb_id = '{$member['mb_id']}'
       )
       and cp_start <= '".G5_TIME_YMD."'
@@ -366,7 +366,7 @@ if($is_main && !$is_member) {
             <?php } ?>
             <?php if($event_count) { ?>
             <a class="event_noti" href="/bbs/board.php?bo_table=event">
-              2022 연말 감사제 <!= 진행중인 이벤트 ==>
+              진행중인 이벤트
               <span class="value"><?=$event_count?>건</span>
               <i class="fa fa-angle-right" aria-hidden="true"></i>
             </a>
@@ -707,12 +707,12 @@ if($is_main && !$is_member) {
                   <i class="fa fa-angle-right" aria-hidden="true"></i>
                 </a>
               </li> -->
-              <li>
-                <a href="/shop/check_my_ltcare_info.php">
-                  수급자 요양정보 조회 
-                  <i class="fa fa-angle-right" aria-hidden="true"></i>
-                </a>
-              </li>
+<!--              <li>-->
+<!--                <a href="/shop/check_my_ltcare_info.php">-->
+<!--                  수급자 요양정보 조회 -->
+<!--                  <i class="fa fa-angle-right" aria-hidden="true"></i>-->
+<!--                </a>-->
+<!--              </li>-->
                 <?php /**if($noti_count = get_recipient_noti_count() > 0) { ?>
                 <a class="noti_pen" href="/shop/my_recipient_noti.php">
                   수급자 알림이 있습니다.
