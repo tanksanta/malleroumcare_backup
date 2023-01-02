@@ -7,7 +7,7 @@ add_stylesheet('<link rel="stylesheet" href="'.$latest_skin_url.'/event.main.css
 <?php if(count($list) > 0) { // 진행중인 이벤트가 없으면 숨김 ?>
 <div class="event_main_wrap">
   <div class="flex">
-    <h3 class="grow">2022 연말 감사제 <!= 진행중인 이벤트 ==></h3>
+    <h3 class="grow">진행중인 이벤트 </h3>
     <div class="link_wrap">
       <a href="/bbs/board.php?bo_table=event" class="btn_default">이벤트 전체보기</a>
     </div>
