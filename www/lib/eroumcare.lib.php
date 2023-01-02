@@ -3343,7 +3343,7 @@ function get_partner_schedule_by_mb_id($member) {
  * 작성자 : 임근석
  * 작성일자 : 2022-11-02
  * 마지막 수정자 : 임근석
- * 마지막 수정일자 : 2022-12-30
+ * 마지막 수정일자 : 2023-01-02
  * 설명 : 설치파트너 & 설치파트너 매니저 & 관리자 계정으로 설치 일정 조회
  * @param string $member
  * @return mixed
@@ -3459,14 +3459,25 @@ function get_partner_schedule_by_partner_mb_id($member) {
       'type' => 'schedule',
    ));
   }
-  $sql = "SELECT 
-    ds.deny_date,
-    ds.partner_mb_id, 
-    m.mb_id,
-    m.mb_name
-  FROM `partner_manager_deny_schedule` AS ds
-  LEFT JOIN g5_member AS m ON m.mb_id = ds.partner_manager_mb_id
-  WHERE ds.partner_mb_id = '$partner_mb_id';";
+  if ($mb_type == "manager") {
+    $sql = "SELECT 
+      ds.deny_date,
+      ds.partner_mb_id, 
+      m.mb_id,
+      m.mb_name
+    FROM `partner_manager_deny_schedule` AS ds
+    LEFT JOIN g5_member AS m ON m.mb_id = ds.partner_manager_mb_id
+    WHERE ds.partner_manager_mb_id = '$mb_id';";
+  } else {
+    $sql = "SELECT 
+      ds.deny_date,
+      ds.partner_mb_id, 
+      m.mb_id,
+      m.mb_name
+    FROM `partner_manager_deny_schedule` AS ds
+    LEFT JOIN g5_member AS m ON m.mb_id = ds.partner_manager_mb_id
+    WHERE ds.partner_mb_id = '$mb_id';";
+  }
   $result = sql_query($sql);
   while ($res_item = sql_fetch_array($result)) {
     array_push($return_list, array(
