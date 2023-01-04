@@ -90,12 +90,21 @@ if($header_skin)
 @media (max-width : 750px){
   .listPopupBoxWrap iframe { width: 100%; height: 100%; left: 0; margin-left: 0; }
 }
+
+#popupDeliveryTracking iframe { height: 550px; }
+#popupDeliveryTracking #close { position: relative; width: 500px; border: 0; background-color: #000; color:#fff; left: 50%; text-align:center; margin-left: -250px; display: block;  padding: 15px 0; top: -5px; }
 </style>
 
 <!-- 210326 재고조회팝업 -->
 <div id="popupProdBarNumInfoBox" class="listPopupBoxWrap">
   <div>
   </div>
+</div>
+<!-- 210326 재고조회팝업 -->
+
+<!-- 230104 배송조회팝업 -->
+<div id="popupDeliveryTracking" class="listPopupBoxWrap">
+  <div class="iframe"><p id="close" class="fa fa-times">닫기</p></div>  
 </div>
 <!-- 210326 재고조회팝업 -->
 
@@ -116,6 +125,8 @@ $(function(){
   $(".listPopupBoxWrap").css("opacity", 1);
 
   $(".popupDeliveryInfoBtn").click(function(e){
+    if( (screen.width < 500) || (screen.height < 400) ){ alert("배송정보는 PC에서 확인 가능 합니다."); return; }
+
     e.preventDefault();
 
     var od = $(this).attr("data-od");
@@ -149,6 +160,16 @@ $(function(){
     e.preventDefault();
     alert("택배 회사를 다시 확인해주세요.");
   });
+
+  $(".popupDeliveryTrackingBtn").click(function(e){
+    e.preventDefault();
+    var url = $(this).attr("data-url");
+    $("#popupDeliveryTracking > div.iframe").prepend("<iframe src='" + url +  "' height='300px'>");
+    $("#popupDeliveryTracking iframe").load(function(){
+      $("#popupDeliveryTracking").show();
+    });
+  });
+  $("#popupDeliveryTracking #close").click(function(e){ $("#popupDeliveryTracking").hide(); });
 
 });
 </script>
@@ -634,7 +655,7 @@ $(function(){
               <?php if($row["ct_delivery_num"] != null) { ?>
                 <div style="margin-top: 6px;">
                 <?php if($delivery_company[$row["ct_delivery_company"]]){ ?>
-                  <a href="https://tracker.delivery/#/<?=$delivery_company[$row["ct_delivery_company"]]?>/<?=str_replace('-','',$row["ct_delivery_num"])?>" class="btn-01 btn-0 btn_delivery_tracking_y" style="font-size: 12px; color: #666" target="_blank">배송조회</a>
+                  <a href="/#/" data-url="https://tracker.delivery/#/<?=$delivery_company[$row["ct_delivery_company"]]?>/<?=str_replace('-','',$row["ct_delivery_num"])?>" class="btn-01 btn-0 btn_delivery_tracking_y popupDeliveryTrackingBtn" style="font-size: 12px; color: #666" target="_blank">배송조회</a>
                 <?php } else {?>
                   <a href="/#/" class="btn-01 btn-0 btn_delivery_tracking_n" style="font-size: 12px; color: #666">배송조회</a>
                 <?php }?>
