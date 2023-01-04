@@ -125,7 +125,8 @@ $(function(){
   $(".listPopupBoxWrap").css("opacity", 1);
 
   $(".popupDeliveryInfoBtn").click(function(e){
- 
+    if( (screen.width < 500) || (screen.height < 400) ){ alert("배송정보는 PC에서 확인 가능 합니다."); return; }
+
     e.preventDefault();
 
     var od = $(this).attr("data-od");
