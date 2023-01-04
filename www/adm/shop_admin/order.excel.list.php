@@ -354,10 +354,9 @@
   for($ii = 0; $ii < count($ct_id); $ii++) {
 
     $it = sql_fetch("
-      SELECT cart.*, item.it_thezone2, o.io_thezone, o.io_thezone as io_thezone2, item.ca_id, item.it_standard, o.io_standard, item.it_taxInfo
+      SELECT cart.*, item.it_thezone2, o.io_thezone, o.io_thezone as io_thezone2, item.ca_id, it_standard, io_standard
       FROM g5_shop_cart as cart
       INNER JOIN g5_shop_item as item ON cart.it_id = item.it_id
-      LEFT JOIN g5_shop_item_option o ON (cart.it_id = o.it_id and cart.io_id = o.io_id)
       WHERE cart.ct_id = '{$ct_id[$ii]}'
       ORDER BY cart.ct_id ASC
     ");
@@ -399,7 +398,7 @@
     // 종료 -->
 
     $it_name = $it["it_name"];
-    //if($it_name != $it["ct_option"]){ $it_name .= " [{$it["ct_option"]}]";}
+    if($it_name != $it["ct_option"]){ $it_name .= " [{$it["ct_option"]}]";}
 
     $addr="";
     if($od_b_zip1){$addr= "(".$od_b_zip1.$od_b_zip2.")";}
@@ -424,25 +423,11 @@
     // 22.12.20 : 서원 - 주문내역 엑셀 양식 컬럼 추가 및 데이터 요청
     $total_price = $it["ct_qty"]*(int)$_price;
     $_notax_price = $_tax = 0;
-    if( $it['it_taxInfo']=="과세" ) {
+    if( $it['ct_notax'] ) {
+      $_notax_price = $total_price;
+    } else {
       $_notax_price = (round($total_price / 1.1)); //공급가액
       $_tax = ($total_price - round($total_price / 1.1)); //부가세
-    } else {
-      $_notax_price = $total_price;
-    }
-
-    $_status="";
-    switch ($it['ct_status']) {
-      case '보유재고등록': $_status="보유재고등록"; break;
-      case '재고소진': $_status="재고소진"; break;
-      case '주문무효': $_status="주문무효"; break;
-      case '취소': $_status="주문취소"; break;
-      case '주문': $_status="상품주문"; break;
-      case '입금': $_status="입금완료"; break;
-      case '준비': $_status="상품준비"; break;
-      case '출고준비': $_status="출고준비"; break;
-      case '배송': $_status="출고완료"; break;
-      case '완료': $_status="배송완료"; break;
     }
 
     $rows[] = [ 
@@ -454,7 +439,7 @@
       $standard,    /* "규격"   */
       $thezone_code,    /* "품목코드"   */
       $it["ct_qty"],    /* "수량"   */
-      (($it['it_taxInfo']=="과세")?"과세":"비과세"),    /* "과세여부"   */
+      ($it['ct_notax']?"비과세":"과세"),    /* "과세여부"   */
       $_price,    /* "단가"   */
       $_notax_price,    /* "공급가"   */
       $_tax,    /* "부가세"   */
@@ -466,59 +451,26 @@
       $it['addr'],    /* "배송처"   */
       $od["od_b_tel"],    /* "연락처"   */
       $od["od_b_hp"],    /* "휴대폰"   */
-      ' '.$it["prodMemo"],    /* "적요"   */
-      ' '.$od["od_memo"],    /* "배송지요청사항"   */
-      ' '. $report['ir_issue'],    /* "메모"   */
+      $it["prodMemo"],    /* "적요"   */
+      $od["od_memo"],    /* "배송지요청사항"   */
+      $report['ir_issue'],    /* "메모"   */
       $it['ct_id'],    /* "카트ID"   */
       $ct_delivery_company,    /* "택배사"   */
       $it['ct_delivery_num'],    /* "송장번호"   */
-      $_status    /* "배송상태"   */
+      $it['ct_status']    /* "배송상태"   */
       
     ];
   }
 
-  // 22.12.14 : 서원 - 엑셀 컬럼 명칭
-  $headers = array(
-    "주문번호",
-    "일자-No.",
-    "출고예정일",
-    "출고완료일",
-    "품목명",
-    "규격",
-    "품목코드",
-    "수량",
-    "과세여부",    
-    "단가",
-    "공급가",
-    "부가세",
-    "합계",
-    "배송지명",
-    "사업자코드",
-    "주문회원",
-    "영업담당자",
-    "배송처",
-    "연락처",
-    "휴대폰",
-    "적요",
-    "배송지요청사항",
-    "메모",
-    "카트ID",
-    "택배사",
-    "송장번호",
-    "배송상태"
-  );
+
+  $headers = array("주문번호", "일자-No.", "출고예정일", "출고완료일", "품목명[규격]", "수량", "품목&수량", "배송지명", "사업자코드", "주문회원", "영업담당자", "배송처", "연락처", "휴대폰", "적요", "배송지요청사항", "메모", "카트ID", "택배사", "송장번호");
   $data = array_merge(array($headers), $rows);
-  
-  // 22.12.14 : 서원 - 엑셀 컬럼 사이즈
-  /*
-  $widths  = array( 10 );
+    
+  $widths  = array(20, 20, 20, 20, 50, 10, 30, 30, 30, 30, 50, 20, 20, 10, 20, 20, 10, 15, 20);
   $header_bgcolor = 'FFABCDEF';
   $last_char = column_char(count($headers) - 1);
-  */
 
   $excel = new PHPExcel();
-  
-  /*
   $excel->setActiveSheetIndex(0)
     ->getStyle( "A1:${last_char}1" )
     ->getFill()
@@ -531,9 +483,8 @@
     ->getAlignment()
     ->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER)
     ->setWrapText(true);
-  */
 
-  //foreach($widths as $i => $w) $excel->setActiveSheetIndex(0)->getColumnDimension( column_char($i) )->setWidth($w);
+  foreach($widths as $i => $w) $excel->setActiveSheetIndex(0)->getColumnDimension( column_char($i) )->setWidth($w);
   $excel->getActiveSheet()->fromArray($data,NULL,'A1');
 
   header("Content-Type: application/octet-stream");
