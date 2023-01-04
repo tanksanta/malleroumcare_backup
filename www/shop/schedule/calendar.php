@@ -243,11 +243,13 @@ include_once("./_common.php");
               <li class="min-h-64 flex flex-col mb-4 px-4">
                 <div class="basis-12 flex flex-row align-center">
                   <p class="flex-1 inline-flex items-center text-lg font-bold"
-                    x-text="(item.status === '완료' || item.status === '작성') ? '설치완료' : '설치예정 : ' + item.delivery_datetime" />
+                    x-text="(item.status === '완료') ? '설치완료' : '설치예정 : ' + item.delivery_datetime" />
                   <div class="basis-30 flex items-center justify-start">
                     <button type="button"
-                      class="border rounded-lg px-2 py-1 flex justify-center items-center text-base hover:bg-blue-100 transition-colors duration-300"
-                      @click="goToUrl(item.od_id)" x-text="'설치결과보고서'">
+                      class="border rounded-lg px-2 py-1 flex justify-center items-center text-base hover:bg-blue-100 transition-colors duration-300" <?php if ($member["mb_type"] !== 'manager') {
+                        echo ":class=\"{ 'bg-gray-100': item.status !== '완료', 'hover:bg-gray-100': item.status !== '완료', 'cursor-not-allowed':item.status !== '완료' }\"";
+                        echo "x-bind:disabled=\"item.status !== '완료'\"";
+                      } ?> @click="goToUrl(item.od_id)" x-text="'설치결과보고서'">
                     </button>
                   </div>
                 </div>
@@ -521,14 +523,26 @@ include_once("./_common.php");
   observer.observe(target, config);
 
   function goToUrl(od_id) {
-    $("body").addClass('modal-open');
-    $(".popup_box > div").html('<iframe src="/shop/popup.partner_installreport.php?od_id=' + od_id +
-      '">');
-    $(".popup_box iframe").load(function() {
-      $(".popup_box").show();
-      $(".popup_box").css("opacity", 1);
-      $(".popup_box").css("display", 'table');
-    });
+    <?php
+    if ($member["mb_type"] == "partner" || $member["mb_type"] == "manager") { // 설치파트너 & 매니저
+      echo "$('body').addClass('modal-open');\n";
+      echo "$('.popup_box > div').html('<iframe src=/shop/popup.partner_installreport.php?od_id=' + od_id + '\">');\n";
+      echo "$('.popup_box iframe').load(function() {\n";
+      echo "$('.popup_box').show();\n";
+      echo "$('.popup_box').css('opacity', 1);\n";
+      echo "$('.popup_box').css('display', 'table');\n";
+      echo "});";
+    } else {
+      echo "let opt = 'width=1360,height=780,left=0,top=10';\n";
+      echo "if (jQuery.browser.mobile) {\nopt = '';\n}\n";
+      if ($member["mb_level"] >= 9) { // 관리자
+        echo "const _url = '/adm/shop_admin/samhwa_orderform.php?od_id=' + od_id + '&sub_menu=400400';\n";
+      } else { // 사업소
+        echo "const _url = '/shop/orderinquiryview.php?od_id=' + od_id;\n";
+      }
+      echo "window.open(_url, 'win_schedule', opt);\n";
+    }
+    ?>
   }
 
   window.touchtime = 0;
@@ -602,7 +616,7 @@ include_once("./_common.php");
         0))])),
     };
     let showModal = true;
-    if (mb_type === 'partner' && valueInModal !== '') {
+    if ((mb_type === 'partner' || mb_type === 'manager') && valueInModal !== '') {
       $.ajax('ajax.deny_schedule.php', {
         type: 'POST',
         cache: false,
@@ -610,7 +624,6 @@ include_once("./_common.php");
         data,
         dataType: 'json',
         success: function(result) {
-          // TODO: 새로고침이 아닌 방식으로 수정할 계획
           window.location.reload();
         },
         error: function($xhr) {
@@ -717,7 +730,11 @@ include_once("./_common.php");
         this.options = this.data;
         this.optionsInModal = this.dataInModal;
         if (!(this.value in this.options)) this.value = null
-        if (!(this.valueInModal in this.optionsInModal)) this.valueInModal = null
+        if (mb_type == "manager") {
+          this.valueInModal = "<?php echo $_SESSION['ss_manager_mb_id'] ?>";
+        } else if (mb_type == "partner") {
+          if (!(this.valueInModal in this.optionsInModal)) this.valueInModal = null
+        }
         this.$watch('search', ((value) => {
           if (!this.open || !value) return this.options = this.data;
           this.options = Object.keys(this.data)
@@ -761,11 +778,6 @@ include_once("./_common.php");
       },
       selectOptionInModal: function() {
         if (!this.openInModal) return this.toggleListboxInModalVisibility()
-        this.filter_mb_id = Object.keys(this.optionsInModal)[this
-            .focusedOptionInModalIndex] == 'all' ? '' :
-          Object
-          .keys(
-            this.optionsInModal)[this.focusedOptionInModalIndex];
         this.valueInModal = Object.keys(this.optionsInModal)[this
           .focusedOptionInModalIndex]
         this.closeListInModalbox()
@@ -826,7 +838,6 @@ include_once("./_common.php");
       events: res,
       select_date: new Date(),
       schedules: [],
-      // mb_type: '<?php echo $member["mb_type"]; ?>',
       initDate: function() {
         const today = new Date();
         this.month = today.getMonth();

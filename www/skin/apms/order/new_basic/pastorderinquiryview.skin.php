@@ -453,7 +453,8 @@ $(function() {
           <div class="col">
             <div class="report-img">
               <a href="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" target="_blank" class="view_image">
-                <img src="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>"
+                <img
+                  src="<?php if (str_ends_with($photo['ip_photo_url'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']; ?>"
                   onerror="this.src='<? if (strpos($photo['ip_photo_name'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo '/shop/img/no_image.gif'; ?>';">
               </a>
             </div>
@@ -479,7 +480,8 @@ $(function() {
           <div class="col">
             <div class="report-img">
               <a href="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" target="_blank" class="view_image">
-                <img src="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>"
+                <img
+                  src="<?php if (str_ends_with($photo['ip_photo_url'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']; ?>"
                   onerror="this.src='<? if (strpos($photo['ip_photo_name'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo '/shop/img/no_image.gif'; ?>';">
               </a>
             </div>
@@ -505,7 +507,8 @@ $(function() {
           <div class="col">
             <div class="report-img">
               <a href="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" target="_blank" class="view_image">
-                <img src="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>"
+                <img
+                  src="<?php if (str_ends_with($photo['ip_photo_url'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']; ?>"
                   onerror="this.src='<? if (strpos($photo['ip_photo_name'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo '/shop/img/no_image.gif'; ?>';">
               </a>
             </div>
@@ -531,7 +534,8 @@ $(function() {
           <div class="col">
             <div class="report-img">
               <a href="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" target="_blank" class="view_image">
-                <img src="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>"
+                <img
+                  src="<?php if (str_ends_with($photo['ip_photo_url'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']; ?>"
                   onerror="this.src='<? if (strpos($photo['ip_photo_name'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo '/shop/img/no_image.gif'; ?>';">
               </a>
             </div>
@@ -1560,9 +1564,16 @@ $(function() {
           });
 
         // 다운로드
-        var $btn_download = $('<a class="btn-bottom btn-download">다운로드</a>')
-          .attr('href', item.src)
-          .attr('download', '설치이미지_' + item.index + '.jpg');
+        let $btn_download;
+        if (item._src) {
+          $btn_download = $('<a class="btn-bottom btn-download">다운로드</a>')
+            .attr('href', item._src)
+            .attr('download', '설치파일_' + item.index + '.pdf');
+        } else {
+          $btn_download = $('<a class="btn-bottom btn-download">다운로드</a>')
+            .attr('href', item.src)
+            .attr('download', '설치이미지_' + item.index + '.jpg');
+        }
 
         // 회전
         var rotate_deg = 0;

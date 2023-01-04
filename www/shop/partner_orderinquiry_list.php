@@ -599,7 +599,7 @@ a.btn_schedule {
       <?php if(strpos($member['mb_partner_type'], '설치') !== false) { ?>
       <div class="sub_sction_tit_control">
         <a href="./schedule/index.php" class="btn_schedule" onclick="return showSchdule(this.href);" target="_blank"
-          class="btn eroumcare_btn2" title="수급자일괄등록">일정 보기</a>
+          class="btn eroumcare_btn2" title="일정 보기">일정 보기</a>
       </div>
       <?php } ?>
     </div>
@@ -745,13 +745,15 @@ a.btn_schedule {
                   </p>
                   <?php } ?>
                   <p style="margin-top: 5px;">
-                    <?php if($row['ct_is_direct_delivery'] == 2) { ?>
+                    <?php if($_check_ct_status == '출고완료' || $_check_ct_status == '배송완료' ) { ?>
+                    <?php if($row['ct_is_direct_delivery'] == '2') { ?>
                     <?php if($row['report'] && ($row['report']['ir_cert_url'] || $row['report']['ir_file_url'])) { ?>
                     <button type="button" class="report-btn btn_install_report done"
                       data-id="<?=$row['od_id']?>">설치결과보고서 완료</button>
                     <?php } else { ?>
                     <button type="button" class="report-btn btn_install_report" data-id="<?=$row['od_id']?>">설치결과보고서
                       등록</button>
+                    <?php } ?>
                     <?php } ?>
                     <?php } ?>
                     <?php

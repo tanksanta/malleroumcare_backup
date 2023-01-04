@@ -11,6 +11,7 @@ if (!$is_admin) {
 
 $od_id = get_search_string($_POST['od_id']);
 $type = $_POST['type'];
+$img_type = $_POST['img_type'];
 $m = $_POST['m'];
 
 if(!$od_id || !$type || !$m)
@@ -30,7 +31,7 @@ if(!is_dir($img_dir)) {
   @chmod($img_dir, G5_DIR_PERMISSION);
 }
 
-function img_file_name() {
+function img_file_name($ext_name) {
   global $od_id, $type, $member;
 
   $file_name = [];
@@ -39,8 +40,13 @@ function img_file_name() {
   $file_name[] = $member['mb_id'];
   $file_name[] = round(microtime(true) * 1000);
   $file_name[] = bin2hex(random_bytes(5));
+  $file_name = implode('_', $file_name);
 
-  return implode('_', $file_name);
+  if ($ext_name !== "") {
+    return $file_name.".".$ext_name;
+  } else {
+    return $file_name;
+  }
 }
 
 $return = null;
@@ -74,7 +80,14 @@ if($type == 'cert') {
     if(!$file)
       json_response(400, '설치확인서 파일을 등록해주세요.');
     $src_name = get_search_string($_FILES['file_cert']['name']);
-    $dest_name = img_file_name();
+    $src_ext_name = "";
+    if (substr_count($src_name, ".") > 0) {
+      $src_ext_name = explode('.', $src_name);
+      if (count($src_ext_name) > 1) {
+        $src_ext_name = end($src_ext_name);
+      }
+    }
+    $dest_name = img_file_name($src_ext_name);
     if(!$src_name) $src_name = $dest_name;
     upload_file($file, $dest_name, $img_dir);
   
@@ -142,7 +155,14 @@ else if($type == 'photo') {
     foreach($photos as $photo) {
       if(!$photo['name']) continue;
       $src_name = get_search_string($photo['name']);
-      $dest_name = img_file_name();
+      $src_ext_name = "";
+      if (substr_count($src_name, ".") > 0) {
+        $src_ext_name = explode('.', $src_name);
+        if (count($src_ext_name) > 1) {
+          $src_ext_name = end($src_ext_name);
+        }
+      }
+      $dest_name = img_file_name($src_ext_name);
       if(!$src_name) $src_name = $dest_name;
       upload_file($photo['tmp_name'], $dest_name, $img_dir);
 

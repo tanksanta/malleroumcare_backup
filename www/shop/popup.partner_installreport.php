@@ -578,7 +578,8 @@ while($ct = sql_fetch_array($result)) {
             <?php foreach($photos1 as $photo) { ?>
             <li>
               <a href="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" target="_blank" class="view_image">
-                <img src="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>"
+                <img
+                  src="<?php if (str_ends_with($photo['ip_photo_url'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']; ?>"
                   onerror="this.src='<? if (strpos($photo['ip_photo_name'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo '/shop/img/no_image.gif'; ?>';">
               </a>
               <?=$photo['ip_photo_name']?>
@@ -613,7 +614,8 @@ while($ct = sql_fetch_array($result)) {
             <?php foreach($photos2 as $photo) { ?>
             <li>
               <a href="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" target="_blank" class="view_image">
-                <img src="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>"
+                <img
+                  src="<?php if (str_ends_with($photo['ip_photo_url'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']; ?>"
                   onerror="this.src='<? if (strpos($photo['ip_photo_name'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo '/shop/img/no_image.gif'; ?>';">
               </a>
               <?=$photo['ip_photo_name']?>
@@ -648,7 +650,8 @@ while($ct = sql_fetch_array($result)) {
             <?php foreach($photos3 as $photo) { ?>
             <li>
               <a href="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" target="_blank" class="view_image">
-                <img src="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>"
+                <img
+                  src="<?php if (str_ends_with($photo['ip_photo_url'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']; ?>"
                   onerror="this.src='<? if (strpos($photo['ip_photo_name'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo '/shop/img/no_image.gif'; ?>';">
               </a>
               <?=$photo['ip_photo_name']?>
@@ -683,7 +686,8 @@ while($ct = sql_fetch_array($result)) {
             <?php foreach($photos4 as $photo) { ?>
             <li>
               <a href="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" target="_blank" class="view_image">
-                <img src="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>"
+                <img
+                  src="<?php if (str_ends_with($photo['ip_photo_url'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']; ?>"
                   onerror="this.src='<? if (strpos($photo['ip_photo_name'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo '/shop/img/no_image.gif'; ?>';">
               </a>
               <?=$photo['ip_photo_name']?>
@@ -786,9 +790,9 @@ while($ct = sql_fetch_array($result)) {
     // 결과보고서 작성 버튼
     $('.btn_ir_sign').click(function(e) {
       e.preventDefault();
-
-      if (!($("#list_file_photo1").children().length > 0 && $("#list_file_photo2").children().length > 0 && $(
-          "#list_file_photo3").children().length > 0)) {
+      if (!($("#list_file_photo1").children("li, a").length > 0 && $("#list_file_photo2").children("li, a")
+          .length > 0 && $(
+            "#list_file_photo3").children("li, a").length > 0)) {
         return alert('필수 파일들을 모두 업로드해야 결과보고서 작성이 가능합니다.');
       } else {
         let sign_url = $(this).attr('href');
@@ -1177,10 +1181,8 @@ while($ct = sql_fetch_array($result)) {
           fileSizeStr = parseInt(fileSize) + " byte";
         }
 
-        if ($.inArray(ext, ['png', 'pdf', 'jpg', 'jpeg']) <= 0) {
+        if ($.inArray(ext.trim().toLowerCase(), ['png', 'pdf', 'jpg', 'jpeg']) == -1) {
           // 확장자 체크
-          /* alert("등록이 불가능한 파일 입니다.");
-          break; */
           alert("등록이 불가능한 파일 입니다.(" + fileName + ")");
         } else if (fileSizeMb > uploadSize) {
           // 파일 사이즈 체크
@@ -1235,9 +1237,16 @@ while($ct = sql_fetch_array($result)) {
             });
 
           // 다운로드
-          let $btn_download = $('<a class="btn-bottom btn-download">다운로드</a>')
-            .attr('href', item.src)
-            .attr('download', '설치이미지_' + item.index + '.jpg');
+          let $btn_download;
+          if (item._src) {
+            $btn_download = $('<a class="btn-bottom btn-download">다운로드</a>')
+              .attr('href', item._src)
+              .attr('download', '설치파일_' + item.index + '.pdf');
+          } else {
+            $btn_download = $('<a class="btn-bottom btn-download">다운로드</a>')
+              .attr('href', item.src)
+              .attr('download', '설치이미지_' + item.index + '.jpg');
+          }
 
           // 회전
           let rotate_deg = 0;

@@ -10,6 +10,7 @@
     echo '<script src="https://momentjs.com/downloads/moment-with-locales.min.js"></script>';
     echo '<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js" integrity="sha512-WFN04846sdKMIP5LKNphMaWzU7YpMyCU245etK3g/2ARYbPK9Ub18eG+ljU96qKRCWh+quCY7yefSmlkQw1ANQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>';
     echo '<script src="'.G5_JS_URL.'/popModal/popModal.min.js"></script>';
+    echo '<script src="/js/detectmobilebrowser.js"></script>';
     echo '<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min.css">';
 
 ?>
