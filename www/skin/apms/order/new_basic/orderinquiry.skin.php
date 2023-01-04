@@ -91,8 +91,8 @@ if($header_skin)
   .listPopupBoxWrap iframe { width: 100%; height: 100%; left: 0; margin-left: 0; }
 }
 
-#popupDeliveryTracking iframe { height: 550px; }
-#popupDeliveryTracking #close { position: relative; width: 500px; border: 0; background-color: #000; color:#fff; left: 50%; text-align:center; margin-left: -250px; display: block;  padding: 15px 0; top: -5px; }
+#popupDeliveryTracking iframe { height: 500px; }
+#popupDeliveryTracking #popupDeliveryTrackingClose { position: relative; width: 500px; border: 0; background-color: #000; color:#fff; left: 50%; text-align:center; margin-left: -250px; display: block;  padding: 15px 0; top: -5px; }
 </style>
 
 <!-- 210326 재고조회팝업 -->
@@ -104,7 +104,7 @@ if($header_skin)
 
 <!-- 230104 배송조회팝업 -->
 <div id="popupDeliveryTracking" class="listPopupBoxWrap">
-  <div class="iframe"><p id="close" class="fa fa-times">닫기</p></div>  
+  <div></div>  
 </div>
 <!-- 210326 재고조회팝업 -->
 
@@ -125,8 +125,7 @@ $(function(){
   $(".listPopupBoxWrap").css("opacity", 1);
 
   $(".popupDeliveryInfoBtn").click(function(e){
-    if( (screen.width < 500) || (screen.height < 400) ){ alert("배송정보는 PC에서 확인 가능 합니다."); return; }
-
+ 
     e.preventDefault();
 
     var od = $(this).attr("data-od");
@@ -164,12 +163,11 @@ $(function(){
   $(".popupDeliveryTrackingBtn").click(function(e){
     e.preventDefault();
     var url = $(this).attr("data-url");
-    $("#popupDeliveryTracking > div.iframe").prepend("<iframe src='" + url +  "' height='300px'>");
+    $("#popupDeliveryTracking > div").html("<iframe src='" + url +  "'></iframe><p id='popupDeliveryTrackingClose' onclick='$(\"#popupDeliveryTracking\").hide();'>닫기 (<i class='fa fa-times'></i>)</p>");
     $("#popupDeliveryTracking iframe").load(function(){
       $("#popupDeliveryTracking").show();
     });
   });
-  $("#popupDeliveryTracking #close").click(function(e){ $("#popupDeliveryTracking").hide(); });
 
 });
 </script>
