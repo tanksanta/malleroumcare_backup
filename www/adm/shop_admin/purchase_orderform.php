@@ -1896,9 +1896,16 @@ $deliveryCntBtnStatus = ($delivery_insert >= $od["od_delivery_total"]) ? " disab
             });
 
           // 다운로드
-          var $btn_download = $('<a class="btn-bottom btn-download">다운로드</a>')
-            .attr('href', item.src)
-            .attr('download', '설치이미지_' + item.index + '.jpg');
+          let $btn_download;
+          if (item._src) {
+            $btn_download = $('<a class="btn-bottom btn-download">다운로드</a>')
+              .attr('href', item._src)
+              .attr('download', '설치파일_' + item.index + '.pdf');
+          } else {
+            $btn_download = $('<a class="btn-bottom btn-download">다운로드</a>')
+              .attr('href', item.src)
+              .attr('download', '설치이미지_' + item.index + '.jpg');
+          }
 
           // 회전
           var rotate_deg = 0;

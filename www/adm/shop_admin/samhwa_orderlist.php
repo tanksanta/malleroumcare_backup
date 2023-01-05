@@ -123,6 +123,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
         <!-- <button id="dzexcel"><img src="<?php echo G5_ADMIN_URL; ?>/shop_admin/img/btn_img_ex.gif">더존엑셀</button> -->
         <!-- <button id="handsabang" onClick="sanbang_order_send()">사방넷수동가져오기</button> -->
         <!-- <button id="list_matching_cancel">매칭데이터취소</button> -->
+        <button id="delivery_inst_schedule">위탁(설치)일정표</button>
         <select class="sb1" name="" id="ct_direct_delivery_partner_sb">
             <?php
             //출고담당자 select
@@ -1794,6 +1795,17 @@ if( function_exists('pg_setting_check') ){
             placement: 'bottomRight',
             showCloseBut: false
         });
+    });
+    // 위탁 설치 일정표 팝업 띄우기
+    $('#delivery_inst_schedule').click(function() {
+        let opt = "width=1360,height=780,left=0,top=10";
+        let _url = "/shop/schedule/index.php";
+        if (jQuery.browser.mobile) {
+            opt = "";
+            _url = _url.replace("index.php", "m_index.php");
+        }
+        window.open(_url, "win_schedule", opt);
+        return false;
     });
     $('#form_delivery_excel_upload').submit(function(e) {
         e.preventDefault();
