@@ -11,6 +11,7 @@ if (!$is_admin) {
 
 $od_id = get_search_string($_POST['od_id']);
 $type = $_POST['type'];
+$img_type = $_POST['img_type'];
 $m = $_POST['m'];
 
 if(!$od_id || !$type || !$m)
@@ -30,7 +31,7 @@ if(!is_dir($img_dir)) {
   @chmod($img_dir, G5_DIR_PERMISSION);
 }
 
-function img_file_name() {
+function img_file_name($ext_name) {
   global $od_id, $type, $member;
 
   $file_name = [];
@@ -39,8 +40,13 @@ function img_file_name() {
   $file_name[] = $member['mb_id'];
   $file_name[] = round(microtime(true) * 1000);
   $file_name[] = bin2hex(random_bytes(5));
+  $file_name = implode('_', $file_name);
 
-  return implode('_', $file_name);
+  if ($ext_name !== "") {
+    return $file_name.".".$ext_name;
+  } else {
+    return $file_name;
+  }
 }
 
 $return = null;
@@ -74,7 +80,14 @@ if($type == 'cert') {
     if(!$file)
       json_response(400, '설치확인서 파일을 등록해주세요.');
     $src_name = get_search_string($_FILES['file_cert']['name']);
-    $dest_name = img_file_name();
+    $src_ext_name = "";
+    if (substr_count($src_name, ".") > 0) {
+      $src_ext_name = explode('.', $src_name);
+      if (count($src_ext_name) > 1) {
+        $src_ext_name = end($src_ext_name);
+      }
+    }
+    $dest_name = img_file_name($src_ext_name);
     if(!$src_name) $src_name = $dest_name;
     upload_file($file, $dest_name, $img_dir);
   
@@ -129,11 +142,27 @@ else if($type == 'photo') {
       return $new;
     }
 
-    $photos = $_FILES['file_photo'] ? re_array_files($_FILES['file_photo']) : [];
+    if ($img_type == "추가사진") {
+      $photos = $_FILES['file_photo4'] ? re_array_files($_FILES['file_photo4']) : [];
+    } else if ($img_type == "설치ㆍ회수ㆍ소독확인서") {
+      $photos = $_FILES['file_photo3'] ? re_array_files($_FILES['file_photo3']) : [];
+    } else if ($img_type == "실물바코드사진") {
+      $photos = $_FILES['file_photo2'] ? re_array_files($_FILES['file_photo2']) : [];
+    } else {
+      $photos = $_FILES['file_photo1'] ? re_array_files($_FILES['file_photo1']) : [];
+    }
+    
     foreach($photos as $photo) {
       if(!$photo['name']) continue;
       $src_name = get_search_string($photo['name']);
-      $dest_name = img_file_name();
+      $src_ext_name = "";
+      if (substr_count($src_name, ".") > 0) {
+        $src_ext_name = explode('.', $src_name);
+        if (count($src_ext_name) > 1) {
+          $src_ext_name = end($src_ext_name);
+        }
+      }
+      $dest_name = img_file_name($src_ext_name);
       if(!$src_name) $src_name = $dest_name;
       upload_file($photo['tmp_name'], $dest_name, $img_dir);
 
@@ -144,6 +173,7 @@ else if($type == 'photo') {
           od_id = '{$od_id}',
           mb_id = '{$report['mb_id']}',
           ip_photo_name = '{$src_name}',
+          img_type = '{$img_type}',
           ip_photo_url = '{$dest_name}',
           ip_created_at = NOW()
       ");
@@ -157,6 +187,7 @@ else if($type == 'photo') {
     $return_result = sql_query("
       SELECT * FROM partner_install_photo
       WHERE od_id = '{$od_id}' {$check_member}
+      AND img_type = '{$img_type}'
       ORDER BY ip_id ASC
     ");
     while($row = sql_fetch_array($return_result)) {

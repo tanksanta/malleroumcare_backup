@@ -153,8 +153,20 @@ $(function() {
             od_id: '<?=$od_id?>'
         }, 'json')
         .done(function() {
-            alert('계약서 작성이 완료되었습니다.');
-            history.back();
+            $.post('/shop/schedule/ajax.update_schedule_status.php', {
+              od_id: '<?=$od_id?>',
+              status: '완료'
+            }, 'json')
+            .done(function() {
+              alert('계약서 작성이 완료되었습니다.');
+              history.back();
+            })
+            .fail(function($xhr) {
+              $(this).text('완료');
+              $(this).prop('disabled', false);
+              var data = $xhr.responseJSON;
+              alert(data && data.message);
+            });
         })
         .fail(function($xhr) {
             $(this).text('완료');

@@ -39,6 +39,11 @@ table {border-collapse: collapse;}
   right: 0;
   top: 20px;
 }
+.order-list .r_btn_area2 {
+    position: absolute;
+    right: calc(20px + 120px);
+    top: 20px;
+}
 .pc_none,.info_pc_none {display: none !important;}
 .m_barcode {display: none;}
 
@@ -405,6 +410,11 @@ table {border-collapse: collapse;}
   .order-list .r_btn_area {
     position: relative;
     float: right;
+  }
+  .order-list .r_btn_area2 {
+    position: relative;
+    float: right;
+    right: 10px;
   }
 }
 

@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS `partner_install_photo` (
   `ip_id` int(11) NOT NULL auto_increment,
   `ct_id` int(11) NOT NULL default 0,
   `mb_id` varchar(30) NOT NULL default '',
+  `img_type` varchar(255) NULL default '설치사진',
   `ip_photo_name` varchar(255) NOT NULL default '',
   `ip_photo_url` varchar(255) NOT NULL default '',
   `ip_created_at` datetime NOT NULL default '0000-00-00 00:00:00',
