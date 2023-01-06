@@ -249,6 +249,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 add_javascript('<script src="'.G5_JS_URL.'/jquery.fileDownload.js"></script>', 0);
 add_javascript('<script src="'.G5_JS_URL.'/popModal/popModal.min.js"></script>', 0);
 add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min.css">', 0);
+add_stylesheet('<link rel="stylesheet" href="../adm/css/samhwa_admin.css">', 0);
 ?>
 
 <style>
@@ -545,6 +546,12 @@ a.btn_schedule {
   color: #666;
   background: #fff;
 }
+
+.table_box .step td {
+    font-weight: normal;
+    height: 44px;
+    color: white;
+}
 </style>
 
 <script src="/js/detectmobilebrowser.js">
@@ -646,34 +653,28 @@ a.btn_schedule {
               </tr>
             </thead>
             <tbody>
-              <?php
-            if(!$orders) echo '<tr><td colspan="5" class="empty_table">내역이 없습니다.</td></tr>';
+            <?php
+              if(!$orders) echo '<tr><td colspan="6" class="empty_table">내역이 없습니다.</td></tr>';
               // 시작 -->
-              // 서원 : 22.09.13 - 기능개선( [기능개선] 파트너_발주내역_dev_v.0.1.pptx )
+              // 현지 : 23.01.03 - 구매/발주 기능개선 요청건([기능개선] 파트너_발주내역_v.0.4.pptx)
               //
-               
+
               $_check_ct_status = "";
               foreach($orders as $row) {
 
                 if( $_check_ct_status != $row['ct_status']){
-                  $_txt = $_check_ct_status = $row['ct_status'];
-                 
-                  switch ($_check_ct_status) {
-                    case '출고준비': $_bg_color = "#00b0f0"; $_txt = $_txt."(출고전)"; break;
-                    case '출고완료': $_bg_color = "#28759c"; $_txt = $_txt."(출고후)"; break;
-                    case '배송완료': $_bg_color = "#002060"; $_txt = $_txt."(출고후)"; break;
-                    case '주문취소': $_bg_color = "#7f7f7f"; break;
-                    case '주문무효': $_bg_color = "#7f7f7f"; break;
-                    default: break;
-                  }
-                  echo ('
-                    <tr class="step">
-                      <td colspan="6" style="text-align:left; padding-left: 15px; background-color:'.$_bg_color.';"> ' . $_txt .' </td>
-                    </tr>
-                  ');
-                  
-                }
+                  $_check_ct_status = $row['ct_status'];
+                  $ct_status_info = get_step($row['ct_status'], 'partner');
+                  $show_ct_status = $ct_status_info['chulgo'] ? $ct_status_info['name'] . '<span>(' . $ct_status_info['chulgo'] . ')</span>' : $ct_status_info['name'];
 
+                  echo "
+                    <tr class=\"step\">
+                      <td colspan=\"8\" class=\"ltr-bg-step-{$ct_status_info['step']}\" style=\"text-align: left; padding-left: 15px;\">
+                        {$show_ct_status}
+                      </td>
+                    </tr>
+                  ";
+                }
                 //
                 // 종료 -->
             ?>

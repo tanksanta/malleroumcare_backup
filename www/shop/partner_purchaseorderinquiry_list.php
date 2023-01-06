@@ -28,7 +28,7 @@ if($incompleted && count($incompleted) == 1) {
       $where[] = "
         ( (ct_delivery_num is not null and ct_delivery_num != '')
         or (o.od_partner_manager is not null and o.od_partner_manager != '')
-        or ct_status in ('출고완료', '입고완료', '취소') )
+        or ct_status in ('출고완료', '입고완료', '마감완료') )
       ";
     }
     else if($ic == '1') {
@@ -51,11 +51,13 @@ if($manager_mb_id) {
 
 # 주문상태
 $ct_status = $_GET['ct_status'];
-$ct_steps = ['발주완료', '출고완료', '입고완료', '취소'];
+$ct_steps = ['발주완료','출고완료','입고완료','마감완료','발주취소'];
 if($ct_status) {
   $ct_steps = array_intersect($ct_steps, $ct_status);
 }
-$where[] = " ( ct_status = '".implode("' OR ct_status = '", $ct_steps)."' ) ";
+
+//$where[] = " ( ct_status = '".implode("' OR ct_status = '", $ct_steps)."' ) ";
+$where[] = " ( ct_status like '%".implode("%' OR ct_status like '%", $ct_steps)."%' ) ";
 
 # 검색어
 $attrs = ['all', 'mb_entNm', 'it_name', 'c.od_id', 'od_b_name', 'od_partner_manager'];
@@ -146,7 +148,8 @@ $result = sql_query("
     ct_warehouse,
     ct_warehouse_address,
     ct_warehouse_phone,
-    ct_delivery_expect_date
+    ct_delivery_expect_date,
+    ct_part_info
   {$sql_common}
   {$sql_order}
   {$sql_limit}
@@ -257,12 +260,14 @@ tr.hover { background-color: #fbf9f7 !important; }
 .td_od_info .btn_change, .btn_install_report { display: inline-block; vertical-align: middle; font-size: 12px; line-height: 1; padding: 5px 8px; border-radius: 3px; border: 1px solid #e6e1d7; color: #666; background: #fff; }
 .btn_install_report.done { background: #f3f3f3; }
 
-.td_operation { width: 150px }
+.td_operation { width: 100px }
 .td_operation a + a { margin-top: 5px; }
 .td_operation a { display: block; border: 1px solid #ddd; background: #fff; padding: 5px 8px; color: #666; border-radius: 3px; font-size: 12px; text-align: center; line-height: 15px; }
 .td_operation a.disabled {
   background-color:#ddd;
 }
+
+.td_od_info a { border: 1px solid #ddd; background: #fff; padding: 1px 5px; color: #666; border-radius: 3px; font-size: 10px; text-align: center; line-height: 15px; }
 
 .sel_manager { display: block; margin: 0 auto 5px auto; border-radius: 3px; border: 1px solid #ddd; width: 100px; height: 25px; font-size: 12px; color: #555; }
 
@@ -295,6 +300,12 @@ tr.hover { background-color: #fbf9f7 !important; }
 @media (max-width : 750px) {
   #popup_box iframe { width: 100%; height: 100%; left: 0; margin-left: 0; }
 }
+
+.table_box .step td {
+  font-weight: normal;
+  height: 44px;
+  color: white;
+}
 </style>
 
 <section class="wrap">
@@ -305,7 +316,8 @@ tr.hover { background-color: #fbf9f7 !important; }
       <label><input type="checkbox" name="ct_status[]" value="발주완료" <?=option_array_checked('발주완료', $ct_status)?>/> 발주완료</label>
       <label><input type="checkbox" name="ct_status[]" value="출고완료" <?=option_array_checked('출고완료', $ct_status)?>/> 출고완료</label>
       <label><input type="checkbox" name="ct_status[]" value="입고완료" <?=option_array_checked('입고완료', $ct_status)?>/> 입고완료</label>
-      <label><input type="checkbox" name="ct_status[]" value="취소" <?=option_array_checked('취소', $ct_status)?>/> 취소</label>
+      <label><input type="checkbox" name="ct_status[]" value="마감완료" <?=option_array_checked('마감완료', $ct_status)?>/> 마감완료 </label>
+      <label><input type="checkbox" name="ct_status[]" value="발주취소" <?=option_array_checked('발주취소', $ct_status)?>/> 발주취소 </label>
       <br>
       작업상태 :
       <label><input type="checkbox" id="chk_incompleted_all"/> 전체</label> 
@@ -346,9 +358,8 @@ tr.hover { background-color: #fbf9f7 !important; }
             <label for="ct_status_mode2">담당자지정</label>
           </span>
           <select name="ct_status">
-            <option value="출고완료">출고완료</option>
-            <option value="입고완료" selected>입고완료</option>
-            <option value="취소">취소</option>
+            <option value="출고완료" selected>출고완료</option>
+            <option value="발주취소">발주취소</option>
           </select>
           <select name="manager" style="display: none;">
               <option value="">미지정</option>
@@ -362,13 +373,21 @@ tr.hover { background-color: #fbf9f7 !important; }
       </div>
       <div class="table_box">
         <table>
+          <colgroup>
+            <col width="3%">
+            <col width="33%">
+            <col width="22%">
+            <col width="15%">
+            <col width="12%">
+            <col width="15%">
+          </colgroup>
           <thead>
             <tr>
               <th>
                 <input type="checkbox" id="chk_all">
               </th>
-              <th>주문정보</th>
-              <th>입고완료정보</th>
+              <th>발주정보</th>
+              <th>배송지</th>
               <th>담당자/상태</th>
               <th>발주금액</th>
               <th>관리</th>
@@ -377,7 +396,48 @@ tr.hover { background-color: #fbf9f7 !important; }
           <tbody>
             <?php
             if(!$orders) echo '<tr><td colspan="6" class="empty_table">내역이 없습니다.</td></tr>';
-            foreach($orders as $row) { 
+              // 시작 -->
+              // 서원 : 22.10.26 - 구매/발주 기능개선 요청건
+              //
+
+              // 발주 단계 별 건수
+              $cnt_ct_status = [];
+              foreach($orders as $row) {
+                 if(!$cnt_ct_status[$row['ct_status']]) {
+                     $cnt_ct_status[$row['ct_status']] = 1;
+                 } else {
+                     $cnt_ct_status[$row['ct_status']] += 1;
+                 }
+              }
+              $_check_ct_status = "";
+              foreach($orders as $row) {
+
+                if( $_check_ct_status != $row['ct_status']){
+                  $_txt = $_check_ct_status = $row['ct_status'];
+
+                  switch ($_check_ct_status) {
+                    case '발주완료': $_bg_color = "#88a825"; $_txt = $_txt."(출고전)"; break;
+//                    case '발주승인': $_bg_color = "#FFC000"; $_txt = $_txt."(출고전)"; break;
+//                    case '부분출고': $_bg_color = "#953735"; $_txt = $_txt."(출고후)"; break;
+                    case '출고완료': $_bg_color = "#32841c"; $_txt = $_txt."(출고후)"; break;
+//                    case '부분입고': $_bg_color = "#93CDDD"; $_txt = $_txt."(출고후)"; break;
+                    case '입고완료': $_bg_color = "#36a6de"; $_txt = $_txt."(출고후)"; break;
+                    case '마감완료': $_bg_color = "#604A7B"; break;
+//                    case '파트너발주취소': $_bg_color = "#002060"; break;
+                    case '발주취소': $_bg_color = "#6f6f6f"; break;
+                    default: break;
+                  }
+                  echo ('
+                    <tr class="step">
+                      <td colspan="5" style="text-align:left; padding-left: 15px; background-color:'.$_bg_color.'; border:0px;"> ' . $_txt .' </td>
+                      <td colspan="1" style="text-align:right; padding-right: 15px; background-color:'.$_bg_color.'; border:0px;"> ' . "총 ".$cnt_ct_status[$row['ct_status']]."건".' </td>
+                    </tr>
+                  ');
+
+                }
+
+                //
+                // 종료 -->
             ?>
             <tr data-link="partner_purchaseorderinquiry_view.php?od_id=<?=$row['od_id']?>" class="btn_link" data-id="<?=$row['od_id']?>">
               <td class="td_chk">
@@ -392,30 +452,20 @@ tr.hover { background-color: #fbf9f7 !important; }
                   }
                   ?>
                 </p>
-                <p>
-                  주문일시 : 
-                  <?=date('Y-m-d', strtotime($row['od_time']))?>
-                </p>
+
+                <p> 발주일 : <?=date('Y-m-d', strtotime($row['od_time']))?> </p>
+
                 <?php if($row['ct_rdy_date']) { ?>
-                <p>
-                  출고준비 : 
-                  <?=date('Y-m-d (H:i)', strtotime($row['ct_rdy_date']))?>
-                </p>
+                <p> 출고준비 : <?=date('Y-m-d (H:i)', strtotime($row['ct_rdy_date']))?> </p>
                 <?php } ?>
-                <p>
-                  입고예상 :
-                  <?=$row['ct_delivery_expect_date'] ? date('Y-m-d H시', strtotime($row['ct_delivery_expect_date'])) : ''?>
-                  <button type="button" class="btn_change" data-date="<?=date('Y-m-d', strtotime($row['ct_delivery_expect_date'] ?: 'now'))?>" data-time="<?=date('H', strtotime($row['ct_delivery_expect_date'] ?: 'now'))?>" data-odid="<?=$row['od_id']?>" data-ctid="<?=$row['ct_id']?>">변경</button>
-                </p>
+
+                <p>입고예정일 : <?=$row['ct_delivery_expect_date'] ? date('Y-m-d', strtotime($row['ct_delivery_expect_date'])) : ''?> <?php if(!in_array($row['ct_status'], ['발주취소', '관리자발주취소'])) { ?><a href="./partner_purchaseorderinquiry_view.php?od_id=<?=$row['od_id']?>" class="btn_edit_delivery_info">변경</a><?php }?></p>
+
                 <?php if($row['ct_ex_date']) { ?>
-                <p>
-                  출고완료 : 
-                  <?=$row['ct_ex_date']?>
-                </p>
+                <p> 출고완료 : <?=$row['ct_ex_date']?> </p>
                 <?php } ?>
-                <p>
-                  주문번호(<?=$row['od_id']?>)
-                </p>
+
+                <p> 발주번호(<?=$row['od_id']?>) </p>
                 <img src="<?=THEMA_URL?>/assets/img/icon_link_orderlist.png" class="icon_link">
               </td>
               <td class="td_od_info td_delivery_info">
@@ -428,48 +478,60 @@ tr.hover { background-color: #fbf9f7 !important; }
                 <p>
                   <?=$row['ct_warehouse_phone']?>
                 </p>
-                <?php if($row['prodMemo']) { ?>
-                <p>
-                  - 요청사항 : 
-                  <span class="info_delivery">
-                    <?=$row['prodMemo']?>
-                  </span>
-                </p>
-                <?php } ?>
               </td>
               <td class="td_status text_c">
                 <?php
-                if($manager_mb_id) {
-                  $manager_txt = '미지정';
-                  if($row['od_partner_manager']) {
-                    $manager = get_member($row['od_partner_manager']);
-                    $manager_txt = '[직원] ' . $manager['mb_name'];
-                  }
-                  echo "<div>{$manager_txt}</div>";
-                } else {
-                ?>
-                <select class="sel_manager" data-id="<?=$row['od_id']?>">
-                  <option value="">미지정</option>
-                  <?php foreach($managers as $manager) { ?>
-                  <option value="<?=$manager['mb_id']?>" <?=get_selected($row['od_partner_manager'], $manager['mb_id'])?>>[직원] <?=$manager['mb_name']?></option>
-                  <?php } ?>
-                </select>
-                <?php } ?>
+                if($row['ct_status'] != '발주취소') { // 발주취소 건은 담당자 출력 안 함
+                    if ($manager_mb_id) {
+                        $manager_txt = '미지정';
+                        if ($row['od_partner_manager']) {
+                            $manager = get_member($row['od_partner_manager']);
+                            $manager_txt = '[직원] ' . $manager['mb_name'];
+                        }
+                        echo "<div>{$manager_txt}</div>";
+                    } else {
+                        ?>
+                        <select class="sel_manager" data-id="<?= $row['od_id'] ?>">
+                            <option value="">미지정</option>
+                            <?php foreach ($managers as $manager) { ?>
+                                <option value="<?= $manager['mb_id'] ?>" <?= get_selected($row['od_partner_manager'], $manager['mb_id']) ?>>
+                                    [직원] <?= $manager['mb_name'] ?></option>
+                            <?php } ?>
+                        </select>
+                    <?php }
+                }?>
                 <span style="<?php
-                if(in_array($row['ct_status'], ['취소']))
+                if(in_array($row['ct_status'], ['발주취소', '관리자발주취소']))
                   echo 'color: #ff0000;';
                 ?>">
                   <?=$row['ct_status']?>
                 </span>
               </td>
-              <td class="text_r">
-                <?=number_format($row['price'])?>원
+              <td class="text-center">
+              <?php if(in_array($row['ct_status'], ['발주취소', '관리자발주취소'])) {?>
+                  ―
+              <?php } else {?>
+                  <?=number_format($row['price'])?>원
+              <?php }?>
               </td>
               <td class="td_operation">
-                <a href="javascript:void(0);" class="btn_delivery_info <?php echo $row['total_cnt'] === $row['inserted_cnt'] ? 'disabled' : ''; ?>" data-id="<?=$row['od_id']?>">
+                <?php
+                  $_ck = false;
+                  if(in_array($row['ct_status'], ['발주완료','출고완료','입고완료','마감완료'])) { $_ck = true; }
+                  if(!in_array($row['ct_status'], ['발주취소', '관리자발주취소'])) {
+                ?>
+                <a href="javascript:void(0);" class="btn_delivery_info <?php echo ($row['ct_delivery_num']&&($_ck))? 'disabled' : ''; ?>" data-id="<?=$row['od_id']?>">
                   배송정보
-                  <?php echo $row['inserted_cnt'] < $row['total_cnt'] ? "({$row['inserted_cnt']}/{$row['total_cnt']})" : '입력완료'; ?>
+                  <?php if ($row['ct_delivery_num']&&($_ck)) {echo "입력완료";} else {
+                      foreach ($orders as $od_info) {
+                          if ($od_info['od_id'] == $row['od_id']) {
+                              echo "(" . $od_info['inserted_cnt'] . "/" . $od_info['total_cnt'] . ")";
+                              break;
+                          }
+                      };
+                  }?>
                 </a>
+                <?php } ?>
               </td>
             </tr>
             <?php } ?>
@@ -716,6 +778,11 @@ $(function() {
   });
   $('#form_ct_status').on('submit', function(e) {
     e.preventDefault();
+
+    // 주문상태 변경
+    if($('select[name="ct_status"]').val() == '발주취소' && !confirm('주문취소 후 상태 변경은 불가능합니다. 취소하시겠습니까?')) {
+      return false;
+    }
 
     var ct_status_mode = $('input[name="ct_status_mode"]:checked').val();
 

@@ -13,18 +13,21 @@ if(!$od_id) {
 $sql = "
   SELECT
     ct_id,
+    it_id,
     it_name,
     ct_option,
     ct_delivery_company,
-    ct_delivery_num
+    ct_delivery_num,
+    ct_part_info
   FROM
     purchase_cart c
   LEFT JOIN
     purchase_order o ON c.od_id = o.od_id
   WHERE
-    od_del_yn = 'N' and
-    ct_supply_partner = '{$member['mb_id']}' and
-    c.od_id = '{$od_id}'
+    od_del_yn = 'N' 
+    AND ct_supply_partner = '{$member['mb_id']}'
+    AND c.od_id = '{$od_id}'
+    AND c.ct_status IN('발주완료','발주승인','부분출고','출고완료','부분입고','입고완료','파트너발주취소')
 ";
 
 $result = sql_query($sql);
@@ -75,7 +78,7 @@ while($row = sql_fetch_array($result)) {
     .imfomation_box{ margin:0px;width:100%;position:relative; padding:0px;display:block; width:100%; height:auto; }
     .imfomation_box li { width: 100%; padding: 20px; border-bottom: 1px solid #DDD; }
     .imfomation_box .li_box{ width:100%; height:auto;text-align:center;}
-    .imfomation_box .li_box .li_box_line1{ width: 100%; height:auto; margin:auto; color:#000; }
+    .imfomation_box .li_box .li_box_line1{ width: 100%; height:auto; margin:auto; color:#000; text-align: left; }
     .imfomation_box .li_box .li_box_line1 .p1{ width:100%; color:#000; text-align:left; box-sizing: border-box; display: table; table-layout: fixed; }
     .imfomation_box .li_box .li_box_line1 .p1 > span { height: 100%; display: table-cell; vertical-align: middle; }
     .imfomation_box .li_box .li_box_line1 .p1 .span1{ font-size: 18px; overflow:hidden;text-overflow:ellipsis;white-space:nowrap; font-weight: bold; }
@@ -108,7 +111,10 @@ while($row = sql_fetch_array($result)) {
     <form id="form_partner_deliveryinfo">
       <input type="hidden" name="od_id" value="<?=$od_id?>">
       <ul class="imfomation_box" id="imfomation_box">
-        <?php foreach($carts as $row) { ?>
+        <?php foreach($carts as $row) {
+            $_part_info = json_decode($row['ct_part_info'],true);
+            if( is_array( $_part_info ) ) { krsort($_part_info); }
+        ?>
         <li class="li_box">
           <div class="li_box_line1">
             <p class="p1">
@@ -191,6 +197,43 @@ while($row = sql_fetch_array($result)) {
         .fail(function($xhr) {
           var data = $xhr.responseJSON;
           alert(data && data.message);
+        });
+      });
+
+      $('.part_select').change(function() {
+        $.ajax({
+          url: 'ajax.supply_partner_partinfo_view.php',
+          type: 'POST',
+          data: {
+            od_id: '<?php echo $od_id ?>',
+            ct_id: $(this).find("option:selected").data("ct"),
+            it_id: $(this).find("option:selected").data("it"),
+            part_num: $(this).find("option:selected").val()
+          },
+          dataType: 'json',
+          async: false,
+          success : function(result){
+            if(result) {
+              //alert( result.ct_id );
+              //let str = JSON.stringify(result); // <> parse()
+              //alert(str['ct_part_info']);
+              //$.each(result, function(index, item) {
+
+                var _out_delivery = '';
+                if( result.ct_part_info._out_delivery_company ) {
+                  $("select[name=ct_delivery_company_"+result.ct_id+"]").val(result.ct_part_info._out_delivery_company_cd).prop("selected", true);
+                } else { $("select[name=ct_delivery_company_"+result.ct_id+"]").val('cjlogistics').prop("selected", true); }
+
+                if(  result.ct_part_info._out_delivery_num ) {
+                  $("input[name=ct_delivery_num_"+result.ct_id+"]").val(result.ct_part_info._out_delivery_num);
+                } else { $("input[name=ct_delivery_num_"+result.ct_id+"]").val(''); }
+
+              //});
+              return false;
+            }
+          }
+        })
+        .fail(function($xhr) {
         });
       });
     });
