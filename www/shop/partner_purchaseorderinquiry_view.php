@@ -51,7 +51,7 @@ $cart_result = sql_query("
   WHERE
     od_id = '{$od_id}' and
     ct_supply_partner = '{$member['mb_id']}' and
-    ct_status IN('발주완료', '출고완료', '입고완료', '취소')
+    ct_status IN('발주완료','출고완료','입고완료','마감완료','발주취소','파트너발주취소','취소')
   ORDER BY
     ct_id ASC
 ");
@@ -61,6 +61,7 @@ $total_price_s = 0; // 총 부가세 합계
 $count_delivery_inserted = 0; // 배송비 정보 입력된 숫자
 
 $carts = [];
+$carts_on = [];
 $has_install = false; // 설치 상품 있는지 여부
 while($row = sql_fetch_array($cart_result)) {
   if($row['ct_delivery_num'])
@@ -118,12 +119,12 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.magnific-popup.js"></script>',
       <form id="form_ct_status">
         <div class="top row no-gutter justify-space-between align-center">
           <div class="col title">
-            <?=$od['mb_entNm']?> (주문일시: <?=date('Y-m-d H:i:s', strtotime($od['od_time']))?>)
+            발주일시: <?=date('Y-m-d H:i:s', strtotime($od['od_time']))?>
           </div>
           <div class="col">
             <select name="ct_status" class="order-status-select">
               <option value="출고완료" selected>출고완료</option>
-              <option value="취소">취소</option>
+              <option value="발주취소">발주취소</option>
             </select>
             <button type="button" id="btn_ct_status" class="order-status-btn">저장</button>
           </div>
@@ -152,20 +153,18 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.magnific-popup.js"></script>',
                   수량 : <?=$cart['ct_qty']?>개 / 위탁 : <?=$cart['ct_direct_delivery']?>
                 </div>
               </div>
-              <div class="col delivery-wrap text-center">
+              <div class="col delivery-wrap text-center" name="ct_status[]" value="<?=$cart['ct_status']?>">
                 <?=$cart['ct_status']?>
               </div>
             </li>
-            <li class="item row align-center" style="border-top: 0;padding-left: 40px;">
+            <?php } ?>
+            <li class="item row align-center">
               <div class="col full-width" style="border: 1px solid #DDDDDD;padding: 10px;">
                 <p style="margin-bottom: 0">배송지 : <?=$cart['ct_warehouse']?></p>
                 <p style="margin-bottom: 0">주소 : <?=$cart['ct_warehouse_address']?></p>
                 <p style="margin-bottom: 0">연락처 : <?=$cart['ct_warehouse_phone']?></p>
               </div>
             </li>
-            <?php
-            }
-            ?>
           </ul>
         </div>
       </form>
@@ -238,47 +237,45 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.magnific-popup.js"></script>',
             ?>
             <li class="delivery-info-item">
               <div class="info-title text-weight-bold">
-                <?=$cart['it_name']?>
-              </div>
-              <div class="row">
-                <div class="col left">입고 예정일</div>
-                <div class="col right">
-                  <input type="hidden" name="ct_id[]" value="<?=$cart['ct_id']?>">
-                  <input type="text" class="datepicker" name="ct_delivery_expect_date_<?=$cart['ct_id']?>" value="<?=$cart['ct_delivery_expect_date'] ? date('Y-m-d', strtotime($cart['ct_delivery_expect_date'])) : ''?>">
-                  <select name="ct_delivery_expect_time_<?=$cart['ct_id']?>">
-                    <?php
-                    $ct_delivery_expect_time = $cart['ct_delivery_expect_date'] ? date('H', strtotime($cart['ct_delivery_expect_date'])) : '';
-                    for($i = 0; $i < 24; $i++) {
-                      $time = str_pad($i, 2, '0', STR_PAD_LEFT); 
-                    ?>
-                    <option value="<?=$time?>" <?=get_selected($ct_delivery_expect_time, $time)?>><?=$time?>시</option>
-                    <?php } ?>
-                  </select>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col left">출고 완료일</div>
-                <div class="col right"><?=$cart['ct_ex_date'] ?: '대기'?></div>
+                <p><?=$cart['it_name']?></p>
               </div>
               <?php
-              if($cart['ct_delivery_num']) {
-                $delivery_company_name = '';
-                foreach($delivery_companys as $data) {
-                  if($data['val'] == $cart['ct_delivery_company']) {
-                    $delivery_company_name = $data['name'];
-                    break;
-                  }
-                } 
+                $_part_info = json_decode($cart['ct_part_info'],true);
+                if( $_part_info ) $_part_info_val = (array_shift($_part_info) );
               ?>
-                <div class="row">
-                <div class="col left">[<?=$delivery_company_name?>]</div>
-                <div class="col right"><?=$cart['ct_delivery_num']?></div>
+              <div class="row">
+                <div class="col left">입고 예정일 </div>
+                <div class="col right">
+                  <input type="hidden" name="ct_id[]" value="<?=$cart['ct_id']?>">
+                  <input type="text" class="datepicker" name="_in_dt_<?=$cart['ct_id']?>" value="<?=$_part_info_val['_in_dt'] ? date('Y-m-d', strtotime($_part_info_val['_in_dt'])) : ''?>">
+                </div>
               </div>
+
+              <div class="row">
+                <div class="col left">출고 완료일 </div>
+                <div class="col right">
+                    <p><?=$_part_info_val['_out_dt'] ? date('Y-m-d', strtotime($_part_info_val['_out_dt'])) : ''?></p>
+                </div>
+              </div>
+              <?php if( $cart['ct_delivery_company']&&$cart['ct_delivery_num'] ) {
+                foreach($delivery_companys as $data) {
+                  if($data['val'] == $_part_info_val['_out_delivery_company']) { $delivery_company_name = $data['name']; break; }
+                }
+              ?>
+              <div class="row">
+                <div class="col left"><?php if($cart['ct_delivery_company'] == 'install') { echo "[설치]\t" . $cart['ct_delivery_num']; } else {
+                        foreach ($delivery_companys as $d_com) { if($d_com['val'] == $cart['ct_delivery_company']) {echo "[" . $d_com['name'] . "]\t" . $cart['ct_delivery_num']; break;} } }?></div>
+              </div>
+              <?php } else { ?>
+                <div class="row">
+                  <div class="col left">택배정보 미입력</span></div>
+                </div>
               <?php } ?>
             </li>
             <?php } ?>
           </ul>
-          <button type="button" id="btn_delivery_date" class="delivery-save-btn">입고예정일 저장</button>
+          <button type="button" id="btn_delivery_date" class="delivery-save-btn">저 장</button>
+<!--          <button type="button" id="btn_part_info" class="part-modify-btn">부분출고 추가/수정</button>-->
         </form>
       </div>
 
@@ -343,6 +340,16 @@ $(function() {
     });
   });
 
+  // 부분출고 추가/수정 버튼
+  $('#btn_part_info').click(function(e) {
+    e.preventDefault();
+    $("body").addClass('modal-open');
+    $("#popup_box > div").html('<iframe src="popup.supply_partner_partinfo.php?od_id=<?=$od_id?>">');
+    $("#popup_box iframe").load(function() {
+      $("#popup_box").show();
+    });
+  });
+
   // 주문상태 변경
   $('#btn_ct_status').click(function() {
     $('#form_ct_status').submit();
@@ -351,7 +358,7 @@ $(function() {
     e.preventDefault();
 
     // 주문상태 변경
-    if($('select[name="ct_status"]').val() == '취소' && !confirm('주문취소 후 상태 변경은 불가능합니다. 취소하시겠습니까?')) {
+    if($('select[name="ct_status"]').val() == '발주취소' && !confirm('주문취소 후 상태 변경은 불가능합니다. 취소하시겠습니까?')) {
       return false;
     }
     $.post('ajax.supply_partner_ctstatus.php', $(this).serialize(), 'json')
@@ -409,6 +416,48 @@ $(function() {
       loading_manager = false;
     })
   });
+
+  $('.part_select').change(function() {
+    $.ajax({
+      url: 'ajax.supply_partner_partinfo_view.php',
+      type: 'POST',
+      data: {
+        od_id: '<?php echo $od_id ?>',
+        ct_id: $(this).find("option:selected").data("ct"),
+        it_id: $(this).find("option:selected").data("it"),
+        part_num: $(this).find("option:selected").val()
+      },
+      dataType: 'json',
+      async: false,
+      success : function(result){
+        if(result) {
+          //alert( result.ct_id );
+          //let str = JSON.stringify(result); // <> parse()
+			    //alert(str['ct_part_info']);
+          //$.each(result, function(index, item) {
+            $("input[name=_in_dt_"+result.ct_id+"]").val(result.ct_part_info._in_dt);
+            $("input[name=_out_dt_"+result.ct_id+"]").val(result.ct_part_info._out_dt);
+
+            var _out_qty = '';
+            if( result.ct_part_info._out_qty ) {
+              _out_qty = result.ct_part_info._out_qty + "개";
+            } else { _out_qty = '미입력'; }
+            $("#_out_qty_"+result.ct_id).text(_out_qty);
+
+            var _out_delivery = '';
+            if( result.ct_part_info._out_delivery_company && result.ct_part_info._out_delivery_num ) {
+              _out_delivery = "["+result.ct_part_info._out_delivery_company+"] " + result.ct_part_info._out_delivery_num;
+            } else { _out_delivery = '미입력'; }
+            $("#_out_delivery_"+result.ct_id).text(_out_delivery);
+          //});
+          return false;
+        }
+      }
+    })
+    .fail(function($xhr) {
+    });
+  });
+
 });
 </script>
 

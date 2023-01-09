@@ -497,7 +497,21 @@ $purchase_order_steps = array(
     "statusY" => "01",
   ),
   '4' => array(
-    'name' => '취소',
+    'name' => '마감완료',
+    'val' => '마감완료',
+    'orderlist' => true,
+    'step' => 35,
+    'cart' => true,
+    'orderlist_complete' => false,
+    'deliverylist' => true,
+    'cart_editable' => true,
+    'cart_deletable' => true,
+    'direct_cancel' => true,
+    "statusN" => "06",
+    "statusY" => "01",
+  ),
+  '5' => array(
+    'name' => '발주취소',
     'val' => '취소',
     'orderlist' => true,
     'step' => 70,
@@ -623,7 +637,7 @@ function get_delivery_company_step($type) {
     }
 }
 
-function get_step($od_status) {
+function get_step($od_status, $partner = '') {
 
     global $order_steps;
 
@@ -631,9 +645,17 @@ function get_step($od_status) {
 
     $k = -1;
 
-    for($i=0;$i<count($order_steps); $i++) {
-        if ( $od_status == $order_steps[$i]['val'] ) {
-            $k = $i;
+    if($partner == 'partner'){
+        for ($i = 0; $i < count($order_steps); $i++) {
+            if ($od_status == $order_steps[$i]['name']) {
+                $k = $i;
+            }
+        }
+    } else {
+        for ($i = 0; $i < count($order_steps); $i++) {
+            if ($od_status == $order_steps[$i]['val']) {
+                $k = $i;
+            }
         }
     }
 
