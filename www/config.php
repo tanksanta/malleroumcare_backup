@@ -164,6 +164,10 @@ define('G5_EDI_PASSWORD',   '!121200a');
 // 인스타그램 API 연동
 define('G5_INSTAGRAM_TOKEN', 'IGQVJXQU4xdFVsand1d1g1UGo4OUU3MWw3Q1NGdUh1ZA29LSlNETDF3Xy04RmFfZAzVLQnNoRmFPY3J3ZAHVYa1JUdXd1S1NLdU1FbVVOYTFrYWZA4UDdvTGJrMnlzUzNsTHRWRDg5SFBMcWI0M3ZARNnBPaAZDZD');
 
+//모두싸인 API 연동
+define('G5_MDS_KEY',   'NzI2YjU2MzktYzBjZS00OGVlLWIyMzktZTRhMjIwNzg1YWVj');
+define('G5_MDS_ID',   'platform@thkc.co.kr');
+
 /*
 if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']=='on') {
     $g5_path['url'] = str_replace('http://', 'https://', $g5_path['url']);
