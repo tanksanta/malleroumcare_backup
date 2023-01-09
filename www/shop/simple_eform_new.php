@@ -1402,8 +1402,15 @@ function set_rent_date($parent, months) {
 var loading = false;
 function save_eform() {
   if(loading) return;
-	
-
+  var src = jQuery('#sealFile_img').attr("src");
+  var _fileLen = src.length;
+  var _lastDot = (src.lastIndexOf('.'));
+  var _fileExt = src.substring(_lastDot+1, _fileLen).toLowerCase(); 
+  if(_fileExt != "png"){
+	alert("직인은 png 파일만 사용 가능합니다. 직인 파일을 변경해 주세요.");
+	$('#btn_ent').trigger("click");
+	return false;
+  }
   if($('.pen_id_flexdatalist').val() !== $('.pen_id_flexdatalist').next().val())
     $('.pen_id_flexdatalist').val($('.pen_id_flexdatalist').next().val());
 
