@@ -704,7 +704,11 @@ a.btn_schedule {
                   </p>
                   <?php } ?>
                   <p>
+                  <?php if($row['ct_is_direct_delivery'] == '2') { ?>
+                    설치예정 :
+                  <?php } else {?>
                     출고예정 :
+                  <?php } ?>
                     <?=$row['ct_direct_delivery_date'] ? date('Y-m-d H시', strtotime($row['ct_direct_delivery_date'])) : ''?>
                     <button type="button" class="btn_change"
                       data-date="<?=date('Y-m-d', strtotime($row['ct_direct_delivery_date'] ?: 'now'))?>"
@@ -1003,6 +1007,7 @@ $(function() {
         'select[name="ct_direct_delivery_time"]').val() + ":00";
       send_data2['partner_manager_mb_id'] = manager;
       $.post('schedule/ajax.schedule.php', send_data2, 'json').done(function() {
+	//STR 2023.01.10 jake
         $.post('ajax.partner_deliverydate.php', send_data, 'json')
           .done(function() {
             alert('변경이 완료되었습니다.');
@@ -1012,9 +1017,22 @@ $(function() {
             var data = $xhr.responseJSON;
             alert(data && data.message);
           });
+	//END 2023.01.10 jake
+
       }).fail(function($xhr) {
         var data = $xhr.responseJSON;
-        alert(data && data.message);
+	//STR 2023.01.10 jake
+        $.post('ajax.partner_deliverydate.php', send_data, 'json')
+          .done(function() {
+            alert('변경이 완료되었습니다.');
+            window.location.reload();
+          })
+          .fail(function($xhr) {
+            var data = $xhr.responseJSON;
+            alert(data && data.message);
+          });
+	//END 2023.01.10 jake
+        //alert(data && data.message);
       });
     }
   });
