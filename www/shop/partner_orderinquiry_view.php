@@ -669,7 +669,11 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.magnific-popup.js"></script>',
                 <?=$cart['it_name']?>
               </div>
               <div class="row">
+          		<?php if($cart["ct_is_direct_delivery"] == '2') { ?>
+                <div class="col left">설치 예정일</div>
+          		<?php } else { ?>
                 <div class="col left">출고 예정일</div>
+          		<?php } ?>
                 <div class="col right">
                   <input type="hidden" name="ct_id[]" value="<?=$cart['ct_id']?>">
                   <input type="text" class="datepicker" name="ct_direct_delivery_date_<?=$cart['ct_id']?>"
@@ -684,6 +688,7 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.magnific-popup.js"></script>',
                       <?=$time?>시</option>
                     <?php } ?>
                   </select>
+          		<input type="hidden" name="delivery_property" value="<?=$direct_delivery_type?>">
                 </div>
               </div>
               <div class="row">
@@ -708,7 +713,7 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.magnific-popup.js"></script>',
             </li>
             <?php } ?>
           </ul>
-          <button type="button" id="btn_delivery_date" class="delivery-save-btn">출고예정일 저장</button>
+          <button type="button" id="btn_delivery_date" class="delivery-save-btn">예정일 저장</button>
         </form>
       </div>
 
@@ -868,6 +873,7 @@ $(function() {
     send_data['delivery_date'] = obj[2].value;
     send_data['delivery_datetime'] = obj[3].value + ":00";
     send_data['partner_manager_mb_id'] = $('.sel_manager').val();
+    send_data['delivery_property'] = obj[4].value;
     const send_data2 = $(this).serialize();
     $.post('schedule/ajax.schedule.php', send_data, 'json').done(function() {
       $.post('ajax.partner_deliverydate.php', send_data2, 'json')
