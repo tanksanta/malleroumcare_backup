@@ -43,8 +43,9 @@ if( !$_FILES['excelfile']['tmp_name'] ) { alert_close('파일을 읽을 수 없�
 
 // 22.12.28 : 서원 - 확장자 엑셀파일 체크
 $file_ext = pathinfo(iconv("UTF-8", "EUC-KR", $_FILES['excelfile']['name']));
-if( $file_ext['extension'] != "xlsx" ) { alert_close('엑셀 파일만 업로드 가능 합니다.'); }
-else if( $_FILES['excelfile']['type'] != "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ) { alert_close('엑셀 파일만 업로드 가능 합니다..'); }
+if( $file_ext['extension'] != "xlsx" ) { alert_close('엑셀 파일만 업로드 가능 합니다.\n확장자 xlsx만 가능 합니다.'); }
+else if( $_FILES['excelfile']['type'] != "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ) { alert_close('엑셀 파일만 업로드 가능 합니다.\n업로드 파일의 형식을 확인하여주시기 바랍니다.'); }
+
 
 // 22.12.28 : 서원 - 엑셀 파일 읽기.
 $file = iconv("UTF-8", "EUC-KR", $_FILES['excelfile']['tmp_name']);
@@ -54,7 +55,10 @@ $sheetData = $spreadsheet->getSheet(0)->toArray(null, true, true, true);
 
 // 22.12.28 : 서원 - 엑셀 파일의 내영이 있는 경우.
 if($sheetData) {
+
+  // 데이터의 row 수
   $num_rows = $spreadsheet->getSheet(0)->getHighestDataRow('A');
+
 
   // 22.12.28 : 서원 - 엑셀파일 형식 체크 (필드명이 다르거나 없을 경우 모두 리턴.)    
   if( addslashes($sheetData[2]['A']) != "일자-No." ||
@@ -67,6 +71,7 @@ if($sheetData) {
       addslashes($sheetData[2]['H']) != "출고처" ||
       addslashes($sheetData[2]['I']) != "거래처코드"
   ) { alert_close('엑셀 파일 내부 데이터 형식이 옳바르지 않습니다.'); }
+  else if( $num_rows <= 3 ) { alert_close('엑셀 파일 내부 데이터의 형식이 옳바르지 않거나 부족합니다.'); }
 
 
   $_price = [];
@@ -91,8 +96,11 @@ if($sheetData) {
   $_check = $_overlap = 0;
   $_bl_id = $_thezone = "";
 
+
   $sql_bl_id = $sql_bl = $sql_bld = []; // 정상 데이터 처리 배열
   $_error_list = []; // 오류 데이터 처리 배열
+
+
   // 22.12.28 : 서원 - 엑셀 엑셀데이터 Loop
   for( $i = 3; $i <= $num_rows; $i++ ) {
 
@@ -104,11 +112,13 @@ if($sheetData) {
         addslashes($sheetData[$i]['B']) == "품목명[규격]"
     ) { continue; }
     
+
     // 22.12.28 : 서원 - 거래처코드( 1개의 파일에 여러 사업소 정보가 있을 경우 체크값)
     if( $_thezone != addslashes($sheetData[$i]['I']) ) {
       $_thezone = addslashes($sheetData[$i]['I']);
       $_check = $_overlap = 0;
     }
+
 
     // 22.12.28 : 서원 - 동일 엑셀 데이터 중복 여부 입력 확인
     if( !$_check ) {
@@ -165,7 +175,7 @@ if($sheetData) {
                                       ");
           }
 
-        } else { $_overlap = 1; }
+        } else { $_error_list[addslashes($sheetData[$i]['I'])] = "* 정보없음 (DB에 존재하지 않음)"; $_overlap = 1; }
         
       }
 

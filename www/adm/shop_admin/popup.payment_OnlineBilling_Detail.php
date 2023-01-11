@@ -85,6 +85,13 @@ $_sql = ("  SELECT
 $result_bl = sql_fetch($_sql);
 
 
+if( $result_bl['card_quota']=="00" ) {
+    $result_bl['card_quota']="일시불";
+} else if( (int)$result_bl['card_quota'] > 0 ) {
+    $result_bl['card_quota'] = "할부(".$result_bl['card_quota']."개월)";
+} 
+
+
 $widths  = [20, 40, 15, 25, 20, 15, 20, 35];
     
 $headers = [
@@ -305,7 +312,7 @@ function column_char($i) { return chr( 65 + $i ); }
         <th scope="col">결제 상태 : </th><td><?=$result_bl['status_locale'];?></td>
         <th scope="col">결제 방법 : </th><td><?=txt_pay_ENUM($result_bl['method_symbol']);?></td>
         <th scope="col">결제 종류 : </th><td><?=$result_bl['card_company'];?></td>
-        <th scope="col">할부 구분 : </th><td><?=( ($result_bl['card_quota']=="00")?("일시불"):("할부(".$result_bl['card_quota']."개월)"));?></td>
+        <th scope="col">할부 구분 : </th><td><?=$result_bl['card_quota'];?></td>
     </tr><tr>
         <th scope="col">Err 코드 : </th><td><?=$result_bl['error_code'];?></td>
         <th scope="col">Err 근원지 : </th><td><?=$result_bl['error_event'];?></td>

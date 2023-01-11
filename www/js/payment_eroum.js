@@ -55,7 +55,15 @@
 */
 function Payment_Set_Billing( order, _type, user ) {
     
-    if( (screen.width < 500) || (screen.height < 400) ){ alert("대금 결제는 모바일에서 결제가 불가능 합니다."); return; }
+    /* 모바일 체크 */
+    var deviceUserAgent = navigator.userAgent.toLowerCase();
+    if(deviceUserAgent.indexOf("android") > -1 || deviceUserAgent.indexOf("iphone") > -1 || deviceUserAgent.indexOf("ipad") > -1 || deviceUserAgent.indexOf("ipod") > -1){
+        alert("이용에 불편을 드려 죄송합니다.\n대금 결제는 모바일에서 불가능 합니다.\n컴퓨터(PC)를 이용해주세요.device"); return; 
+    }
+
+    if( (screen.width < 500) || (screen.height < 400) ){ 
+        alert("이용에 불편을 드려 죄송합니다.\n대금 결제는 모바일에서 불가능 합니다.\n컴퓨터(PC)를 이용해주세요.screen"); return; 
+    }
 
     if( !order._price ) { alert("결제 데이터 일부가 누락되었습니다.price"); return; }
     else if( !order._name ) { alert("결제 데이터 일부가 누락되었습니다.name"); return; }

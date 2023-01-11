@@ -96,7 +96,7 @@ include_once("./_common.php");
 
     <div id="excelfile_upload">
         <label for="excelfile">파일선택</label>
-        <input type="file" name="excelfile" id="excelfile">
+        <input type="file" name="excelfile" id="excelfile" accept=".xlsx">
     </div>
 
     <div class="win_btn btn_confirm">
