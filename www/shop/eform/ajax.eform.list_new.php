@@ -152,7 +152,7 @@ $result = sql_query("SELECT " . $sql_select . $sql_from . $sql_join . $sql_where
 <th>No.</th>
 <th>수급자 정보</th>
 <th>상품정보</th>
-<th>· 작&nbsp;&nbsp;&nbsp;&nbsp;성&nbsp;&nbsp;&nbsp;&nbsp;일<br>· 서명요청일<br>· 서명완료일</th>
+<th>계약서일자</th>
 <th>서명상태</th>
 <th>계약서관리</thㅁ
 </tr>
@@ -222,11 +222,11 @@ for($i = 0; $row = sql_fetch_array($result); $i++) {
   ?>
 </td-->
 <td class="text_c">
-  · <?=date('Y-m-d', strtotime($row['dc_datetime']))?>
-<?php if($row['dc_sign_send_datetime'] != "0000-00-00 00:00:00"){echo "<br>· ".date('Y-m-d', strtotime($row['dc_sign_send_datetime']));}else{echo "<br>-";}
-	if($row['dc_sign_datetime'] != "0000-00-00 00:00:00"){echo "<br>· ".date('Y-m-d', strtotime($row['dc_sign_datetime']));}else{echo "<br>-";}
+  
+<?php if($row['dc_sign_datetime'] != "0000-00-00 00:00:00"){echo "· ".date('Y-m-d', strtotime($row['dc_sign_datetime']))." (완료)";}else{echo "-";}
+	if($row['dc_sign_send_datetime'] != "0000-00-00 00:00:00"){echo "<br>· ".date('Y-m-d', strtotime($row['dc_sign_send_datetime']))." (요청)";}else{echo "<br>-";}	
 ?>
-
+<br>· <?=date('Y-m-d', strtotime($row['dc_datetime']))?> (생성)
 </td>
 <td class="text_c">
   <?php

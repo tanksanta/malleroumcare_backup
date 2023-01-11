@@ -232,9 +232,9 @@ $is_gicho = ($eform['penTypeCd'] == '04' || $eform['penTypeCd'] == '03')? true:f
       seal_001_1: '<?=htmlspecialchars($state['seal_001_1'])?>',
       seal_002_1: '<?=htmlspecialchars($state['seal_002_1'])?>',
       sign_002_1: '<?=htmlspecialchars($state['sign_002_1'])?>',
-      chk_003_1: <?=$state['chk_003_1'] ?: 'false'?>,
-      chk_003_2: <?=$state['chk_003_2'] ?: 'false'?>,
-      chk_003_3: <?=$state['chk_003_3'] ?: 'false'?>,
+      chk_003_1: <?=$state['chk_003_1'] ?: 'true'?>,
+      chk_003_2: <?=$state['chk_003_2'] ?: 'true'?>,
+      chk_003_3: <?=$state['chk_003_3'] ?: 'true'?>,
       sign_003_1: '<?=htmlspecialchars($state['sign_003_1'])?>',
     };
     if(isGicho) {
