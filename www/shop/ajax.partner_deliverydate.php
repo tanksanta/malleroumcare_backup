@@ -5,6 +5,7 @@ if(!$is_samhwa_partner)
   json_response(400, '파트너 회원만 접근가능합니다.');
 
 $od_id = get_search_string($_POST['od_id']);
+$delivery_property = get_search_string($_POST['delivery_property']);
 $ct_id_arr = $_POST['ct_id'];
 if(!$ct_id_arr || !is_array($ct_id_arr))
   json_response(400, '출고예정일을 변경할 상품이 없습니다.');
@@ -40,7 +41,8 @@ foreach($ct_id_arr as $ct_id) {
   $it_name = $cart['it_name'];
   if($cart['ct_option'] && $cart['ct_option'] != $cart_it_name)
     $it_name .= "({$cart['ct_option']})";
-  set_order_admin_log($od_id, "{$it_name}-출고예정일 변경 : $ct_direct_delivery_date");
+  set_order_admin_log($od_id, "{$it_name}-예정일 변경 : $ct_direct_delivery_date");
+
 }
 
 json_response(200, 'OK');

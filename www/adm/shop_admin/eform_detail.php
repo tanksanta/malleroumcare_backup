@@ -42,6 +42,7 @@ $row=sql_fetch_array($result);
 
 $dc_status = $row["dc_status"];
 $dc_sign_request_datetime = $row["dc_sign_request_datetime"];
+$dc_sign_send_datetime = $row["dc_sign_send_datetime"];
 $dc_subject = $row["dc_subject"];
 ?>
 <div class="local_desc01 local_desc" style="background:#eee">
@@ -210,7 +211,9 @@ while($row=sql_fetch_array($result)){
     </tr>
     </table>
 </div>
-<?php if($row["dc_sign_send_datetime"] != "0000-00-00 00:00:00"){
+<?php
+
+if($dc_sign_send_datetime != "0000-00-00 00:00:00"){
 	$response = $client->request('GET', 'https://api.modusign.co.kr/documents?offset=0&limit=1&metadatas=%7B%22dc_id%22%3A%22'.strtolower($uuid).'%22%7D', [
 	  'headers' => [
 		'accept' => 'application/json',

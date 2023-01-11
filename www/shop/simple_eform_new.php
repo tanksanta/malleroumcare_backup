@@ -896,24 +896,25 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 </div>
 
 <div id="popup_box9" class="popup_box2">
-    <div id="" class="popup_box_con" style="height:830px;margin-top:-415px;margin-left:-210px;width:520px;">
-		<div class="se_preview_wr" style="width:100% !important;height:750px !important;">
+    <div id="" class="popup_box_con" style="height:750px;margin-top:-375px;">
+		<div class="se_preview_wr" style="width:100% !important;height:650px !important;">
           <div class="se_preview_hd_wr">
             <div class="se_preview_hd">공급계약서 미리보기</div>
             <button type="button" id="btn_zoom">확대 100%</button>
             <button type="button" id="btn_refresh" onclick="save_eform();">새로고침</button>
           </div>
-          <div id="se_preview" class="se_preview">
+          <div id="se_preview" class="se_preview" style="height:610px;">
             <?php if($dc) { ?>
             <iframe src="/shop/eform/renderEform_new.php?preview=1&dc_id=<?=$dc['uuid']?>" frameborder="0"></iframe>
             <?php } else { ?>
             <div class="empty">품목선택 시 생성됩니다.</div>
             <?php } ?>
           </div>
-        </div>
-		<div style="text-align:right;bottom:0px;float:left;width:100%;margin-top:10px;">
+        <div style="text-align:right;bottom:0px;float:left;width:100%;margin-top:10px;">
 			<button type="button" class="btn btn-black btn-sm btn_close" style="margin-right:15px;">돌아가기</button>
 		</div>
+		</div>
+		
 	</div>
 	</div>
 	
@@ -922,9 +923,8 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 <style>
 #barcode_popup_iframe {
     display: block;
-    //position: fixed;
     width: 100%;
-    height: 100%;
+    height: 90%;
     right: 0;
     top: 0;
     z-index:9999;
@@ -1402,8 +1402,15 @@ function set_rent_date($parent, months) {
 var loading = false;
 function save_eform() {
   if(loading) return;
-	
-
+  var src = jQuery('#sealFile_img').attr("src");
+  var _fileLen = src.length;
+  var _lastDot = (src.lastIndexOf('.'));
+  var _fileExt = src.substring(_lastDot+1, _fileLen).toLowerCase(); 
+  if(_fileExt != "png"){
+	alert("직인은 png 파일만 사용 가능합니다. 직인 파일을 변경해 주세요.");
+	$('#btn_ent').trigger("click");
+	return false;
+  }
   if($('.pen_id_flexdatalist').val() !== $('.pen_id_flexdatalist').next().val())
     $('.pen_id_flexdatalist').val($('.pen_id_flexdatalist').next().val());
 
@@ -1491,7 +1498,7 @@ $('#btn_se_submit').on('click', function() {
   var dc_id = $('input[name="dc_id"]').val();
 
   if(!dc_id)
-      return alert('먼저 수급자,품목 선택 후 저장을 해주세요.');
+      //return alert('먼저 수급자,품목 선택 후 저장을 해주세요.');
 	
   var contract_type = $('input[name="contract_sign_type"]:checked').val();
   if (contract_type == 1) {	
