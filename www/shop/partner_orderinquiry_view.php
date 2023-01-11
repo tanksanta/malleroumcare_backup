@@ -887,7 +887,17 @@ $(function() {
         });
     }).fail(function($xhr) {
       var data = $xhr.responseJSON;
-      alert(data && data.message);
+      // 직배송에 대해서는 일정이 update 되어야 함. jake 2023.01.11
+      $.post('ajax.partner_deliverydate.php', send_data2, 'json')
+        .done(function() {
+          alert('변경이 완료되었습니다.');
+          window.location.reload();
+        })
+        .fail(function($xhr) {
+          var data = $xhr.responseJSON;
+          alert(data && data.message);
+        });
+      // jake END
     });
   });
 
@@ -934,7 +944,22 @@ $(function() {
           });
       }).fail(function($xhr) {
         var data = $xhr.responseJSON;
-        alert(data && data.message);
+        // 직배송이라도 담당자 변경은 가능해야 함 jake 2023.01.11
+        $.post('ajax.partner_manager.php', {
+            od_id: od_id,
+            manager: manager
+          }, 'json')
+          .done(function() {
+            alert(manager_name + ' 담당자로 변경되었습니다.');
+          })
+          .fail(function($xhr) {
+            var data = $xhr.responseJSON;
+            alert(data && data.message);
+          })
+          .always(function() {
+            loading_manager = false;
+          });
+        // jake END
       }).always(function() {
         loading_manager = false;
       });
