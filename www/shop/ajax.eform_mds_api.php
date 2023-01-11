@@ -6,7 +6,8 @@ include_once('./_common.php');
 $API_Key64 = base64_encode(G5_MDS_ID.":".G5_MDS_KEY); //API 접속 base64 인코딩 키
 $client = new \GuzzleHttp\Client();
 
-$templateId = "7a417b10-79fa-11ed-aefd-238900a40a4b";//기본 템플릿 
+$templateId = "7a417b10-79fa-11ed-aefd-238900a40a4b";//기본 템플릿 6p
+$templateId2 = "70a58eb0-90b2-11ed-850e-d7b33267b1e1";//기본 템플릿 4p
 
 //서명 WebHook 시작
 ini_set("allow_url_fopen", true);
@@ -347,7 +348,7 @@ if($_REQUEST["signed"] == "ok"){?>
 
 }elseif($_POST["div"] == "sign_doc"){//계약서 서명
 
-	$response = $client->request('GET', 'https://api.modusign.co.kr/documents/'.$_POST["doc_id"].'/participants/'.$_POST["part_id"].'/embedded-view?redirectUrl=https%3A%2F%2F'.$_SERVER[ "HTTP_HOST" ].'%2Fshop%2Feform_sign_completed.php%3Fdc_id%3D'.$_POST["dc_id"], [
+	$response = $client->request('GET', 'https://api.modusign.co.kr/documents/'.$_POST["doc_id"].'/participants/'.$_POST["part_id"].'/embedded-view?redirectUrl=https%3A%2F%2F'.$_SERVER[ "HTTP_HOST" ].'%2Fshop%2Feform_sign_completed.php%3F'.$_POST["dc_id"], [
 	  'headers' => [
 		'accept' => 'application/json',
 		'authorization' => 'Basic '.$API_Key64,
@@ -363,20 +364,6 @@ if($_REQUEST["signed"] == "ok"){?>
 		$response2["url"] = "url생성실패";
 	}
 }elseif($_POST["div"] == "new_doc"){//계약서 생성
-	
-	//excluded : 해당 서명자 제외 유무 표시 (false-제외안함,true-제외함)
-	//signingDuration : 서명 유효 기간 (20160 - 14일)유효기간 수정 기능 있음 
-	//role : 서명자 역할 지정 name : 서명자 이름
-	//requesterMessage : 서명자에게 보낼 메세지
-	//서명자가 여러명일 때 참여자 서명수단의 value 값이 다 달라야함
-	//requesterInputMappings 은 값이 있을때만 맞는 값만 전송해야함 없는 dataLabel 에 데이터를 전송 하면 에러남
-	//수급자 발송정보
-	$pen_sign_info = ($_POST["pen_sign"] == "1")? '{"excluded":false,"signingMethod":{"type":"'.$_POST["pen_send"].'","value":"'.$_POST["pen_send_tel"].'"},"signingDuration":20160,"locale":"ko","role":"수급자","name":"수급자","requesterMessage":"계약서를 잘 확인하시고 서명 해 주세요."}': '{"excluded":true,"signingMethod":{"type":"SECURE_LINK","value":"01010000000"},"signingDuration":20160,"locale":"ko","role":"수급자","name":"수급자"}' ;
-	//대리인 발송정보
-	$contract_sign_info = ($_POST["contract_sign"] == "1")? '{"excluded":false,"signingMethod":{"type":"'.$_POST["contract_send"].'","value":"'.$_POST["contract_send_tel"].'"},"signingDuration":20160,"locale":"ko","role":"대리인","name":"대리인","requesterMessage":"계약서를 잘 확인하시고 서명 해 주세요."}': '{"excluded":true,"signingMethod":{"type":"SECURE_LINK","value":"01020000000"},"signingDuration":20160,"locale":"ko","role":"대리인","name":"대리인"}' ;
-	//신청자 발송정보
-	$applicant_sign_info = ($_POST["applicant_sign"] == "1")? '{"excluded":false,"signingMethod":{"type":"'.$_POST["applicant_send"].'","value":"'.$_POST["applicant_send_tel"].'"},"signingDuration":20160,"locale":"ko","role":"신청자","name":"신청자","requesterMessage":"계약서를 잘 확인하시고 서명 해 주세요."}': '{"excluded":true,"signingMethod":{"type":"SECURE_LINK","value":"01030000000"},"signingDuration":20160,"locale":"ko","role":"신청자","name":"신청자"}' ;
-	
 	// 계약서 조회
 	$select = array();
 	$where = array();
@@ -402,9 +389,20 @@ if($_REQUEST["signed"] == "ok"){?>
 
 	$sql_from = " FROM `eform_document` E";
 	$result = sql_query("SELECT " . $sql_select . $sql_from . $sql_join . $sql_where . " and HEX(E.dc_id) = '".$uuid."'");
-
-
 	$row=sql_fetch_array($result);
+	//excluded : 해당 서명자 제외 유무 표시 (false-제외안함,true-제외함)
+	//signingDuration : 서명 유효 기간 (20160 - 14일)유효기간 수정 기능 있음 
+	//role : 서명자 역할 지정 name : 서명자 이름
+	//requesterMessage : 서명자에게 보낼 메세지
+	//서명자가 여러명일 때 참여자 서명수단의 value 값이 다 달라야함
+	//requesterInputMappings 은 값이 있을때만 맞는 값만 전송해야함 없는 dataLabel 에 데이터를 전송 하면 에러남
+	//수급자 발송정보
+	$pen_sign_info = ($_POST["pen_sign"] == "1")? '{"excluded":false,"signingMethod":{"type":"'.$_POST["pen_send"].'","value":"'.$_POST["pen_send_tel"].'"},"signingDuration":20160,"locale":"ko","role":"수급자","name":"수급자","requesterMessage":"'.$row["entNm"].' 에서 요청한 계약서 입니다. 잘 확인하시고 서명 해 주세요."}': '{"excluded":true,"signingMethod":{"type":"SECURE_LINK","value":"01010000000"},"signingDuration":20160,"locale":"ko","role":"수급자","name":"수급자"}' ;
+	//대리인 발송정보
+	$contract_sign_info = ($_POST["contract_sign"] == "1")? '{"excluded":false,"signingMethod":{"type":"'.$_POST["contract_send"].'","value":"'.$_POST["contract_send_tel"].'"},"signingDuration":20160,"locale":"ko","role":"대리인","name":"대리인","requesterMessage":"'.$row["entNm"].' 에서 요청한 계약서 입니다. 잘 확인하시고 서명 해 주세요."}': '{"excluded":true,"signingMethod":{"type":"SECURE_LINK","value":"01020000000"},"signingDuration":20160,"locale":"ko","role":"대리인","name":"대리인"}' ;
+	//신청자 발송정보
+	$applicant_sign_info = ($_POST["applicant_sign"] == "1")? '{"excluded":false,"signingMethod":{"type":"'.$_POST["applicant_send"].'","value":"'.$_POST["applicant_send_tel"].'"},"signingDuration":20160,"locale":"ko","role":"신청자","name":"신청자","requesterMessage":"'.$row["entNm"].' 에서 요청한 계약서 입니다. 잘 확인하시고 서명 해 주세요."}': '{"excluded":true,"signingMethod":{"type":"SECURE_LINK","value":"01030000000"},"signingDuration":20160,"locale":"ko","role":"신청자","name":"신청자"}' ;
+
 	$str = file_get_contents($_SERVER['DOCUMENT_ROOT'].$row["dc_signUrl"]);
 	$stamp = base64_encode($str);
 	$penTypeCd = $row["penTypeCd"];
@@ -443,7 +441,7 @@ if($_REQUEST["signed"] == "ok"){?>
 	}else{//수급자
 		$pen_contract_name_1 = $pen_name_1;
 		$pen_contract_relation_1 = "[ ✓ ]본인 [   ]가족 [   ]친족 [   ]기타 (   )";
-		$contract_addr_1 =  $pen_addr_1;
+		$pen_addr_1 = $pen_ltmnum_3 = $pen_name_5 = $contract_addr_1 = $contract_tel_2 = $contract_relation_1 = $contract_relation_2 = "";
 	}
 	if($row["applicantRelation"] != "0" && $row["applicantRelation"] != ""){//신청자가 본인이 아닐경우
 		if($row["applicantRelation"] == 4){//신청인이 대리인 일경우
@@ -470,7 +468,7 @@ if($_REQUEST["signed"] == "ok"){?>
 	}else{
 		$app_relation_1 = "본인";
 		$app_birthday_1 = $row["penBirth"];
-		$app_addr_1 = $pen_addr_1;
+		$app_addr_1 = $pen_addr_2;
 		$app_tel_1 = $row["penConNum"];
 		$app_name_1 = $app_name_2 = $app_name_3 = $pen_name_1;
 	}
@@ -619,6 +617,8 @@ if($_REQUEST["signed"] == "ok"){?>
 		$ent_entnumN_1	.=',{"dataLabel":"ent_entnum'.$i.'_1","value":"'.$ent_entnum_1.'"}'; //사업소번호1
 	}
 	if($penTypeCd == "03" || $penTypeCd == "04" ){//의료6%,기초0%
+		$applicant_sign_info2 = ','.$applicant_sign_info;
+		$temp_doc_id = $templateId;//6p 
 		$gicho_con = ',{"dataLabel":"app_name_1","value":"'.$app_name_1.'"}
 					,{"dataLabel":"app_relation_1","value":"'.$app_relation_1.'"}
 					,{"dataLabel":"app_birthday_1","value":"'.$app_birthday_1.'"}
@@ -648,6 +648,8 @@ if($_REQUEST["signed"] == "ok"){?>
 					'.$ent_entnumN_1.'
 					,{"dataLabel":"dc_sumprice_sum_1","value":"'.$dc_sumprice_sum_1.'"}';
 	}else{
+		$applicant_sign_info2 = '';
+		$temp_doc_id = $templateId2;//4p
 		$gicho_con = "";
 	}
 /*	header('Content-type: application/json');
@@ -666,7 +668,7 @@ $url = $pen_sign_info.'
 					"participantMappings":[
 						'.$pen_sign_info.'
 						,'.$contract_sign_info.'
-						,'.$applicant_sign_info.'
+						'.$applicant_sign_info2.'
 					]
 					,"requesterInputMappings":[
 					{"dataLabel":"pen_name_1","value":"'.$pen_name_1.'"}
@@ -750,7 +752,7 @@ $url = $pen_sign_info.'
 					,"metadatas":[{"key":"entId","value":"'.$_POST["mb_entId1"].'"},{"key":"dc_id","value":"'.strtolower($_POST["dc_id1"]).'"}]
 					,"title":"'.$_POST["title"].'"
 				}
-				,"templateId":"'.$templateId.'"}',
+				,"templateId":"'.$temp_doc_id.'"}',
 	  'headers' => [
 		'accept' => 'application/json',
 		'authorization' => 'Basic '.$API_Key64,
@@ -876,7 +878,7 @@ $url = $pen_sign_info.'
 	$url = $arrResponse["metadatas"][0]["key"];
 	if($url != ""){
 		$response2["url"] = $url;
-		$sql = "update eform_document set dc_datetime='0000-00-00 00:00:00',dc_sign_send_datetime='0000-00-00 00:00:00',dc_status='11' where dc_id=UNHEX('".$_POST["dc_id"]."')";
+		$sql = "update eform_document set dc_sign_datetime='0000-00-00 00:00:00',dc_sign_send_datetime='0000-00-00 00:00:00',dc_status='11' where dc_id=UNHEX('".$_POST["dc_id"]."')";
 		sql_query($sql);
 		$response2["api_stat"] = "1";
 	}else{
@@ -898,6 +900,43 @@ $url = $pen_sign_info.'
 	}else{
 		$response2["url"] = "url생성실패";
 	}
+}elseif($_REQUEST["div"] == "completed_doc"){//서명완료,서명거절 시 대기 화면 
+	$response = $client->request('GET', 'https://api.modusign.co.kr/documents/'.$_REQUEST["dc_id"], [
+	  'headers' => [
+		'accept' => 'application/json',
+		'authorization' => 'Basic '.$API_Key64,
+	  ],
+	]);
+	$arrResponse = json_decode($response->getBody(),true);
+	$dc_id =  strtoupper($arrResponse["metadatas"][0]["value"]);
+	$url = "";
+	$sql = "SELECT dc_status FROM `eform_document` WHERE dc_id=UNHEX('".$dc_id."')";
+	$row=sql_fetch($sql);
+	if($row["dc_status"] == "3" || $row["dc_status"] == "5"){
+		$url = $row["dc_status"];
+	}else{
+		for($i=0;$i<16;$i++){
+			$sql = "SELECT dc_status FROM `eform_document` WHERE dc_id=UNHEX('".$dc_id."')";
+			$row=sql_fetch($sql);
+			if($row["dc_status"] == "3" || $row["dc_status"] == "5"){
+				$url = $i;
+				break;
+			}elseif($i == 15){
+				$url = $i;
+				break;
+			}
+			sleep(1);
+		}
+	}
+	//$url = $dc_id;
+
+	if($url != ""){
+		$response2["url"] = $url;
+		$response2["api_stat"] = "1";
+	}else{
+		$response2["url"] = "url생성실패";
+	}
+	
 }
 
 echo json_encode($response2);

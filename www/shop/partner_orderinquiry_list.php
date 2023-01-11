@@ -866,7 +866,7 @@ a.btn_schedule {
 
 <div id="change_wrap">
   <form id="form_change_date">
-    <div class="title">출고예정일시</div>
+    <div class="title">예정일 선택</div>
     <input type="hidden" name="od_id">
     <input type="hidden" name="ct_id">
     <input type="text" name="ct_direct_delivery_date" class="change_datepicker">
