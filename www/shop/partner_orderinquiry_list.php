@@ -713,7 +713,10 @@ a.btn_schedule {
                     <button type="button" class="btn_change"
                       data-date="<?=date('Y-m-d', strtotime($row['ct_direct_delivery_date'] ?: 'now'))?>"
                       data-time="<?=date('H', strtotime($row['ct_direct_delivery_date'] ?: 'now'))?>"
-                      data-odid="<?=$row['od_id']?>" data-ctid="<?=$row['ct_id']?>">변경</button>
+					  data-odtp="<?=$row['ct_is_direct_delivery']?>" 
+                      data-odid="<?=$row['od_id']?>" 
+					  data-ctid="<?=$row['ct_id']?>" 
+					  >변경</button>
                   </p>
                   <?php if($row['ct_ex_date']) { ?>
                   <p>
@@ -869,6 +872,7 @@ a.btn_schedule {
     <div class="title">예정일 선택</div>
     <input type="hidden" name="od_id">
     <input type="hidden" name="ct_id">
+    <input type="hidden" name="od_type">
     <input type="text" name="ct_direct_delivery_date" class="change_datepicker">
     <select name="ct_direct_delivery_time">
       <?php
@@ -971,9 +975,11 @@ $(function() {
     $form = $('#form_change_date');
     $form.find('input[name="od_id"]').val($(this).data('odid'));
     $form.find('input[name="ct_id"]').val($(this).data('ctid'));
+    $form.find('input[name="od_type"]').val($(this).data('odtp'));
     $form.find('input[name="ct_direct_delivery_date"]').val($(this).data('date'));
     $form.find('select[name="ct_direct_delivery_time"]').val($(this).data('time')).change();
-
+	console.log("odtp = ", $(this).data('odtp'));
+	console.log("od_type = ", $form.find('input[name="od_type"]').val());
     $(this).popModal({
       html: $form,
       placement: 'bottomLeft',
@@ -985,7 +991,11 @@ $(function() {
 
     var od_id = $(this).find('input[name="od_id"]').val();
     var ct_id = $(this).find('input[name="ct_id"]').val();
+    var od_type = $(this).find('input[name="od_type"]').val();
     var manager = $('.sel_manager[data-id="' + od_id + '"]').val();
+	console.log("ct_id= ",ct_id);
+	console.log("od_id= ",od_id);
+	console.log("od_tp = ",od_type);
     if (manager === '') {
       alert("먼저 담당자를 지정해주세요.");
     } else {
@@ -1020,8 +1030,12 @@ $(function() {
 	//END 2023.01.10 jake
 
       }).fail(function($xhr) {
-        var data = $xhr.responseJSON;
 	//STR 2023.01.10 jake
+		if ( od_type == '2'){
+        	var data = $xhr.responseJSON;
+            alert(data && data.message);
+		} else {
+
         $.post('ajax.partner_deliverydate.php', send_data, 'json')
           .done(function() {
             alert('변경이 완료되었습니다.');
@@ -1031,6 +1045,7 @@ $(function() {
             var data = $xhr.responseJSON;
             alert(data && data.message);
           });
+	    }
 	//END 2023.01.10 jake
         //alert(data && data.message);
       });
@@ -1282,7 +1297,22 @@ $(function() {
           });
       }).fail(function($xhr) {
         var data = $xhr.responseJSON;
-        alert(data && data.message);
+        $.post('ajax.partner_manager.php', {
+            od_id: od_id,
+            manager: manager
+          }, 'json')
+          .done(function() {
+            $('.sel_manager[data-id="' + od_id + '"]').val(manager);
+            alert(manager_name.replace(/\n/g, "").replace(/  /g, "") +
+              ' 담당자로 변경되었습니다.');
+          })
+          .fail(function($xhr) {
+            var data = $xhr.responseJSON;
+            alert(data && data.message);
+          })
+          .always(function() {
+            loading_manager = false;
+          });
       }).always(function() {
         loading_manager = false;
       });
