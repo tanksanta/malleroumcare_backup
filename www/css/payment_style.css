@@ -1,0 +1,200 @@
+@charset "utf-8";
+html,body{height: 100%;}
+
+
+.visual{width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); display: flex; align-items: center; }
+.visalWrap{
+  margin: 0 auto;
+  width: 600px;height: 550px;
+  background: white;  
+}
+.headerTitle{
+  background: #111111;
+  height: 40px;
+  padding: 12px 30px 0px 30px;
+  color:white;
+  display: flex; justify-content: space-between;  
+}
+.headerTitle h5{
+  font-weight: 400;
+  font-size: 14px;
+}
+
+  .headerTitle .cancel i {
+    color: white;
+  }
+  .headerTitle .cancel i:hover {
+    color: #93D500;
+  }
+
+.contentsWrap{
+  height: 470px;
+  padding: 30px 30px 0px 30px;
+}
+/* 결제 청구서 내역 */
+.billWrap .billTitle{
+  font-size: 20px;
+  line-height: 40px;
+}
+.billListWrap{
+  border: 1px solid rgba(63, 58, 58, 0.5);
+  padding: 15px 25px;
+}
+.billListWrap .price{
+  display: flex; justify-content: space-between;
+  padding: 5px 0px 6px 0px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+}
+.billListWrap .price
+.billListWrap .totalPrice{
+  display: flex; justify-content: space-between;
+}
+.billListWrap .line01{
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+.billListWrap .line02{
+  border: 1px solid #333333;
+}
+.billListWrap .totalrice{
+  display: flex; justify-content: space-between;
+  padding: 10px 0px 5px 0px;
+}
+.billListWrap .totalrice .pTitle{
+  font-weight: 500;
+  font-size: 20px;
+}
+.billListWrap .totalrice .price{
+  font-weight: 700;
+  font-size: 22px;
+  color: #001E9A;
+}
+
+/* 청구서 버튼들 */
+.billBtnWrap{
+  display: flex; justify-content: space-between;
+  padding: 7px 0px 20px 0px; 
+}
+.billBtnWrap .btn01,
+.btn02W .btn02, .btn02W .btn03{
+  box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 4px;
+  color: #fff;
+  padding: 6px 20px;
+  font-weight: 400;
+  font-size: 16px;
+  text-align: center;
+}
+.billBtnWrap .btn01{
+  background: #93D500;
+  cursor: pointer;
+}
+.billBtnWrap .btn01:hover, .billBtnWrap .btn02:hover, .billBtnWrap .btn03:hover{
+  background: #666;
+}
+.billBtnWrap .btn02W{
+  display: flex; justify-content: space-between;
+  gap: 10px;
+  cursor: pointer;
+}
+.billBtnWrap .btn02{
+  background: #001E9A;
+}
+.billBtnWrap .btn03{
+  background: #333;
+}
+
+/* 이전 결제 내역 */
+.priceListWrap .listTitle{
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 30px;
+}
+.priceListWrap table, td, th{ 
+  border-bottom: 1px solid #E6E6E6;
+  font-size: 12px;
+  font-weight: 400;
+  padding: 7px;
+  text-align: center;
+}
+.priceListWrap table{
+  border-collapse: collapse;
+  width: 100%;
+  border-width: 2px 0px 0px 0px;
+  border-style: solid;
+  border-color: #3F3A3A;
+}
+.priceListWrap th{
+  background-color: #F7F7F7;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* 하단 확인 버튼 */
+.okBtn{
+  width: 100%;
+  height: 40px;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 40px;
+  color: #fff;
+  text-align: center;
+  background: #001E9A;
+  cursor: pointer;
+}
+.okBtn:hover{
+  background: #666;
+}
+
+/* 결제완료 PopUp */
+.paymentPop{
+  margin: 0 auto;
+  width: 400px; height: 220px;
+  background: white;  
+}
+.paymentPop .content{
+height: 180px;
+text-align: center;
+padding: 15px;
+}
+.paymentPop .content .title{
+display: flex; justify-content: center;
+padding: 15px;
+}
+.paymentPop .content .title h3{
+font-weight: 500;
+font-size: 20px;
+padding: 5px 0 0 5px ;
+}
+.paymentPop .content span{
+font-weight: 700;
+font-size: 20px;
+}
+.paymentPop .content span.won{
+color:#001E9A;  
+}
+.st0{fill:none;stroke:#001E9A;stroke-width:1.5;stroke-miterlimit:10;
+  stroke-dasharray: 44;
+  stroke-dashoffset: 44;
+  animation: oAni 1.5s alternate forwards;
+  opacity: 0;
+}
+.st1{fill:none;stroke:#333333;stroke-width:1.5;stroke-miterlimit:10;
+stroke-dasharray: 119;
+stroke-dashoffset: 119;
+animation: oAni01 0.5s alternate forwards;
+opacity: 0;
+}
+@keyframes oAni{
+100%{
+    opacity: 1;
+    stroke-dashoffset: 0;
+}
+}
+@keyframes oAni01{
+100%{
+    opacity: 1;
+    stroke-dashoffset: 0;
+}
+}

@@ -331,6 +331,7 @@ if($is_main && !$is_member) {
               </div>
               <?php } ?>
             </div>
+
             <?php if($member['mb_type'] === 'normal' && $ent_mb = get_member(get_session('ss_ent_mb_id'))) { // 연결된 사업소가 있으면 ?>
             <div class="manager_info" style="margin-bottom: 0;">
               사업소 담당자 : <?="{$ent_mb['mb_giup_manager_name']} ({$ent_mb['mb_hp']})"?>
@@ -351,6 +352,75 @@ if($is_main && !$is_member) {
               </div>
               <?php } ?>
             </div>
+
+            <?php
+              // 23.01.09 : 서원 - 사업소 권한을 가진 회원에게만 해당 버튼을 나타 낸다.
+              if( ($member['mb_level']==3) || ($member['mb_level']==4) ) {
+
+                // 23.01.09 : 서원 - 관리자 설정값 확인.
+                //                    해당 값을 가져와서 대금 결제 버튼 활성화에 대한 조건 체크
+                $_billing = json_decode( $default['de_paymenet_billing_OnOff'], TRUE );
+                if( ($_billing['OnOff'] == "Y") && ( ((int)$_billing['start_dt']<=date('d')) && ((int)$_billing['end_dt']>=date('d')) ) ) {
+
+                // 23.01.09 : 서원 - 해당 사업소에 대금 결제건이 있는지 확인.
+                $_sql = ("  SELECT COUNT(bl_id) as cnt
+                            FROM payment_billing_list
+                            WHERE mb_id = '" . $member['mb_id'] . "'
+                            AND mb_thezone = '" . $member['mb_thezone'] . "'
+                            AND billing_yn = 'Y'
+                            AND YEAR(create_dt) = YEAR(CURRENT_DATE()) 
+                            AND MONTH(create_dt) = MONTH(CURRENT_DATE())
+                            AND ( pay_confirm_id IS NULL OR pay_confirm_id = '' )
+                            AND ( pay_confirm_receipt_id IS NULL OR pay_confirm_receipt_id = '' )
+                ");
+                $_sql_bl = sql_fetch($_sql);
+            ?>
+
+            <?php if( $_sql_bl['cnt'] > 0 ) { /* 해당 로그인 사업소에 경제가 미결제 청구금액이 있을 경우 버튼 출력. */ ?>
+              <a href='#' class='event_noti btn_OnlineBilling' onClick=''>대금 결제하기</a>
+            <?php 
+                  } else { 
+
+                    // 23.01.10 : 서원 - 해당 사업소에 결제 이력이 있는지 확인.
+                    $_sql = ("  SELECT COUNT(bl_id) as cnt
+                                FROM payment_billing_list
+                                WHERE mb_id = '" . $member['mb_id'] . "'
+                                    AND mb_thezone = '" . $member['mb_thezone'] . "'
+                                    AND billing_yn = 'Y'
+                                    AND ( pay_confirm_id IS NOT NULL OR pay_confirm_id <> '' )
+                                    AND ( pay_confirm_receipt_id IS NOT NULL OR pay_confirm_receipt_id <> '' )
+                                ORDER BY pay_confirm_dt DESC
+                    ");
+                    $_sql_bl_history = sql_fetch($_sql);
+
+                    // 23.01.10 : 서원 - 사업소에 결제 이력이 있다면 버튼 출력.
+                    if( $_sql_bl_history['cnt'] > 0 ) {
+            ?>
+              <a href='#' class='event_noti btn_OnlineBilling' onClick=''>결제 내역 확인하기</a>
+            <?php
+                    }
+                  }
+            ?>
+
+            <!-- 온라인결제 팝업창 스크립트 -->
+            <script src="<?php echo G5_JS_URL ?>/payment_eroum.js?ver=<?php echo APMS_SVER; ?>" type="application/javascript"></script>
+            
+            <!-- 온라인결제 팝업 -->
+            <div id="OnlineBilling_popup"><div class="OnlineBilling_popup_close"><i class="fa fa-times"></i></div><iframe id="OnlineBilling_iframe"></iframe></div>
+
+            <!-- 팝업 박스 시작 -->
+            <style>
+              /* 온라인결제 팝업 */
+              #OnlineBilling_popup { display: none; position: fixed; width: 100%; height: 100%; left: 0; top: 0; z-index:500; background:rgba(229, 229, 229, 0.5); }
+              #OnlineBilling_popup iframe { width:600px; height:550px; max-height: 80%; position:absolute; top: 50%; left: 50%; transform:translate(-50%, -50%); background:white; }
+              .OnlineBilling_popup_close { position:absolute; top:15px; right: 15px; color: #000; font-size: 2.5em; cursor:pointer; }
+              
+              /* PG사 팝업 최상단 */
+              body.bootpay-open .bootpay-payment-background { z-index: 99990; }
+            </style>
+
+            <?php } } ?>
+
             <div class="manager_info">
               시스템문의 : 02-830-1301 (월~금 08:30~17:30)
             </div>
@@ -364,6 +434,7 @@ if($is_main && !$is_member) {
               <a href="<?php if($member['mb_type'] == 'partner') echo '/shop/partner_ledger_list.php'; else echo '/shop/my_ledger_list.php'; ?>" class="btn_small">거래처 원장</a>
             </div>
             <?php } ?>
+          
             <?php if($event_count) { ?>
             <a class="event_noti" href="/bbs/board.php?bo_table=event">
               진행중인 이벤트
