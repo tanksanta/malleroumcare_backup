@@ -296,7 +296,7 @@ if( $_POST['mode_set']  == "ExcelDown" ) {
 
 
     header("Content-Type: application/octet-stream");
-    header("Content-Disposition: attachment; filename=\"payment_OnlineBilling_Excel-".$member['mb_id']."-".date("ymd").".xlsx\"");
+    header("Content-Disposition: attachment; filename=\"대금청구서관리_리스트-".$member['mb_id']."-".date("ymd").".xlsx\"");
     header("Cache-Control: max-age=0");
     header('Set-Cookie: fileDownload=true; path=/');
 

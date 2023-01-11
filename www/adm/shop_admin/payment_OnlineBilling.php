@@ -66,7 +66,7 @@ function txt_pay_ENUM( $val ) {
 }
 
 
-$g5['title'] = '대금 청구서 관리';
+$g5['title'] = '대금청구서관리';
 include_once (G5_ADMIN_PATH.'/admin.head.php');
 include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 
@@ -391,7 +391,6 @@ function cancelExcelDownload() {
     <p>엑셀파일 다운로드 중입니다.</p>
     <p>잠시만 기다려주세요.</p>
     <img src="/shop/img/loading.gif" alt="loading">
-    <button onclick="cancelExcelDownload();" class="btn_cancel_excel">취소</button>
 </div>
 </div>
 
@@ -470,11 +469,12 @@ function Payment_Set_Billing_Setting(){
             "select_end_dt": $("#select_end_dt option:selected").val()
         },
         dataType: 'json',
-        success: function(data) {},
+        success: function(data) {
+            location.reload();
+        },
         error: function(e) {}
     });
 
-    location.reload();
 }
 
 function Download_Excel() {
