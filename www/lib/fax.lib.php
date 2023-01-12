@@ -22,7 +22,7 @@ function sendFax($send_fax_arr) {
     $FaxService->IsTest(false);
 
     // 인증토큰에 대한 IP제한기능 사용여부, 권장(true)
-    $FaxService->IPRestrictOnOff(true);
+    $FaxService->IPRestrictOnOff(false);
 
     // 팝빌 API 서비스 고정 IP 사용여부(GA), 기본값(false)
     $FaxService->UseStaticIP(false);
@@ -62,6 +62,46 @@ function sendFax($send_fax_arr) {
     // 광고팩스 전송여부
     $adsYN = false;
 
+        // 팩스제목
+     $title = '티에이치케이컴퍼니';
+
+     // $Receivers[] = array(
+     //     // 팩스 수신번호
+     //     'rcv' => '05075306114',
+     //     // 팩스 수신자명
+     //     'rcvnm' => '공태웅'
+     // );
+
+     // 전송요청번호
+     // 파트너가 전송 건에 대해 관리번호를 구성하여 관리하는 경우 사용.
+     // 1~36자리로 구성. 영문, 숫자, 하이픈(-), 언더바(_)를 조합하여 팝빌 회>    원별로 중복되지 않도록 할당.
+     $requestNum = '';
+
+     // echo 'console.log("' . var_dump($send_fax_arr) . '")';
+     foreach($send_fax_arr as $data) {
+       $FileData = [];
+       $Receiver = [];
+       $FileData[] = array('fileName' => $data['filename'], 'fileData' => $data['excel']);
+       $Receiver[] = array('rcv' => $data['rcv'], 'rcvnm' => $data['rcvnm']);
+       $receiptNum = $FaxService->SendFAXBinary($testCorpNum, $Sender, $Receiver, $FileData, $reserveDT, $testUserID, $SenderName, $adsYN, $title, $requestNum);
+
+       // $result = $FaxService->GetFaxDetail($testCorpNum, $receiptNum);
+       // return $result;
+     }
+
+     // $receiptNum = $FaxService->SendFAXBinary($testCorpNum, $Sender, $Rece    iver, $FileData, $reserveDT, $testUserID, $SenderName, $adsYN, $title, $requ    estNum);
+
+     // $url = $FaxService->GetUnitCost($testCorpNum);
+     // return $receiptNum;
+   }
+   catch (PopbillException $pe) {
+       $code = $pe->getCode();
+       $message = $pe->getMessage();
+       return "[" . $code . "]" . $message;
+   }
+ }
+/*
+
     // 팩스제목
     $title = '티에이치케이컴퍼니';
 
@@ -77,13 +117,20 @@ function sendFax($send_fax_arr) {
     // 1~36자리로 구성. 영문, 숫자, 하이픈(-), 언더바(_)를 조합하여 팝빌 회원별로 중복되지 않도록 할당.
     $requestNum = '';
 
-    // echo 'console.log("' . var_dump($send_fax_arr) . '")';
+    //echo 'console.log("' . var_dump($send_fax_arr) . '")';
     foreach($send_fax_arr as $data) {
-      $FileData = [];
       $Receiver = [];
-      $FileData[] = array('fileName' => $data['filename'], 'fileData' => $data['excel']);
       $Receiver[] = array('rcv' => $data['rcv'], 'rcvnm' => $data['rcvnm']);
-      $receiptNum = $FaxService->SendFAXBinary($testCorpNum, $Sender, $Receiver, $FileData, $reserveDT, $testUserID, $SenderName, $adsYN, $title, $requestNum);
+
+      if( isset($data['type']) && $data['type']==="SendFAX" ) {
+        $FileData = "";
+        $FileData = array( $data['filename'] );
+        $receiptNum = $FaxService->SendFAX($testCorpNum, $Sender, $Receiver, $FileData, $reserveDT, $testUserID , $SenderName, $adsYN, $title, $requestNum);
+      } else {
+        $FileData = [];
+        $FileData[] = array('fileName' => $data['filename'], 'fileData' => $data['excel']);
+        $receiptNum = $FaxService->SendFAXBinary($testCorpNum, $Sender, $Receiver, $FileData, $reserveDT, $testUserID, $SenderName, $adsYN, $title, $requestNum);
+      }
 
       // $result = $FaxService->GetFaxDetail($testCorpNum, $receiptNum);
       // return $result;
@@ -101,5 +148,5 @@ function sendFax($send_fax_arr) {
   }
 }
 
-
+*/
 ?>

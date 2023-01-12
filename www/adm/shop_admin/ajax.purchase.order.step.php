@@ -161,7 +161,7 @@ if($_POST['ct_id']&&$_POST['step']) {
     }
 
 
-    if($_POST['step'] == '취소') {
+    if ($_POST['step'] == '관리자발주취소' or $_POST['step'] == '파트너발주취소' or $_POST['step'] == '발주취소' or $_POST['step'] == '취소') {
       $sql_stock[] = "
         delete from
           warehouse_stock

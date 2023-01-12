@@ -36,7 +36,7 @@ sql_query($sql);
 
 
 if ($type == 'od_purchase_manager') {
-  $type_name = '영업담당자';
+  $type_name = '발주담당자';
 }
 if ($type == 'od_release_manager') {
   $type_name = '출고담당자';

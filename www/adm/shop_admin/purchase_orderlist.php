@@ -81,12 +81,15 @@ $_SESSION['smart_purchase_data'] = json_decode(html_entity_decode(stripslashes($
         <th>날짜</th>
         <td class="date">
           <select name="sel_date_field" id="sel_date_field">
-            <option value="od_time" <?php echo get_selected($sel_date_field, 'od_time'); ?>>발주일</option>
+              <option value="od_time" <?php echo get_selected($sel_date_field, 'od_time'); ?>>발주일</option>
+              <option value="ct_move_date" <?php echo get_selected($sel_date_field, 'ct_move_date'); ?>>변경일</option>
+              <option value="ct_delivery_complete_date" <?php echo get_selected($sel_date_field, 'ct_delivery_complete_date'); ?>>입고완료일</option>
           </select>
           <div class="sch_last">
             <input type="button" value="오늘" id="select_date_today" name="select_date" class="select_date newbutton" />
             <input type="button" value="어제" id="select_date_yesterday" name="select_date" class="select_date newbutton" />
             <input type="button" value="일주일" id="select_date_sevendays" name="select_date" class="select_date newbutton" />
+            <input type="button" value="이번달" id="select_date_month" name="select_date" class="select_date newbutton" />
             <input type="button" value="지난달" id="select_date_lastmonth" name="select_date" class="select_date newbutton" />
             <input type="button" value="전체" id="select_date_all" name="select_date" class="select_date newbutton" />
             <input type="text" id="fr_date" class="date" name="fr_date" value="<?php echo $fr_date; ?>" class="frm_input" size="10" maxlength="10"> ~
@@ -107,6 +110,48 @@ $_SESSION['smart_purchase_data'] = json_decode(html_entity_decode(stripslashes($
           <input type="checkbox" name="od_status[]" value="<?php echo $order_step['val']; ?>" id="step_<?php echo $order_step['val']; ?>" <?php echo option_array_checked($order_step['val'], $od_status); ?>>
           <label for="step_<?php echo $order_step['val']; ?>"><?php echo $order_step['name']; ?></label>
           <?php } ?>
+        </td>
+      </tr>
+      <tr>
+        <th>기타설정</th>
+        <td>
+          발주서 발송상태 &nbsp;
+          <input type="checkbox" name="od_send_n" value="0" id="od_send_n" <?php echo option_array_checked('0', $od_send_n); ?>>
+          <label for="od_send_n">미발송</label>
+          <input type="checkbox" name="od_send_y" value="1" id="od_send_y" <?php echo option_array_checked('1', $od_send_y); ?>>
+          <label for="od_send_y">발송</label>
+          &nbsp; | &nbsp; &nbsp;
+          발주서 발송방식 &nbsp;
+          <input type="checkbox" name="od_send_mail_yn" value="1" id="od_send_mail_yn" <?php echo option_array_checked('1', $od_send_mail_yn); ?>>
+          <label for="od_send_mail_yn">이메일</label>
+          <input type="checkbox" name="od_send_hp_yn" value="1" id="od_send_hp_yn" <?php echo option_array_checked('1', $od_send_hp_yn); ?>>
+          <label for="od_send_hp_yn">문자</label>
+          <input type="checkbox" name="od_send_fax_yn" value="1" id="od_send_fax_yn" <?php echo option_array_checked('1', $od_send_fax_yn); ?>>
+          <label for="od_send_fax_yn">팩스</label>
+          &nbsp; | &nbsp; &nbsp;
+          <select name="od_writer">
+            <option value="">발주담당자</option>
+            <?php
+            $sql = ("
+                      SELECT 
+                        mb.mb_name, mb.mb_id 
+                      FROM 
+                        g5_auth au, g5_member mb 
+                      WHERE 
+                        mb.mb_id = au.mb_id 
+                        AND au_menu = '400480' 
+                        AND au_auth 
+                      LIKE '%w%' 
+                      ORDER BY mb_name ASC
+            ");
+
+            $auth_result = sql_query($sql);
+            while ($a_row = sql_fetch_array($auth_result)) {
+            $a_mb = get_member($a_row['mb_id']);
+            ?>
+            <option value="<?php echo $a_mb['mb_id']; ?>" <?php echo $a_mb['mb_id'] == $od_writer ? 'selected' : ''; ?>><?php echo $a_mb['mb_name']; ?></option>
+            <?php } ?>
+          </select>
         </td>
       </tr>
       <tr>
@@ -155,7 +200,9 @@ $_SESSION['smart_purchase_data'] = json_decode(html_entity_decode(stripslashes($
             <option value="barcode" <?php echo get_selected($sel_field_add, 'barcode'); ?>>바코드</option>
           </select>
           <input type="text" name="search_add" value="<?php echo $search_add; ?>" id="search_add" class="frm_input" autocomplete="off" style="width:200px;">
-          	, 추가 검색어
+          <?php
+          /* 22.11.02 : 서원 - 구매발주기능 개선 ( 검색어 조건 항목 삭제 )
+            , 추가 검색어
           	<select name="sel_field_add_add" id="sel_field_add_add">
             <option value="od_all" <?php echo $sel_field_add_add == 'od_all' ? 'selected="selected"' : ''; ?>>전체</option>
             <option value="od_name" <?php echo get_selected($sel_field_add_add, 'od_name'); ?>>주문자</option>
@@ -177,6 +224,8 @@ $_SESSION['smart_purchase_data'] = json_decode(html_entity_decode(stripslashes($
             <option value="barcode" <?php echo get_selected($sel_field_add_add, 'barcode'); ?>>바코드</option>
           </select>
           <input type="text" name="search_add_add" value="<?php echo $search_add_add; ?>" id="search_add_add" class="frm_input" autocomplete="off" style="width:200px;">
+          */
+          ?>
         </td>
       </tr>
 
@@ -256,15 +305,17 @@ $_SESSION['smart_purchase_data'] = json_decode(html_entity_decode(stripslashes($
 
   <div id="samhwa_order_list">
     <ul class="order_tab">
-      <li class="" data-step="" data-status="">
+      <li class="purchase_order_steps" data-step="" data-status="">
         <a>전체</a>
       </li>
       <?php
       foreach($purchase_order_steps as $order_step) {
         if (!$order_step['orderlist']) continue;
       ?>
-      <li class="" data-step="<?php echo $order_step['step']; ?>" data-status="<?php echo $order_step['val']; ?>" id="<?php echo $order_step['val']; ?>" >
-        <a><?php echo $order_step['name']; ?>(<span>0</span>)</a>
+      <li class="purchase_order_steps" data-step="<?php echo $order_step['step']; ?>" data-status="<?php echo $order_step['val']; ?>" id="<?php echo $order_step['val']; ?>" >
+        <a>
+          <?php echo $order_step['name']; ?><br />(<span>0</span>)
+        </a>
       </li>
       <?php } ?>
     </ul>
@@ -1002,6 +1053,7 @@ if( function_exists('pg_setting_check') ){
 <div class="btn_fixed_top2" style="bottom: 0;">
   <a href="javascript:void(0);" id="order_add" onclick="popAddOrder()" class="btn btn_01">발주서 추가</a>
   <input type="button" value="더보기" onclick="doSearch()" class="btn btn_02">
+  <input type="button" value="발주내역 엑셀다운로드" onclick="orderListExcelDownload('excel')" class="btn btn_04">
 </div>
 
 <iframe src="about:blank" name="process" id="process" width="0" height="0" style="display:none"></iframe>
@@ -1022,6 +1074,68 @@ if( function_exists('pg_setting_check') ){
 
 <script>
 var excel_downloader = null;
+
+function orderListExcelDownload(type) {
+  // alert("테스트 버튼 확인");
+
+    var od_id = [];
+    var item = $("input[name='od_id[]']:checked");
+    for(var i = 0; i < item.length; i++) {
+        od_id.push($(item[i]).val());
+    }
+
+    console.log(formdata);
+
+    if(!od_id.length) {
+        if(type === 'partner') return alert('선택한 주문이 없습니다.');
+
+        if(!confirm('선택한 주문이 없습니다.\n검색결과 내 모든 주문내역을 다운로드하시겠습니까?')) return false;
+    }
+
+    var formdata = $.extend({}, {
+        click_status: od_status,
+        od_step: od_step,
+        page: page,
+        sub_menu: sub_menu,
+        last_step: last_step,
+        od_id: od_id
+    },$('#frmsamhwaorderlist').serializeObject());
+
+    // form object rename
+    formdata['od_settle_case'] = formdata['od_settle_case[]']; // Assign new key
+    delete formdata['od_settle_case[]']; // Delete old key
+
+    if (formdata['od_status[]'] != undefined) {
+        formdata['od_status'] = formdata['od_status[]']; // Assign new key
+        delete formdata['od_status[]']; // Delete old key
+    }
+
+    formdata['od_openmarket'] = formdata['od_openmarket[]']; // Assign new key
+    delete formdata['od_openmarket[]']; // Delete old key
+
+    formdata['add_admin'] = formdata['add_admin']; // Assign new key
+    // delete formdata['add_admin[]']; // Delete old key
+
+    formdata['od_important'] = formdata['od_important']; // Assign new key
+    // delete formdata['od_important[]']; // Delete old key
+
+    formdata["od_recipient"] = "<?=$_GET["od_recipient"]?>";
+
+    var queryString = $.param(formdata);
+    var href = "./purchase_orderlist.excel.list.php";
+
+    $('#loading_excel').show();
+
+    excel_downloader = $.fileDownload(href, {
+        httpMethod: "POST",
+        data: queryString
+    })
+    .always(function() {
+        $('#loading_excel').hide();
+    });
+
+    return false;
+}
 
 //function orderListExcelDownload(type) {
 //  var od_id = [];
