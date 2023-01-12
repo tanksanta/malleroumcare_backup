@@ -217,7 +217,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
     <form id="form_simple_eform" name="form_simple_eform" method="POST" class="form-horizontal" autocomplete="off" onsubmit="return false;" onkeydown="if(event.keyCode==13) return false;">
       <input type="hidden" name="w" value="<?php if($dc) echo 'u'; ?>">
       <input type="hidden" name="dc_id" value="<?php if($dc) echo $dc['uuid']; ?>">
-      <input type="hidden" name="penRecTypeCd" id="penRecTypeCd" value="<?php if(!$dc) echo '01'; if($dc) echo $dc['penRecTypeCd']; ?>">
+      <input type="hidden" name="penRecTypeCd" id="penRecTypeCd" value="<?php if(!$dc) echo '02'; if($dc) echo $dc['penRecTypeCd']; ?>">
       <input type="hidden" name="penRecTypeTxt" id="penRecTypeTxt" value="<?php if($dc) echo $dc['penRecTypeTxt']; ?>">
       
 	  <div class="panel-default col-sm-6" style="float:left">
@@ -240,7 +240,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 				<img style="display: none;" src="<?php echo THEMA_URL; ?>/assets/img/icon_search.png" >
 			  <input type="hidden" name="penAddrDtl2" id="penAddrDtl2"><input type="hidden" name="penAddr_jibeon" id="penAddr_jibeon">
               <input type="hidden" name="penId" id="penId" value="<?php if($dc) echo $dc['penId']; ?>" <?php if($dc) echo "data-orig=\"{$dc['penId']}\""; ?>>
-              <input type="hidden" name="penNm" id="penNm" class="form-control input-sm pen_id_flexdatalist" value="<?php if($dc) echo $dc['penNm']; ?>" placeholder="수급자명" <?php if($dc) echo "data-orig=\"{$dc['penNm']}\""; ?> >
+              <input type="text" name="penNm" id="penNm" class="form-control input-sm pen_id_flexdatalist" value="<?php if($dc) echo $dc['penNm']; ?>" placeholder="수급자명" <?php if($dc) echo "data-orig=\"{$dc['penNm']}\""; ?> >
 			  </label>
 			  <label>
 				<button type="button" id="btn_pen" class="btn btn-black btn-sm" style="margin-top:0px;height:34px" onClick="$('#pen_type_1').trigger('click');">목록에서 검색</button>
@@ -347,10 +347,10 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 			<label class="col-sm-2 control-label" style="width:150px;"><b>서명확인방법</b></label>
 			<div class="col-sm-5">
 	            <label class="radio-inline">
-                  <input type="radio" name="penRecTypeCd_radio" class="penRecTypeCd_radio penRecTypeCd01" value="01" <?php if(!$dc || $dc['penRecTypeCd'] == '02') echo 'checked' ?>> 유선
+                  <input type="radio" name="penRecTypeCd_radio" class="penRecTypeCd_radio penRecTypeCd01" value="01" <?php if(!$dc || $dc['penRecTypeCd'] == '01') echo 'checked' ?>> 유선
                 </label>
 				<label class="radio-inline">
-                  <input type="radio" name="penRecTypeCd_radio" class="penRecTypeCd_radio penRecTypeCd02" value="02" <?php if( $dc['penRecTypeCd'] == '01') echo 'checked' ?>> 방문
+                  <input type="radio" name="penRecTypeCd_radio" class="penRecTypeCd_radio penRecTypeCd02" value="02" <?php if( $dc['penRecTypeCd'] == '02' || $dc['penRecTypeCd'] == '00') echo 'checked' ?>> 방문
                 </label>
 			</div>		
 		</div>
@@ -704,7 +704,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 			<b>직인 파일 업로드</b><br>
         <button type="button" class="btn_se_seal" style="margin-top:10px;">직인 이미지 업로드</button>
         <br>
-		* 배경이 투명한 .png 파일 업로드를 권장 합니다.<br>
+		* .png 파일만 업로드 가능 합니다.<br>(배경을 투명한 파일로 등록하세요.)<br>
        
         </div>
 		<div id="" class="" style="float:right;width:35%;margin-right:15px">
@@ -993,15 +993,6 @@ function clearCanvas(){
 
 
 function applicantRelation_chg(chg_value){//장기용양 재가서비스 관계 선택 시 본인은 입력란 비활성화
-	if(chg_value == 4 && !$("#contract_sign_type").is(":checked")){
-		alert("대리인 정보 입력 후 선택 가능하십니다. 대리인 정보를 입력 해 주세요.");
-		$("#applicantRelation2").val("0");
-		$('#applicantNm2').prop('disabled', true); 
-		$('#applicantTel2').prop('disabled', true);
-		$('#applicantBirth2').prop('disabled', true); 
-		$('#applicantAddr2').prop('disabled', true);
-		return false;
-	}
 	if(chg_value == 0 || chg_value == 4){
 		$('#applicantNm2').prop('disabled', true); 
 		$('#applicantTel2').prop('disabled', true);
@@ -1049,9 +1040,7 @@ $('#btn-sign-submit').click(function(e) {
 		  .done(function(data) {//저장 성공시 하단 정보 재 호출 ajax 호출 필요			
 			alert(data.msg);
 			if(data.ok == "ok"){
-				$('.se_seal_wr').remove();
-				$("span").remove("#no_img");
-				$("#sealFile_img").attr("src",'/data/file/member/stamp/'+data.sealFile).show();
+				$("#sealFile_img").attr("src",'/data/file/member/stamp/'+data.sealFile);
 				$('#popup_box2_1').hide();
 				clearCanvas();
 			}
@@ -1223,9 +1212,6 @@ function check_no_item() {
 		$('#btn_se_submit').attr('disabled', false);
 		$('#dc_view').attr('disabled', false);
 		$('.btn_se_submit').addClass('active');
-		<?php if(!$dc){?>
-		save_eform();
-		<?php }?>
 		//}
 	  }
   }
@@ -1416,7 +1402,6 @@ function set_rent_date($parent, months) {
 var loading = false;
 function save_eform() {
   if(loading) return;
-  /*
   var src = jQuery('#sealFile_img').attr("src");
   var _fileLen = src.length;
   var _lastDot = (src.lastIndexOf('.'));
@@ -1425,7 +1410,7 @@ function save_eform() {
 	alert("직인은 png 파일만 사용 가능합니다. 직인 파일을 변경해 주세요.");
 	$('#btn_ent').trigger("click");
 	return false;
-  }*/
+  }
   if($('.pen_id_flexdatalist').val() !== $('.pen_id_flexdatalist').next().val())
     $('.pen_id_flexdatalist').val($('.pen_id_flexdatalist').next().val());
 
@@ -1935,11 +1920,11 @@ function update_pen(obj) {
     $('#penJumin').val(obj.penJumin).data('orig', obj.penJumin).change();
     $('#penRecTypeCd').val(obj.penRecTypeCd).data('orig', obj.penRecTypeCd).change(); // 값을 들고오지 않음 -> ajax.get_pen_id.php 에서 추가
     if(obj.penRecTypeCd == '01') {
-      $(":radio[name='penRecTypeCd_radio'][value='01']").attr('checked', true);
-	  $(":radio[name='penRecTypeCd_radio'][value='02']").attr('checked', false);
+      $('input[name="penRecTypeCd_radio"]').val("01").prop('checked', true);
+      $('input[name="penRecTypeCd_radio"]').val("02").prop('checked', false);
     } else {
-	  $(":radio[name='penRecTypeCd_radio'][value='01']").attr('checked', false);
-	  $(":radio[name='penRecTypeCd_radio'][value='02']").attr('checked', true);
+      $('input[name="penRecTypeCd_radio"]').val("01").prop('checked', false);
+      $('input[name="penRecTypeCd_radio"]').val("02").prop('checked', true);
     }
     if(obj.penRecTypeTxt) $('#penRecTypeTxt').val(obj.penRecTypeTxt); // 값을 들고오지 않음 -> ajax.get_pen_id.php 에서 추가
   }
@@ -1954,12 +1939,9 @@ function dc_view(){
 			return false;
 		}		
 	}
-	$('body').addClass('modal-open');	
+	$('body').addClass('modal-open');
 	save_eform();
-	var dc_id = $('input[name="dc_id"]').val();
-	if(dc_id != ""){
-		$('#popup_box9').show();
-	}
+	$('#popup_box9').show();
 }
 // 수급자 목록
 $('#btn_pen').click(function() {
@@ -2289,7 +2271,7 @@ $('.btn_se_seal').click(function() {
   var $form = $(this).closest('form');
 
   $form.find('input[name="sealFile"]').remove();
-  $('<input type="file" name="sealFile" accept=".png,.gif,.jpg" style="width: 0; height: 0; overflow: hidden;">').appendTo($form).click();
+  $('<input type="file" name="sealFile" accept=".png" style="width: 0; height: 0; overflow: hidden;">').appendTo($form).click();
 });
 $(document).on('change', 'input[name="sealFile"]', function(e) {
   var $form = $(this).closest('form');
@@ -2548,9 +2530,7 @@ $(document).on('input change keyup paste', '.panel .form-group input, .panel .fo
 	  $('#btn_se_submit_new').attr('disabled', false);
 	  $('#btn_se_submit').attr('disabled', false);
       first_completed = true;
-      <?php if(!$dc){?>
-		save_eform();
-		<?php }?>
+      //save_eform();
     }
   <?php } ?>
 });

@@ -2,7 +2,6 @@
     "require": {
         "phpoffice/phpspreadsheet": "^1.18",
         "dvdoug/boxpacker": "^3.9",
-        "lodash-php/lodash-php": "^0.0.7",
-	"guzzlehttp/guzzle": "^7.5"
+        "lodash-php/lodash-php": "^0.0.7"
     }
 }
