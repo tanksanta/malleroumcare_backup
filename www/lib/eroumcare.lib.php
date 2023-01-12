@@ -3128,7 +3128,7 @@ function validate_schedule($mb_id, $member) {
   }
   
   # 관리자 계정
-    $sql = "SELECT 
+  $sql = "SELECT 
   `s`.id AS `s_id`, 
   
   `s`.status AS `s_status`, 

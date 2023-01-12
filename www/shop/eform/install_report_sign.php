@@ -158,7 +158,7 @@ $(function() {
               status: '완료'
             }, 'json')
             .done(function() {
-              alert('계약서 작성이 완료되었습니다.');
+              alert('설치확인서 작성이 완료되었습니다.');
               history.back();
             })
             .fail(function($xhr) {
