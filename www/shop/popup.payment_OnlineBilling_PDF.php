@@ -58,13 +58,14 @@
     $G5_URL = G5_URL;    
     $bl_id = $_GET["bl_id"];
 
-    $_file_path = G5_DATA_PATH."\\cache\\".$_GET["bl_id"].".pdf";
-
 
     // 23.01.03 : 서원 - 윈도우 테스트용
+    //$_file_path = G5_DATA_PATH."\\cache\\".$_GET["bl_id"].".pdf";
     //exec("C:\_THKC\_Dev\wkhtmltox\bin\wkhtmltopdf.exe{$args} \"{$G5_URL}/shop/popup.payment_OnlineBilling_HTML.php?bl_id={$bl_id}\" \"{$_file_path}\"");
 
+    
     // 23.01.03 : 서원 - 리눅스용
+    $_file_path = G5_DATA_PATH."/cache/".$_GET["bl_id"].".pdf";
     exec("wkhtmltopdf{$args} \"{$G5_URL}/shop/popup.payment_OnlineBilling_HTML.php?bl_id={$bl_id}\" \"{$_file_path}\"");
 
 

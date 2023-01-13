@@ -43,7 +43,7 @@ if ($_POST['ct_id'] && $_POST['step']) {
       exit;
     }
 
-    if (in_array($result_ct_s['ct_status'], ['취소'])) {
+    if (in_array($result_ct_s['ct_status'], ['파트너발주취소','관리자발주취소','발주취소','취소'])) {
       echo '취소된 주문은 상태변경이 불가능합니다.';
       exit;
     }
@@ -141,7 +141,7 @@ if ($_POST['ct_id'] && $_POST['step']) {
       }
     }
 
-    if ($_POST['step'] == '취소') {
+    if ($_POST['step'] == '관리자발주취소' or $_POST['step'] == '파트너발주취소' or $_POST['step'] == '발주취소' or $_POST['step'] == '취소') {
       $sql_stock[] = "
         delete from
           warehouse_stock

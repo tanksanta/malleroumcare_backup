@@ -1,12 +1,5 @@
 <?php
 include_once('./_common.php');
-//while(true){
-//	$sql = "SELECT dc_status FROM `eform_document` WHERE dc_id=UNHEX('".$_REQUESt["dc_id"]."')";
-//	$row=sql_fetch($sql);
-//	if($row["dc_status"] == "3" || $row["dc_status"] == "5"){
-//		break;
-//	}
-//}
 ?>
 <html>
 <meta name="viewport" content="width=device-width, initial-scale=1">

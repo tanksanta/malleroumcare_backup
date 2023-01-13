@@ -240,7 +240,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 				<img style="display: none;" src="<?php echo THEMA_URL; ?>/assets/img/icon_search.png" >
 			  <input type="hidden" name="penAddrDtl2" id="penAddrDtl2"><input type="hidden" name="penAddr_jibeon" id="penAddr_jibeon">
               <input type="hidden" name="penId" id="penId" value="<?php if($dc) echo $dc['penId']; ?>" <?php if($dc) echo "data-orig=\"{$dc['penId']}\""; ?>>
-              <input type="hidden" name="penNm" id="penNm" class="form-control input-sm pen_id_flexdatalist" value="<?php if($dc) echo $dc['penNm']; ?>" placeholder="수급자명" <?php if($dc) echo "data-orig=\"{$dc['penNm']}\""; ?> >
+              <input type="text" name="penNm" id="penNm" class="form-control input-sm pen_id_flexdatalist" value="<?php if($dc) echo $dc['penNm']; ?>" placeholder="수급자명" <?php if($dc) echo "data-orig=\"{$dc['penNm']}\""; ?> >
 			  </label>
 			  <label>
 				<button type="button" id="btn_pen" class="btn btn-black btn-sm" style="margin-top:0px;height:34px" onClick="$('#pen_type_1').trigger('click');">목록에서 검색</button>
@@ -350,7 +350,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
                   <input type="radio" name="penRecTypeCd_radio" class="penRecTypeCd_radio penRecTypeCd01" value="01" <?php if(!$dc || $dc['penRecTypeCd'] == '02') echo 'checked' ?>> 유선
                 </label>
 				<label class="radio-inline">
-                  <input type="radio" name="penRecTypeCd_radio" class="penRecTypeCd_radio penRecTypeCd02" value="02" <?php if( $dc['penRecTypeCd'] == '01') echo 'checked' ?>> 방문
+                  <input type="radio" name="penRecTypeCd_radio" class="penRecTypeCd_radio penRecTypeCd02" value="02" <?php if( $dc['penRecTypeCd'] != '02') echo 'checked' ?>> 방문
                 </label>
 			</div>		
 		</div>
@@ -442,6 +442,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
           <ul id="buy_list" class="se_item_list">
             <?php
             if($dc) {
+				$sale_count = 0;
               $sql = "
                 SELECT
                  i.*,
@@ -490,6 +491,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
                 while($barcode = sql_fetch_array($result_barcode)) {
                   $barcodes[] = $barcode['it_barcode'];
                 }
+				
             ?>
             <li class="list item" data-code="<?=$row['id']?>" data-uid="<?=$row['it_id']?>">
               <input type="hidden" name="it_id[]" value="<?=$row['id']?>">
@@ -541,14 +543,21 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
               </div>
             </li>
             <?php
+				$sale_count += $row['qty'];
               }
-            }
+			  ?>
+<script>
+	$("#sale_count").val('<?=$sale_count?>');
+</script>
+			
+          <?php }
             ?>
           </ul>
           <div class="se_item_hd">대여품목</div>
           <ul id="rent_list" class="se_item_list">
           <?php
             if($dc) {
+				$rent_count = 0;
               $sql = "
                 SELECT
                  i.*,
@@ -657,7 +666,14 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
               </div>
             </li>
             <?php
+				$rent_count += $row['qty'];
               }
+			  ?>
+<script>
+	$("#rent_count").val('<?=$rent_count?>');
+</script>
+			
+          <?php
             }
             ?>
           </ul>
@@ -684,8 +700,8 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
     </div>
     <iframe name="iframe" src="" scrolling="yes" frameborder="0" allowTransparency="false"></iframe>
 	<div id="" class="popup_box_bottom">
-		<div style="text-align:left;">
-			* 등록 된 수급자가 없으신가요? <b><a href="javascript:$('#pen_type_0').trigger('click');">수동으로 입력하기</a></b>
+		<div style="text-align:left;height:20px;">
+			<span  id="left_text">* 등록 된 수급자가 없으신가요? <b><a href="javascript:$('#pen_type_0').trigger('click');">수동으로 입력하기</a></b></span>
 		</div> 
 		<div style="text-align:right;">
 			 <button type="button" id="btn_pen4" class="btn btn-black btn-sm">돌아가기</button>
@@ -704,7 +720,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 			<b>직인 파일 업로드</b><br>
         <button type="button" class="btn_se_seal" style="margin-top:10px;">직인 이미지 업로드</button>
         <br>
-		* 배경이 투명한 .png 파일 업로드를 권장 합니다.<br>
+		* 배경이 투명한 png 파일 업로드를 권장 합니다.<br>
        
         </div>
 		<div id="" class="" style="float:right;width:35%;margin-right:15px">
@@ -721,7 +737,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 	  <input type="hidden" name="link" value="simple_eform_test.php">
 	  <div id="" class="" style="float:left;width:100%;padding:0px 15px;">
 		<b>사업자 계좌정보</b><br>
-		<label><input type="text" name="mb_account" id="mb_account" class="form-control input-sm" style="width:292px !important;" value="<?=$member["mb_account"]; ?>" placeholder="사업자 계좌정보를 입력해 주세요."></label> <label><button type="button" class="btn btn-black btn-sm" style="background:black" onClick="faccount_submit()">저장하기</button></label><br>
+		<label><input type="text" name="mb_account" id="mb_account" class="form-control input-sm" style="width:292px !important;" value="<?=$member["mb_account"]; ?>" placeholder="예) 신한 110-1234-123456 (홍길동)"></label> <label><button type="button" class="btn btn-black btn-sm" style="background:black" onClick="faccount_submit()">저장하기</button></label><br>
 		* 등록된 계좌번호는 급여비용명세서에서 사용 됩니다.
 	  </div>
 	  <div style="text-align:right;bottom:0px;float:left;width:100%;margin-top:10px;">
@@ -774,13 +790,13 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 				<b>대리인 성명</b>
 			  </label>
 			  <label style="width:240px;">
-				<input type="text" name="contract_sign_name2" id="contract_sign_name2" class="form-control input-sm" style="width:99% !important;" value="<?php if($dc) echo $dc['contract_sign_name']; ?>" placeholder="대리인 성명을 입력해 주세요." <?php if($dc) echo "data-orig=\"{$dc['contract_sign_name']}\""; ?>>
+				<input type="text" name="contract_sign_name2" id="contract_sign_name2" maxlength="8" class="form-control input-sm" style="width:99% !important;" value="<?php if($dc) echo $dc['contract_sign_name']; ?>" placeholder="대리인 성명을 입력해 주세요." <?php if($dc) echo "data-orig=\"{$dc['contract_sign_name']}\""; ?>>
 			  </label><br>
 			  <label style="width:120px;">
 				<b>대리인 전화번호</b>
 			  </label>
 			  <label style="width:240px;">
-				<input type="text" name="contract_tel2" id="contract_tel2" class="form-control input-sm" style="width:99% !important;" value="<?php if($dc) echo $dc['contract_tel']; ?>" placeholder="대리인 전화번호를 입력해 주세요." <?php if($dc) echo "data-orig=\"{$dc['contract_tel']}\""; ?>>
+				<input type="text" name="contract_tel2" id="contract_tel2" maxlength="11" class="form-control input-sm" style="width:99% !important;" value="<?php if($dc) echo $dc['contract_tel']; ?>" placeholder="대리인 전화번호를 입력해 주세요." <?php if($dc) echo "data-orig=\"{$dc['contract_tel']}\""; ?>>
 			  </label><br>
 			  <label style="width:120px;">
 				<b>대리인 주소</b>
@@ -1964,7 +1980,7 @@ function dc_view(){
 // 수급자 목록
 $('#btn_pen').click(function() {
   var url = 'pop_recipient.php';
-
+  $('#left_text').show();
   $('#popup_box iframe').attr('src', url);
   $('body').addClass('modal-open');
   $('#popup_box').show();
@@ -2162,7 +2178,7 @@ $('.btn_close2').click(function() {
 
 $('#btn_se_sch').click(function() {
   var url = 'pop.item.select.php?no_option=nonReimbursement';
-
+  $('#left_text').hide();
   $('#popup_box iframe').attr('src', url);
   $('body').addClass('modal-open');
   $('#popup_box').show();

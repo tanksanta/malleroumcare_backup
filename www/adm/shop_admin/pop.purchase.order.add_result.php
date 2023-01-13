@@ -24,6 +24,21 @@ try {
     alert('존재하지 않는 물품공급 파트너입니다.');
   }
 
+  // 22.11.08 : 서원 - 할인/반품 정보에 대한 데이터 저장
+  $od_discount_info = [];
+  $_discount_it_name = $_POST['discount_it_name'];
+  if( $_discount_it_name ) {
+    foreach ($_discount_it_name as $key => $val) {
+      $od_discount_info[$key] = array(
+        "discount_it_name" => $_POST['discount_it_name'][$key],
+        "discount_qty" => (int)preg_replace("/[^\d]/", "", $_POST['discount_qty'][$key]),
+        "discount_it_price" => (int)preg_replace("/[^\d]/", "", $_POST['discount_it_price'][$key]),
+        "discount_memo" => $_POST['discount_memo'][$key]
+      );
+    }
+  }
+  $od_discount_info = json_encode( $od_discount_info, JSON_UNESCAPED_UNICODE );
+
   $od_id = get_uniqid();
   $so_nb = get_uniqid_so_nb();
   $od_pwd = $member['mb_password'];
@@ -36,6 +51,7 @@ try {
                 od_email = '{$od_member['mb_email']}',
                 od_tel = '{$od_member['mb_tel']}',
                 od_hp = '{$od_member['mb_hp']}',
+                od_fax = '{$od_member['mb_fax']}',
                 od_zip1 = '{$od_member['mb_zip1']}',
                 od_zip2 = '{$od_member['mb_zip2']}',
                 od_addr1 = '{$od_member['mb_addr1']}',
@@ -65,7 +81,8 @@ try {
                 od_writer         = '{$member['mb_id']}',
                 od_add_admin      = '1',
                 so_nb             = '{$so_nb}',
-                od_purchase_manager  = '{$member['mb_id']}'
+                od_purchase_manager  = '{$member['mb_id']}',
+                od_discount_info  = '{$od_discount_info}'
                 ";
   sql_query($sql);
 
@@ -176,7 +193,8 @@ try {
       ct_warehouse_address,
       ct_warehouse_phone,
       ct_supply_partner,
-      ct_delivery_expect_date
+      ct_delivery_expect_date,
+      ct_part_info
     )
   VALUES ";
 
@@ -260,8 +278,8 @@ try {
 
       // 입고창고
       $warehouse_name = '검단창고';
-      if ($_POST['wh_name'][$i]) {
-        $warehouse_name = $_POST['wh_name'][$i];
+      if ($_POST['wh_name']) {
+        $warehouse_name = $_POST['wh_name'];
       }
       $wh_row = sql_fetch(" select * from warehouse where wh_name = '{$warehouse_name}' ");
       $ct_warehouse = $wh_row['wh_name'];
@@ -275,6 +293,16 @@ try {
 
       // 입고예정일 (2022-01-25 08:26:21)
       $ct_delivery_expect_date = "{$od_datetime_date} {$od_datetime_time}:00:00";
+
+      // 22.11.08 : 서원 - 부분입고에 따른 데이터 기본셋팅
+      $ct_part_info = array(
+        1 => array(
+          '_out_qty'=>'', '_out_dt'=>'', '_out_delivery_company'=>'', '_out_delivery_num'=>'', '_out_member'=>'',
+          '_in_qty'=>'', '_in_dt'=>$od_datetime_date, '_in_dt_confirm'=>'', '_in_member'=>'',
+          '_modify_dt'=>date("Y-m-d")
+        )
+      );
+      $ct_part_info = json_encode( $ct_part_info, JSON_UNESCAPED_UNICODE );
 
       $insert_sql = $sql . "
     (
@@ -327,7 +355,8 @@ try {
       '$ct_warehouse_address',
       '$ct_warehouse_phone',
       '{$od_member['mb_id']}',
-      '{$ct_delivery_expect_date}'
+      '{$ct_delivery_expect_date}',
+      '{$ct_part_info}'
     )";
 
       $result = sql_query($insert_sql);

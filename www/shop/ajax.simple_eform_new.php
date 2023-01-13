@@ -404,7 +404,7 @@ if (!$sealFile_self) { //직인 직접날인이 아니면
 	}
 	$filename = $dc_id."_".$member['mb_entId']."_".date("YmdHisw").".png";
     imagepng($img,$signdir."/".$filename);
-	imagedestroy($img);
+	imagedestroy($img);	
 	//file_put_contents("$signdir/$filename", $seal_data);
 
     $dc_signUrl = "/data/eform/sign/$filename";

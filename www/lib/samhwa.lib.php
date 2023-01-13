@@ -886,7 +886,7 @@ function set_order_admin_log($od_id, $content) {
     return sql_query($sql);
 }
 
-function set_purchase_order_admin_log($od_id, $content, $ct_id = null) {
+function set_purchase_order_admin_log($od_id, $content, $ct_id = null, $type = null) {
   global $member;
 
   $mb_id = $member['mb_id'];
@@ -901,11 +901,16 @@ function set_purchase_order_admin_log($od_id, $content, $ct_id = null) {
     $set_ct_id = "ct_id = '{$ct_id}',";
   }
 
+  if( $type != null ) {
+    $set_type = "ol_type = '{$type}',";
+  }
+
   $sql = "INSERT INTO purchase_order_admin_log SET
                 od_id = '{$od_id}',
                 {$set_ct_id}
                 mb_id = '{$mb_id}',
                 ol_content = '{$content}',
+                {$set_type}
                 ol_datetime = now()
                 ";
 

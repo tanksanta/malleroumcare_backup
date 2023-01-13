@@ -262,7 +262,7 @@ for($i = 0; $row = sql_fetch_array($result); $i++) {
 	if($row['dc_status'] == '11'){//계약서생성
 		echo '<a href="javascript:;" class="btn_basic" onClick="open_send_sign(\''.$row["uuid"].'\')">서&nbsp;&nbsp;명&nbsp;&nbsp;진&nbsp;&nbsp;행</a>';
 		echo '<br>';
-		echo '<a href="' . G5_SHOP_URL . '/eform/renderEform_new.php?download=1&dc_id=' . $row["uuid"] . '" class="btn_basic">계약서 보기</a>';
+		echo '<a href="javascript:window.open(\''. G5_SHOP_URL . '/eform/renderEform_new.php?download=1&dc_id=' . $row["uuid"].'\', \'PopupDoc\', \'width=1300,height=1000\');" class="btn_basic">계약서 보기</a>';
 	}elseif($row['dc_status'] == '4'){//서명요청
 		echo '<a href="javascript:;" class="btn_basic" onClick="open_sign_stat(\''.$row["uuid"].'\')">진행 상황 확인</a>';
 		echo '<br>';
@@ -274,14 +274,14 @@ for($i = 0; $row = sql_fetch_array($result); $i++) {
 	}elseif($row['dc_status'] == '2' || $row['dc_status'] == '3'){
 		if($row['dc_sign_send_datetime'] == "0000-00-00 00:00:00"){//예전 계약서
 			if($row['dc_status'] == '3' && !$row['od_id']) {
-			  echo '<a href="' . G5_SHOP_URL . '/eform/downloadEform.php?dc_id=' . $row["uuid"] . '" class="btn_basic">계약서 보기</a>';
+			  echo '<a href="javascript:window.open(\''. G5_SHOP_URL . '/eform/downloadEform.php?dc_id=' . $row["uuid"] .'\', \'PopupDoc\', \'width=1300,height=1000\');" class="btn_basic">계약서 보기</a>';
 			} else {
-			  echo '<a href="' . G5_SHOP_URL . '/eform/downloadEform.php?od_id=' . $row["od_id"] . '" class="btn_basic">계약서 보기</a>';
+			  echo '<a href="javascript:window.open(\''. G5_SHOP_URL . '/eform/downloadEform.php?od_id=' . $row["od_id"] .'\', \'PopupDoc\', \'width=1300,height=1000\');" class="btn_basic">계약서 보기</a>';
 			}
 			if($row['dc_status'] == '2') { // 이전 계약서는 감사추적인증서가 없음
-				echo '<br><a href="' . G5_SHOP_URL . '/eform/downloadCert.php?od_id=' . $row["od_id"] . '" class="btn_basic">감사추적 인증서</a>';
+				echo '<br><a href="javascript:window.open(\''. G5_SHOP_URL . '/eform/downloadCert.php?od_id=' . $row["od_id"] .'\', \'PopupDoc\', \'width=1300,height=1000\');" class="btn_basic">감사추적 인증서</a>';
 			}else if($row['dc_status'] == '3' && file_exists(G5_DATA_PATH.'/eform/cert/'.$row['dc_cert_pdf_file'])) {
-				echo '<br><a href="' . G5_SHOP_URL . '/eform/downloadCert.php?dc_id=' . $row["uuid"] . '" class="btn_basic">감사추적 인증서</a>';
+				echo '<br><a href="javascript:window.open(\''. G5_SHOP_URL . '/eform/downloadCert.php?dc_id=' . $row["uuid"] .'\', \'PopupDoc\', \'width=1300,height=1000\');" class="btn_basic">감사추적 인증서</a>';
 			}
 		}else{//모두싸인 계약서
 			echo '<a href="javascript:;" onClick="mds_download(\''. $row["uuid"] . '\',\'1\')" class="btn_basic">계약서 보기</a>';

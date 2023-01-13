@@ -339,6 +339,18 @@ if ($fr_date && $to_date) {
   $where[] = " ({$sel_date_field} between '$fr_date 00:00:00' and '$to_date 23:59:59') ";
 }
 
+// 22.11.09 : 서원 - 검색조건추가(발주서발송상태)
+if($od_send_n) { $where[] = " od_send_yn = 0 "; }
+if($od_send_y) { $where[] = " od_send_yn = 1 "; }
+
+// 22.11.09 : 서원 - 검색조건추가(발주서발송방법)
+if($od_send_mail_yn) { $where[] = " od_send_mail_yn = 1 "; }
+if($od_send_hp_yn) { $where[] = " od_send_hp_yn = 1 "; }
+if($od_send_fax_yn) { $where[] = " od_send_fax_yn = 1 "; }
+
+// 22.11.09 : 서원 - 검색조건추가(발주담당자select)
+if($od_writer) { $where[] = " od_writer = '{$od_writer}' "; }
+
 $where[] = " od_del_yn = 'N' ";
 
 // 최고관리자가 아닐때
@@ -356,18 +368,18 @@ if ($click_status) {
 
       $order_steps_where = array();
       foreach($ct_status as $s) {
-        $order_steps_where[] = " ct_status = '{$s}'";
+        $order_steps_where[] = " ct_status like '%{$s}%'";
       }
       $where[] = ' ( '.implode(' OR ', $order_steps_where).' ) ';
     }else{
-      $where[] = " ct_status = '{$ct_status}'";
+      $where[] = " ct_status like '%{$ct_status}%'";
     }
   } else {
     $order_steps_where = array();
     foreach($purchase_order_steps as $order_step) {
       if (!$order_step['orderlist']) continue;
 
-      $order_steps_where[] = " ct_status = '{$order_step['val']}' ";
+      $order_steps_where[] = " ct_status like '%{$order_step['val']}%' ";
     }
     $where[] = ' ( '.implode(' OR ', $order_steps_where).' ) ';
   }
@@ -444,11 +456,22 @@ foreach($purchase_order_steps as $order_step) {
   if (!$order_step['orderlist']) continue;
   $order_by_steps[] = "'".$order_step['val']."'";
 }
-$order_by_step = implode(' , ', $order_by_steps);
+$order_by_step = implode(' , ', $order_by_steps).", '발주취소', '관리자발주취소'";
 $sql_common .= " ORDER BY FIELD(ct_status, " . $order_by_step . " ), ct_move_date desc, o.od_id desc ";
 
 $sql  = "
-  select *, o.od_id as od_id, c.ct_id as ct_id, c.mb_id as mb_id, (od_cart_coupon + od_coupon + od_send_coupon) as couponprice
+  SELECT 
+    *, 
+    o.od_id as od_id,
+    o.od_send_yn as od_send_yn,
+    o.od_send_mail_yn as od_send_mail_yn,
+    o.od_send_hp_yn as od_send_hp_yn,
+    o.od_send_fax_yn as od_send_fax_yn,
+    o.od_id as od_id,
+    o.od_id as od_id,
+    c.ct_id as ct_id,
+    c.mb_id as mb_id,
+    (od_cart_coupon + od_coupon + od_send_coupon) as couponprice
   $sql_common
   limit $from_record, $rows
 ";
@@ -488,13 +511,16 @@ $ret['main'] = "
         <thead>
           <tr>
             <th class=\"check\">선택</th>
-            <th class=\"od_info\" style='width:20%'>주문정보</th>
-            <th class=\"od_name\">물품공급파트너</th>
+            <th class=\"od_info\" style='width:20%'>발주정보</th>
+            <th class=\"od_name\">물품공급<br />파트너</th>
             <th class=\"od_memo\">요청사항</th>
             <th class=\"od_expect_date\">입고예정일</th>
-            <th class=\"od_warehouse\">배송지창고</th>
-            <th class=\"od_price\">결제금액</th>
-            <th class=\"od_step\">주문상태</th>
+            <th class=\"od_expect_date_end\">입고완료일</th>
+            <th class=\"od_warehouse\">배송지</th>
+            <th class=\"od_part\">발주수량<br />입고수량<!--<br />미입고수량</th>-->
+            <th class=\"od_status\">발주서<br />발송상태</th>
+            <th class=\"od_price\">발주금액<br />합계</th>
+            <th class=\"od_step\">진행상태</th>
           </tr>
         </thead>
         <tbody>
@@ -696,12 +722,8 @@ foreach($orderlist as $order) {
 
     $ret['data'] .= "
       <tr class=\"step\">
-        <td colspan=\"2\" class=\"ltr-bg-step-{$ct_status_info['step']}\">
-          {$show_ct_status}
-        </td>
-        <td colspan=\"6\" class=\"ltr-bg-step-{$ct_status_info['step']}\" style=\"text-align:right;\">
-          {$status_info} 
-        </td>
+        <td colspan=\"2\" class=\"ltr-bg-purchase-step-{$ct_status_info['step']}\">{$show_ct_status}</td>
+        <td colspan=\"9\" class=\"ltr-bg-purchase-step-{$ct_status_info['step']}\" style=\"text-align:right;\">{$status_info}</td>
       </tr>
       <tr class=\"btns\">
         <td colspan=\"16\">
@@ -797,6 +819,48 @@ foreach($orderlist as $order) {
     $partner_edit_text = '<div style="margin-top: 5px; color: #FF6600">*파트너 상품수정</div>';
   }
 
+  // 22.11.02 : 서원 - 부분입,출고 관련 데이터 처리
+  $_part_info = '';
+  $od_expect_date = $od_expect_date_end = $od_part = '';
+  $_tmp_sum_qty = $notin_qty = 0;
+
+  if($order['ct_part_info']) {
+
+    $_part_info = json_decode( $order['ct_part_info'], TRUE );
+    arsort($_part_info);
+    if( is_array($_part_info) && ( count($_part_info) ) ) {
+
+      foreach ($_part_info as $key => $val) {
+        if( $val['_in_dt'] || $val['_in_dt_confirm'] ) {
+          $od_expect_date .= /*"{$key}차: ".*/(($val['_in_dt'])?($val['_in_dt']):"―")."<br />";
+          $od_expect_date_end .= /*"{$key}차: ".*/(($val['_in_dt_confirm'])?($val['_in_dt_confirm']):"―")."<br />";
+        }
+        if($val['_in_qty']) $_tmp_sum_qty += $val['_in_qty'];
+      }
+
+      if( $od_expect_date || $od_expect_date_end) {
+        $notin_qty = $ct_qty-$_tmp_sum_qty;
+      } else { $_tmp_sum_qty = $notin_qty = "-"; }
+
+      $od_part = "{$ct_qty}개<br />{$_tmp_sum_qty}개<!--<br />{$notin_qty}개-->";
+    }
+  } else {
+    $od_expect_date = '―';
+    $od_expect_date_end = '―';
+    $od_part = "{$ct_qty}개<br />미입력<br />미입력";
+  }
+
+  $od_send = '미발송';
+  if( $order['od_send_yn'] ) {
+    $od_send = '발송완료<br />';
+
+    $_set_txt = '';
+    if($order['od_send_mail_yn']) $_set_txt .= '메일';
+    if($order['od_send_hp_yn']) $_set_txt .= ($_set_txt?"/":"").'문자';
+    if($order['od_send_fax_yn']) $_set_txt .= ($_set_txt?"/":"").'팩스';
+    $od_send .= $_set_txt;
+  }
+
   $ret['data'] .= "
     <tr class=\"{$is_order_cancel_requested} tr_{$order['od_id']} order_tr\" data-od-id=\"{$order['od_id']}\" data-href=\"./purchase_orderform.php?od_id={$order['od_id']}&sub_menu={$sub_menu}\">
       <td align=\"center\" class=\"check\">
@@ -807,12 +871,12 @@ foreach($orderlist as $order) {
         <div class=\"order_info\">
           <div class=\"goods_info\">
             <div class=\"goods_name\" style='max-width:100%'>
-              {$ct_it_name}(".($ct_qty)."개)
+              {$ct_it_name}
             </div>
             <div class=\"order_num\">
               발주일시 : {$od_time}<br>
               변경일시 : {$od_receipt_time}<br>
-              <a href=\"./purchase_orderform.php?od_id={$order['od_id']}&sub_menu={$sub_menu}\">주문번호&nbsp;<span>({$order['od_id']})</span></a>
+              <a href=\"./purchase_orderform.php?od_id={$order['od_id']}&sub_menu={$sub_menu}\">발주번호&nbsp;<span>({$order['od_id']})</span></a>
             </div>
             {$partner_edit_text}
           </div>
@@ -841,15 +905,12 @@ foreach($orderlist as $order) {
       <td align=\"center\" class=\"od_memo\">
         <b>{$prodMemo}</b>
       </td>
-      <td align=\"center\" class=\"od_expect_date\">
-        <b>{$ct_delivery_expect_date}</b>
-      </td>
-      <td align=\"center\" class=\"od_warehouse\">
-        <b>{$ct_warehouse}</b>
-      </td>
-      <td align=\"center\" class=\"od_price\">
-        <b>{$ct_price}</b>
-      </td>
+      <td align=\"center\" class=\"od_expect_date\">{$od_expect_date}</td>
+      <td align=\"center\" class=\"od_expect_date_end\">{$od_expect_date_end}</td>
+      <td align=\"center\" class=\"od_warehouse\"><b>{$ct_warehouse}</b></td>
+      <td align=\"center\" class=\"od_part\">{$od_part}</td>
+      <td align=\"center\" class=\"od_status\">{$od_send}</td>
+      <td align=\"center\" class=\"od_price\"><b>{$ct_price}</b></td>
       <td align=\"center\" class=\"od_step\">
         {$ct_status_text}
         {$ct_sub_status_text}
