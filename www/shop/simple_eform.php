@@ -81,7 +81,8 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
   <div class="sub_section_tit">
     간편 계약서 작성
     <div class="r_btn_area">
-      <a href="/shop/electronic_manage.php" class="btn eroumcare_btn2">계약서 목록보기</a>
+      <a href="/shop/simple_eform_new.php" class="btn eroumcare_btn2" target="_blank">간편계약서 NEW</a>
+	  <a href="/shop/electronic_manage.php" class="btn eroumcare_btn2">계약서 목록보기</a>
     </div>
     <div style="clear: both;"></div>
   </div>

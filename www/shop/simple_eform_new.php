@@ -350,7 +350,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
                   <input type="radio" name="penRecTypeCd_radio" class="penRecTypeCd_radio penRecTypeCd01" value="01" <?php if(!$dc || $dc['penRecTypeCd'] == '02') echo 'checked' ?>> 유선
                 </label>
 				<label class="radio-inline">
-                  <input type="radio" name="penRecTypeCd_radio" class="penRecTypeCd_radio penRecTypeCd02" value="02" <?php if( $dc['penRecTypeCd'] != '02') echo 'checked' ?>> 방문
+                  <input type="radio" name="penRecTypeCd_radio" class="penRecTypeCd_radio penRecTypeCd02" value="02" <?php if( $dc && $dc['penRecTypeCd'] != '02') echo 'checked' ?>> 방문
                 </label>
 			</div>		
 		</div>
