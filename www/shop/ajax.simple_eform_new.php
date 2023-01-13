@@ -384,14 +384,28 @@ $dc_signUrl = '';
 if (!$sealFile_self) { //직인 직접날인이 아니면
     // 직인 파일 사본 저장
     $seal_dir = G5_DATA_PATH.'/file/member/stamp';
-    $seal_data = @file_get_contents($seal_dir.'/'.$seal_file);
+    //$seal_data = @file_get_contents($seal_dir.'/'.$seal_file);
     $signdir = G5_DATA_PATH.'/eform/sign';
     if(!is_dir($signdir)) {
     @mkdir($signdir, G5_DIR_PERMISSION, true);
     @chmod($signdir, G5_DIR_PERMISSION);
     }
-    $filename = $dc_id."_".$member['mb_entId']."_".date("YmdHisw").".png";
-    file_put_contents("$signdir/$filename", $seal_data);
+	$img_file = $seal_dir.'/'.$seal_file;
+	$ext = end(explode('.', $img_file)); 
+	if(strtolower($ext) == "gif"){//gif파일일 경우
+		$img=imagecreatefromgif($img_file);
+		$img_tex = "gif파일";
+	}elseif(strtolower($ext) == "jpg" || strtolower($ext) == "jpeg"){//jpg파일일 경우
+		$img=imagecreatefromjpeg($img_file);
+		$img_tex = "jpg파일";
+	}elseif(strtolower($ext) == "png"){//png파일일 경우
+		$img=imagecreatefrompng($img_file);
+		$img_tex = "png파일";
+	}
+	$filename = $dc_id."_".$member['mb_entId']."_".date("YmdHisw").".png";
+    imagepng($img,$signdir."/".$filename);
+	imagedestroy($img);	
+	//file_put_contents("$signdir/$filename", $seal_data);
 
     $dc_signUrl = "/data/eform/sign/$filename";
 }

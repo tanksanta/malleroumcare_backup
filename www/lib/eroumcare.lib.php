@@ -36,6 +36,34 @@ function get_eroumcare2($api_url, $data) {
 	return $res;
 }
 
+function get_modusign($API_Key64,$api_url,$type,$data=false) {
+	$headers[] = 'authorization: Basic '.$API_Key64;
+	$headers[] = 'Accept: application/json';
+	$headers[] = 'Content-Type: application/json';
+
+	$ch = curl_init();
+	curl_setopt($ch, CURLOPT_URL, $api_url);
+	curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+	curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $type);
+	if($type == "POST" || $type == "PUT"){
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+		if($type == "POST"){
+			curl_setopt($ch, CURLOPT_POST, 1);
+		}
+	}
+	$result = curl_exec($ch);
+	if ($result === FALSE) { return false; }
+	curl_close($ch);
+
+	$arrResponse = json_decode($result,true);
+    
+	return $arrResponse;
+}
+
+
 // 시스템DB dtm형식을 timestamp로 변환
 // ex) dtm: 20210411223341
 function dtmtotime($dtm) {
@@ -3128,7 +3156,7 @@ function validate_schedule($mb_id, $member) {
   }
   
   # 관리자 계정
-  $sql = "SELECT 
+    $sql = "SELECT 
   `s`.id AS `s_id`, 
   
   `s`.status AS `s_status`, 

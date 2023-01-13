@@ -3,7 +3,7 @@ $sub_menu = '500900';
 include_once('./_common.php');
 //모두싸인 연동=====================================================================
 $API_Key64 = base64_encode(G5_MDS_ID.":".G5_MDS_KEY); //API 접속 base64 인코딩 키
-$client = new \GuzzleHttp\Client();
+//$client = new \GuzzleHttp\Client();
 //===============================================================================
 auth_check($auth[$sub_menu], "r");
 
@@ -214,6 +214,7 @@ while($row=sql_fetch_array($result)){
 <?php
 
 if($dc_sign_send_datetime != "0000-00-00 00:00:00"){
+	/*
 	$response = $client->request('GET', 'https://api.modusign.co.kr/documents?offset=0&limit=1&metadatas=%7B%22dc_id%22%3A%22'.strtolower($uuid).'%22%7D', [
 	  'headers' => [
 		'accept' => 'application/json',
@@ -222,6 +223,12 @@ if($dc_sign_send_datetime != "0000-00-00 00:00:00"){
 	]);
 
 	$arrResponse = json_decode($response->getBody(),true);
+;*/
+	$api_url = 'https://api.modusign.co.kr/documents?offset=0&limit=1&metadatas=%7B%22dc_id%22%3A%22'.strtolower($uuid).'%22%7D';
+	$type = "GET";
+	$data = "";
+	$arrResponse = get_modusign($API_Key64,$api_url,$type,$data);
+
 	switch ($arrResponse["documents"][0]["status"]){//문서상태
 		case "ON_GOING" : $status = "서명 대기중"; $div = "sign"; break; 
 		case "ABORTED" : 

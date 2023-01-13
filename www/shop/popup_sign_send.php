@@ -258,17 +258,20 @@
 				$("#applicant_sign").attr("checked",true);
 				$("#applicant_send").attr("disabled",false);
 				$("#applicant_send_tel").attr("disabled",false);
+				$("#applicant_send_tel").val(data.applicantTel);
 			}
 			if(data.contract_sign_type == '1'){//대리인이 있을경우
 				$("#contract_sign").attr("disabled",false);
 				$("#contract_sign").attr("checked",true);
 				$("#contract_send").attr("disabled",false);
 				$("#contract_send_tel").attr("disabled",false);
+				$("#contract_send_tel").val(data.contract_tel);
 			}else{//본인인 경우
 				$("#pen_sign").attr("disabled",false);
 				$("#pen_sign").attr("checked",true);
 				$("#pen_send").attr("disabled",false);
 				$("#pen_send_tel").attr("disabled",false);
+				$("#pen_send_tel").val(data.penConNum);
 			}
 			$('body').addClass('modal-open');
 			$('#popup_box7').show();
@@ -546,6 +549,7 @@
 					}
 					if(res.url != "url생성실패"){				
 						alert("서명이 취소 되었습니다.");
+						history.replaceState({}, null, location.pathname);
 						location.reload();			
 					}else{
 						alert(res.url);//계약서 생성 실패 알림
@@ -578,6 +582,7 @@
 					}
 					if(res.url != "url생성실패"){				
 						alert("계약서 상태가 초기화 되었습니다.");
+						history.replaceState({}, null, location.pathname);
 						location.reload();	
 					}else{
 						alert(res.url);//계약서 생성 실패 알림
