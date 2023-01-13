@@ -87,6 +87,10 @@ if (!defined('_GNUBOARD_')) exit; //개별 페이지 접근 불가
 	<b>STATS</b>
 </div>
 
+<?php 
+/*
+// 23.01.13 : 서원 - 해당 내용 주석 처리 함.
+// 로그인 없이 외부에서 방문자 및 회원수에 대한 통계데이터를 확인 가능 함에 따라 해당 부분 제거 함.
 <ul style="padding:0px 15px; margin:0; list-style:none;">
 	<li><a href="<?php echo $at_href['connect'];?>">
 		<span class="pull-right"><?php echo number_format($stats['now_total']); ?><?php echo ($stats['now_mb'] > 0) ? '(<b class="orangered">'.number_format($stats['now_mb']).'</b>)' : ''; ?> 명</span>현재 접속자</a>
@@ -100,3 +104,5 @@ if (!defined('_GNUBOARD_')) exit; //개별 페이지 접근 불가
 	<li><span class="pull-right sidebar-tip" data-original-title="<nobr>오늘 <?php echo $stats['join_today'];?> 명 / 어제 <?php echo $stats['join_yesterday'];?> 명</nobr>" data-toggle="tooltip" data-placement="top" data-html="true"><?php echo number_format($stats['join_total']); ?> 명</span>전체 회원수
 	</li>
 </ul>
+*/
+?>
