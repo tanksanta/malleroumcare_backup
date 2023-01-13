@@ -26,17 +26,25 @@ if($is_admin != 'super') {
     $where[] = " ( mb_manager = '{$member['mb_id']}' ) ";
 }
 
-if($sel_field && $search) {
+if($sel_field && strlen($search) ) {
     if($sel_field == 'mb_manager') {
         $where[] = " ( $sel_field like '%$search%' or (select mb_name from g5_member where mb_id = m.mb_manager) like '%$search%' ) ";
     }
     else if($sel_field == 'entprice') {
-        $where[] = " (select it_price from g5_shop_item_entprice where mb_id = m.mb_id and it_id = '$it_id') = $search ";
+        // 22.11.14 : 서원 - 판매가격 검색시 LIKE로 변경
+        $where[] = " (select it_price from g5_shop_item_entprice where mb_id = m.mb_id and it_id = '$it_id') like '%$search%' ";
+        //$where[] = " (select it_price from g5_shop_item_entprice where mb_id = m.mb_id and it_id = '$it_id') = %$search% ";
     }
     else {
         $where[] = " $sel_field like '%$search%' ";
     }
     $qstr .= "&amp;sel_field=$sel_field&amp;search=".urlencode($search);
+}
+
+// 22.11.14 : 서원 - 판매가격이 있는 사업소만 검색하고자 옵션을 걸때.
+if( $_GET['entprice_on'] && ($_GET['entprice_on']=="on") ){
+    $where[] = " (select it_price from g5_shop_item_entprice where mb_id = m.mb_id and it_id = '$it_id') > 0";
+    $qstr .= "&amp;entprice_on=".$_GET['entprice_on'];
 }
 
 $sql_where = $where ? ( ' and ' . implode(' and ', $where) ) : '';
@@ -68,9 +76,8 @@ for($i = 0; $row = sql_fetch_array($result); $i++) {
 ?>
 
 <style>
-.admin_popup {
-    font-size: 12px;
-}
+.admin_popup { font-size: 12px; }
+.chk { width: 20px; height: 20px; margin-right:5px; }
 </style>
 
 <div id="pop_entprice" class="admin_popup admin_popup_padding">
@@ -82,6 +89,10 @@ for($i = 0; $row = sql_fetch_array($result); $i++) {
             ?>
         </h5>
         <form name="fentprice" class="form" role="form" method="GET" action="./pop.item.entprice.php" onsubmit="return formcheck(this);">
+            <p>
+                <input type="checkbox" name="entprice_on" id="entprice_on" style="vertical-align:middle" class="chk" <?php echo get_checked('on', $_GET['entprice_on']); ?>>
+                <label for="entprice_on"> 판매가격이 적용된 사업소만 표시</label>
+            </p>
             <input type="hidden" name="it_id" value="<?=$it_id?>">
             <label for="sel_field" class="sound_only">검색대상</label>
             <select name="sel_field" id="sel_field">
