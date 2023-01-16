@@ -152,8 +152,13 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
     <button id="delivery_edi_return_all">송장리턴</button>
     <button onclick="applyCombine();">합포적용</button>
     <button onclick="total_picking_excel_download();">토탈피킹 엑셀다운로드</button>
+    <?php
+      // 23.01.11 : 서원 - [관리자_물류팀]출고리스트 롯데택배 관련버튼 블라인드 처리
+    ?>
+    <!--
     <button onclick="lotte_delivery_excel_download();">롯데택배 엑셀다운로드</button>
     <button class="lotte_btn" id="delivery_lotte_send" <?php echo ($result_lotte['cnt'] > 0) ? '' : 'disabled'?>><?php echo ($result_lotte['cnt'] > 0) ? '롯데택배 '.$result_lotte['cnt'].'건 전송 필요' : '롯데택배 전송완료'?></button>
+    -->
   </div>
 </div>
 
