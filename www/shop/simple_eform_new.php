@@ -200,7 +200,13 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 		width: 100%;
 		transition: width 0.5s;
 	}
-	
+	.col-pen-nm1 img {
+    display: block;
+    position: absolute;
+    top: 8px;
+    left: 23px;
+}
+
 </style>
 <section class="wrap">
   <div class="sub_section_tit" style="border-bottom:1px solid #aaaaaa;">
@@ -337,7 +343,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 		<div class="form-group has-feedback">
 			<label class="col-sm-2 control-label" style="width:150px;"><b>계약일자</b></label>
 			<div class="col-sm-5">
-				<label class="col-pen-nm">
+				<label class="col-pen-nm1">
 				<img src="/skin/apms/order/new_basic/image/icon_17.png">
 				<input type="text" name="do_date" id="do_date" class="datepicker form-control input-sm" value="<?php if($dc){ echo substr($dc['do_date'],0,10);}else{ echo date("Y-m-d");} ?>" <?php if($dc) echo "data-orig=\"" . $dc['do_date'] . "\""; ?> placeholder="계약일자" style="width:330px !important;padding-left:40px;">
 				</label>
@@ -1393,7 +1399,7 @@ if(obj.gubun == '대여') {
 
   get_stock_data(obj.it_id);
   check_no_item();
-  //save_eform();
+  save_eform();
 }
 
 // 바코드 최대길이 체크
