@@ -790,7 +790,7 @@ a.btn_schedule {
                   echo "<div>{$manager_txt}</div>";
                 } else {
                 ?>
-                  <select class="sel_manager" data-id="<?=$row['od_id']?>">
+                  <select class="sel_manager" data-id="<?=$row['od_id']?>" data-odtype="<?=$row['ct_is_direct_delivery']?>">
                     <option value="">미지정</option>
                     <?php foreach($managers as $manager) { ?>
                     <option value="<?=$manager['mb_id']?>"
@@ -1017,13 +1017,16 @@ $(function() {
         'select[name="ct_direct_delivery_time"]').val() + ":00";
       send_data2['partner_manager_mb_id'] = manager;
       $.post('schedule/ajax.schedule.php', send_data2, 'json').done(function() {
+		console.log("step1 ");
 	//STR 2023.01.10 jake
         $.post('ajax.partner_deliverydate.php', send_data, 'json')
           .done(function() {
+		console.log("step2 ");
             alert('변경이 완료되었습니다.');
             window.location.reload();
           })
           .fail(function($xhr) {
+		console.log("step3 ");
             var data = $xhr.responseJSON;
             alert(data && data.message);
           });
@@ -1032,16 +1035,19 @@ $(function() {
       }).fail(function($xhr) {
 	//STR 2023.01.10 jake
 		if ( od_type == '2'){
+		console.log("step4 ");
         	var data = $xhr.responseJSON;
             alert(data && data.message);
 		} else {
 
         $.post('ajax.partner_deliverydate.php', send_data, 'json')
           .done(function() {
+		console.log("step5 ");
             alert('변경이 완료되었습니다.');
             window.location.reload();
           })
           .fail(function($xhr) {
+		console.log("step6 ");
             var data = $xhr.responseJSON;
             alert(data && data.message);
           });
@@ -1255,6 +1261,7 @@ $(function() {
       return alert('로딩중입니다. 잠시후 다시 시도해주세요.');
 
     var od_id = $(this).data('id');
+    var od_type = $(this).data('odtype');
     var manager = $(this).val();
     var manager_name = $(this).find('option:selected').text();
 
@@ -1262,22 +1269,25 @@ $(function() {
     const delivery = $(this).parent().parent().find('.td_od_info').not(
       '.td_delivery_info').find('p');
     const ct_id = delivery.find("button").attr("data-ctid");
-    if (delivery.length === 5) {
+    //if (delivery.length === 5) {
       if ($(delivery[3]).text().trim().replace(/\n/g, "").replace(/  /g, "").length !== 8) {
         const text = $(delivery[3]).text().trim().replace(/\n/g, "").replace(/  /g, "").replace(
-          "출고예정 :", "").replace("변경", "")
+          "출고예정 :", "").replace("변경", "").replace("설치예정 :","")
         if (text !== '') {
           send_data2['delivery_date'] = text.split(" ")[0];
           send_data2['delivery_datetime'] = text.split(" ")[1].replace("시", "") + ":00";
         }
       }
-    }
+    //}
     send_data2['ct_id'] = ct_id;
     send_data2['od_id'] = od_id;
     send_data2['partner_manager_mb_id'] = manager;
+	//send_data2['delivery_date'] = send_data2['delivery_date'] = text.split(" ")[0];
     loading_manager = true;
 
-    if (send_data2['delivery_date']) {
+	console.log("@__@"+od_type);
+
+    //if (send_data2['delivery_date']) {
       $.post('schedule/ajax.schedule.php', send_data2, 'json').done(function() {
         $.post('ajax.partner_manager.php', {
             od_id: od_id,
@@ -1297,26 +1307,30 @@ $(function() {
           });
       }).fail(function($xhr) {
         var data = $xhr.responseJSON;
-        $.post('ajax.partner_manager.php', {
-            od_id: od_id,
-            manager: manager
-          }, 'json')
-          .done(function() {
-            $('.sel_manager[data-id="' + od_id + '"]').val(manager);
-            alert(manager_name.replace(/\n/g, "").replace(/  /g, "") +
-              ' 담당자로 변경되었습니다.');
-          })
-          .fail(function($xhr) {
-            var data = $xhr.responseJSON;
+		if (od_type == 2) {// 설치 주문 상품의 경우 위의 스케쥴 체크에서 오류뜬 내용을 보여준다
             alert(data && data.message);
-          })
-          .always(function() {
-            loading_manager = false;
-          });
+		} else {
+	        $.post('ajax.partner_manager.php', {
+	            od_id: od_id,
+	            manager: manager
+	          }, 'json')
+	          .done(function() {
+	            $('.sel_manager[data-id="' + od_id + '"]').val(manager);
+	            alert(manager_name.replace(/\n/g, "").replace(/  /g, "") +
+	              ' 담당자로 변경되었습니다.');
+	          })
+	          .fail(function($xhr) {
+	            var data = $xhr.responseJSON;
+	            alert(data && data.message);
+	          })
+	          .always(function() {
+	            loading_manager = false;
+	          });
+		}
       }).always(function() {
         loading_manager = false;
       });
-    } else {
+    /*} else {
       $.post('ajax.partner_manager.php', {
           od_id: od_id,
           manager: manager
@@ -1332,7 +1346,7 @@ $(function() {
         .always(function() {
           loading_manager = false;
         });
-    }
+    } */
   });
 
   function check_ct_status_mode() {

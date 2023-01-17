@@ -83,11 +83,6 @@ while($photo = sql_fetch_array($photo_result4)) {
   $report['photo4'][] = $photo;
 }
 
-// 주문 상태 조회
-$sql = "SELECT od_status FROM g5_shop_order WHERE od_id = '{$od_id}'";
-$order_status_res = sql_query($sql);
-$order_status = sql_fetch_array($order_status_res);
-
 //주문 기록 
 $sql = "SELECT * FROM g5_shop_order_admin_log WHERE od_id = '{$od_id}' ORDER BY ol_no DESC";
 $result = sql_query($sql);
@@ -192,156 +187,155 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.magnific-popup.js"></script>',
 
   <section class="row no-gutter justify-space-between container">
     <div class="left-wrap">
-      <?php if($order_status['od_status'] == '완료' || $order_status['od_status'] == '작성') { ?>
-        <div class="install-report">
-          <div class="top-wrap row no-gutter justify-space-between">
-            <span>설치결과보고서</span>
-            <button type="button" class="report-btn btn_install_report">결과보고서 작성</button>
-          </div>
+      <?php if($report['photo'] || $report['photo2'] || $report['photo3'] || $report['photo4']) { ?>
+      <div class="install-report">
+        <div class="top-wrap row no-gutter justify-space-between">
+          <span>설치결과보고서</span>
+          <button type="button" class="report-btn btn_install_report">결과보고서 작성</button>
+        </div>
+        <?php if($report) { ?>
+        <div class="mid-wrap">
           <?php if($report['ir_file_url']) { ?>
-            <div class="mid-wrap">
-              <a href="<?=G5_SHOP_URL."/eform/install_report_download.php?od_id={$od_id}"?>" class="btn_ir_download">결과보고서
-                다운로드</a>
-            </div>
-          <?php } ?>
-
-          <?php if($report['photo'] || $report['photo2'] || $report['photo3'] || $report['photo4']) { ?>
-            <?php if($report['photo']) {?>
-              <div class="row report-img-wrap">
-                <?php if($report['ir_cert_url']) { ?>
-                  <div class="col">
-                    <div class="report-img">
-                      <a href="<?=G5_DATA_URL.'/partner/img/'.$report['ir_cert_url']?>" target="_blank" class="view_image">
-                        <img src="<?=G5_DATA_URL.'/partner/img/'.$report['ir_cert_url']?>"
-                             onerror="this.src='/shop/img/no_image.gif';">
-                      </a>
-                    </div>
-                  </div>
-                <?php } ?>
-                <?php foreach($report['photo'] as $photo) { ?>
-                  <div class="col">
-                    <div class="report-img">
-                      <a href="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" target="_blank" class="view_image">
-                        <img
-                            src="<?php if (str_ends_with($photo['ip_photo_url'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']; ?>"
-                            onerror="this.src='<?php if (strpos($photo['ip_photo_name'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo '/shop/img/no_image.gif'; ?>';">
-                      </a>
-                    </div>
-                  </div>
-                <?php } ?>
-              </div>
-              <div class="col title-wrap">
-                설치 사진(필수)
-              </div>
-            <?php } ?>
-
-            <?php if($report['photo2']) {?>
-              <div class="row report-img-wrap">
-                <?php if($report['ir_cert_url']) { ?>
-                  <div class="col">
-                    <div class="report-img">
-                      <a href="<?=G5_DATA_URL.'/partner/img/'.$report['ir_cert_url']?>" target="_blank" class="view_image">
-                        <img src="<?=G5_DATA_URL.'/partner/img/'.$report['ir_cert_url']?>"
-                             onerror="this.src='<?php if (strpos($photo['ip_photo_name'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo '/shop/img/no_image.gif'; ?>';">
-                      </a>
-                    </div>
-                  </div>
-                <?php } ?>
-                <?php foreach($report['photo2'] as $photo) { ?>
-                  <div class="col">
-                    <div class="report-img">
-                      <a href="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" target="_blank" class="view_image">
-                        <img
-                            src="<?php if (str_ends_with($photo['ip_photo_url'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']; ?>"
-                            onerror="this.src='<?php if (strpos($photo['ip_photo_name'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo '/shop/img/no_image.gif'; ?>';">
-                      </a>
-                    </div>
-                  </div>
-                <?php } ?>
-              </div>
-              <div class="col title-wrap">
-                실물 바코드 사진(필수)
-              </div>
-            <?php } ?>
-
-            <?php if($report['photo3']) {?>
-              <div class="row report-img-wrap">
-                <?php if($report['ir_cert_url']) { ?>
-                  <div class="col">
-                    <div class="report-img">
-                      <a href="<?=G5_DATA_URL.'/partner/img/'.$report['ir_cert_url']?>" target="_blank" class="view_image">
-                        <img src="<?=G5_DATA_URL.'/partner/img/'.$report['ir_cert_url']?>"
-                             onerror="this.src='<?php if (strpos($photo['ip_photo_name'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo '/shop/img/no_image.gif'; ?>';">
-                      </a>
-                    </div>
-                  </div>
-                <?php } ?>
-                <?php foreach($report['photo3'] as $photo) { ?>
-                  <div class="col">
-                    <div class="report-img">
-                      <a href="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" target="_blank" class="view_image">
-                        <img
-                            src="<?php if (str_ends_with($photo['ip_photo_url'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']; ?>"
-                            onerror="this.src='<?php if (strpos($photo['ip_photo_name'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo '/shop/img/no_image.gif'; ?>';">
-                      </a>
-                    </div>
-                  </div>
-                <?php } ?>
-              </div>
-              <div class="col title-wrap">
-                설치ㆍ회수ㆍ소독확인서 사진(필수)
-              </div>
-            <?php } ?>
-
-            <?php if($report['photo4']) {?>
-              <div class="row report-img-wrap">
-                <?php if($report['ir_cert_url']) { ?>
-                  <div class="col">
-                    <div class="report-img">
-                      <a href="<?=G5_DATA_URL.'/partner/img/'.$report['ir_cert_url']?>" target="_blank" class="view_image">
-                        <img src="<?=G5_DATA_URL.'/partner/img/'.$report['ir_cert_url']?>"
-                             onerror="this.src='<?php if (strpos($photo['ip_photo_name'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo '/shop/img/no_image.gif'; ?>';">
-                      </a>
-                    </div>
-                  </div>
-                <?php } ?>
-                <?php foreach($report['photo4'] as $photo) { ?>
-                  <div class="col">
-                    <div class="report-img">
-                      <a href="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" target="_blank" class="view_image">
-                        <img
-                            src="<?php if (str_ends_with($photo['ip_photo_url'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']; ?>"
-                            onerror="this.src='<?php if (strpos($photo['ip_photo_name'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo '/shop/img/no_image.gif'; ?>';">
-                      </a>
-                    </div>
-                  </div>
-                <?php } ?>
-              </div>
-              <div class="col title-wrap">
-                추가사진(선택) - 상품변경 혹은 특이사항 발생 시
-              </div>
-            <?php } ?>
+          <a href="<?=G5_SHOP_URL."/eform/install_report_download.php?od_id={$od_id}"?>" class="btn_ir_download">결과보고서
+            다운로드</a>
           <?php } ?>
         </div>
-
-        <?php if($report['issue']) { ?>
-          <div class="col issue-wrap">
-            <div class="col title-wrap">
-              이슈사항
-            </div>
-            <div class="issue-select">
-              이슈사항 (
-              <?php echo implode(' /', $report['issue']); ?>
-              )
-            </div>
-            <div class="issue">
-              <p>
-                <?=nl2br($report['ir_issue'])?>
-              </p>
-            </div>
-          </div>
         <?php } ?>
 
+        <?php if($report['photo']) {?>
+        <div class="row report-img-wrap">
+          <?php if($report['ir_cert_url']) { ?>
+          <div class="col">
+            <div class="report-img">
+              <a href="<?=G5_DATA_URL.'/partner/img/'.$report['ir_cert_url']?>" target="_blank" class="view_image">
+                <img src="<?=G5_DATA_URL.'/partner/img/'.$report['ir_cert_url']?>"
+                  onerror="this.src='/shop/img/no_image.gif';">
+              </a>
+            </div>
+          </div>
+          <?php } ?>
+          <?php foreach($report['photo'] as $photo) { ?>
+          <div class="col">
+            <div class="report-img">
+              <a href="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" target="_blank" class="view_image">
+                <img
+                  src="<?php if (str_ends_with($photo['ip_photo_url'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']; ?>"
+                  onerror="this.src='<? if (strpos($photo['ip_photo_name'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo '/shop/img/no_image.gif'; ?>';">
+              </a>
+            </div>
+          </div>
+          <?php } ?>
+        </div>
+        <div class="col title-wrap">
+          설치 사진(필수)
+        </div>
+        <?php } ?>
+
+        <?php if($report['photo2']) {?>
+        <div class="row report-img-wrap">
+          <?php if($report['ir_cert_url']) { ?>
+          <div class="col">
+            <div class="report-img">
+              <a href="<?=G5_DATA_URL.'/partner/img/'.$report['ir_cert_url']?>" target="_blank" class="view_image">
+                <img src="<?=G5_DATA_URL.'/partner/img/'.$report['ir_cert_url']?>"
+                  onerror="this.src='<? if (strpos($photo['ip_photo_name'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo '/shop/img/no_image.gif'; ?>';">
+              </a>
+            </div>
+          </div>
+          <?php } ?>
+          <?php foreach($report['photo2'] as $photo) { ?>
+          <div class="col">
+            <div class="report-img">
+              <a href="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" target="_blank" class="view_image">
+                <img
+                  src="<?php if (str_ends_with($photo['ip_photo_url'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']; ?>"
+                  onerror="this.src='<? if (strpos($photo['ip_photo_name'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo '/shop/img/no_image.gif'; ?>';">
+              </a>
+            </div>
+          </div>
+          <?php } ?>
+        </div>
+        <div class="col title-wrap">
+          실물 바코드 사진(필수)
+        </div>
+        <?php } ?>
+
+        <?php if($report['photo3']) {?>
+        <div class="row report-img-wrap">
+          <?php if($report['ir_cert_url']) { ?>
+          <div class="col">
+            <div class="report-img">
+              <a href="<?=G5_DATA_URL.'/partner/img/'.$report['ir_cert_url']?>" target="_blank" class="view_image">
+                <img src="<?=G5_DATA_URL.'/partner/img/'.$report['ir_cert_url']?>"
+                  onerror="this.src='<? if (strpos($photo['ip_photo_name'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo '/shop/img/no_image.gif'; ?>';">
+              </a>
+            </div>
+          </div>
+          <?php } ?>
+          <?php foreach($report['photo3'] as $photo) { ?>
+          <div class="col">
+            <div class="report-img">
+              <a href="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" target="_blank" class="view_image">
+                <img
+                  src="<?php if (str_ends_with($photo['ip_photo_url'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']; ?>"
+                  onerror="this.src='<? if (strpos($photo['ip_photo_name'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo '/shop/img/no_image.gif'; ?>';">
+              </a>
+            </div>
+          </div>
+          <?php } ?>
+        </div>
+        <div class="col title-wrap">
+          설치ㆍ회수ㆍ소독확인서 사진(필수)
+        </div>
+        <?php } ?>
+
+        <?php if($report['photo4']) {?>
+        <div class="row report-img-wrap">
+          <?php if($report['ir_cert_url']) { ?>
+          <div class="col">
+            <div class="report-img">
+              <a href="<?=G5_DATA_URL.'/partner/img/'.$report['ir_cert_url']?>" target="_blank" class="view_image">
+                <img src="<?=G5_DATA_URL.'/partner/img/'.$report['ir_cert_url']?>"
+                  onerror="this.src='<? if (strpos($photo['ip_photo_name'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo '/shop/img/no_image.gif'; ?>';">
+              </a>
+            </div>
+          </div>
+          <?php } ?>
+          <?php foreach($report['photo4'] as $photo) { ?>
+          <div class="col">
+            <div class="report-img">
+              <a href="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" target="_blank" class="view_image">
+                <img
+                  src="<?php if (str_ends_with($photo['ip_photo_url'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']; ?>"
+                  onerror="this.src='<? if (strpos($photo['ip_photo_name'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo '/shop/img/no_image.gif'; ?>';">
+              </a>
+            </div>
+          </div>
+          <?php } ?>
+        </div>
+        <div class="col title-wrap">
+          추가사진(선택) - 상품변경 혹은 특이사항 발생 시
+        </div>
+        <?php } ?>
+      </div>
+      <?php } ?>
+
+      <?php if($report['issue']) { ?>
+      <div class="col issue-wrap">
+        <div class="col title-wrap">
+          이슈사항
+        </div>
+        <div class="issue-select">
+          이슈사항 (
+          <?php echo implode(' /', $report['issue']); ?>
+          )
+        </div>
+        <div class="issue">
+          <p>
+            <?=nl2br($report['ir_issue'])?>
+          </p>
+        </div>
+      </div>
       <?php } ?>
 
       <form id="form_ct_status">
@@ -634,7 +628,7 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.magnific-popup.js"></script>',
         <a href="partner_orderinquiry_excel.php?od_id=<?=$od_id?>" class="instructor-btn">작업지시서 다운로드</a>
       </div>
       <div class="delivery-status-title row no-gutter title justify-space-between">
-        <div>담당자</div>
+        <!-- div>담당자</div>
         <?php
         if($manager_mb_id) {
           $manager_txt = '미지정';
@@ -645,14 +639,14 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.magnific-popup.js"></script>',
           echo "<div style=\"font-size: 16px;\">{$manager_txt}</div>";
         } else {
         ?>
-        <select class="sel_manager order-status-select" data-id="<?=$od_id?>" style="width: 150px;">
+        <select class="sel_manager order-status-select" data-id="<?=$od_id?>" data-odtype="<?=$row['ct_is_direct_delivery']?>" style="width: 150px;">
           <option value="">미지정</option>
           <?php foreach($managers as $manager) { ?>
           <option value="<?=$manager['mb_id']?>" <?=get_selected($od['od_partner_manager'], $manager['mb_id'])?>>[직원]
             <?=$manager['mb_name']?>
           </option>
           <?php } ?>
-        </select>
+        </select -->
         <?php } ?>
       </div>
       <div class="delivery-status-title row no-gutter title">
@@ -665,10 +659,17 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.magnific-popup.js"></script>',
       </div>
       <div class="delivery-info-list">
         <form id="form_delivery_date">
+		  <div class='btn_indicator'>
+
+		  </div>
+
           <input type="hidden" name="od_id" value="<?=$od_id?>">
+          <input type="hidden" name="btn_seq"id="btn_seq" value="">
           <ul>
             <?php
+              $btn_seq =0;
             foreach($carts as $cart) {
+              $btn_seq++;
             ?>
             <li class="delivery-info-item">
               <div class="info-title text-weight-bold">
@@ -694,7 +695,7 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.magnific-popup.js"></script>',
                       <?=$time?>시</option>
                     <?php } ?>
                   </select>
-          		<input type="hidden" name="delivery_property" value="<?=$direct_delivery_type?>">
+          		<input type="hidden" name="delivery_property" value="<?=$cart["ct_is_direct_delivery"]?>">
                 </div>
               </div>
               <div class="row">
@@ -716,10 +717,37 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.magnific-popup.js"></script>',
                 <div class="col right"><?=$cart['ct_delivery_num']?></div>
               </div>
               <?php } ?>
+         	  <!-- 2023.01.12 jake for every comodity handler STR--> 	
+              <div class="row">
+			  <div class="col left">담당자 </div>
+              <?php
+              if($manager_mb_id) {
+                $manager_txt = '미지정';
+                if($od['od_partner_manager']) {
+                  $manager = get_member($od['od_partner_manager']);
+                  $manager_txt = '[직원] ' . $manager['mb_name'];
+                }
+                echo "<div style=\"font-size: 16px;\">{$manager_txt}</div>";
+              } else {
+              ?>
+              <select class="sel_manager order-status-select" id="sel_<?=$btn_seq?>" data-id="<?=$od_id?>" data-odtype="<?=$cart['ct_is_direct_delivery']?>" style="width: 150px;">
+                <option value="">미지정</option>
+                <?php foreach($managers as $manager) { ?>
+                <option value="<?=$manager['mb_id']?>" <?=get_selected($od['od_partner_manager'], $manager['mb_id'])?>>[직원]
+                  <?=$manager['mb_name']?>
+                </option>
+                <?php } ?>
+              </select>
+              <?php } ?>
+              </div>
+         	  <!-- 2023.01.12 jake for every comodity handler END--> 	
             </li>
+			
+          	  <!--input type="hidden" name="btn_seq" value="<?=$btn_seq?>" -->
+			  <button type="button" id="<?=$btn_seq?>" class="delivery-save-btn" >일정 저장</button>
             <?php } ?>
           </ul>
-          <button type="button" id="btn_delivery_date" class="delivery-save-btn">예정일 저장</button>
+          <!--button type="button" id="btn_delivery_date" class="delivery-save-btn">일정 저장</button -->
         </form>
       </div>
 
@@ -866,21 +894,66 @@ $(function() {
   });
 
   // 출고예정일 변경
-  $('#btn_delivery_date').click(function() {
+  //$('#btn_delivery_date').click(function(e) {
+  $('.delivery-save-btn').click(function(e) {
+	var str = "";
+	var btn_seq = e.target.id-1;
+	
+	document.getElementById('btn_seq').value=btn_seq;
+
+
+	console.log("button number : ", btn_seq);
     $('#form_delivery_date').submit();
   });
   $('#form_delivery_date').on('submit', function(e) {
     e.preventDefault();
 
     const send_data = {};
+    const send_data2 = {};
     const obj = $(this).serializeArray();
+	var index = (obj[1].value)*4+2; // 버튼 순서는 각각의 input value 접근 순서를 지정 할 수 있음. jake
+	var ct_id;
+	var ct_od_type;
+	console.log("index : ", index);
+
     send_data['od_id'] = obj[0].value;
-    send_data['ct_id'] = obj[1].value;
-    send_data['delivery_date'] = obj[2].value;
-    send_data['delivery_datetime'] = obj[3].value + ":00";
+    send_data['ct_id'] = obj[index].value;
+    send_data['delivery_date'] = obj[index+1].value;
+    send_data['delivery_datetime'] = obj[index+2].value + ":00";
     send_data['partner_manager_mb_id'] = $('.sel_manager').val();
-    send_data['delivery_property'] = obj[4].value;
-    const send_data2 = $(this).serialize();
+    send_data['delivery_property'] = obj[index+3].value;
+	ct_od_type = obj[index+3].value;
+	console.log(obj[0]);
+	console.log(obj[1]);
+	console.log(obj[2]);
+	console.log(obj[3]);
+	console.log(obj[4]);
+	console.log(obj[5]);
+	console.log(obj[6]);
+	console.log(obj[7]);
+	console.log(obj[8]);
+	console.log(obj[9]);
+	console.log(obj[10]);
+	console.log(obj[11]);
+
+	console.log("send_data "+index+" = "+send_data['ct_id']);
+	console.log("send_data "+(index+1)+" = "+send_data['delivery_date']);
+	console.log("send_data "+(index+1)+" = "+send_data['delivery_datetime']);
+	console.log("send_data "+(index+1)+" = "+send_data['delivery_property']);
+
+    //const send_data2 = $(this).serialize();
+    send_data2['od_id'] = obj[0].value;
+    send_data2['ct_id'] = [obj[index].value];
+	ct_id = obj[index].value;
+
+    send_data2['ct_direct_delivery_date_'+ct_id] = obj[index+1].value;
+    send_data2['ct_direct_delivery_time_'+ct_id] = obj[index+2].value;// + ":00";
+    //send_data2['partner_manager_mb_id'] = $('.sel_manager').val();
+    //send_data2['delivery_property'] = obj[index+3].value;
+	console.log("send_data "+index+" = "+send_data2['ct_id']);
+	console.log("send_data "+(index+1)+" = "+send_data2['ct_direct_delivery_date_'+ct_id]);
+	console.log("send_data "+(index+2)+" = "+send_data2['ct_direct_delivery_time_'+ct_id]);
+	console.log("send_data "+(index+3)+" = "+send_data2['delivery_property']);
     $.post('schedule/ajax.schedule.php', send_data, 'json').done(function() {
       $.post('ajax.partner_deliverydate.php', send_data2, 'json')
         .done(function() {
@@ -893,6 +966,9 @@ $(function() {
         });
     }).fail(function($xhr) {
       var data = $xhr.responseJSON;
+	  if (ct_od_type == '2') {
+          alert(data && data.message);
+	  } else {
       // 직배송에 대해서는 일정이 update 되어야 함. jake 2023.01.11
       $.post('ajax.partner_deliverydate.php', send_data2, 'json')
         .done(function() {
@@ -903,6 +979,7 @@ $(function() {
           var data = $xhr.responseJSON;
           alert(data && data.message);
         });
+	  }
       // jake END
     });
   });
@@ -916,21 +993,37 @@ $(function() {
 
   // 담당자 선택
   var loading_manager = false;
-  $('.sel_manager').change(function() {
+  $('.sel_manager').change(function(e) {
     if (loading_manager)
       return alert('로딩중입니다. 잠시후 다시 시도해주세요.');
+	var btn_seq = e.target.id-1;
+	var sel_id = "sel_"+btn_seq;
+	console.log("ct_seq : "+btn_seq+"sel_id : ", sel_id);
 
+	console.log("sel_manager_seq : ", btn_seq);
+	///////////////////////////////////////////
+	var sel_obj = document.getElementById('sel');
+	var sel_id = sel_obj.id;
+
+	console.log("sel_obj: "+sel_obj);
+	console.log("sel_id: "+sel_id);
+	//////////////////////////////////////////
     var od_id = $(this).data('id');
+	var od_type = $(this).data('odtype');
     var manager = $(this).val();
     var manager_name = $(this).find('option:selected').text();
 
+	console.log("view : od_type :"+od_type);
     const send_data = {};
     const obj = $("#form_delivery_date").serializeArray();
+	var index = (obj[1].value)*4+2;
+
     send_data['od_id'] = obj[0].value;
-    send_data['ct_id'] = obj[1].value;
-    send_data['delivery_date'] = obj[2].value;
+    send_data['ct_id'] = obj[index].value;
+    send_data['delivery_date'] = obj[index+1].value;
     send_data['partner_manager_mb_id'] = manager;
     loading_manager = true;
+	console.log(send_data);
 
     if (send_data['delivery_date']) {
       $.post('schedule/ajax.schedule.php', send_data, 'json').done(function() {
@@ -950,6 +1043,10 @@ $(function() {
           });
       }).fail(function($xhr) {
         var data = $xhr.responseJSON;
+		if (od_type == '2') {
+            alert(data && data.message);
+			;
+		} else {
         // 직배송이라도 담당자 변경은 가능해야 함 jake 2023.01.11
         $.post('ajax.partner_manager.php', {
             od_id: od_id,
@@ -965,6 +1062,7 @@ $(function() {
           .always(function() {
             loading_manager = false;
           });
+		};
         // jake END
       }).always(function() {
         loading_manager = false;
