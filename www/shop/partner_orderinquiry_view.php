@@ -826,6 +826,12 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.magnific-popup.js"></script>',
 
 <script>
 $(function() {
+  const select_list = $(".sel_manager.order-status-select");
+  for (let seq = 1; seq <= select_list.length; seq++) {
+    $(select_list[seq-1]).change(function () {
+      console.log($(this).val(), seq);
+    });
+  }
   $("#popup_box").hide();
   $("#popup_box").css("opacity", 1);
 
