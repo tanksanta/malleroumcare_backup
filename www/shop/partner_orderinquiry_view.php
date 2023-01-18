@@ -187,7 +187,14 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.magnific-popup.js"></script>',
 
   <section class="row no-gutter justify-space-between container">
     <div class="left-wrap">
-      <?php if($report['photo'] || $report['photo2'] || $report['photo3'] || $report['photo4']) { ?>
+      <!--?php if($report['photo'] || $report['photo2'] || $report['photo3'] || $report['photo4']) { ?-->
+      <?php 
+		 $show_install_btn = false;
+		 foreach($carts as $cart){
+			 if ($cart['ct_status'] == '배송') $show_install_btn = true;
+		 }
+		 if ($show_install_btn == true) {
+      ?>
       <div class="install-report">
         <div class="top-wrap row no-gutter justify-space-between">
           <span>설치결과보고서</span>
@@ -826,12 +833,12 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.magnific-popup.js"></script>',
 
 <script>
 $(function() {
-  const select_list = $(".sel_manager.order-status-select");
-  for (let seq = 1; seq <= select_list.length; seq++) {
-    $(select_list[seq-1]).change(function () {
-      console.log($(this).val(), seq);
-    });
-  }
+  //const select_list = $(".sel_manager.order-status-select");
+  //for (let seq = 1; seq <= select_list.length; seq++) {
+   // $(select_list[seq-1]).change(function () {
+    //  console.log($(this).val(), seq);
+    //});
+  //}
   $("#popup_box").hide();
   $("#popup_box").css("opacity", 1);
 
@@ -908,7 +915,6 @@ $(function() {
 	document.getElementById('btn_seq').value=btn_seq;
 
 
-	console.log("button number : ", btn_seq);
     $('#form_delivery_date').submit();
   });
   $('#form_delivery_date').on('submit', function(e) {
@@ -917,35 +923,20 @@ $(function() {
     const send_data = {};
     const send_data2 = {};
     const obj = $(this).serializeArray();
-	var index = (obj[1].value)*4+2; // 버튼 순서는 각각의 input value 접근 순서를 지정 할 수 있음. jake
+	const select_list = $(".sel_manager.order-status-select");
+	var index = (obj[1].value)*4+2; // 버튼 순서는 각각의 input tag value 접근 순서를 지정 할 수 있음. jake
 	var ct_id;
 	var ct_od_type;
-	console.log("index : ", index);
 
     send_data['od_id'] = obj[0].value;
     send_data['ct_id'] = obj[index].value;
     send_data['delivery_date'] = obj[index+1].value;
     send_data['delivery_datetime'] = obj[index+2].value + ":00";
-    send_data['partner_manager_mb_id'] = $('.sel_manager').val();
-    send_data['delivery_property'] = obj[index+3].value;
+    //send_data['partner_manager_mb_id'] = $('.sel_manager').val();
+    send_data['partner_manager_mb_id'] = $(select_list[obj[1].value]).val();
+   	 
+	send_data['delivery_property'] = obj[index+3].value;
 	ct_od_type = obj[index+3].value;
-	console.log(obj[0]);
-	console.log(obj[1]);
-	console.log(obj[2]);
-	console.log(obj[3]);
-	console.log(obj[4]);
-	console.log(obj[5]);
-	console.log(obj[6]);
-	console.log(obj[7]);
-	console.log(obj[8]);
-	console.log(obj[9]);
-	console.log(obj[10]);
-	console.log(obj[11]);
-
-	console.log("send_data "+index+" = "+send_data['ct_id']);
-	console.log("send_data "+(index+1)+" = "+send_data['delivery_date']);
-	console.log("send_data "+(index+1)+" = "+send_data['delivery_datetime']);
-	console.log("send_data "+(index+1)+" = "+send_data['delivery_property']);
 
     //const send_data2 = $(this).serialize();
     send_data2['od_id'] = obj[0].value;
@@ -956,10 +947,6 @@ $(function() {
     send_data2['ct_direct_delivery_time_'+ct_id] = obj[index+2].value;// + ":00";
     //send_data2['partner_manager_mb_id'] = $('.sel_manager').val();
     //send_data2['delivery_property'] = obj[index+3].value;
-	console.log("send_data "+index+" = "+send_data2['ct_id']);
-	console.log("send_data "+(index+1)+" = "+send_data2['ct_direct_delivery_date_'+ct_id]);
-	console.log("send_data "+(index+2)+" = "+send_data2['ct_direct_delivery_time_'+ct_id]);
-	console.log("send_data "+(index+3)+" = "+send_data2['delivery_property']);
     $.post('schedule/ajax.schedule.php', send_data, 'json').done(function() {
       $.post('ajax.partner_deliverydate.php', send_data2, 'json')
         .done(function() {
@@ -1002,26 +989,16 @@ $(function() {
   $('.sel_manager').change(function(e) {
     if (loading_manager)
       return alert('로딩중입니다. 잠시후 다시 시도해주세요.');
-	var btn_seq = e.target.id-1;
-	var sel_id = "sel_"+btn_seq;
-	console.log("ct_seq : "+btn_seq+"sel_id : ", sel_id);
 
-	console.log("sel_manager_seq : ", btn_seq);
-	///////////////////////////////////////////
-	var sel_obj = document.getElementById('sel');
-	var sel_id = sel_obj.id;
-
-	console.log("sel_obj: "+sel_obj);
-	console.log("sel_id: "+sel_id);
-	//////////////////////////////////////////
     var od_id = $(this).data('id');
 	var od_type = $(this).data('odtype');
     var manager = $(this).val();
     var manager_name = $(this).find('option:selected').text();
 
-	console.log("view : od_type :"+od_type);
     const send_data = {};
     const obj = $("#form_delivery_date").serializeArray();
+	const selected_list = $(".sel_manager.order-status-select");
+
 	var index = (obj[1].value)*4+2;
 
     send_data['od_id'] = obj[0].value;
@@ -1029,7 +1006,6 @@ $(function() {
     send_data['delivery_date'] = obj[index+1].value;
     send_data['partner_manager_mb_id'] = manager;
     loading_manager = true;
-	console.log(send_data);
 
     if (send_data['delivery_date']) {
       $.post('schedule/ajax.schedule.php', send_data, 'json').done(function() {
