@@ -249,6 +249,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 add_javascript('<script src="'.G5_JS_URL.'/jquery.fileDownload.js"></script>', 0);
 add_javascript('<script src="'.G5_JS_URL.'/popModal/popModal.min.js"></script>', 0);
 add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min.css">', 0);
+add_stylesheet('<link rel="stylesheet" href="../adm/css/samhwa_admin.css">', 0);
 ?>
 
 <style>
@@ -545,6 +546,12 @@ a.btn_schedule {
   color: #666;
   background: #fff;
 }
+
+.table_box .step td {
+    font-weight: normal;
+    height: 44px;
+    color: white;
+}
 </style>
 
 <script src="/js/detectmobilebrowser.js">
@@ -619,6 +626,7 @@ a.btn_schedule {
             <select name="ct_status">
               <option value="출고준비">출고준비</option>
               <option value="배송" selected>출고완료</option>
+			  <option value="완료">배송완료</option>
               <option value="취소">주문취소</option>
             </select>
             <select name="manager" style="display: none;">
@@ -646,34 +654,28 @@ a.btn_schedule {
               </tr>
             </thead>
             <tbody>
-              <?php
-            if(!$orders) echo '<tr><td colspan="5" class="empty_table">내역이 없습니다.</td></tr>';
+            <?php
+              if(!$orders) echo '<tr><td colspan="6" class="empty_table">내역이 없습니다.</td></tr>';
               // 시작 -->
-              // 서원 : 22.09.13 - 기능개선( [기능개선] 파트너_발주내역_dev_v.0.1.pptx )
+              // 현지 : 23.01.03 - 구매/발주 기능개선 요청건([기능개선] 파트너_발주내역_v.0.4.pptx)
               //
-               
+
               $_check_ct_status = "";
               foreach($orders as $row) {
 
                 if( $_check_ct_status != $row['ct_status']){
-                  $_txt = $_check_ct_status = $row['ct_status'];
-                 
-                  switch ($_check_ct_status) {
-                    case '출고준비': $_bg_color = "#00b0f0"; $_txt = $_txt."(출고전)"; break;
-                    case '출고완료': $_bg_color = "#28759c"; $_txt = $_txt."(출고후)"; break;
-                    case '배송완료': $_bg_color = "#002060"; $_txt = $_txt."(출고후)"; break;
-                    case '주문취소': $_bg_color = "#7f7f7f"; break;
-                    case '주문무효': $_bg_color = "#7f7f7f"; break;
-                    default: break;
-                  }
-                  echo ('
-                    <tr class="step">
-                      <td colspan="6" style="text-align:left; padding-left: 15px; background-color:'.$_bg_color.';"> ' . $_txt .' </td>
-                    </tr>
-                  ');
-                  
-                }
+                  $_check_ct_status = $row['ct_status'];
+                  $ct_status_info = get_step($row['ct_status'], 'partner');
+                  $show_ct_status = $ct_status_info['chulgo'] ? $ct_status_info['name'] . '<span>(' . $ct_status_info['chulgo'] . ')</span>' : $ct_status_info['name'];
 
+                  echo "
+                    <tr class=\"step\">
+                      <td colspan=\"8\" class=\"ltr-bg-step-{$ct_status_info['step']}\" style=\"text-align: left; padding-left: 15px;\">
+                        {$show_ct_status}
+                      </td>
+                    </tr>
+                  ";
+                }
                 //
                 // 종료 -->
             ?>
@@ -703,12 +705,19 @@ a.btn_schedule {
                   </p>
                   <?php } ?>
                   <p>
+                  <?php if($row['ct_is_direct_delivery'] == '2') { ?>
+                    설치예정 :
+                  <?php } else {?>
                     출고예정 :
+                  <?php } ?>
                     <?=$row['ct_direct_delivery_date'] ? date('Y-m-d H시', strtotime($row['ct_direct_delivery_date'])) : ''?>
                     <button type="button" class="btn_change"
                       data-date="<?=date('Y-m-d', strtotime($row['ct_direct_delivery_date'] ?: 'now'))?>"
                       data-time="<?=date('H', strtotime($row['ct_direct_delivery_date'] ?: 'now'))?>"
-                      data-odid="<?=$row['od_id']?>" data-ctid="<?=$row['ct_id']?>">변경</button>
+					  data-odtp="<?=$row['ct_is_direct_delivery']?>" 
+                      data-odid="<?=$row['od_id']?>" 
+					  data-ctid="<?=$row['ct_id']?>" 
+					  >변경</button>
                   </p>
                   <?php if($row['ct_ex_date']) { ?>
                   <p>
@@ -782,7 +791,7 @@ a.btn_schedule {
                   echo "<div>{$manager_txt}</div>";
                 } else {
                 ?>
-                  <select class="sel_manager" data-id="<?=$row['od_id']?>">
+                  <select class="sel_manager" data-id="<?=$row['od_id']?>" data-odtype="<?=$row['ct_is_direct_delivery']?>">
                     <option value="">미지정</option>
                     <?php foreach($managers as $manager) { ?>
                     <option value="<?=$manager['mb_id']?>"
@@ -861,9 +870,10 @@ a.btn_schedule {
 
 <div id="change_wrap">
   <form id="form_change_date">
-    <div class="title">출고예정일시</div>
+    <div class="title">예정일 선택</div>
     <input type="hidden" name="od_id">
     <input type="hidden" name="ct_id">
+    <input type="hidden" name="od_type">
     <input type="text" name="ct_direct_delivery_date" class="change_datepicker">
     <select name="ct_direct_delivery_time">
       <?php
@@ -966,9 +976,11 @@ $(function() {
     $form = $('#form_change_date');
     $form.find('input[name="od_id"]').val($(this).data('odid'));
     $form.find('input[name="ct_id"]').val($(this).data('ctid'));
+    $form.find('input[name="od_type"]').val($(this).data('odtp'));
     $form.find('input[name="ct_direct_delivery_date"]').val($(this).data('date'));
     $form.find('select[name="ct_direct_delivery_time"]').val($(this).data('time')).change();
-
+	console.log("odtp = ", $(this).data('odtp'));
+	console.log("od_type = ", $form.find('input[name="od_type"]').val());
     $(this).popModal({
       html: $form,
       placement: 'bottomLeft',
@@ -980,7 +992,11 @@ $(function() {
 
     var od_id = $(this).find('input[name="od_id"]').val();
     var ct_id = $(this).find('input[name="ct_id"]').val();
+    var od_type = $(this).find('input[name="od_type"]').val();
     var manager = $('.sel_manager[data-id="' + od_id + '"]').val();
+	console.log("ct_id= ",ct_id);
+	console.log("od_id= ",od_id);
+	console.log("od_tp = ",od_type);
     if (manager === '') {
       alert("먼저 담당자를 지정해주세요.");
     } else {
@@ -1002,18 +1018,43 @@ $(function() {
         'select[name="ct_direct_delivery_time"]').val() + ":00";
       send_data2['partner_manager_mb_id'] = manager;
       $.post('schedule/ajax.schedule.php', send_data2, 'json').done(function() {
+		console.log("step1 ");
+	//STR 2023.01.10 jake
         $.post('ajax.partner_deliverydate.php', send_data, 'json')
           .done(function() {
+		console.log("step2 ");
             alert('변경이 완료되었습니다.');
             window.location.reload();
           })
           .fail(function($xhr) {
+		console.log("step3 ");
             var data = $xhr.responseJSON;
             alert(data && data.message);
           });
+	//END 2023.01.10 jake
+
       }).fail(function($xhr) {
-        var data = $xhr.responseJSON;
-        alert(data && data.message);
+	//STR 2023.01.10 jake
+		if ( od_type == '2'){
+		console.log("step4 ");
+        	var data = $xhr.responseJSON;
+            alert(data && data.message);
+		} else {
+
+        $.post('ajax.partner_deliverydate.php', send_data, 'json')
+          .done(function() {
+		console.log("step5 ");
+            alert('변경이 완료되었습니다.');
+            window.location.reload();
+          })
+          .fail(function($xhr) {
+		console.log("step6 ");
+            var data = $xhr.responseJSON;
+            alert(data && data.message);
+          });
+	    }
+	//END 2023.01.10 jake
+        //alert(data && data.message);
       });
     }
   });
@@ -1221,6 +1262,7 @@ $(function() {
       return alert('로딩중입니다. 잠시후 다시 시도해주세요.');
 
     var od_id = $(this).data('id');
+    var od_type = $(this).data('odtype');
     var manager = $(this).val();
     var manager_name = $(this).find('option:selected').text();
 
@@ -1228,22 +1270,25 @@ $(function() {
     const delivery = $(this).parent().parent().find('.td_od_info').not(
       '.td_delivery_info').find('p');
     const ct_id = delivery.find("button").attr("data-ctid");
-    if (delivery.length === 5) {
+    //if (delivery.length === 5) {
       if ($(delivery[3]).text().trim().replace(/\n/g, "").replace(/  /g, "").length !== 8) {
         const text = $(delivery[3]).text().trim().replace(/\n/g, "").replace(/  /g, "").replace(
-          "출고예정 :", "").replace("변경", "")
+          "출고예정 :", "").replace("변경", "").replace("설치예정 :","")
         if (text !== '') {
           send_data2['delivery_date'] = text.split(" ")[0];
           send_data2['delivery_datetime'] = text.split(" ")[1].replace("시", "") + ":00";
         }
       }
-    }
+    //}
     send_data2['ct_id'] = ct_id;
     send_data2['od_id'] = od_id;
     send_data2['partner_manager_mb_id'] = manager;
+	//send_data2['delivery_date'] = send_data2['delivery_date'] = text.split(" ")[0];
     loading_manager = true;
 
-    if (send_data2['delivery_date']) {
+	console.log("@__@"+od_type);
+
+    //if (send_data2['delivery_date']) {
       $.post('schedule/ajax.schedule.php', send_data2, 'json').done(function() {
         $.post('ajax.partner_manager.php', {
             od_id: od_id,
@@ -1263,11 +1308,30 @@ $(function() {
           });
       }).fail(function($xhr) {
         var data = $xhr.responseJSON;
-        alert(data && data.message);
+		if (od_type == 2) {// 설치 주문 상품의 경우 위의 스케쥴 체크에서 오류뜬 내용을 보여준다
+            alert(data && data.message);
+		} else {
+	        $.post('ajax.partner_manager.php', {
+	            od_id: od_id,
+	            manager: manager
+	          }, 'json')
+	          .done(function() {
+	            $('.sel_manager[data-id="' + od_id + '"]').val(manager);
+	            alert(manager_name.replace(/\n/g, "").replace(/  /g, "") +
+	              ' 담당자로 변경되었습니다.');
+	          })
+	          .fail(function($xhr) {
+	            var data = $xhr.responseJSON;
+	            alert(data && data.message);
+	          })
+	          .always(function() {
+	            loading_manager = false;
+	          });
+		}
       }).always(function() {
         loading_manager = false;
       });
-    } else {
+    /*} else {
       $.post('ajax.partner_manager.php', {
           od_id: od_id,
           manager: manager
@@ -1283,7 +1347,7 @@ $(function() {
         .always(function() {
           loading_manager = false;
         });
-    }
+    } */
   });
 
   function check_ct_status_mode() {
