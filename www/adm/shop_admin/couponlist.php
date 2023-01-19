@@ -310,6 +310,10 @@ $qstr = "type={$type}&amp;cp_expiration={$cp_expiration}&amp;sel_cp_method={$sel
         <option value="30" <?php echo $couponlist_page_rows == '30' ? 'selected="selected"' : ''; ?>>30개씩보기</option>
         <option value="50" <?php echo $couponlist_page_rows == '50' ? 'selected="selected"' : ''; ?>>50개씩보기</option>
         <option value="100" <?php echo $couponlist_page_rows == '100' ? 'selected="selected"' : ''; ?>>100개씩보기</option>
+	<?php if($_REQUEST["type"] == "user"){?>
+		<option value="500" <?php echo $couponlist_page_rows == '500' ? 'selected="selected"' : ''; ?>>500개씩보기</option>
+		<option value="1000" <?php echo $couponlist_page_rows == '1000' ? 'selected="selected"' : ''; ?>>1000개씩보기</option>
+	<?php }?>
     </select>
 </div>
 
