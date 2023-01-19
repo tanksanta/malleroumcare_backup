@@ -2795,12 +2795,13 @@ function get_updated_date_recipient($ltmNum) {
  * 작성자 : 임근석
  * 작성일자 : 2022-11-02
  * 마지막 수정자 : 임근석
- * 마지막 수정일자 : 2023-01-19
+ * 마지막 수정일자 : 2022-11-14
  * 설명 : 특정 설치파트너 소속의 매니저 목록 조회
  * @param string $partner_mb_id
- * @return mixed
+ * @param string $mb_type
+ * @return mixed 
  */
-function get_partner_member_list_by_partner_mb_id($partner_mb_id) {
+function get_partner_member_list_by_partner_mb_id($partner_mb_id, $mb_type) {
   $sql = "SELECT * FROM `g5_member` WHERE mb_id = '$partner_mb_id';";
   $members_str = '{"members":{"all":"전체",';
   $mb_type = "";
