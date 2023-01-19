@@ -242,7 +242,7 @@ function column_char($i) { return chr( 65 + $i ); }
 
     <script type="application/javascript">
         $(function() {
-            $('.close').click(function() { 
+            $('.close').click(function() {
                 parent.$('#BillingDetail_popup').hide();
             });
         });
@@ -264,6 +264,7 @@ function column_char($i) { return chr( 65 + $i ); }
             location.reload();
         }
 
+
         function ExcelDownload(id) {
             
             $('#loading_excel').show();
@@ -274,6 +275,7 @@ function column_char($i) { return chr( 65 + $i ); }
             .always(function() { $('#loading_excel').hide(); });
         }
 
+        
         function cancelExcelDownload() {
             $('#loading_excel').hide();
         }
@@ -330,7 +332,7 @@ function column_char($i) { return chr( 65 + $i ); }
 </div>
 
 <br /><br />
-
+<?=$result_bl['billing_ecount_title'];?>
 <div style="padding-bottom:15px;">
     <?php
     ?>

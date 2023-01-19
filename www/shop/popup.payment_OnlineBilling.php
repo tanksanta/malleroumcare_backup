@@ -135,7 +135,7 @@
         <?php if( $_sql_bl['bl_id'] ) { ?>
         var order = {  _price: "<?=$_sql_bl['price_total'];?>",
                     _tax_free: "0",
-                    _name: "청구_<?=$_sql_bl['mb_giup_bname'];?>_<?=date("m")?>월_<?=$_sql_bl['billing_type']?>결제",
+                    _name: "청구_<?=$_sql_bl['mb_giup_bname'];?>_<?=date("m", mktime(0, 0, 0, date("m")-1, 1))?>월_<?=$_sql_bl['billing_type']?>결제",
                     _id: "<?=$_sql_bl['bl_id'];?>"
         };
 
@@ -215,7 +215,7 @@
              <div class="contentsWrap">
                 <!-- 결제 청구서 내역 -->
                 <div class="billWrap">                    
-                    <div class="billTitle">[<?=$member['mb_giup_bname'];?>][<?=date("m",strtotime( ($_sql_bl['bl_id'])?($_sql_bl['create_dt']):($_billing['create_dt']) ))?>월]대금 결제 청구서</div>
+                    <div class="billTitle">[<?=$member['mb_giup_bname'];?>][<?=date("m", mktime(0, 0, 0, date("m")-1, 1));?>월]대금 결제 청구서</div>
                     <div class="billListWrap">
                         <div class="price">
                             <div class="pTitle">과세 물품 구매 금액</div>

@@ -1,4 +1,5 @@
 <?php
+
     /* // */
     /* // */
     /* // */
@@ -31,21 +32,24 @@
     /* // == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == */
 
 	include_once("./_common.php");
-    
-    $widths  = [20, 40, 15, 25, 20, 15, 20, 35];
-    
-    $headers = [
-        '일자-No.',
-        '품목명[규격]',
-        '수량',
-        '단가(Vat포함)',
-        '공급가액',
-        '부가세',
-        '판매',
-        '출고처'
-    ];
-  
+
     $bl_id = $_GET["bl_id"];
+
+
+
+    $sql = "";
+    $sql = ("  SELECT 
+                    mb_id, mb_bnm, billing_ecount_title
+                    FROM 
+                    payment_billing_list
+                WHERE 
+                    bl_id = '" . $bl_id . "'
+    ");      
+    $_Billing = sql_fetch($sql);
+
+
+
+
     // 내용(본문 리스트)
     $_sql = ("  SELECT 
                     bld_id, 
@@ -66,9 +70,28 @@
     $result = sql_query($_sql);
     $data = [];
 
+
+
+
+
+
     while( $row = sql_fetch_array($result) ) {
         $data[] = $row;
     }
+
+    $widths  = [20, 45, 10, 15, 15, 12, 15, 35];
+    $headers = [
+        '일자-No.',
+        '품목명[규격]',
+        '수량',
+        '단가
+(Vat포함)',
+        '공급가액',
+        '부가세',
+        '판매',
+        '출고처'
+    ];
+
 
     include_once(G5_LIB_PATH."/PHPExcel.php");
     $excel = new PHPExcel();
@@ -78,37 +101,37 @@
     $sheet = $excel->getActiveSheet();
 
     $data = array_merge(array($headers), $data);
-    $sheet->fromArray($data,NULL,'A1');
+    
+    $sheet->mergeCells('A1:H1');
+    $sheet->setCellValue('A1'," ".$_Billing['billing_ecount_title']);
+    $sheet->fromArray($data,NULL,'A2');
+
 
     $last_col = count($headers);
     $last_char = column_char($last_col-1);
-    $last_row = count($data);
+    $last_row = count($data)+1;
+
 
     // 테두리 처리
     $styleArray = array(
-        'font' => array(
-            'size' => 10,
-            'name' => 'Malgun Gothic'
-        ),
-        'borders' => array(
-            'allborders' => array(
-            'style' => PHPExcel_Style_Border::BORDER_THIN
-            )
-        ),
-        'alignment' => array(
-            'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER,
-            'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER
-        )
+        'font' => array( 'size' => 14, 'name' => 'Malgun Gothic' ),
+        'borders' => array( 'allborders' => array( 'style' => PHPExcel_Style_Border::BORDER_THIN ) ),
+        'alignment' => array( 'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER, 'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_LEFT )
     );
+    $sheet->getStyle('A1')->applyFromArray($styleArray);
 
-    $sheet
-    ->getStyle('A1:'.$last_char.$last_row)
-    ->applyFromArray($styleArray);
+    // 테두리 처리
+    $styleArray = array(
+        'font' => array( 'size' => 10, 'name' => 'Malgun Gothic' ),
+        'borders' => array( 'allborders' => array( 'style' => PHPExcel_Style_Border::BORDER_THIN ) ),
+        'alignment' => array( 'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER, 'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER )
+    );
+    $sheet->getStyle('A2:'.$last_char.$last_row)->applyFromArray($styleArray);
 
     // 헤더 배경
     $header_bgcolor = 'FFD3D3D3';
     $sheet
-    ->getStyle( "A1:${last_char}1" )
+    ->getStyle( "A2:${last_char}2" )
     ->getFill()
     ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
     ->getStartColor()
@@ -116,7 +139,7 @@
 
     // 헤더 폰트 굵기
     $sheet
-    ->getStyle( "A1:${last_char}1" )
+    ->getStyle( "A2:${last_char}2" )
     ->getFont()
     ->setBold(true);
 

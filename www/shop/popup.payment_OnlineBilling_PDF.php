@@ -33,7 +33,7 @@
 	include_once("./_common.php");
     
     $options = array(
-        'orientation'=>'Landscape',
+        'orientation'=>'Portrait',
         'javascript-delay' => 500,
         'page-size' => 'A4',
         'encoding' => 'UTF-8',

@@ -56,7 +56,7 @@ include_once("./_common.php");
 
 
 
-<style>
+<style> 
 	.excelBtn { background-color: #333; color: #FFF; font-weight: bold; padding: 5px 15px; display: inline-block; }
 
     /* 로딩 팝업 */
@@ -100,7 +100,7 @@ include_once("./_common.php");
     </div>
 
     <div class="win_btn btn_confirm">
-        <input type="submit" value="대금 청구서 엑셀파일 등록" class="btn_submit btn" Onclick="execl_submit_function();">
+        <input type="submit" value="<?=date("m", mktime(0, 0, 0, date("m")-1, 1));?>월 대금 청구서 엑셀파일 등록" class="btn_submit btn" Onclick="execl_submit_function();">
         <button type="button" onclick="window.close();" class="btn_close btn">닫기</button>
     </div>
 
