@@ -2795,13 +2795,12 @@ function get_updated_date_recipient($ltmNum) {
  * 작성자 : 임근석
  * 작성일자 : 2022-11-02
  * 마지막 수정자 : 임근석
- * 마지막 수정일자 : 2022-11-14
+ * 마지막 수정일자 : 2023-01-19
  * 설명 : 특정 설치파트너 소속의 매니저 목록 조회
  * @param string $partner_mb_id
- * @param string $mb_type
- * @return mixed 
+ * @return mixed
  */
-function get_partner_member_list_by_partner_mb_id($partner_mb_id, $mb_type) {
+function get_partner_member_list_by_partner_mb_id($partner_mb_id) {
   $sql = "SELECT * FROM `g5_member` WHERE mb_id = '$partner_mb_id';";
   $members_str = '{"members":{"all":"전체",';
   $mb_type = "";
@@ -3121,20 +3120,18 @@ function update_partner_install_schedule_partner_by_ct_id($ct_id, $partner_manag
  * 작성자 : 임근석
  * 작성일자 : 2022-11-28
  * 마지막 수정자 : 임근석
- * 마지막 수정일자 : 2022-12-31
+ * 마지막 수정일자 : 2023-01-19
  * 설명 : 일정 수정 사항 및 삭제 내역 체크
- * @param string $mb_id
- * @param string $member
  * @return mixed
  */
-function validate_schedule($mb_id, $member) {
+function validate_schedule() {
   # 개수 체크
   $sql = "SELECT DISTINCT od_id FROM `partner_inst_sts`;";
   $result = sql_query($sql);
   while ($item = sql_fetch_array($result)) {
     $sql = "SELECT 
     s.od_id, 
-    group_concat(s.ct_id ORDER BY s.ct_id ASC) AS `ct_concat` 
+    group_concat(DISTINCT s.ct_id ORDER BY s.ct_id ASC) AS `ct_concat` 
     FROM `partner_inst_sts` AS `s` 
     LEFT JOIN `g5_shop_cart` AS `ct` ON ct.od_id = s.od_id 
     WHERE s.od_id = '".$item['od_id']."' 
@@ -3143,7 +3140,7 @@ function validate_schedule($mb_id, $member) {
   
     $sql = "SELECT 
     ct.od_id, 
-    group_concat(ct.ct_id ORDER BY ct.ct_id ASC) AS `ct_concat` 
+    group_concat(DISTINCT ct.ct_id ORDER BY ct.ct_id ASC) AS `ct_concat` 
     FROM `g5_shop_cart` AS ct
     WHERE ct.od_id = '".$item['od_id']."' 
     GROUP BY od_id;";
@@ -3262,18 +3259,18 @@ function validate_schedule($mb_id, $member) {
       $sql = "UPDATE `partner_inst_sts` SET od_b_addr2 = '".$item['od_od_b_addr2']."' WHERE id = ".$item['s_id'].";";
       sql_query($sql);
     }
-    if ($item["s_partner_mb_id"] != $item["p_mb_partner_mb_id"] || $item["s_partner_mb_id"] == null) {
-      $sql = "UPDATE `partner_inst_sts` SET partner_mb_id = '".$item['p_mb_partner_mb_id']."' WHERE id = ".$item['s_id'].";";
-      sql_query($sql);
-    }
-    if ($item["s_partner_manager_mb_id"] != $item["m_mb_partner_manager_mb_id"] || $item["s_partner_manager_mb_id"] == null) {
-      $sql = "UPDATE `partner_inst_sts` SET partner_manager_mb_id = '".$item['m_mb_partner_manager_mb_id']."' WHERE id = ".$item['s_id'].";";
-      sql_query($sql);
-    }
-    if ($item["s_partner_manager_mb_name"] != $item["m_mb_partner_manager_mb_name"] || $item["s_partner_manager_mb_name"] == null) {
-      $sql = "UPDATE `partner_inst_sts` SET partner_manager_mb_name = '".$item['m_mb_partner_manager_mb_name']."' WHERE id = ".$item['s_id'].";";
-      sql_query($sql);
-    }
+//    if ($item["s_partner_mb_id"] != $item["p_mb_partner_mb_id"] || $item["s_partner_mb_id"] == null) {
+//      $sql = "UPDATE `partner_inst_sts` SET partner_mb_id = '".$item['p_mb_partner_mb_id']."' WHERE id = ".$item['s_id'].";";
+//      sql_query($sql);
+//    }
+//    if ($item["s_partner_manager_mb_id"] != $item["m_mb_partner_manager_mb_id"] || $item["s_partner_manager_mb_id"] == null) {
+//      $sql = "UPDATE `partner_inst_sts` SET partner_manager_mb_id = '".$item['m_mb_partner_manager_mb_id']."' WHERE id = ".$item['s_id'].";";
+//      sql_query($sql);
+//    }
+//    if ($item["s_partner_manager_mb_name"] != $item["m_mb_partner_manager_mb_name"] || $item["s_partner_manager_mb_name"] == null) {
+//      $sql = "UPDATE `partner_inst_sts` SET partner_manager_mb_name = '".$item['m_mb_partner_manager_mb_name']."' WHERE id = ".$item['s_id'].";";
+//      sql_query($sql);
+//    }
   }
 }
 
