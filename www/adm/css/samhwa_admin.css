@@ -99,7 +99,7 @@ button {
     -moz-appearance: none;
     height: 24px !important;
     padding: 2px 25px 0px 3px;
-    background: #ffffff url(/adm/shop_admin/img/admin_select_n.gif) no-repeat right 8px center;
+    background: #ffffff url('/adm/shop_admin/img/admin_select_n.gif') no-repeat right 8px center;
     border:1px solid #dbdde2;
     border-radius: 0px;
     width: 100px;
@@ -363,6 +363,14 @@ button {
     height:30px;
     cursor:pointer;
     line-height:0;
+}
+/*  구매/발주개선으로인한 관리가>쇼핑몰>발주내역 해당 부분 UI개선용 */
+#samhwa_order_list .order_tab li.purchase_order_steps {
+    display:block;
+    float:left;
+    height:50px;
+    cursor:pointer;
+    line-height:12px;
 }
 #samhwa_order_list .order_tab:after {
     content: '';
@@ -699,17 +707,17 @@ table.list-table-style .drop_multi_sub a:after {
     display: inline-block;
     width: 30px;
     height: 30px;
-    background: url(/adm/shop_admin/img/btn_star_off.png) no-repeat;
+    background: url('/adm/shop_admin/img/btn_star_off.png') no-repeat;
     vertical-align: middle;
 }
 .important-25 {
     cursor:pointer;
 }
 .list-important.on {
-    background: url(/adm/shop_admin/img/btn_star_on_red.png) no-repeat;
+    background: url('/adm/shop_admin/img/btn_star_on_red.png') no-repeat;
 }
 .list-important2.on {
-    background: url(/adm/shop_admin/img/btn_star_on_blue.png) no-repeat;
+    background: url('/adm/shop_admin/img/btn_star_on_blue.png') no-repeat;
 }
 
 .custom-select-box-multi {
@@ -755,6 +763,27 @@ table.list-table-style .drop_multi_sub a:after {
     color:#ccc;
     background-color:white;
 }
+
+.ltr-bg-purchase-step-5 {
+    background: #cf9500 !important;
+}.ltr-bg-purchase-step-10 {
+    background: #9bbb59 !important;
+}.ltr-bg-purchase-step-15 {
+    background: #ffc000 !important;
+}.ltr-bg-purchase-step-20 {
+    background: #953735 !important;
+}.ltr-bg-purchase-step-25 {
+    background: #31841c !important;
+}.ltr-bg-purchase-step-30 {
+    background: #36a6de !important;
+}.ltr-bg-purchase-step-35 {
+    background: #604a7b !important;
+}.ltr-bg-purchase-step-40 {
+    background: #002060 !important;
+}.ltr-bg-purchase-step-45 {
+    background: #6f6f6f !important;
+}
+
 .ltr-bg-step-5 {
     background: #cf9500 !important;
 }
@@ -1219,7 +1248,7 @@ table.list-table-style .drop_multi_sub a:after {
     overflow-y:scroll;
 }
 #samhwa_order_form>.block .block-box.memo .memo_logs li {
-    margin-bottom:15px;
+    margin-bottom:5px;
     line-height: 19px;
 }
 #samhwa_order_form>.block .block-box.memo .memo_logs li:last-child {

@@ -456,8 +456,10 @@ $rows = [];
 foreach ($ct_items as $it) {
   $od = $it['od_info'];
 
-  $ct_delivery_complete_date = $it['ct_delivery_complete_date']?date("Y-m-d", strtotime($it['ct_delivery_complete_date'])) :"-" ;
-  $ct_delivery_expect_date = $it['ct_delivery_expect_date']?date("Y-m-d H", strtotime($it['ct_delivery_expect_date'])) :"-" ;
+  $ct_part_info = json_decode($it['ct_part_info'],true)[1];
+
+  $ct_delivery_complete_date = $ct_part_info['_in_dt_confirm']?date("Y-m-d H", strtotime($ct_part_info['_in_dt_confirm'])) :"-" ;
+  $ct_delivery_expect_date = $ct_part_info['_in_dt']?date("Y-m-d H", strtotime($ct_part_info['_in_dt'])) :"-" ;
   $ct_delivered_qty = $it['ct_delivered_qty']? :"-";
   $item_price = number_format($it['ct_price'])?:"-";
   $basic_price = $it['ct_price']?number_format(round(($it['ct_price']*$it["ct_qty"])/1.1)):"-";

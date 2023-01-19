@@ -116,7 +116,7 @@ $_SESSION['smart_purchase_data'] = json_decode(html_entity_decode(stripslashes($
         <th>기타설정</th>
         <td>
           발주서 발송상태 &nbsp;
-          <input type="checkbox" name="od_send_n" value="0" id="od_send_n" <?php echo option_array_checked('0', $od_send_n); ?>>
+          <input type="checkbox" name="od_send_n" value="1" id="od_send_n" <?php echo option_array_checked('1', $od_send_n); ?>>
           <label for="od_send_n">미발송</label>
           <input type="checkbox" name="od_send_y" value="1" id="od_send_y" <?php echo option_array_checked('1', $od_send_y); ?>>
           <label for="od_send_y">발송</label>

@@ -81,7 +81,8 @@ function sendFax($send_fax_arr) {
      foreach($send_fax_arr as $data) {
        $FileData = [];
        $Receiver = [];
-       $FileData[] = array('fileName' => $data['filename'], 'fileData' => $data['excel']);
+       // $FileData[] = array('fileName' => $data['filename'], 'fileData' => $data['excel']);
+       $FileData[] = array('fileName' => $data['filename'], 'fileData' => file_get_contents($data['filename']));
        $Receiver[] = array('rcv' => $data['rcv'], 'rcvnm' => $data['rcvnm']);
        $receiptNum = $FaxService->SendFAXBinary($testCorpNum, $Sender, $Receiver, $FileData, $reserveDT, $testUserID, $SenderName, $adsYN, $title, $requestNum);
 

@@ -340,8 +340,12 @@ if ($fr_date && $to_date) {
 }
 
 // 22.11.09 : 서원 - 검색조건추가(발주서발송상태)
-if($od_send_n) { $where[] = " od_send_yn = 0 "; }
-if($od_send_y) { $where[] = " od_send_yn = 1 "; }
+if($od_send_n&&$od_send_y){
+  $where[] = " (od_send_yn = 1 OR od_send_yn = 0)";
+} else {
+  if($od_send_n) { $where[] = " od_send_yn = 0 "; }
+  if($od_send_y) { $where[] = " od_send_yn = 1 "; }
+}
 
 // 22.11.09 : 서원 - 검색조건추가(발주서발송방법)
 if($od_send_mail_yn) { $where[] = " od_send_mail_yn = 1 "; }
@@ -593,7 +597,7 @@ foreach($orderlist as $order) {
   $ct_ex_date = $order['ct_ex_date']; //출고완료일
   $ct_manager = $order['ct_manager']; //출고 담당자 아이디
   $prodMemo = $order['prodMemo'];
-  $ct_delivery_expect_date = date('Y-m-d (H시)', strtotime($order['ct_delivery_expect_date']));
+  $ct_delivery_expect_date = date('Y-m-d (H시)', strtotime(json_decode($order['ct_part_info'],true)[1]['_in_dt']));
   $ct_warehouse = $order['ct_warehouse'];
     
   //출고담당자 select

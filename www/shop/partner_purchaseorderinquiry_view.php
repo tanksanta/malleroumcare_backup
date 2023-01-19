@@ -76,17 +76,21 @@ while($row = sql_fetch_array($cart_result)) {
   }
   $row['ct_direct_delivery'] = $ct_direct_delivery_text;
 
-  $price = intval($row['ct_price']) * intval($row['ct_qty']);
-  // 공급가액
-  $price_p = @round(($price ?: 0) / 1.1);
-  // 부가세
-  $price_s = @round(($price ?: 0) / 1.1 / 10);
+  if(strpos($row['ct_status'], "취소") == false){ // 발주취소건은 정산정보에 포함시키지 않음
+    $price = intval($row['ct_price']) * intval($row['ct_qty']);
+    // 공급가액
+    $price_p = @round(($price ?: 0) / 1.1);
+    // 부가세
+    $price_s = @round(($price ?: 0) / 1.1 / 10);
 
-  $total_price_p += $price_p;
-  $total_price_s += $price_s;
+    $total_price_p += $price_p;
+    $total_price_s += $price_s;
 
-  $row['price_p'] = $price_p;
-  $row['price_s'] = $price_s;
+    $row['price_p'] = $price_p;
+    $row['price_s'] = $price_s;
+  } else { // 발주 취소건에 대해서 배송정보를 출력하지 않게 하기 위한 로직
+    $row['ct_direct_delivery'] = "취소";
+  }
 
   $carts[] = $row;
 }
@@ -234,6 +238,8 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.magnific-popup.js"></script>',
           <ul>
             <?php
             foreach($carts as $cart) {
+              // 발주 취소 건은 배송정보 미노출
+              if($cart['ct_direct_delivery'] == '취소') continue;
             ?>
             <li class="delivery-info-item">
               <div class="info-title text-weight-bold">

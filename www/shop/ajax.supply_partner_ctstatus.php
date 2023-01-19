@@ -20,6 +20,11 @@ $sto_id = [];
 $sql = [];
 $mb_id;
 $sto_id_od_id_table = [];
+
+$where_ct_id = "('".implode($ct_id_arr, "', '")."')";
+$cancel_chk = sql_fetch("select count(distinct ct_status) as cnt from purchase_cart where ct_id in {$where_ct_id} and ct_status like '%취소%' group by ct_status;");
+if($cancel_chk > 0) json_response(400, '발주취소 상품은 변경할 수 없습니다.');
+
 foreach($ct_id_arr as $ct_id) {
   $cart = sql_fetch("
     SELECT * FROM purchase_cart

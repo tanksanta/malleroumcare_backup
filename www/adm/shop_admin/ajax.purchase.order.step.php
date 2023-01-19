@@ -36,10 +36,13 @@ if($_POST['ct_id']&&$_POST['step']) {
       a.ct_stock_qty,
       a.ct_id,
       a.ct_combine_ct_id,
-      a.ct_warehouse
+      a.ct_warehouse,
+      a.ct_part_info
     from purchase_cart a left join `g5_member` b on a.mb_id = b.mb_id where `ct_id` = '".$_POST['ct_id'][$i]."'";
     $result_ct_s = sql_fetch($sql_ct_s);
     $od_id = $result_ct_s['od_id'];
+
+    $ct_part_info = json_decode($result_ct_s['ct_part_info'], true)[1];
 
     $od = sql_fetch(" select * from purchase_order where od_id = '$od_id' ");
     if($od['od_is_editing'] == 1) {
@@ -81,7 +84,12 @@ if($_POST['ct_id']&&$_POST['step']) {
     //상태 update
     $add_sql = '';
 //    if($_POST['step'] == "배송") { $add_sql .= ", `ct_ex_date` = CURDATE()"; }
-    if($_POST['step'] == "입고완료") { $add_sql .= ", `ct_delivery_complete_date` = NOW()"; }
+    if($_POST['step'] == "입고완료") {
+      $ct_part_info['_in_dt_confirm'] = date("Y-m-d");
+      $ct_part_info_f[1] = $ct_part_info;
+
+      $add_sql .= ", `ct_delivery_complete_date` = CURDATE(), ct_part_info ='".json_encode($ct_part_info_f)."'";
+    }
 
     $sql_ct[$i] = "update purchase_cart set `ct_status` = '".$_POST['step']."'".$add_sql.", `ct_move_date`= NOW() where `ct_id` = '".$_POST['ct_id'][$i]."'";
 

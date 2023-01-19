@@ -573,12 +573,12 @@ $deliveryCntBtnStatus = ($delivery_insert >= $od["od_delivery_total"]) ? " disab
                 </td>
                 <td class="btncol">
                   <!-- 입고예정일 -->
-                  <?php echo $options[$k]['ct_delivery_expect_date'] ? date('Y-m-d H시', strtotime($options[$k]['ct_delivery_expect_date'])) : ''; ?>
+                  <?php $ct_part_info = json_decode($options[$k]['ct_part_info'],true)[1]; echo $ct_part_info['_in_dt'] ? date('Y-m-d H시', strtotime($ct_part_info['_in_dt'])) : ''; ?>
                   <!-- 입고예정일 -->
                 </td>
                 <td class="btncol">
                   <!-- 입고완료일 -->
-                  <?php echo $options[$k]['ct_delivery_complete_date'] ? date('Y-m-d H시', strtotime($options[$k]['ct_delivery_complete_date'])) : ''; ?>
+                  <?php echo $ct_part_info['_in_dt_confirm'] ? date('Y-m-d H시', strtotime($ct_part_info['_in_dt_confirm'])) : ''; ?>
                   <!-- 입고완료일 -->
                 </td>
                 <td class="btncol">
