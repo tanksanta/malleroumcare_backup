@@ -13,7 +13,7 @@ if ($_SESSION['ss_manager_mb_id']) {
 } else {
   $member = get_member($_SESSION['ss_mb_id']);
 }
-validate_schedule($_POST['partner_mb_id'], $member);
+validate_schedule();
 if ($member['mb_type'] === 'default' && $member['mb_level'] < 9) {
   $res = get_partner_schedule_by_mb_id($member);
 } else {
