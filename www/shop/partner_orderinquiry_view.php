@@ -191,7 +191,7 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.magnific-popup.js"></script>',
       <?php 
 		 $show_install_btn = false;
 		 foreach($carts as $cart){
-			 if ($cart['ct_status'] == '배송') $show_install_btn = true;
+			 if ($cart['ct_status'] == '배송' || $cart['ct_status'] == '완료') $show_install_btn = true;
 		 }
 		 if ($show_install_btn == true) {
       ?>
