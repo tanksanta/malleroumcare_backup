@@ -42,7 +42,7 @@ if ($t_document['t_state'] == '0') {
 }
 
 if (!$is_member)
-  goto_url(G5_BBS_URL.'/login.php?url='.urlencode(G5_SHOP_URL.'/electronic_manage.php'));
+  goto_url(G5_BBS_URL.'/login.php?url='.urlencode(G5_SHOP_URL.'/electronic_manage_new.php'));
 
 $g5['title'] = '전자문서관리';
 include_once('./_head.php');

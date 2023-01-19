@@ -85,8 +85,8 @@ $dc_subject = $row["dc_subject"];
 		<td><?=$row["penRecGraNm"]; ?></td>
 		<td><?=$row["penTypeNm"]; ?></td>		
 		<td><?=$row["penExpiDtm"]; ?></td>
-		<td><?=substr($row["penConNum"],0,5)."********"; ?></td>
-		<td><?=mb_substr($row["penAddr"],0,6)."*************";//.$row["penAddrDtl"]; ?></td>
+		<td><?=($row["penConNum"] != "")?substr($row["penConNum"],0,5)."********":""; ?></td>
+		<td><?=($row["penAddr"] != "")?mb_substr($row["penAddr"],0,6)."*************":"";//.$row["penAddrDtl"]; ?></td>
     </tr>
     </table>
 </div>
@@ -102,7 +102,7 @@ $dc_subject = $row["dc_subject"];
 		<td width="220">주소</td>
     </tr>
     <tr>
-		<td><?=($row["applicantNm"] !="")?"사용": "사용안함";?></td>
+		<td><?=($row["applicantNm"] !="")?"사용": "사용안함(본인)";?></td>
 		<td><?=($row["applicantNm"])? mb_substr($row["applicantNm"],0,1)."*".mb_substr($row["applicantNm"],-1): "&nbsp;";?></td>
 		<td><?=($row["applicantBirth"])?substr($row["applicantBirth"],0,3)."***" : "&nbsp";?></td>
 		<td><?=($row["applicantRelation"])?$row["applicantRelation"] : "&nbsp";?></td>
@@ -234,7 +234,7 @@ if($dc_sign_send_datetime != "0000-00-00 00:00:00"){
 		case "ABORTED" : 
 			if($arrResponse["documents"][0]["abort"]["type"] == "REJECTION")$status = "서명 거절"; 
 			if($arrResponse["documents"][0]["abort"]["type"] == "SIGNING_CANCELLED")$status = "서명 취소"; 
-			if($arrResponse["documents"][0]["abort"]["type"] == "REQUEST_CANCELLATION")$status = "요청 취소"; 		
+			if($arrResponse["documents"][0]["abort"]["type"] == "REQUEST_CANCELLATION")$status = "서명요청 취소"; 		
 		break; 
 		case "COMPLETED" : $status = "서명 완료"; $resend = '<input type="button" value="계약서 재전송" onclick="resend_doc(\''.$arrResponse["documents"][0]["id"].'\',\'01071534117\')">'; break; 
 	}
@@ -268,20 +268,28 @@ if($dc_sign_send_datetime != "0000-00-00 00:00:00"){
 		<td>서명방법</td>
 		<td>전화번호</td>
 		<td>진행상태</td>
-		<td>서명완료일자</td>
+		<td><?=($arrResponse["documents"][0]["status"] != "ABORTED")?"서명 완료":$status;?> 일자</td>
     </tr>
 <?php 
 $participants_count = count($arrResponse["documents"][0]["participants"]);
 
+
 for($i=0;$i<$participants_count;$i++){
+	if($arrResponse["documents"][0]["status"] != "ABORTED"){
+		$p_stataus = ($arrResponse["documents"][0]["signings"][$i]["signedAt"] != "")? "서명완료":"서명 대기중";
+		$p_signedAt = ($arrResponse["documents"][0]["signings"][$i]["signedAt"] != "")? date("Y-m-d H:i:s",strtotime($arrResponse["documents"][0]["signings"][$i]["signedAt"])):"-";
+	}else{
+		$p_stataus = $status;
+		$p_signedAt = ($arrResponse["documents"][0]["abort"]["abortedAt"] != "")? date("Y-m-d H:i:s",strtotime($arrResponse["documents"][0]["abort"]["abortedAt"])):"-";
+	}
 ?>    
 	<tr>
 		<td><?=$i+1?></td>
 		<td><?=$arrResponse["documents"][0]["participants"][$i]["name"]?></td>
 		<td><?=($arrResponse["documents"][0]["participants"][$i]["signingMethod"]["type"] == "SECURE_LINK")?"웹페이지":"카카오톡"; ?></td>
 		<td><?=$arrResponse["documents"][0]["participants"][$i]["signingMethod"]["value"] ?></td>
-		<td><?=($arrResponse["documents"][0]["signings"][$i]["signedAt"] != "")? "서명완료":"서명 대기중";?></td>
-		<td><?=($arrResponse["documents"][0]["signings"][$i]["signedAt"] != "")? date("Y-m-d H:i:s",strtotime($arrResponse["documents"][0]["signings"][$i]["signedAt"])):"-"; ?></td>
+		<td><?=$p_stataus;?></td>
+		<td><?=$p_signedAt;?></td>
     </tr>
 <?php 
 	$total_price += $row["it_price"];

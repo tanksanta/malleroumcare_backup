@@ -123,7 +123,7 @@ $incompleted_eform_count = 0;
         <span>내 계좌정보 : </span>
         <div class="account_view_wr" <?php if(!$member['mb_account']) echo 'style="display: none;"'; ?>>
           <?=$member['mb_account']?>
-          <button type="button" class="btn_acc_edit btn_basic">수정</button>
+          <button type="button" class="btn_acc_edit btn_basic">수정</button> 
         </div>
         <div class="account_edit_wr" <?php if($member['mb_account']) echo 'style="display: none;"'; ?>>
           <input type="text" name="mb_account" value="<?=get_text($member['mb_account']) ?: ''?>">
@@ -132,6 +132,7 @@ $incompleted_eform_count = 0;
           <button type="button" class="btn_acc_cancel btn_basic">취소</button>
           <?php } ?>
         </div>
+		<a href="/shop/electronic_manage_new.php" class="btn eroumcare_btn2" target="_blank">전자문서관리 NEW</a>
       </div>
     </form>
     <form id="form_search" method="get">
@@ -151,7 +152,7 @@ $incompleted_eform_count = 0;
         </div>
       </div>
       <?php } ?>
-      <div class="r_btn_area">
+      <div class="r_btn_area">	  	
         <select name="sel_order" id="sel_order" style="float: none;">
           <option value="dc_datetime"<?php if(!$sel_order || $sel_order == 'dc_datetime') echo ' selected'; ?>>작성일정렬</option>
           <option value="penNm"<?php if($sel_order == 'penNm') echo ' selected'; ?>>수급자정렬</option>

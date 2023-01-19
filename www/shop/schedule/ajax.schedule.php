@@ -8,7 +8,7 @@ if(!$_POST['od_id'] && !$_POST['ct_id'])
   json_response(400, '유효하지않은 요청입니다.');
 
 $check_sum_duplicate = duplicate_partner_install_schedule($_POST['partner_manager_mb_id'], $_POST['delivery_date'], $_POST['delivery_datetime']);
-if (!$check_sum_duplicate) json_response(400, '설치파트너 매니저 일정을 확인해주세요.');
+//if (!$check_sum_duplicate) json_response(400, '설치파트너 매니저 일정을 확인해주세요.'); //설치일정 중복 허용 요청 2023.01.19 정한진
 $check_sum_duplicate = duplicate_partner_deny_schedule($_POST['partner_manager_mb_id'], $_POST['delivery_date']);
 if (!$check_sum_duplicate) json_response(400, '해당 날짜는 담당자의 설치불가일입니다.
 다른 날짜를 지정하거나 담당자를 변경해주세요.');
