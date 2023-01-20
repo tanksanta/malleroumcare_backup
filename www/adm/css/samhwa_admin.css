@@ -765,23 +765,17 @@ table.list-table-style .drop_multi_sub a:after {
 }
 
 .ltr-bg-purchase-step-5 {
-    background: #cf9500 !important;
+    background: #cf9500 !important;<!-- 발주대기 -->
 }.ltr-bg-purchase-step-10 {
-    background: #9bbb59 !important;
+    background: #88a825 !important;<!-- 발주완료 -->
 }.ltr-bg-purchase-step-15 {
-    background: #ffc000 !important;
+    background: #32841c !important;<!-- 출고완료 -->
 }.ltr-bg-purchase-step-20 {
-    background: #953735 !important;
-}.ltr-bg-purchase-step-25 {
-    background: #31841c !important;
-}.ltr-bg-purchase-step-30 {
-    background: #36a6de !important;
+    background: #36a6de !important;<!-- 입고완료 -->
 }.ltr-bg-purchase-step-35 {
-    background: #604a7b !important;
-}.ltr-bg-purchase-step-40 {
-    background: #002060 !important;
-}.ltr-bg-purchase-step-45 {
-    background: #6f6f6f !important;
+    background: #604A7B !important;<!-- 마감완료 -->
+}.ltr-bg-purchase-step-70 {
+    background: #6f6f6f !important;<!-- 발주취소 -->
 }
 
 .ltr-bg-step-5 {
