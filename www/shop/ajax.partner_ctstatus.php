@@ -9,7 +9,7 @@ if($manager_mb_id) {
   $manager = get_member($manager_mb_id);
 }
 
-$ct_status = in_array($_POST['ct_status'], ['출고준비', '배송', '취소']) ? $_POST['ct_status'] : '';
+$ct_status = in_array($_POST['ct_status'], ['출고준비', '배송', '취소','완료']) ? $_POST['ct_status'] : '';
 $ct_id_arr = get_search_string($_POST['ct_id']);
 
 if(!$ct_status || !$ct_id_arr || !is_array($ct_id_arr))
