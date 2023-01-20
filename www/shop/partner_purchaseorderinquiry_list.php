@@ -459,10 +459,10 @@ tr.hover { background-color: #fbf9f7 !important; }
                 <p> 출고준비 : <?=date('Y-m-d (H:i)', strtotime($row['ct_rdy_date']))?> </p>
                 <?php } ?>
 
-                <p>입고예정일 : <?=$row['ct_delivery_expect_date'] ? date('Y-m-d', strtotime($row['ct_delivery_expect_date'])) : ''?> <?php if(!in_array($row['ct_status'], ['발주취소', '관리자발주취소'])) { ?><a href="./partner_purchaseorderinquiry_view.php?od_id=<?=$row['od_id']?>" class="btn_edit_delivery_info">변경</a><?php }?></p>
+                <p>입고예정일 : <?php $ct_part_info = json_decode($row['ct_part_info'],true)[1]; $ct_part_info_indt = $ct_part_info['_in_dt'] ? date('Y-m-d', strtotime($ct_part_info['_in_dt'])) : ''; echo $ct_part_info_indt; ?> <?php if(!in_array($row['ct_status'], ['발주취소', '관리자발주취소'])) { ?><a href="./partner_purchaseorderinquiry_view.php?od_id=<?=$row['od_id']?>" class="btn_edit_delivery_info">변경</a><?php }?></p>
 
-                <?php if($row['ct_ex_date']) { ?>
-                <p> 출고완료 : <?=$row['ct_ex_date']?> </p>
+                <?php if($ct_part_info['_out_dt']) { ?>
+                <p> 출고완료 : <?=$ct_part_info['_out_dt']?> </p>
                 <?php } ?>
 
                 <p> 발주번호(<?=$row['od_id']?>) </p>
