@@ -116,31 +116,29 @@ $sql = "
 $result = sql_query($sql);
 $carts = [];
 while($ct = sql_fetch_array($result)) {
-    if($ct['ct_is_direct_delivery'] == '2'){
-		$ct['it_name'] .= $ct['ct_option'] && $ct['ct_option'] != $ct['it_name'] ? " ({$ct['ct_option']})" : '';
+    $ct['it_name'] .= $ct['ct_option'] && $ct['ct_option'] != $ct['it_name'] ? " ({$ct['ct_option']})" : '';
 
-		// 바코드 정보 가져오기
-		$sto_id = [];
+    // 바코드 정보 가져오기
+    $sto_id = [];
 
-		foreach(array_filter(explode('|', $ct['stoId'])) as $id) {
-			$sto_id[] = $id;
-		}
+    foreach(array_filter(explode('|', $ct['stoId'])) as $id) {
+        $sto_id[] = $id;
+    }
 
-		$stock_result = api_post_call(EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP, array(
-			'stoId' => implode('|', $sto_id)
-		));
+    $stock_result = api_post_call(EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP, array(
+        'stoId' => implode('|', $sto_id)
+    ));
 
-		$barcodes = [];
-		if($stock_result['data']) {
-		  foreach($stock_result['data'] as $data) {
-			$barcodes[$data['stoId']] = $data['prodBarNum'];
-		  }
-		}
+    $barcodes = [];
+    if($stock_result['data']) {
+      foreach($stock_result['data'] as $data) {
+        $barcodes[$data['stoId']] = $data['prodBarNum'];
+      }
+    }
 
-		$ct['barcode'] = $barcodes;
+    $ct['barcode'] = $barcodes;
 
-		$carts[] = $ct;
-	}
+    $carts[] = $ct;
 }
 ?>
 <!DOCTYPE html>
