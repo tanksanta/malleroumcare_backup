@@ -167,16 +167,27 @@ if($search_text) {
       // 22.09.30 : 서원 - 송장번호 Oney 숫자 처리로 인한 검색 오류
       if( $s_option == "ct_delivery_num" ) { 
         $search_text = preg_replace("/[^0-9]*/s", "", $search_text); // 검색 데이터의 숫자만 추출하여 변수에 재저장
-      }
+		if( mb_strlen( $search_text ) > 13 ) {
+			$_str = mb_substr($search_text , 13, 2);
+			// 23.01.11 : 서원 - 13자리 이상 뒤에 3자리중 "00"로 시작한다면...
+			//                    13자리까지 자리수로 잘라서 저장 한다.
+			if( $_str == "00" ) { 
+			  $search_text = mb_substr($search_text , 0, 13);
+			}
+		  }
+		if($search_text != "")$s_where[] = " $s_option like '{$search_text}%' ";
+	  }else{
       // 종료 -->
-      $s_where[] = " $s_option like '%{$search_text}%' ";
+		$s_where[] = " $s_option like '%{$search_text}%' ";
+	  }
     }
     $where[] = " ( " . implode(' OR ', $s_where) . " ) ";
   } else {
     // 시작 -->
     // 22.09.30 : 서원 - 송장번호 Oney 숫자 처리로 인한 검색 오류
     if( $search_option == "ct_delivery_num" ) { 
-      $search_text = preg_replace("/[^0-9]*/s", "", $search_text); // 검색 데이터의 숫자만 추출하여 변수에 재저장
+      $search_text2 = $search_text;
+	  $search_text = preg_replace("/[^0-9]*/s", "", $search_text); // 검색 데이터의 숫자만 추출하여 변수에 재저장
       // 23.01.11 : 서원 - 택배송장 검색 이면서 13자리 이상일 경우.
       if( mb_strlen( $search_text ) > 13 ) {
         $_str = mb_substr($search_text , 13, 2);
@@ -186,7 +197,12 @@ if($search_text) {
           $search_text = mb_substr($search_text , 0, 13);
         }
       }
-      $where[] = " {$search_option} LIKE '{$search_text}%' ";
+	  if($search_text != ""){
+		$where[] = " {$search_option} LIKE '{$search_text}%' ";
+	  }else{
+		$where[] = " {$search_option} LIKE '{$search_text2}%' ";
+	  }
+      
     } else {
       $where[] = " {$search_option} LIKE '%{$search_text}%' ";  
     }
