@@ -83,7 +83,7 @@ $_SESSION['smart_purchase_data'] = json_decode(html_entity_decode(stripslashes($
           <select name="sel_date_field" id="sel_date_field">
               <option value="od_time" <?php echo get_selected($sel_date_field, 'od_time'); ?>>발주일</option>
               <option value="ct_move_date" <?php echo get_selected($sel_date_field, 'ct_move_date'); ?>>변경일</option>
-              <option value="ct_delivery_complete_date" <?php echo get_selected($sel_date_field, 'ct_delivery_complete_date'); ?>>입고완료일</option>
+              <option value="_in_dt_confirm" <?php echo get_selected($sel_date_field, '_in_dt_confirm'); ?>>입고완료일</option>
           </select>
           <div class="sch_last">
             <input type="button" value="오늘" id="select_date_today" name="select_date" class="select_date newbutton" />

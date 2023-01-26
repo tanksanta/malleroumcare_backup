@@ -336,7 +336,11 @@ if ($od_escrow) {
 }
 
 if ($fr_date && $to_date) {
-  $where[] = " ({$sel_date_field} between '$fr_date 00:00:00' and '$to_date 23:59:59') ";
+  if($sel_date_field == 'od_time' || $sel_date_field == 'ct_move_date'){
+    $where[] = " ({$sel_date_field} between '$fr_date 00:00:00' and '$to_date 23:59:59') ";
+  } else {
+    $where[] = " (SUBSTRING_INDEX(SUBSTRING_INDEX(ct_part_info, '\"{$sel_date_field}\":\"', -1),'\"',1) between '$fr_date 00:00:00' and '$to_date 23:59:59') ";
+  }
 }
 
 // 22.11.09 : 서원 - 검색조건추가(발주서발송상태)
