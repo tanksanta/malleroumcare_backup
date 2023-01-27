@@ -1,6 +1,36 @@
 <?php
 include_once('./_common.php');
 
+$param = "";
+if($_GET["ms_id"] != ""){
+	$param = "?ms_id=".$_GET["ms_id"];
+}elseif($_GET["dc_id"] != ""){
+	$param = "?dc_id=".$_GET["dc_id"];
+}elseif($_POST["sw_direct"] == "1"){
+	echo '
+	<body onload="window.document.fc.submit ()">
+	<form name="fc" action="./simple_eform_new.php'.$param.'" method="post" >';
+	if($_POST["sales_inventory"] != ""){echo '<input type="hidden" name="sales_inventory" value="'.$_POST["sales_inventory"].'"><!-- 판매완료처리 -->'; }                                             
+	echo '<input type="hidden" name="sw_direct" value="'.$_POST["sw_direct"].'">                                              <!-- 바로가기 -->
+	  <input type="hidden" name="it_id[]" value="'.$_POST["it_id"][0].'" id="it_id_r">                   <!-- 상품아이디 -->
+	  <input type="hidden" name="io_type['.$_POST["it_id"][0].'][]" value="0" it="io_type_r">            <!-- 옵션타입 -->
+	  <input type="hidden" name="io_id['.$_POST["it_id"][0].'][]" value="'.$_POST["io_id"][$_POST["it_id"][0]][0].'" id="io_id_r">                 <!-- 옵션 값 -->
+	  <input type="hidden" name="io_value['.$_POST["it_id"][0].'][]" value="'.$_POST["io_value"][$_POST["it_id"][0]][0].'" id="io_value_r">           <!-- 옵션 명 -->
+	  <input type="hidden" name="ct_qty['.$_POST["it_id"][0].'][]" value="'.$_POST["ct_qty"][$_POST["it_id"][0]][0].'" id="ct_qty_r">               <!-- 수량 -->
+	  <input type="hidden" name="barcode_r" value="'.$_POST["barcode_r"].'" id="barcode_r">                                       <!-- 바코드 -->
+	  <input type="hidden" name="penId_r" value="'.$_POST["penId_r"].'" id="penId_r">                                           <!-- penId -->
+	  <input type="hidden" name="recipient_info" value="'.$_POST["recipient_info"].'">                            <!-- 구분 -->
+	  <input type="hidden" name="it_msg1[]" value="'.$_POST['pt_msg1'].'">
+	  <input type="hidden" name="it_msg2[]" value="'.$_POST['pt_msg2'].'">
+	  <input type="hidden" name="it_msg3[]" value="'.$_POST['pt_msg3'].'">
+	</form>
+	</body>
+	';//리다이렉트
+	exit;
+}
+Header("Location:simple_eform_new.php".$param) ;
+exit;
+
 if($member['mb_type'] !== 'default' || !$member['mb_entId'])
   alert('사업소 회원만 접근할 수 있습니다.');
 
@@ -81,8 +111,8 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
   <div class="sub_section_tit">
     간편 계약서 작성
     <div class="r_btn_area">
-      <a href="/shop/simple_eform_new.php" class="btn eroumcare_btn2" target="_blank">간편계약서 NEW</a>
-	  <a href="/shop/electronic_manage.php" class="btn eroumcare_btn2">계약서 목록보기</a>
+	  <!--a href="/shop/simple_eform_new.php" class="btn eroumcare_btn2" target="_blank">간편계약서 NEW</a-->
+      <a href="/shop/electronic_manage.php" class="btn eroumcare_btn2">계약서 목록보기</a>
     </div>
     <div style="clear: both;"></div>
   </div>
@@ -1966,3 +1996,4 @@ $(function() {
 </script>
 
 <?php include_once("./_tail.php"); ?>
+

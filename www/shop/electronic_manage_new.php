@@ -186,7 +186,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
             <input type="radio" id="od_release_1" name="od_release" value="2" <?php echo option_array_checked('2', $od_release); ?>> <label for="od_release_1" style="vertical-align:-3px;"> 서명완료일</label>&nbsp;&nbsp;&nbsp;&nbsp;
           </div>
 		  <div class="sel_field" style="float:left">
-            <input type="text" id="fr_date" class="date inupt_s" name="fr_date" value="<?php echo $fr_date; ?>" class="frm_input" size="10" maxlength="10" autocomplete='off'> ~
+            <input type="text" id="fr_date" class="date inupt_s" name="fr_date" value="<?php echo $fr_date; ?>" class="frm_input" size="10" maxlength="10" autocomplete='off'>&nbsp;~&nbsp;
             <input type="text" id="to_date" class="date inupt_s" name="to_date" value="<?php echo $to_date; ?>" class="frm_input" size="10" maxlength="10" autocomplete='off'>
           </div>
         </td>
@@ -390,3 +390,4 @@ if ($open_tutorial_popup) {
 <?php
 include_once('./_tail.php');
 ?>
+
