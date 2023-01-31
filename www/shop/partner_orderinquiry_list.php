@@ -626,7 +626,7 @@ a.btn_schedule {
             <select name="ct_status">
               <option value="출고준비">출고준비</option>
               <option value="배송" selected>출고완료</option>
-			  <option value="완료">배송완료</option>
+			  <!--option value="완료">배송완료</option-->
               <option value="취소">주문취소</option>
             </select>
             <select name="manager" style="display: none;">
