@@ -58,6 +58,8 @@ include_once("./_common.php");
 
 <style> 
 	.excelBtn { background-color: #333; color: #FFF; font-weight: bold; padding: 5px 15px; display: inline-block; }
+    #excelfile_upload p { font-weight: bold; }
+    #excelfile { width: 100%; }
 
     /* 로딩 팝업 */
     #loading_excel { display: none; width: 100%; height: 100%; position: fixed; left: 0; top: 0; z-index: 9999; background: rgba(0, 0, 0, 0.3); }
@@ -88,14 +90,20 @@ include_once("./_common.php");
     <h1>온라인 결제용 대금 청구서 업로드</h1>
 
     <div class="local_desc01 local_desc">
-        <p>* 대금 결제 청구는 당월 기준 사업소당 1개의 청구만 가능 합니다.</p>
-        <p>* 기존 청구건을 변경 하고자하는 경우 기존 청구내역에서 '청구취소' 처리 후 가능합니다.</p>
+        <p style="font-weight: bold; font-size: 16px; color: navy;";>## 주의사항 ##</p>
+        <li>* 청구 일자가 <u>[<?=date("m", mktime(0, 0, 0, date("m")-1, 1))?>월]</u>이 아닌 데이터는 청구 업로드가 불가능 합니다.</li>
+        <li>* EROUMCARE에 가입되어 있는 사업소만 청구 등록이 가능 합니다.</li>
+        <li>* 청구용 엑셀파일은 동일한 파일명으로 1회만 업로드 가능 합니다.</li>
+        <li>* 대금 결제 청구는 당월 기준 사업소당 1개의 청구만 가능 합니다. (동시 여러개 불가!!)</li>
+        <li>* 기존 청구건을 변경 하고자하는 경우 기존 청구내역에서 '청구취소' 처리 후 가능합니다.</li>
+        <li>* 수수료는 '수수료설정'에 입력된 값을 기본으로 파일 업로드시 일괄 적용 됩니다.</li>
+        <li>* 소수점 자리 수수료의 경우 무조건 올림 처리되어 정산 됩니다.</li>
     </div>
 
     <form id="form_fitemexcel" name="fitemexcel" autocomplete="off" onsubmit="return false;">
 
     <div id="excelfile_upload">
-        <label for="excelfile">파일선택</label>
+        <p for="excelfile">업로드용 엑셀 파일을 선택하세요.</p>
         <input type="file" name="excelfile" id="excelfile" accept=".xlsx">
     </div>
 

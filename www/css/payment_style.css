@@ -5,7 +5,7 @@ html,body{height: 100%;}
 .visual{width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); display: flex; align-items: center; }
 .visalWrap{
   margin: 0 auto;
-  width: 600px;height: 550px;
+  width: 600px;height: 580px;
   background: white;  
 }
 .headerTitle{
@@ -28,21 +28,28 @@ html,body{height: 100%;}
   }
 
 .contentsWrap{
-  height: 470px;
+  height: 500px;
   padding: 30px 30px 0px 30px;
 }
-/* 결제 청구서 내역 */
+/* 결제 청구서 내역 **/
 .billWrap .billTitle{
   font-size: 20px;
   line-height: 40px;
 }
 .billListWrap{
   border: 1px solid rgba(63, 58, 58, 0.5);
+  /* padding: 15px 25px; */
+}
+.billList{
   padding: 15px 25px;
+}
+.billList2{
+  padding: 5px 25px 10px 25px;
+  background-color: #F7F9FA;
 }
 .billListWrap .price{
   display: flex; justify-content: space-between;
-  padding: 5px 0px 6px 0px;
+  padding: 0px 0px 4px 0px;
   font-size: 14px;
   font-weight: 400;
   line-height: 20px;
@@ -56,25 +63,38 @@ html,body{height: 100%;}
 }
 .billListWrap .line02{
   border: 1px solid #333333;
+  /* border-bottom:0px; */
 }
 .billListWrap .totalrice{
   display: flex; justify-content: space-between;
-  padding: 10px 0px 5px 0px;
+  padding: 3px 0px 0px 0px;
 }
 .billListWrap .totalrice .pTitle{
   font-weight: 500;
-  font-size: 20px;
+  font-size: 14px;
 }
 .billListWrap .totalrice .price{
-  font-weight: 700;
-  font-size: 22px;
+  font-weight: 500;
+  font-size: 16px;
   color: #001E9A;
+}
+.billListWrap .totalrice .price2{
+  font-weight: 500;
+  font-size: 16px;
+}
+.note{
+  font-size: 12px;
+  padding-bottom: 5px;
+  line-height: 27px;
+}
+.txt_b{
+  font-weight: bold;
 }
 
 /* 청구서 버튼들 */
 .billBtnWrap{
   display: flex; justify-content: space-between;
-  padding: 7px 0px 20px 0px; 
+  padding: 7px 0px 33px 0px; 
 }
 .billBtnWrap .btn01,
 .btn02W .btn02, .btn02W .btn03{
@@ -85,6 +105,9 @@ html,body{height: 100%;}
   font-weight: 400;
   font-size: 16px;
   text-align: center;
+}
+.btn02-01{
+  width: 154px;
 }
 .billBtnWrap .btn01{
   background: #93D500;
@@ -149,52 +172,53 @@ html,body{height: 100%;}
 
 /* 결제완료 PopUp */
 .paymentPop{
-  margin: 0 auto;
-  width: 400px; height: 220px;
-  background: white;  
+    margin: 0 auto;
+    width: 400px; height: 220px;
+    background: white;  
 }
 .paymentPop .content{
-height: 180px;
-text-align: center;
-padding: 15px;
+  height: 180px;
+  text-align: center;
+  padding: 15px;
 }
 .paymentPop .content .title{
-display: flex; justify-content: center;
-padding: 15px;
+  display: flex; justify-content: center;
+  padding: 15px;
 }
 .paymentPop .content .title h3{
-font-weight: 500;
-font-size: 20px;
-padding: 5px 0 0 5px ;
+  font-weight: 500;
+  font-size: 20px;
+  padding: 5px 0 0 5px ;
 }
 .paymentPop .content span{
-font-weight: 700;
-font-size: 20px;
+  font-weight: 700;
+  font-size: 20px;
 }
 .paymentPop .content span.won{
-color:#001E9A;  
+  color:#001E9A;  
 }
 .st0{fill:none;stroke:#001E9A;stroke-width:1.5;stroke-miterlimit:10;
-  stroke-dasharray: 44;
-  stroke-dashoffset: 44;
-  animation: oAni 1.5s alternate forwards;
-  opacity: 0;
+    stroke-dasharray: 44;
+    stroke-dashoffset: 44;
+    animation: oAni 1.3s alternate forwards;
+    opacity: 0;
 }
 .st1{fill:none;stroke:#333333;stroke-width:1.5;stroke-miterlimit:10;
-stroke-dasharray: 119;
-stroke-dashoffset: 119;
-animation: oAni01 0.5s alternate forwards;
-opacity: 0;
+  stroke-dasharray: 119;
+  stroke-dashoffset: 119;
+  animation: oAni01 0.3s alternate forwards;
+  opacity: 0;
 }
 @keyframes oAni{
-100%{
-    opacity: 1;
-    stroke-dashoffset: 0;
-}
+  100%{
+      opacity: 1;
+      stroke-dashoffset: 0;
+  }
 }
 @keyframes oAni01{
-100%{
-    opacity: 1;
-    stroke-dashoffset: 0;
+  100%{
+      opacity: 1;
+      stroke-dashoffset: 0;
+  }
 }
-}
+

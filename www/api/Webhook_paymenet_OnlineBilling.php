@@ -65,6 +65,7 @@
             $sql = ("   INSERT `payment_api_request`
                         SET `bl_id`             = '" . $_postDATA['order_id'] . "',
                             `receipt_id`        = '" . $_postDATA['receipt_id'] . "',
+                            `price`             = '" . $_postDATA['price'] . "',
                             `method_symbol`     = '" . $_postDATA['method_symbol'] ."',
                             `status_locale`     = '" . $_postDATA['status_locale'] . "',
                             `card_company`      = '" . $_postDATA['card_data']['card_company']  . "',
@@ -88,6 +89,7 @@
             $sql = ("   INSERT `payment_api_request`
                         SET `bl_id`             = '" . $_postDATA['order_id'] . "',
                             `receipt_id`        = '" . $_postDATA['receipt_id'] . "',
+                            `price`             = '" . $_postDATA['price'] . "',
                             `method_symbol`     = '" . $_postDATA['method_symbol'] ."',
                             `status_locale`     = '" . $_postDATA['status_locale'] . "',
                             `card_company`      = '" . $_postDATA['card_data']['card_company']  . "',
@@ -162,7 +164,11 @@
 
     // Telegram Webhook
     $apikey = '5891345081:AAFGuIDq04PRw8_t825eAVWg7r5IxL4NESo';
-    $chat_id = '-1001289883785';
+    if( ($_SERVER["HTTP_HOST"] == 'www.eroumcare.com') || ($_SERVER["HTTP_HOST"] == 'eroumcare.com') ) {
+      $chat_id = '-1001829530472'; // 상용
+    } else {
+      $chat_id = '-1001289883785'; // 테스트 & 개발
+    }
     $params = 'chat_id='.$chat_id.'&text='.urlencode(file_get_contents( 'php://input' ));
     $webhook = 'https://api.telegram.org/bot'.$apikey.'/sendMessage';
     $ch = curl_init();

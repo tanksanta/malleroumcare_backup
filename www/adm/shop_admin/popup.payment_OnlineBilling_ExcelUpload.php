@@ -33,24 +33,220 @@
 $sub_menu = '500150';
 include_once("./_common.php");
 
+
+// 페이지 상단(속도측정)
+//$start_time = array_sum(explode(' ', microtime()));
+
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 
+/*
+*
+* 작성자 : 박서원
+* 작성일자 : 2023-01-31
+* 마지막 수정자 : 박서원
+* 마지막 수정일자 : 2023-01-31
+* 설명 : 관리자가 업로드 한 1개의 파일을 사업소 별로 데이터 분리 작업.
+* @param string $_filenm : 업로드 원본파일이름
+* @param string $_thezone : 사업소 코드
+* @param string $_title : 문서 타이틀 array
+* @param string $_data : 문서 ROW 데이터 array
+* @param string $_managerID : 파일 업로드 관리자 아이디
+* @return boolean 
+* 
+* 1개의 청구 파일을 사업소별 데이터 분리 하여 콤마(,)를 분리값으로 하는 csv파일 생성.
+*
+*/
+function billing_outputFile_Sort( $_filenm, $_thezone, $_title, $_data, $_managerID ) {
+
+    // 23.01.31 : 서원 - 엑셀 내용 세부 항목 분리 저장용 폴더 존재 확인
+    $_dir_path = G5_DATA_PATH . '/billing/' . date("Ym") . "_sort/";
+    if (!is_dir($_dir_path)) { mkdir($_dir_path, 0777, true); }
+
+    // 23.01.31 : 서원 - 엑셀 ROW 데이터 기준 $sheetData[$i]['A'] 키값으로 내용 라인별 저장.
+    $_file_path = $_dir_path . $_filenm . "_" . $_thezone . "_" . $_managerID . ".csv";
+    
+    if( !file_exists($_file_path) ) {
+      $fp = fopen($_file_path, 'w');
+      fwrite($fp,
+        
+        iconv("UTF-8", "EUC-KR", 
+            "'" . str_replace(",", "", addslashes($_title['A']) ) . "', " .
+            "'" . str_replace(",", "", addslashes($_title['B']) ) . "', " .
+            "'" . str_replace(",", "", addslashes($_title['C']) ) . "', " .
+            "'" . str_replace(",", "", addslashes($_title['D']) ) . "', " .
+            "'" . str_replace(",", "", addslashes($_title['E']) ) . "', " .
+            "'" . str_replace(",", "", addslashes($_title['F']) ) . "', " .
+            "'" . str_replace(",", "", addslashes($_title['G']) ) . "', " .
+            "'" . str_replace(",", "", addslashes($_title['H']) ) . "', " .
+            "'" . str_replace(",", "", addslashes($_title['I']) ) . "', " .
+            "'" . str_replace(",", "", addslashes($_title['J']) ) . "', " .
+            "'" . str_replace(",", "", addslashes($_title['K']) ) . "', " .
+            "'" . str_replace(",", "", addslashes($_title['L']) ) . "', " .
+            "'" . str_replace(",", "", addslashes($_title['M']) ) . "', " .
+            "'" . str_replace(",", "", addslashes($_title['N']) ) ) . chr(13) . chr(10)
+      );
+
+    } else { $fp = fopen($_file_path, 'a+'); }
+
+    fwrite($fp,
+      iconv("UTF-8", "EUC-KR",  
+        "'" . str_replace(",", "", addslashes($_data['A']) ) . "', " .
+        "'" . str_replace(",", "", addslashes($_data['B']) ) . "', " .
+        "'" . str_replace(",", "", addslashes($_data['C']) ) . "', " .
+        "'" . str_replace(",", "", addslashes($_data['D']) ) . "', " .
+        "'" . str_replace(",", "", addslashes($_data['E']) ) . "', " .
+        "'" . str_replace(",", "", addslashes($_data['F']) ) . "', " .
+        "'" . str_replace(",", "", addslashes($_data['G']) ) . "', " .
+        "'" . str_replace(",", "", addslashes($_data['H']) ) . "', " .
+        "'" . str_replace(",", "", addslashes($_data['I']) ) . "', " .
+        "'" . str_replace(",", "", addslashes($_data['J']) ) . "', " .
+        "'" . str_replace(",", "", addslashes($_data['K']) ) . "', " .
+        "'" . str_replace(",", "", addslashes($_data['L']) ) . "', " .
+        "'" . str_replace(",", "", addslashes($_data['M']) ) . "', " .
+        "'" . str_replace(",", "", addslashes($_data['N']) ) ) . "'" . chr(13) . chr(10)
+    );
+
+
+    fclose($fp);
+
+}
+
+
+
+/*
+*
+* 작성자 : 박서원
+* 작성일자 : 2023-01-31
+* 마지막 수정자 : 박서원
+* 마지막 수정일자 : 2023-01-31
+* 설명 : 엑셀 파일을 읽어 데이터를 array로 리턴 한다.
+* @param string $_file : 엑셀 파일 경로
+* @return array() 
+*
+*/
+function billing_outputFile_excel_read( $_file )
+{
+    $excel_sheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($_file);
+    $excel_Data = $excel_sheet->getSheet(0)->toArray(null, true, true, true);
+    unset($excel_sheet);
+
+    return $excel_Data;
+}
+
+
+/*
+*
+* 작성자 : 박서원
+* 작성일자 : 2023-01-31
+* 마지막 수정자 : 박서원
+* 마지막 수정일자 : 2023-01-31
+* 설명 : 엑셀 파일에 개별 ROW 데이터를 저장 한다.
+* @param string $_filenm : 파일명
+* @param string $_data : ROW 데이터
+* @param string $_managerID : 관리자 아이디
+* @return boolean
+*
+*/
+function billing_outputFile_excel_write( $_filenm, $_data, $_managerID )
+{
+
+  include_once(G5_LIB_PATH."/PHPExcel.php");
+  $excel = new PHPExcel();
+  $sheet = $excel->getActiveSheet();
+
+
+  // 23.01.31 : 서원 - 엑셀 내용 세부 항목 분리 저장용 폴더 존재 확인
+  $_dir_path = G5_DATA_PATH . '/billing_upload/' . date("Y") . '/' . date("m") . '/separation/';
+  if (!is_dir($_dir_path)) { mkdir($_dir_path, 0777, true); }
+
+  // 23.01.31 : 서원 - 엑셀 ROW 데이터 기준 $sheetData[$i]['A'] 키값으로 내용 라인별 저장.
+  $_filenm = explode('.', $_filenm)[0];
+  $_file_path = $_dir_path . $_filenm . "_" . trim(addslashes($_data[0]['A'])) . "_" . $_managerID . ".xlsx";
+
+
+  $data = [];
+  $headers = array( '거래처코드', '거래처명', '품목코드', '품목그룹2명', '품목명[규격]', '단가(vat포함)', '수량', '공급가액', '부가세', '합계', '창고명', '담당자명', '담당자명', '일자' );
+  $data = array_merge(array($headers), $data);
+
+  // 23.01.31 : 서원 - 기존 생성된 엑셀 파일 생성 유/무 확인
+  /*
+  // 엑셀 파일을 오픈 할때 사용되는 라이브러리를 자주 사용하거나 많은 파일을 열고 닫을 경우 메모리 반환이 정상적으로 되지 않아 메모리 오버플 현상으로 멈춤.
+  // 엑셀 파일 생성시 ROW단위가 아닌 DATA 묶음으로 한번에 생성 해야 함. (파일에 직접 ROW로 쓰는건 문제가 있음.)
+  if( file_exists( $_file_path ) ) { 
+    $data = billing_outputFile_excel_read( $_file_path );
+  } else {
+    $headers = array( '거래처코드', '거래처명', '품목코드', '품목그룹2명', '품목명[규격]', '단가(vat포함)', '수량', '공급가액', '부가세', '합계', '창고명', '담당자명', '담당자명', '일자' );
+    $data = array_merge(array($headers), $data);
+  }
+  */
+
+
+  $data = array_merge_recursive($data, $_data);
+  $sheet->fromArray($data);
+
+
+	// Excel2007 포맷으로 저장
+  $writer = PHPExcel_IOFactory::createWriter($excel, 'Excel2007');
+
+  // 서버에 파일을 쓰지 않고 바로 다운로드
+  $writer->save( $_file_path );
+
+  unset($excel);
+  unset($writer);
+  unset($data);
+}
+
+
+
+// = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = 
+// 프로세스 시작
+// = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+
+
 // 22.12.28 : 서원 - 파일명이 있는지 여부
 if( !$_FILES['excelfile']['tmp_name'] ) { alert_close('파일을 읽을 수 없습니다.'); }
+if( !file_exists($_FILES['excelfile']['tmp_name']) ) { alert_close('파일을 읽을 수 없습니다.'); }
+
+
+// 23.01.31 : 서원 - 업로드 원본 파일 보관용 폴더 존재 확인
+$_dir_path = G5_DATA_PATH . '/billing_upload/' . date("Y") . '/' . date("m") . '/original/';
+if (!is_dir($_dir_path)) { mkdir($_dir_path, 0777, true); }
 
 
 // 22.12.28 : 서원 - 확장자 엑셀파일 체크
-$file_ext = pathinfo(iconv("UTF-8", "EUC-KR", $_FILES['excelfile']['name']));
+$file_ext = pathinfo($_FILES['excelfile']['name']);
 if( $file_ext['extension'] != "xlsx" ) { alert_close('엑셀 파일만 업로드 가능 합니다.\n확장자 xlsx만 가능 합니다.'); }
 else if( $_FILES['excelfile']['type'] != "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ) { alert_close('엑셀 파일만 업로드 가능 합니다.\n업로드 파일의 형식을 확인하여주시기 바랍니다.'); }
+
+
+// 파일명 저장
+$_fileName = $_FILES['excelfile']['name'];
+
+
+// 23.01.31 : 서원 - 기존 파일 업로드 되어있는지 확인.
+if( !file_exists($_dir_path . $_FILES['excelfile']['name']) ) { 
+
+  // 23.01.31 : 서원 - 업로드 원본 파일 서버 변도 저장. (추후 파일 오류 검증)  
+  copy( $_FILES['excelfile']['tmp_name'] , $_dir_path . $_fileName );
+} else {
+
+  // 23.01.31 : 서원 - pathinfo에서 파일명 일부가 사라지는 현상이 있어서 해당 파일명에서 직접 잘라 사용.
+  $_fileName = explode('.', $_FILES['excelfile']['name'])[0];
+  $_fileName .= "_over_" . date("ymdHis"). "." . $file_ext['extension'];
+
+  // 23.01.31 : 서원 - 업로드 원본 파일 서버 변도 저장. (추후 파일 오류 검증)
+  copy( $_FILES['excelfile']['tmp_name'] , $_dir_path . $_fileName );
+}
 
 
 // 23.01.19 : 서원 - 동일 파일명 중복 업로드 방지.
 $sql = (" SELECT COUNT(*) as cnt
           FROM payment_billing_list 
-          WHERE billing_uploadfile_nm = '" . $_FILES['excelfile']['name'] . "'
+          WHERE `billing_uploadfile_nm` = '" . $_FILES['excelfile']['name'] . "'
+                AND YEAR(create_dt) = YEAR(CURRENT_DATE()) 
+                AND MONTH(create_dt) = MONTH(CURRENT_DATE())
       ");
 $_sql = sql_fetch($sql);
 if( $_sql['cnt'] >= 1 ) { alert_close('[중복업로드체크]\n업로드가 되었던 파일 입니다.\n파일명과 내용을 확인하시기 바랍니다.\n\n파일명: '.$_FILES['excelfile']['name']); }
@@ -65,203 +261,316 @@ $sheetData = $spreadsheet->getSheet(0)->toArray(null, true, true, true);
 // 22.12.28 : 서원 - 엑셀 파일의 내영이 있는 경우.
 if($sheetData) {
 
-  // 데이터의 row 수
+  
+  // 엑셀 데이터의 row 수
   $num_rows = $spreadsheet->getSheet(0)->getHighestDataRow('A');
 
 
   // 22.12.28 : 서원 - 엑셀파일 형식 체크 (필드명이 다르거나 없을 경우 모두 리턴.)    
-  if( addslashes($sheetData[2]['A']) != "일자-No." ||
-      addslashes($sheetData[2]['B']) != "품목명[규격]" ||
-      addslashes($sheetData[2]['C']) != "수량" ||
-      addslashes($sheetData[2]['D']) != "단가(Vat포함)" ||
-      addslashes($sheetData[2]['E']) != "공급가액" ||
-      addslashes($sheetData[2]['F']) != "부가세" ||
-      addslashes($sheetData[2]['G']) != "판매" ||
-      addslashes($sheetData[2]['H']) != "출고처" ||
-      addslashes($sheetData[2]['I']) != "거래처코드"
-  ) { alert_close('엑셀 파일 내부 데이터 형식이 옳바르지 않습니다.'); }
-  else if( $num_rows <= 3 ) { alert_close('엑셀 파일 내부 데이터의 형식이 옳바르지 않거나 부족합니다.'); }
+  if( trim( trim(addslashes($sheetData[2]['A'])) ) != "거래처코드" ||
+      trim( trim(addslashes($sheetData[2]['B'])) ) != "거래처명" ||
 
+      trim( trim(addslashes($sheetData[2]['E'])) ) != "품목명[규격]" ||
+      trim( trim(addslashes($sheetData[2]['F'])) ) != "단가(vat포함)" ||
+      trim( trim(addslashes($sheetData[2]['G'])) ) != "수량" || 
+      trim( trim(addslashes($sheetData[2]['H'])) ) != "공급가액" || 
+      trim( trim(addslashes($sheetData[2]['I'])) ) != "부가세" || 
+      trim( trim(addslashes($sheetData[2]['J'])) ) != "합계" || 
 
-  $_price = [];
-  // 22.12.28 : 서원 - 금액 계산을 위한 Loop 처리
-  for( $i = 3; $i <= $num_rows; $i++ ) {
-    if( !addslashes($sheetData[$i]['A']) || !addslashes($sheetData[$i]['B']) || !addslashes($sheetData[$i]['I']) ) { continue; }
+      trim( trim(addslashes($sheetData[2]['N'])) ) != "일자"
 
-    // 부가세 여부 확인
-    if( !addslashes($sheetData[$i]['F']) ) {
-      // 부가세 제외대상 금액
-      $_price[addslashes($sheetData[$i]['I'])]['supply_free'] += (int)preg_replace("/[^-0-9]*/s", "", addslashes($sheetData[$i]['G']));
-    } else {
-      // 부가세 적용 대상 금액
-      $_price[addslashes($sheetData[$i]['I'])]['supply'] += (int)preg_replace("/[^-0-9]*/s", "", addslashes($sheetData[$i]['G']));
-    }
-    // 판매 금액 전체 합산
-    $_price[addslashes($sheetData[$i]['I'])]['total'] += (int)preg_replace("/[^-0-9]*/s", "", addslashes($sheetData[$i]['G']));
+  ) { 
+    alert_close('엑셀 파일 내부 데이터 형식이 옳바르지 않습니다.');
+    exit();
+  }
+  else if( $num_rows <= 4 ) { 
+    alert_close('엑셀 파일 내부 데이터의 형식이 옳바르지 않거나 부족합니다.');
+    exit();
   }
 
 
-  // 22.12.28 : 서원 - 동일 데이터 입력 여부 확인용 변수
-  $_check = $_overlap = 0;
-  $_bl_id = $_thezone = "";
+  // 가격 데이터 처리 배열
+  $_price = []; 
+
+  // 대금 청구 타이틀
+  $_billing_title = "";
+
+  // 빌링 아이디
+  $_billing_id = [];
+  
+  // 빌링 청구월
+  $_billing_month = "";
+
+  // 사업소 코드
+  $_thezone = "";
 
 
-  $sql_bl_id = $sql_bl = $sql_bld = []; // 정상 데이터 처리 배열
-  $_error_list = []; // 오류 데이터 처리 배열
-  $_ecount_title = "";
+  $_sql_bl = [];  // 정상 데이터 청구 데이터 SQL 쿼리문 저장 배열.
+  $_sql_bld = []; // 정상 데이터 청구 세부 항목 SQL 쿼리문 저장 배열.
+  $_error_list = []; // 오류 데이터 처리 배열.
+  $_excel_dl =[]; // 엑셀 데이터 저장을 위한 사업소별 원본 ROW데이터 분리 저장 배열.
 
 
-  // 22.12.28 : 서원 - 엑셀 엑셀데이터 Loop
-  for( $i = 0; $i <= $num_rows; $i++ ) {
+  // 22.12.28 : 서원 - 엑셀 ROW 데이터 Loop 처리
+  for( $i = 3; $i <= $num_rows; $i++ ) {
+  
+    // 청구중인 중복 데이터 체크
+    $_overlap_ck = false;
+
+    // 23.02.01 : 서원 - 필수 값인 사업소 코드와 사업소 명칭이 없을 경우 청구 항목 데이터로 추출하지 않는다.
+    if( !trim(addslashes($sheetData[$i]['A'])) || !trim(addslashes($sheetData[$i]['B'])) ) { continue; }
+
+
+    // 23.02.01 : 서원 - 사업소 배열 데이터가 있는 경우 머지 하며, 없을 경우 배열을 생성 한다.
+    if( $_excel_dl[trim(addslashes($sheetData[$i]['A']))] ) { 
+      $_excel_dl[trim(addslashes($sheetData[$i]['A']))] = array_merge_recursive($_excel_dl[trim(addslashes($sheetData[$i]['A']))], array($sheetData[$i]));
+    } else {
+      $_excel_dl[trim(addslashes($sheetData[$i]['A']))] = array($sheetData[$i]);
+    }
+
+
+    // 일자, 품목명, 수량, 거래처코드가 없을 경우 continue;
+    if( !trim(addslashes($sheetData[$i]['E'])) || !trim(addslashes($sheetData[$i]['F'])) || !trim(addslashes($sheetData[$i]['G'])) || !trim(addslashes($sheetData[$i]['N'])) ) { continue; }
+    
+        
+    // 사업소 코드가 모두 숫자 임으로 해당 필드의 데이터가 숫자가 아닌 경우 continue; 
+    if( (int)preg_replace("/[^-0-9]*/s", "", trim(addslashes($sheetData[$i]['A']))) <= 0 ) continue;      
+
+
+    // 부가세 여부 확인
+    if( (int)preg_replace("/[^-0-9]*/s", "", trim(addslashes($sheetData[$i]['I']))) == 0 ) {
+        // 부가세 제외대상 금액
+        $_price[trim(addslashes($sheetData[$i]['A']))]['supply_free'] += (int)preg_replace("/[^-0-9]*/s", "", trim(addslashes($sheetData[$i]['H'])));
+        
+        // 판매 금액 전체 합산
+        $_price[trim(addslashes($sheetData[$i]['A']))]['total'] += (int)preg_replace("/[^-0-9]*/s", "", trim(addslashes($sheetData[$i]['H'])));
+    } else {
+        // 부가세 적용 대상 금액
+        $_price[trim(addslashes($sheetData[$i]['A']))]['supply'] += (int)preg_replace("/[^-0-9]*/s", "", trim(addslashes($sheetData[$i]['H'])));
+        $_price[trim(addslashes($sheetData[$i]['A']))]['supply'] += (int)preg_replace("/[^-0-9]*/s", "", trim(addslashes($sheetData[$i]['I'])));
+        
+        // 판매 금액 전체 합산
+        $_price[trim(addslashes($sheetData[$i]['A']))]['total'] += (int)preg_replace("/[^-0-9]*/s", "", trim(addslashes($sheetData[$i]['H'])));
+        $_price[trim(addslashes($sheetData[$i]['A']))]['total'] += (int)preg_replace("/[^-0-9]*/s", "", trim(addslashes($sheetData[$i]['I'])));
+    }
 
 
     // 22.12.28 : 서원 - 거래처코드( 1개의 파일에 여러 사업소 정보가 있을 경우 체크값)
-    if( $_thezone != addslashes($sheetData[$i]['I']) ) {
-      $_thezone = addslashes($sheetData[$i]['I']);
-      $_check = $_overlap = 0;
-    }
+    /*
+    if( $_thezone_ck ) {
+      $_thezone = trim(addslashes($sheetData[$i]['K']));
+      $_thezone_ck = false;
 
+      $_billing_id = "billing_" . $_thezone . "_" . date("ymdHis");
+    } else {
+      if( $_thezone != trim(addslashes($sheetData[$i]['K'])) ) {
+        json_response(400, '1곳 이상의 사업소 데이터 존재 합니다.\n\n파일명: ' . $_FILES['files']['name'][$key]);
 
-    // 파일 내용중 1개 업체이상 데이터가 있을 경우 타이틀 추출 (엑셀 연결데이터용)
-    if( !$_check ) {      
-      if(strpos(addslashes($sheetData[$i]['A']), "회사명 : ") !== false) {
-        $_ecount_title = addslashes($sheetData[$i]['A']);
+        $sql_bl = array_diff( $sql_bl, array($_thezone, trim(addslashes($sheetData[$i]['K']))) );
+        $sql_bld = array_diff( $sql_bld, array($_thezone, trim(addslashes($sheetData[$i]['K']))) );
+
+        $_overlap_ck = false;
+        break;
       }
     }
+    */
 
-
-    // 22.12.28 : 서원 - row단위 값이 데이터가 아닌 거나, 필수 데이터가 없을 경우 패스~
-    if( !addslashes($sheetData[$i]['A']) || 
-        !addslashes($sheetData[$i]['B']) ||
-        addslashes($sheetData[$i]['I']) == "거래처코드" ||
-        addslashes($sheetData[$i]['A']) == "일자-No." ||
-        addslashes($sheetData[$i]['B']) == "품목명[규격]"
-    ) { continue; }
-    
-
-    // 22.12.28 : 서원 - 동일 엑셀 데이터 중복 여부 입력 확인
-    if( !$_check ) {
-      
-      // 22.12.28 : 서원 - 업로드 년/월 기준 업로드 데이터가 있는지 확인.
-      $sql = "";
-      $sql = ("  SELECT 
-                      COUNT(*) as cnt, mb_bnm
-                    FROM 
-                      payment_billing_list 
-                    WHERE 
-                      mb_thezone = '" . addslashes($sheetData[$i]['I']) . "'
-                      AND billing_yn = 'Y'
-                      AND YEAR(create_dt) = YEAR(CURRENT_DATE()) 
-                      AND MONTH(create_dt) = MONTH(CURRENT_DATE())
-                      AND pay_confirm_id IS NULL
-                      AND pay_confirm_dt IS NULL
-      ");      
-      $_sql = sql_fetch($sql);
-
-      // 검색 데이터 유/무 확인
-      if( $_sql['cnt'] > 0 ) {
-
-        $_error_list[addslashes($sheetData[$i]['I'])] = $_sql['mb_bnm'];
-        continue;
-
-      } else {
-
-        $sql = "";
-        $sql = (" SELECT 
-                    mb_id, mb_name, mb_giup_bname, mb_thezone
-                  FROM 
-                    g5_member 
-                  WHERE 
-                    mb_thezone = '" . addslashes($sheetData[$i]['I']) . "'
-        ");
-        $_sql = sql_fetch($sql);
-
-        // 검색 데이터 유/무 확인
-        if( $_sql['mb_id'] && $_sql['mb_name'] && $_sql['mb_giup_bname'] && $_sql['mb_thezone'] ) {
-          
-          if( !isset($sql_bl[$_sql['mb_thezone']]) ) {
-            $sql_bl_id[$_sql['mb_thezone']] = $_bl_id = "Billing_" . $_sql['mb_id'] . "_" . date("ymdHis");
-            $sql_bl[addslashes($sheetData[$i]['I'])] = ("  INSERT `payment_billing_list`
-                                          SET   `bl_id`                 = '" . $sql_bl_id[$_sql['mb_thezone']] . "',  /* 빌링 아이디 */
-                                                `mb_id`                 = '" . $_sql['mb_id'] . "',  /* 사업소 아이디 */
-                                                `billing_ecount_title`  = '" . $_ecount_title . "',  /* 사업소 명칭*/                                                
-                                                `billing_uploadfile_nm` = '" . $_FILES['excelfile']['name'] . "',  /* 사업소 명칭*/
-                                                `mb_bnm`                = '" . $_sql['mb_giup_bname'] . "',  /* 사업소 명칭*/
-                                                `mb_thezone`            = '" . $_sql['mb_thezone'] . "',  /* 사업소 코드 */
-                                                `price_tax`             = '" . ( ($_price[addslashes($sheetData[$i]['I'])]['supply'])?($_price[addslashes($sheetData[$i]['I'])]['supply']):("0") ) . "',  /* 부가세 대상 금액 */
-                                                `price_tax_free`        = '" . ( ($_price[addslashes($sheetData[$i]['I'])]['supply_free'])?($_price[addslashes($sheetData[$i]['I'])]['supply_free']):("0") ) . "',  /* 부가세 제외 금액 */
-                                                `price_total`           = '" . ( ($_price[addslashes($sheetData[$i]['I'])]['total'])?($_price[addslashes($sheetData[$i]['I'])]['total']):("0") ) . "',  /* 전체 금액 */
-                                                `create_id`             = '" . $member["mb_id"] . "'   /* 빌링 생성 아이디(관리자) */
-                                      ");
-          }
-
-        } else { $_error_list[addslashes($sheetData[$i]['I'])] = "* 정보없음 (DB에 존재하지 않음)"; $_overlap = 1; }
-        
-      }
-
-      $_check = 1;
-    }
-
-    // 대금 청구가 가능한 사업소일 경우 청구 리스트 저장
-    if( $_check && !$_overlap ) { 
-
-      // 청구 리스트 데이터 SQL 배열 저장을 위한 선언문
-      if( !is_array($sql_bld[addslashes($sheetData[$i]['I'])]) )
-        $sql_bld[addslashes($sheetData[$i]['I'])] = array();
-
-      $sql_bld[addslashes($sheetData[$i]['I'])][] = (" INSERT `payment_billing_list_data`
-                      SET	`bl_id`         = '" . $sql_bl_id[$_sql['mb_thezone']] . "',  /* 빌링 아이디 */
-                          `mb_thezone`    = '" . addslashes($sheetData[$i]['I']) . "', /* 거래처 코드 */
-                          `bld_id`        = '" . addslashes($sheetData[$i]['A']) . "', /* 일자-No */
-                          `item_nm`       = '" . addslashes($sheetData[$i]['B']) . "', /* 품목명[규격] */
-                          `item_qty`      = '" . ( (addslashes($sheetData[$i]['C']))?(preg_replace("/[^-0-9]*/s", "", addslashes($sheetData[$i]['C']))):("0") ) . "', /* 수량 */
-                          `price_qty`     = '" . ( (addslashes($sheetData[$i]['D']))?(preg_replace("/[^-0-9]*/s", "", addslashes($sheetData[$i]['D']))):("0") ) . "', /* 단가(vat포함) */
-                          `price_supply`  = '" . ( (addslashes($sheetData[$i]['E']))?(preg_replace("/[^-0-9]*/s", "", addslashes($sheetData[$i]['E']))):("0") ) . "', /* 공급가액 */
-                          `price_tax`     = '" . ( (addslashes($sheetData[$i]['F']))?(preg_replace("/[^-0-9]*/s", "", addslashes($sheetData[$i]['F']))):("0") ) . "', /* 부가세 */
-                          `price_total`   = '" . ( (addslashes($sheetData[$i]['G']))?(preg_replace("/[^-0-9]*/s", "", addslashes($sheetData[$i]['G']))):("0") ) . "', /* 판매 */
-                          `item_delivery` = '" . addslashes($sheetData[$i]['H']) . "' /* 출고처 */
-                  ");
-    
-    }
-    
 
     //23.01.19 : 서원 - 업로드 데이터중... 직전월 데이터가 아닌 전전월 또는 당월 데이터가 있을 경우 해당 데이터 업로드 금지.
     //                  해당 기능은 전원 데이터만 업로드 하여 결제하는 방식으로 고정 요청.
     //                   업로드 되는 데이터의 일자에서 전월 이외 텍스트가 있을 경우 업로드 금지.
-    $_mon = explode( "/", substr(addslashes($sheetData[$i]['A']),0,8) )[1];
-    if( date("m", mktime(0, 0, 0, date("m")-1, 1)) != $_mon ) {
-      $_error_list[addslashes($sheetData[$i]['I'])] = date("m", mktime(0, 0, 0, date("m")-1, 1))."월청구만가능<br/>('".substr(addslashes($sheetData[$i]['A']),0,8)."'포함됨)";
-      $sql_bl[addslashes($sheetData[$i]['I'])] = $sql_bld[addslashes($sheetData[$i]['I'])] = "";
-      $_overlap = 1;
+    $_billing_month = explode( "/", substr(trim(addslashes($sheetData[$i]['N'])),0,8) )[1];
+    if( date("m", mktime(0, 0, 0, date("m")-1, 1)) != $_billing_month ) {
+      $_error_list[trim(addslashes($sheetData[$i]['A']))] = trim(addslashes($sheetData[$i]['B'])) ."<br/>* ". date("m", mktime(0, 0, 0, date("m")-1, 1))."월 청구만 가능('".trim(addslashes($sheetData[$i]['N']))."'포함됨)";
+      $_overlap_ck = false;
     }
 
 
-  }
-  
-  //var_dump($sql_bl);
-  //var_dump($sql_bld);
-  //var_dump($_error_list);
+    // 23.01.31 : 서원 - 사업소 데이터에 문제가 있을 경우 SQL 데이터를 만들지 않음.
+    if( $_error_list[trim(addslashes($sheetData[$i]['A']))] ) { 
+      $sql_bl[trim(addslashes($sheetData[$i]['A']))] = $sql_bld[trim(addslashes($sheetData[$i]['A']))] = "";
+      unset( $sql_bl[ trim(addslashes($sheetData[$i]['A'])) ] );
+      unset( $sql_bld[ trim(addslashes($sheetData[$i]['A'])) ] );
+      $_overlap_ck = false;
+      continue;
+    }
 
-  
+
+    // 22.12.28 : 서원 - 업로드 년/월 기준 업로드 데이터가 있는지 확인.
+    if( $_overlap_ck === false ) {
+
+
+      // 23.02.01 : 서원 - 중복 데이터 조건 검색
+      $_sql = sql_fetch(" SELECT COUNT(*) as cnt, mb_bnm
+                          FROM payment_billing_list 
+                          WHERE 
+                          `mb_thezone` = '" . trim(addslashes($sheetData[$i]['A'])) . "'
+                          AND `billing_month` = '" . $_billing_month . "'
+                          AND `billing_yn` = 'Y'
+                          AND YEAR(create_dt) = YEAR(CURRENT_DATE()) 
+                          AND MONTH(create_dt) = MONTH(CURRENT_DATE())
+                          AND ( `pay_confirm_id` IS NULL OR `pay_confirm_id` = '' )
+                          AND ( `pay_confirm_dt` IS NULL OR `pay_confirm_dt` = '' )
+      ");      
+        
+
+      // 검색 데이터 유/무 확인
+      if( $_sql['cnt'] ) {
+        
+        // 23.02.01 : 서원 - 청구중인 데이터가 있을 경우 입력하지 않음!!!(이외 변경 된 내용이 있는지 확인 체크.)
+        $_error_list[trim(addslashes($sheetData[$i]['A']))] = trim(addslashes($sheetData[$i]['B'])) ."<br/>* 기존 청구중 데이터 존재";
+        $sql_bl[trim(addslashes($sheetData[$i]['A']))] = $sql_bld[trim(addslashes($sheetData[$i]['A']))] = "";          
+        unset( $sql_bl[ trim(addslashes($sheetData[$i]['A'])) ] );
+        unset( $sql_bld[ trim(addslashes($sheetData[$i]['A'])) ] );
+        $_overlap_ck = false;
+        continue;
+
+      } else {
+        $_overlap_ck = true;
+      }
+
+    }
+
+
+    // == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == ==
+    // 기존 입력 데이터가 없거나 이미 청구된 데이터가 결제 완료 되었을 경우 신규 청구서(쿼리문) 생성.
+    // == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == ==
+
+
+    // 기존 데이타가 존재하는 경우 처리
+    if( $_overlap_ck === true ) {
+
+
+      // 회원 DB 사업소 검색
+      $_sql = sql_fetch(" SELECT mb_id, mb_name, mb_giup_bname, mb_thezone
+                          FROM g5_member 
+                          WHERE mb_thezone = '" . trim(addslashes($sheetData[$i]['A'])) . "'
+      ");
+
+
+      // 22.12.28 : 서원 - 거래처코드( 1개의 파일에 여러 사업소 정보가 있을 경우 체크값)
+      if( $_thezone != trim(addslashes($sheetData[$i]['A'])) ) {
+        $_thezone = trim(addslashes($sheetData[$i]['A']));
+        
+        // 기존 빌링 아이디가 없을 경우 빌링 아이디 생성.
+        if( !$_billing_id[ $_sql['mb_thezone'] ] ) {
+          $_billing_id[ $_sql['mb_thezone'] ] = "billing_" . $_thezone . "_" . date("ymdHis");
+        }
+      }
+
+      // 회원 정보가 있는 경우
+      if( $_sql['mb_id'] ) {
+
+        // 청구 리스트 데이터 SQL 배열 저장을 위한 선언문
+        if( isset($sql_bl[ $_thezone ]) ) {
+          $sql_bl[ $_thezone ] = "";
+        }
+        
+        if( !$sql_bl[$_thezone] ) {
+
+          // 사업소 청구 정보 생성
+          // 금액의 경우 치환자로 임의 대입하여 전달하며, 최종 SQL 실행 직전 치환자를 금액 배열에서 찾아 치환 한다.
+          $sql_bl[$_thezone] = (" INSERT `payment_billing_list`
+                                  SET   `bl_id`                 = '" . $_billing_id[$_thezone] . "',
+                                        `mb_id`                 = '" . $_sql['mb_id'] . "',
+                                        `billing_uploadfile_nm` = '" . $_fileName . "',
+                                        `billing_month`         = '" . $_billing_month . "',
+                                        `billing_fee`           = '" . json_decode( $default['de_paymenet_billing_OnOff'], TRUE )['fee_card'] . "',
+                                        `mb_bnm`                = '" . $_sql['mb_giup_bname'] . "',
+                                        `mb_thezone`            = '" . $_sql['mb_thezone'] . "',
+                                        `price_tax`             = '##price_tax##',
+                                        `price_tax_free`        = '##price_tax_free##',
+                                        `price_total`           = '##price_total##',
+                                        `create_id`             = '" . $member["mb_id"] . "' 
+                                        /* sql end */
+                                ");
+        }
+      } else {
+        $_error_list[$_thezone] = trim(addslashes($sheetData[$i]['B'])) . "<br/>* 정보없음 (DB에 존재하지 않음)";
+      }
+
+
+      // 청구 데이터가 있는 사업소의 세부적인 청구 항목을 넣는다.
+      if( $sql_bl[ $_thezone ] ) {
+
+
+        // 청구 리스트 데이터 SQL 배열 저장을 위한 선언문
+        if( !$sql_bld[ $_thezone ] )
+          $sql_bld[ $_thezone ] = [];
+        
+
+        // 데이터 리스트 정보 작성
+        $sql_bld[ $_thezone ][]= (" INSERT `payment_billing_list_data`
+                                    SET	
+                                        `bl_id`             = '" . $_billing_id[$_thezone] . "',
+                                        `mb_thezone`        = '" . $_thezone . "',
+                                        `item_dt`           = '" . trim(addslashes($sheetData[$i]['N'])) . "',
+                                        `item_nm`           = '" . trim(addslashes($sheetData[$i]['E'])) . "',
+                                        `item_qty`          = '" . ( (trim(addslashes($sheetData[$i]['G'])))?(preg_replace("/[^-0-9]*/s", "", trim(addslashes($sheetData[$i]['G'])))):("0") ) . "',
+                                        `price_qty`         = '" . ( (trim(addslashes($sheetData[$i]['F'])))?(preg_replace("/[^-0-9]*/s", "", trim(addslashes($sheetData[$i]['F'])))):("0") ) . "',
+                                        `price_supply`      = '" . ( (trim(addslashes($sheetData[$i]['H'])))?(preg_replace("/[^-0-9]*/s", "", trim(addslashes($sheetData[$i]['H'])))):("0") ) . "',
+                                        `price_tax`         = '" . ( (trim(addslashes($sheetData[$i]['I'])))?(preg_replace("/[^-0-9]*/s", "", trim(addslashes($sheetData[$i]['I'])))):("0") ) . "',
+                                        `price_total`       = '" . ( (trim(addslashes($sheetData[$i]['J'])))?(preg_replace("/[^-0-9]*/s", "", trim(addslashes($sheetData[$i]['J'])))):("0") ) . "';
+                                ");
+
+      }
+
+    }
+
+    // for 프로세스 중복 체크 값 리셋
+    $_overlap_ck = false;
+  }
+
+
+  // 페이지 하단(속도측정)
+  //$end_time = array_sum(explode(' ', microtime()));
+  //echo "1-TIME : ". ( $end_time - $start_time ) . "<br /><br />";
+
+
   // 23.01.02 : 서원 - 트랜잭션 시작
   sql_query("START TRANSACTION");
 
   try {
-    
+
     // 청구 데이터 SQL 실행
     if( is_array($sql_bl) ) {
-      foreach($sql_bl as $sql) { sql_query($sql); }
+      foreach($sql_bl as $key => $sql) {
+
+        // 최종 합계금액을 SQL INSERT 직전에 텍스트 치환하여 저장.
+        $sql = str_replace("##price_tax##", $_price[$key]["supply"], $sql);
+        $sql = str_replace("##price_tax_free##", $_price[$key]["supply_free"], $sql);
+        $sql = str_replace("##price_total##", $_price[$key]["total"], $sql);
+
+        // 최종 결제 금액이 마이너스일 경우 청구 진행 불가.
+        if( $_price[$key]["total"] <= 0 ) {
+          $sql = str_replace("/* sql end */", ", billing_yn='N', error_code='cancel', error_event='system', error_msg='카드결제 불가능한 청구 금액', error_dt=NOW()", $sql);
+        }
+
+        //var_dump($sql);
+        sql_query($sql);       
+      }
     }
+
+    // 페이지 하단(속도측정)
+    //$end_time = array_sum(explode(' ', microtime()));
+    //echo "2-TIME : ". ( $end_time - $start_time ) . "<br /><br />";
 
     // 청구 리스트 SQL 실행
     if( is_array($sql_bld) ) {
       foreach($sql_bld as $val) {
 
-        if( is_array($val) ) {
-          foreach($val as $sql) { sql_query($sql); }
+        if( is_array($val) ) { 
+          foreach($val as $sql) { 
+            //var_dump($sql);
+            sql_query($sql);
+          }
         }
-
+        
       }
+
+      // 페이지 하단(속도측정)
+      //$end_time = array_sum(explode(' ', microtime()));
+      //echo "3-TIME : ". ( $end_time - $start_time ) . "<br /><br />";
     }
 
     // 23.01.02 : 서원 - 트랜잭션 커밋
@@ -272,13 +581,35 @@ if($sheetData) {
     sql_query("ROLLBACK");
   }
 
-} else {
-  alert('파일을 읽을 수 없습니다.',FALSE);
+
+  // 페이지 하단(속도측정)
+  //$end_time = array_sum(explode(' ', microtime()));
+  //echo "4-TIME : ". ( $end_time - $start_time ) . "<br /><br />";
+
+
+  // 23.02.01 : 서원 - 위 프로세스가 모두 종료 되고, 사업소별 엑셀 파일 생성
+  foreach( $_excel_dl as $key => $val ) {
+    // 23.01.31 : 서원 - 사업소별 파일 생성
+    //billing_outputFile_Sort( $_fileName, trim(addslashes($sheetData[$i]['A'])), $sheetData[2], $sheetData[$i], $member["mb_id"] );
+    //var_dump( $val );
+    billing_outputFile_excel_write( $_fileName, $val, $member["mb_id"] );
+  }
+
+
+  // 페이지 하단(속도측정)
+  //$end_time = array_sum(explode(' ', microtime()));
+  //echo "5-TIME : ". ( $end_time - $start_time ) . "<br /><br />";
+
+
+  //var_dump($sql_bl);
+  //var_dump($sql_bld);
+  //var_dump($_error_list);
+  //var_dump($_excel_dl);
+
+
 }
 
-?>
-
-<?php if( COUNT($_error_list) > 0 ) { ?>
+if( COUNT($_error_list) > 0 ) { ?>
 
 <!DOCTYPE html>
 <html lang="ko">
@@ -302,30 +633,31 @@ if($sheetData) {
   <div class="visual">
     <div class="visalWrap">
       <!-- title -->
-      <div class="headerTitle">
-        <h5>중복 청구 사업소 리스트</h5>
-      </div>
+      <div class="headerTitle"><h5>청구서 업로드 실패 사업소 리스트</h5></div>
 
         <!-- contents -->
-        <div class="contentsWrap">
+        <div class="contentsWrap_result">
 
           <div class="priceListWrap">
+
+            <li>전체: <?=number_format(COUNT($sql_bl)+COUNT($_error_list));?>사업소 | <span id="success">성공: <?=number_format(COUNT($sql_bl));?>사업소</span> | <span id="fail">실패: <?=number_format(COUNT($_error_list));?>사업소</span></li>
+
             <div class="listTitle">
-              <p>* 이미 청구가된 중복청구 사업소가 있습니다.</p>
-              <p>* 리스트와 업로드된 엑셀 파일을 확인해주세요.</p>
+              <li>* 청구서 업로드에 실패된 사업소가 있습니다.</li>
+              <li>* 리스트와 업로드된 엑셀 파일을 확인해주세요.</li>
             </div>
 
             <table>
               <tr>                
-                <th style="width:50%;">사업소코드</th>
+                <th style="width:32%;">사업소코드</th>
                 <th>비고</th>
               </tr>
             </table>
-            <div style="width:100%; height:228px; overflow:auto">
+            <div style="width:100%; height:260px; overflow:auto">
             <table >
               <?php foreach ($_error_list as $key => $val) { ?>
               <tr>
-                <td style="width:50%;"><?=$key;?></td>
+                <td style="width:32%;"><?=$key;?></td>
                 <td><?=$_error_list[$key];?></td>                
               </tr>
               <?php } ?>
@@ -335,16 +667,19 @@ if($sheetData) {
 
         </div>
 
-        <div class="okBtn" onclick="opener.location.reload();window.close();">닫기</div>
+        <div class="okBtn" onclick="opener.location.reload(); window.close();">닫기</div>
 
 
     </div>
   </div>
 
 <style>
-  .visalWrap {height: 100%;}
-  .contentsWrap {height: 376px;}
-  .listTitle {padding-bottom: 20px;}
+  .visalWrap { height: 100%; }
+  .contentsWrap_result { padding: 10px 20px; }
+  .listTitle { padding-bottom: 10px; }
+  .priceListWrap > li { font-size: 16px; padding-bottom: 10px; }
+  .priceListWrap > li #success { font-weight: bold; color: blue; }
+  .priceListWrap > li #fail { font-weight: bold; color: red; }
 </style>
 
 </body>
@@ -355,5 +690,4 @@ if($sheetData) {
   opener.location.reload();
   window.close();
 </script>
-<?php } else { ?>
-<?php } ?>
+<?php } else { } ?>

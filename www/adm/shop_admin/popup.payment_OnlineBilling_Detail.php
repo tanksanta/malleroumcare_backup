@@ -66,7 +66,7 @@ function txt_pay_ENUM( $val ) {
 
 $_sql = ("  SELECT 
                 bl.*, 
-                par.method_symbol, par.status_locale, card_company, card_quota
+                par.method_symbol, par.price, par.status_locale, card_company, card_quota
             FROM 
                 payment_billing_list bl
             LEFT OUTER JOIN
@@ -92,35 +92,24 @@ if( $result_bl['card_quota']=="00" ) {
 } 
 
 
-$widths  = [20, 40, 15, 25, 20, 15, 20, 35];
+$widths  = [18, 55, 10, 18, 18, 15, 20];
     
 $headers = [
-    '일자-No.',
+    '일자',
     '품목명[규격]',
     '수량',
     '단가(Vat포함)',
     '공급가액',
     '부가세',
-    '판매',
-    '출고처'
+    '판매'
 ];
 
 $bl_id = $_GET["bl_id"];
 // 내용(본문 리스트)
-$_sql = ("  SELECT 
-                bld_id, 
-                item_nm, 
-                item_qty,
-                price_qty,
-                price_supply,
-                price_tax,
-                price_total,
-                item_delivery
-            FROM 
-                payment_billing_list_data
-            WHERE 
-                bl_id = '" . $bl_id . "'
-            ORDER BY bld_id
+$_sql = ("  SELECT item_dt, item_nm, item_qty, price_qty, price_supply, price_tax, price_total
+            FROM payment_billing_list_data
+            WHERE bl_id = '" . $bl_id . "'
+            ORDER BY item_dt
 ");
 
 $result = sql_query($_sql);
@@ -242,12 +231,41 @@ function column_char($i) { return chr( 65 + $i ); }
 
     <script type="application/javascript">
         $(function() {
+
             $('.close').click(function() {
                 parent.$('#BillingDetail_popup').hide();
+                parent.location.reload();
             });
+
+            $('#billing_fee_yn').change(function() {
+                Payment_Set_Billing_fee( $(this).val(), $("#billing_fee").val() );
+            });
+
+            $('#_fee').click(function() {       
+                if( $("#billing_fee_yn option:selected").val() === "N" ) {
+                    alert("현재 수수료 미적용 상태로 수수율을 변경할 수 없습니다. ");
+                    return;
+                }         
+                Payment_Set_Billing_fee( $("#billing_fee_yn option:selected").val(), $("#billing_fee").val() );
+            });
+
         });
 
-        
+
+        function Payment_Set_Billing_fee(yn,fee){
+
+            $.ajax({
+                url: '/adm/shop_admin/ajax.payment_OnlineBilling_SetUpdate.php',
+                type: 'POST',
+                data: {"mode_set":'fee_set', "bl_id":"<?=$result_bl['bl_id'];?>", "_yn":yn, "_fee":fee },
+                dataType: 'json',
+                success: function(data) {},
+                error: function(e) {}
+            })
+            .always(function() { alert("수수료 항목이 변경 처리 되었습니다."); location.reload(); });
+        }
+
+
         function Payment_Set_Billing_cancelled(id){
             if (!confirm("사업소에 청구된 내용을 취소 하시겠습니까?")) { return; }
 
@@ -259,13 +277,13 @@ function column_char($i) { return chr( 65 + $i ); }
                 success: function(data) {},
                 error: function(e) {}
 
-            });
+            })
+            .always(function() { alert("사업소 대금 청구가 취소 되었습니다."); location.reload(); });
 
-            location.reload();
         }
 
 
-        function ExcelDownload(id) {
+        function PDF_Download(id) {
             
             $('#loading_excel').show();
 
@@ -275,7 +293,14 @@ function column_char($i) { return chr( 65 + $i ); }
             .always(function() { $('#loading_excel').hide(); });
         }
 
-        
+        function Excel_Download(id) {
+            var _file_path = "/data/billing_upload/";
+            _file_path = _file_path + "<?=explode("-", $result_bl['create_dt'])[0];?>/<?=explode("-", $result_bl['create_dt'])[1];?>/separation/";
+            _file_path = _file_path + "<?=explode(".", $result_bl['billing_uploadfile_nm'])[0];?>_<?=$result_bl['mb_thezone']?>_<?=$result_bl['create_id']?>.xlsx";
+            excel_downloader = $.fileDownload(_file_path, { httpMethod: "GET", data: { "bl_id":id } });
+        }
+
+
         function cancelExcelDownload() {
             $('#loading_excel').hide();
         }
@@ -299,43 +324,78 @@ function column_char($i) { return chr( 65 + $i ); }
         <th scope="col">사업소 아이디 : </th><td><?=$result_bl['mb_id'];?></td>
     </tr>
     <tr>
-        <th scope="col" style="width:10%;">과세 금액 : </th><td style=""><?=number_format($result_bl['price_tax']);?></td>
-        <th scope="col" style="width:10%;">면세 금액 : </th><td style="width:10%;"><?=number_format($result_bl['price_tax_free']);?></td>
-        <th scope="col" style="width:10%;">청구 금액 : </th><td style="width:14%;"><?=number_format($result_bl['price_total']);?></td>
-        <th scope="col" style="width:10%;">청구 품목 : </th><td style="width:14%;"><?=number_format($result->num_rows);?>건</td>
+        <th scope="col" style="">청구 아이디 : </th>
+        <td colspan="3"><?=$result_bl['bl_id'];?><br />(<?=($result_bl['billing_yn']=="Y")?"청구완료":"청구취소";?>)</td>
+        <th scope="col" style="">청구 등록일 : </th><td style=""><?=$result_bl['create_dt'];?></td>
+        <th scope="col" style="">청구 등록자 : </th><td style=""><?=$result_bl['create_id'];?></td>
     </tr>
-
     <tr>
-        <th scope="col">청구 아이디 : </th><td><?=$result_bl['bl_id'];?></td>
-        <th scope="col">청구 상태 : </th><td><?=($result_bl['billing_yn']=="Y")?"청구완료":"청구취소";?></td>
-        <th scope="col">청구 등록일 : </th><td><?=$result_bl['create_dt'];?></td>
-        <th scope="col">청구 등록자 : </th><td><?=$result_bl['create_id'];?></td>
-    </tr><tr>
+        <th scope="col" style="width:10%;">청구 금액 : </th><td style="width:15%;"><?=number_format($result_bl['price_total']);?></td>
+        <th scope="col" style="width:10%;">면세<br />구매금액 : </th><td style="width:15%;"><?=number_format($result_bl['price_tax_free']);?></td>
+        <th scope="col" style="width:10%;">과세<br />구매금액 : </th><td style="width:15%;"><?=number_format($result_bl['price_tax']);?></td>
+        <th scope="col" style="width:10%;">품목 건수 : </th><td style="width:15%;"><?=number_format($result->num_rows);?>건</td>
+    </tr>
+    <tr>
+        <th scope="col" style="width:10%;"> 최종<br />결제 금액 : </th><td><?=number_format($result_bl['price']);?></td>
+        <th scope="col" style="width:10%;"> 최종<br />결제 수수료 : </th><td>
+            <?php if( $result_bl['price'] > 0 ) {  ?>
+                <?=number_format( $result_bl['price_total'] * ($result_bl['billing_fee']/100) ); ?>
+            <?php } else { echo("0"); } ?>
+        </td>
+        <th scope="col" style="width:10%;"> 수수료<br />적용 여부 : </th><td>
+        <select name="billing_fee_yn" id="billing_fee_yn" <?=(( ($result_bl['billing_yn']=="Y") && !($result_bl['price']>0) )?"":"disabled");?> style="padding:5px 10px; font-size:14px;">
+            <option value="Y" <?=($result_bl['billing_fee_yn']=="Y")?"selected":""?>> 적용 </option>
+            <option value="N" <?=($result_bl['billing_fee_yn']=="N")?"selected":""?>> 미적용 </option>
+        </select>
+        </td>
+        <th scope="col" style="width:10%;"> 수수료율 : </th><td>
+            <?php if( ($result_bl['billing_yn']=="Y") && !($result_bl['price']>0) && ($result_bl['billing_fee_yn']=="Y") ) { ?>
+            <input type="number" id="billing_fee"  name="billing_fee" value="<?=$result_bl['billing_fee']?>" class="frm_input" size="4" maxlength="4" autocomplete="off" style="padding-left:5px; font-size:14px; width:38%;">%
+            <input type="button" id="_fee" onclick="" value="확인" class="btn btn_02" style="width:40px; height:25px; font-size:12px; cursor:pointer; float:right;">
+            <?php } else { if( $result_bl['billing_fee_yn']=="Y" ) { ?>
+                <?=$result_bl['billing_fee']?>%
+                <?php } else { ?>
+                    <li>면제</li>
+                    <li><span style="color: gainsboro;"><?=$result_bl['billing_fee']?>%</span></li>
+                <?php } ?>
+            <input type="hidden" id="billing_fee" name="billing_fee" value="<?=$result_bl['billing_fee']?>" />
+            <?php } ?>
+        </td>
+    </tr>
+    <?php if( $result_bl['status_locale'] ) { ?>
+    <tr>
         <th scope="col">결제 상태 : </th><td><?=$result_bl['status_locale'];?></td>
         <th scope="col">결제 방법 : </th><td><?=txt_pay_ENUM($result_bl['method_symbol']);?></td>
         <th scope="col">결제 종류 : </th><td><?=$result_bl['card_company'];?></td>
         <th scope="col">할부 구분 : </th><td><?=$result_bl['card_quota'];?></td>
-    </tr><tr>
-        <th scope="col">Err 코드 : </th><td><?=$result_bl['error_code'];?></td>
-        <th scope="col">Err 근원지 : </th><td><?=$result_bl['error_event'];?></td>
-        <th scope="col">Err 메시지 : </th><td><span style="color:#ff0000;"><?=$result_bl['error_msg'];?></span></td>
-        <th scope="col">Err 발생일 : </th><td><span style="color:#ff0000;"><?=$result_bl['error_dt'];?></span></td>
     </tr>
+    <?php } if( $result_bl['error_code'] ) { ?>
+    <tr>
+        <th scope="col">Err 코드 : <br />Err 근원지 : </th><td colspan="3"><?=$result_bl['error_code'];?><br /><?=$result_bl['error_event'];?></td>
+        <th scope="col">Err 메시지 : <br />Err 발생일 :</th><td colspan="3">
+            <span style="color:#ff0000;"><?=$result_bl['error_msg'];?></span><br />
+            <span style="color:#ff0000;"><?=$result_bl['error_dt'];?></span>
+        </td>
+    </tr>
+    <?php } ?>
     </table>
 </div>
+
+<?php if( $_billing['billing_fee_yn']=="N" ) { ?>
+<div class="note"> ※ 해당 사업소는 본 결제건에 대하여 수수료 면제 대상으로 설정되어 있습니다. </div>
+<?php } ?>
 
 <div class="tbl_wrap">
     <?php if( (!$result_bl['pay_confirm_receipt_id']) && $result_bl['billing_yn']=="Y" ) { ?>
     <input type="button" id="cancelled" onclick="Payment_Set_Billing_cancelled('<?=$result_bl['bl_id'];?>');" value="청구 취소" class="btn btn_02" style="width:100px; height:35px; font-size:12px; cursor:pointer; float:right;">
     <?php } ?>
-    <input type="button" onclick="ExcelDownload('<?=$result_bl['bl_id'];?>');" value="사업소 청구 리스트 PDF 다운로드" class="btn btn_03" style="width:250px; height:35px; font-size:14px; cursor:pointer; float:left;">
+    <input type="button" onclick="Excel_Download('<?=$result_bl['bl_id'];?>');" value="XLSX(원본) 파일" class="btn btn_03" style="width:150px; height:35px; marign-right:10px; font-size:14px; cursor:pointer; float:left;">
+    <input type="button" onclick="PDF_Download('<?=$result_bl['bl_id'];?>');" value="PDF 파일" class="btn btn_03" style="width:150px; height:35px; font-size:14px; cursor:pointer; float:left;">
 </div>
 
 <br /><br />
 <?=$result_bl['billing_ecount_title'];?>
 <div style="padding-bottom:15px;">
-    <?php
-    ?>
     <?php        
         $writer = PHPExcel_IOFactory::createWriter($excel, 'HTML');
         $writer->save('php://output');

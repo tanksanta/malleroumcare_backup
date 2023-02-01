@@ -34,6 +34,8 @@ $sub_menu = '500150';
 include_once("./_common.php");
 
 if( $_POST['mode_set']  == "cancelled" ) {
+
+    // 관리자 화면 세부 청구취소
     $sql = ("   UPDATE `payment_billing_list`
                 SET `billing_yn`  = 'N',
                 `billing_status`  = '관리자취소',
@@ -52,7 +54,27 @@ if( $_POST['mode_set']  == "cancelled" ) {
 } 
 else if( $_POST['mode_set']  == "setting" ) {
     
-    $sql = ("   UPDATE `g5_shop_default` SET `de_paymenet_billing_OnOff`  = '" . json_encode( array("OnOff"=>$_POST['radio_onoff'],"start_dt"=>$_POST['select_start_dt'],"end_dt"=>$_POST['select_end_dt']) ) . "' ");
+    // 관리자 화면 설정 저장.
+    $sql = ("   UPDATE `g5_shop_default` SET `de_paymenet_billing_OnOff`  = '" . json_encode( 
+        array(
+            "OnOff"=>$_POST['radio_onoff'],
+            "start_dt"=>$_POST['select_start_dt'],
+            "end_dt"=>$_POST['select_end_dt'],
+            "fee_card"=>$_POST['fee_card']
+        ) 
+    ) . "' ");
+    sql_query($sql);
+
+}
+else if( $_POST['mode_set']  == "fee_set" ) {
+
+    // 사업소 수수료 개별 지정
+    $sql = ("   UPDATE `payment_billing_list` 
+                SET 
+                    `billing_fee_yn`  = '" . $_POST['_yn'] . "', 
+                    `billing_fee` = '" . $_POST['_fee'] . "'
+                WHERE `bl_id` = '" . $_POST['bl_id'] . "'
+            ");
     sql_query($sql);
 
 }
