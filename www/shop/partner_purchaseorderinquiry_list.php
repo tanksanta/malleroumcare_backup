@@ -424,6 +424,7 @@ tr.hover { background-color: #fbf9f7 !important; }
                     case '입고완료': $_bg_color = "#36a6de"; $_txt = $_txt."(출고후)"; break;
                     case '마감완료': $_bg_color = "#604A7B"; break;
 //                    case '파트너발주취소': $_bg_color = "#002060"; break;
+                    case '관리자발주취소': $_bg_color = "#6f6f6f"; break;
                     case '발주취소': $_bg_color = "#6f6f6f"; break;
                     default: break;
                   }
@@ -481,7 +482,7 @@ tr.hover { background-color: #fbf9f7 !important; }
               </td>
               <td class="td_status text_c">
                 <?php
-                if($row['ct_status'] != '발주취소') { // 발주취소 건은 담당자 출력 안 함
+                if($row['ct_status'] != '발주취소' && $row['ct_status'] != '관리자발주취소') { // 발주취소 건은 담당자 출력 안 함
                     if ($manager_mb_id) {
                         $manager_txt = '미지정';
                         if ($row['od_partner_manager']) {
@@ -799,7 +800,7 @@ $(function() {
       });
     } else {
       // 주문상태 변경
-      if($('select[name="ct_status"]').val() == '취소' && !confirm('주문취소 후 상태 변경은 불가능합니다. 취소하시겠습니까?')) {
+      if($('select[name="ct_status"]').val() == '발주취소' && !confirm('주문취소 후 상태 변경은 불가능합니다. 취소하시겠습니까?')) {
         return false;
       }
 

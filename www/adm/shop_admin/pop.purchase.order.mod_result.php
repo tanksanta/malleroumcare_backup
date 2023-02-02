@@ -472,10 +472,10 @@ try {
       UPDATE 
         purchase_order
       SET 
-        `od_send_yn` = '0',
-        `od_send_mail_yn` = '0',
-        `od_send_hp_yn` = '0',
-        `od_send_fax_yn` = '0',
+        -- `od_send_yn` = '0',
+        -- `od_send_mail_yn` = '0',
+        -- `od_send_hp_yn` = '0',
+        -- `od_send_fax_yn` = '0',
         `od_discount_info` = '{$od_discount_info}'
       WHERE
         od_id = '{$_od['od_id']}'
