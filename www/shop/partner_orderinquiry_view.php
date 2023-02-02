@@ -392,6 +392,11 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.magnific-popup.js"></script>',
                 <div class="qty full-width text-grey">
                   수량 : <?=$cart['ct_qty']?>개 / 위탁 : <?=$cart['ct_direct_delivery']?>
                 </div>
+                <?php if($cart['prodMemo']) {?>
+                <div class="memo full-width text-grey">
+                  요청사항 : <?=$cart['prodMemo']?>
+                </div>
+                <?php } ?>
               </div>
               <div class="col delivery-wrap text-center">
                 <?=trans_ct_status_text($cart['ct_status'])?>
