@@ -79,5 +79,25 @@
                 </tr>
             </tbody>
         </table>
+        <table>
+            <colgroup>
+                <col style="width: 20%" />
+                <col style="width: 80%" />
+            </colgroup>
+            <tbody>
+                <tr class="tr_check_bed">
+                    <th scope="row">침대 확인 사항</th>
+                    <td style="text-align:center;" aligh="center" valign="middle" >
+						<img src="<?=G5_SHOP_URL?>/eform/document/install_report_bed_check.png">
+					</td>
+                </tr>
+                <tr class="tr_check_wheelchair">
+                    <th scope="row">휠체어 확인 사항</th>
+                    <td style="width:33%; text-align:center;" aligh="center" valign="middle" >
+						<img src="<?=G5_SHOP_URL?>/eform/document/install_report_wheelchair_check.png">
+					</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </div>
