@@ -535,7 +535,8 @@ function calculate_order_price() {
   var $li = $('#so_item_list li');
 
   var order_price = 0;
-  var order_price_type0 = 0;
+  var order_price_type0 = 0;  
+  var order_cnt_type0 = 0;
   var delivery_total = 0;
   var free_delivery = true;
   var odd_qty = 0;
@@ -544,6 +545,12 @@ function calculate_order_price() {
   var even_price = 0;
   var charge_price = 0; // 유료배송비
   $li.each(function() {
+
+    // 삭제된 상품의 경우 합산처리 하지 않음
+    if($(this).find('input[name="deleted[]"]').val() === '1') {
+      return;
+    }
+
     var it_id = $(this).find('input[name="it_id[]"]').val();
     var it_price = parseInt ( $(this).find('input[name="it_price[]"]').val() || 0 );    
     var it_sc_type = $(this).find('input[name="it_sc_type[]"]').val();
@@ -551,8 +558,6 @@ function calculate_order_price() {
     var io_type = $(this).find('input[name="io_type[]"]').val() || '0';
     var supply_price = parseInt( $(this).find('input[name="io_price[]"]').val() || 0 );
     var ct_qty = parseInt( $(this).find('input[name="ct_qty[]"]').val() || 0 );
-    
-
 
     // 묶음할인 적용
     var sale_qty = 0;
@@ -589,7 +594,11 @@ function calculate_order_price() {
     $(this).find('.it_price_wr .ct_price').text(number_format(ct_price) + '원');
     $(this).find('input[name="ct_price[]"]').val(ct_price);
     order_price += ct_price;
-    if( it_sc_type == 0 || it_sc_type == 1 || it_sc_type == 2 || it_sc_type == 3 ) { order_price_type0 += ct_price; }
+
+    if( it_sc_type == 0 || it_sc_type == 1 || it_sc_type == 2 || it_sc_type == 3 ) {
+      if( it_sc_type == 0 ) { order_cnt_type0 += 1; }
+      order_price_type0 += ct_price;
+    }
   });
 
   // 주문금액
@@ -636,9 +645,15 @@ function calculate_order_price() {
       tmp_delivery_price += parseInt( _price );
       $(this).find('.ct_delivery_price').text( "배송비: " + ((_price>0)?number_format(_price)+"원":"무료") );
     } else {
-      $(this).find('.ct_delivery_price').text( "* 주문금액 <?=number_format($default['de_send_conditional']);?>원 미만시 유료배송, <?=number_format($default['de_send_conditional']);?>원 이상 무료배송 상품");
+     
+      if( it_sc_type == 0 ) {
+        $(this).find('.ct_delivery_price').text( "* 주문금액 <?=number_format($default['de_send_conditional']);?>원 미만시 유료배송, <?=number_format($default['de_send_conditional']);?>원 이상 무료배송");
+      } else if( it_sc_type == 1 ) {
+        $(this).find('.ct_delivery_price').text( "배송비: 무료 (<?=number_format($default['de_send_conditional']);?>원 이상 무료배송 포함)" );
+      }
+
     }
-    
+
     tmp_delivery_total += parseInt( _price );
 
     $(this).find('input[name="it_delivery_price[]"]').val( _price );    
@@ -651,7 +666,8 @@ function calculate_order_price() {
   send_cost_limit = send_cost_limit.split(";");
   send_cost_list = send_cost_list.split(";");
   
-  if( order_price_type0 > 0 ) {
+  // 쇼핑몰 배송비 기본 정책 상품이 있는 경우(무료배송금액과 합산하여 처리)
+  if( (order_cnt_type0 > 0) && (order_price_type0 > 0) ) {
     for (let i=0; i < send_cost_limit.length; i++) {
       if(order_price_type0 < send_cost_limit[i]) { tmp_delivery_type0 = send_cost_list[i]; break; }
     }

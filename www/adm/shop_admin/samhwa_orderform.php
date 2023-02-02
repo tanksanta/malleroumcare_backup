@@ -995,6 +995,13 @@ var od_id = '<?php echo $od['od_id']; ?>';
                                     </td> -->
               <td class="item_stotal">
                 <?php echo number_format($options[$k]['ct_price_stotal']); ?>원
+                <p style="font-size:12px; font-weight: lighter;">
+                <?php
+                  $_cost = get_item_delivery_cost( $options[$k]['it_id'], $options[$k]['ct_qty'] );
+                  echo($_cost['cost_title']);
+                  echo((($_cost['cost'])?"<br/>".$_cost['cost']."원":"")."");
+                ?>
+                </p>
               </td>
               <td class="item_status">
                 <?php 
