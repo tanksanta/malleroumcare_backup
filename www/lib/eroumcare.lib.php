@@ -3602,12 +3602,12 @@ function delete_partner_deny_schedule($partner_mb_id, $partner_manager_mb_id, $d
  * 작성자 : 박서원
  * 작성일자 : 2022-12-06
  * 마지막 수정자 : 박서원
- * 마지막 수정일자 : 2022-12-07
+ * 마지막 수정일자 : 2023-02-02
  * 설명 : 각상품별 배송비 타입에 따른 계산 방식 단일화
  * @param string $it_id : 아이템 아이디
  * @param string $qty : 수량
  * @param string $_price : 상품가격
- * @return int
+ * @return Array (상품아이디, 배송정책타입, 배송비)
  *
  */
 function get_item_delivery_cost( $it_id, $qty, $_price=0 ) {
@@ -3617,9 +3617,11 @@ function get_item_delivery_cost( $it_id, $qty, $_price=0 ) {
   global $default;  
 
   $_result = array();
+  $_cost_title = "";
   $_cost = 0;
   $_cost_limit = explode(";",$default['de_send_cost_limit']);
   $_cost_list = explode(";",$default['de_send_cost_list']);  
+
 
   $_item = sql_fetch("
     SELECT it_price, it_sc_type, it_sc_method, it_sc_price, it_sc_minimum, it_sc_qty, it_even_odd, it_even_odd_price
@@ -3634,12 +3636,14 @@ function get_item_delivery_cost( $it_id, $qty, $_price=0 ) {
   if( $_item['it_sc_type'] == 1 ) {
     // (기본) 무료 배송
     // = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+    $_cost_title = "무료";
 
   }  
   else if( $_item['it_sc_type'] == 2 ) {
     // (기본) 조건부 무료 배송(X) X - X - X - X - X - X - X - X - X
     // 22.12.07 : 서원 - 플랫폼팀 요청에 의해 해당 기능 사용중지 처리
     // = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+    $_cost_title = "조건부";
 
     if( (int)$_price < (int)$_item['it_sc_minimum'] ) {
       $_cost = $_item['it_sc_price'];
@@ -3651,18 +3655,21 @@ function get_item_delivery_cost( $it_id, $qty, $_price=0 ) {
     // (기본) 유료 배송(X) X - X - X - X - X - X - X - X - X - X
     // 22.12.07 : 서원 - 플랫폼팀 요청에 의해 해당 기능 사용중지 처리
     // = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+    $_cost_title = "유료";
 
     $_cost = ( $_item['it_sc_price'] );
   }    
   else if( $_item['it_sc_type'] == 4 ) {
     // (별도) 수량별 유료 배송
     // = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+    $_cost_title = "수량별(" . $_item['it_sc_qty'] . ")";
 
     $_cost = ( $_item['it_sc_price'] * ceil($qty / $_item['it_sc_qty']) ) ;
   }   
   else if( $_item['it_sc_type'] == 5 ) {
     // (별도) 홀수/짝수 배송
     // = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+    $_cost_title = "홀수/짝수(" . (($_item['it_even_odd'])?"홀":"짝") . ")";
 
     if( ($_item['it_even_odd'] == 0) && ($qty > 0) && (($qty % 2) === 1) ) {
       // 홀수
@@ -3675,6 +3682,7 @@ function get_item_delivery_cost( $it_id, $qty, $_price=0 ) {
   else if( $_item['it_sc_type'] == 6 ) {
     // (별도) 포장수량 무료 배송
     // = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+    $_cost_title = "포장수량(" . $_item['it_sc_qty'] . ")";
 
     if( $qty % $_item['it_sc_qty'] ) {
       $_cost = $_item['it_sc_price'];
@@ -3683,6 +3691,7 @@ function get_item_delivery_cost( $it_id, $qty, $_price=0 ) {
   else {
     // (기본) 쇼핑몰 기본 설정
     // = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+    $_cost_title = "쇼핑몰기본설정";
 
     foreach($_cost_limit as $key => $val) {
       if( (int)$_price < (int)$_cost_limit[$key] ) { 
@@ -3695,6 +3704,8 @@ function get_item_delivery_cost( $it_id, $qty, $_price=0 ) {
   
   $_result = array(
     "it_id" => $it_id,
+    "sc_type" => $_item['it_sc_type'],
+    "cost_title" => $_cost_title,
     "cost" => (int)$_cost
   );
 

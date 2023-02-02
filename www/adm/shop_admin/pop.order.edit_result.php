@@ -640,8 +640,75 @@ $sql = " select COUNT(distinct it_id, ct_uid) as cart_count, count(*) as deliver
             from {$g5['g5_shop_cart_table']} where od_id = '$od_id'  ";
 $row = sql_fetch($sql);
 
-$od_send_cost = $_POST['od_send_cost'];
-sql_query("update {$g5['g5_shop_order_table']} set od_cart_count = '{$row['cart_count']}', od_delivery_total = '{$row['delivery_count']}', od_send_cost = '{$od_send_cost}' where od_id = '$od_id' ");
+
+
+
+// ================================================================================================
+// 23.02.02 : 서원 - 관리자 주문에 대한 배송비 정책 적용 부분 시작
+// ================================================================================================
+
+// 배송비 합계
+$_sum_delivery_cost = 0;
+// 상품 가격 합계
+$_sum_it_price = 0;
+// 배송정책 타입0 수량
+$_sum_sc_type0 = 0;
+
+
+// 23.02.02 : 서원 - POST받은 상품 정보에서 배송비 합산을 위한 계산 Loop
+foreach ( $_POST['it_id'] as $key => $val ) {
+
+    // 삭제된 상품의 경우 배송비 계산 하지 않음.
+    if( $_POST['delete'][$key] == 1 ) continue; 
+    if( !$val ) continue; // 상품 아이디 값이 없을 경우 continue
+
+
+    // 배송비 정책 라이브러리 조회
+    $_result = "";
+    $_result = get_item_delivery_cost( $val, $_POST['qty'][$key], (int)preg_replace("/[^\d]/","", $_POST['it_price'][$key]) );
+
+
+    // 23.02.02 : 서원 - 배송비 타입이 0,1,2,3에 속할 경우 전체 금액의 무료 배송을 결정 하기 위해 별도 계산.
+    if( $_result['sc_type'] == 0 || $_result['sc_type'] == 1 || $_result['sc_type'] == 2 || $_result['sc_type'] == 3 ) {
+    // 배송비 정책 타입이 '0'0일 경우 해당 상품 카운트 합산
+    if( $_result['sc_type'] == 0 ) { $_sum_sc_type0 += 1; }
+    // 쇼핑몰 기본 배송비정책에 의한 금액 산정을 위한 합산
+    $_sum_it_price += ( $_POST['qty'][$key] * (int)preg_replace("/[^\d]/","", $_POST['it_price'][$key]) );
+    } else {
+    // 위 4가지 조건 배송비 정책 타입 이외 모두 배송비 합산.
+    $_sum_delivery_cost += $_result['cost'];
+    }
+
+// Loop 종료
+}
+
+
+// 쇼핑몰 기본 배송비 정책 가져와서 Array 처리
+$send_cost_limit =  explode(';', $default['de_send_cost_limit'] );
+$send_cost_list = explode(';', $default['de_send_cost_list'] );
+
+// 상품중 배송비 정책 타입이 '0'이상이고, 금액이 발생되었을 경우 기본 정책 정책 루틴 적용. 
+if( ($_sum_sc_type0 > 0) && ($_sum_it_price > 0) ) {
+  for( $i=0; $i < COUNT($send_cost_limit); $i++) {
+    if($_sum_it_price < $send_cost_limit[$i]) { 
+      $_sum_delivery_cost += $send_cost_list[$i]; break;
+    }
+  }
+}
+
+// ================================================================================================
+// 23.02.02 : 서원 - 관리자 주문에 대한 배송비 정책 적용 부분 종료
+// ================================================================================================
+
+
+
+$od_send_cost = $_sum_delivery_cost;
+sql_query(" UPDATE {$g5['g5_shop_order_table']} 
+            SET od_cart_count = '{$row['cart_count']}', 
+                od_delivery_total = '{$row['delivery_count']}',
+                od_send_cost = '{$od_send_cost}' 
+            where od_id = '$od_id'
+        ");
 
 
 ?>
