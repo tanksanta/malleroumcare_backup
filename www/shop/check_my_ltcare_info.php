@@ -1,8 +1,4 @@
 <?php
-// 강제로 못 열도록 막음
-header("Not Found");
-exit();
-
 include_once('./_common.php');
 
 // 회원이 아닌 경우

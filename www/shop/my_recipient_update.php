@@ -139,7 +139,7 @@ input[type="number"]::-webkit-inner-spin-button {
         </label>
         <div class="col-sm-3">
           <input type="text" name="penNm" value="<?=$data["penNm"]?>" class="form-control input-sm">
-<!--          <i class="fa fa-check form-control-feedback"></i>-->
+          <i class="fa fa-check form-control-feedback"></i>
         </div>
         <div class="col-sm-3" style="display: flex">
           <label class="checkbox-inline dealing" style="margin-left: 0px; width:146px; padding: 5px 0px;">
@@ -157,33 +157,23 @@ input[type="number"]::-webkit-inner-spin-button {
             <div class="col-sm-4"  style="display: flex">
               <span style="float: left; width: 10px; height: 30px; line-height: 30px; margin-right: 5px;">L</span>
 
-              <input disabled type="number" maxlength="10" oninput="maxLengthCheck(this)" id="penLtmNum" name="penLtmNum" class="form-control input-sm" style="width: calc(100% - 15px);" value="<?=str_replace("L", "", $data["penLtmNum"])?>">
+              <input type="number" maxlength="10" oninput="maxLengthCheck(this)" id="penLtmNum" name="penLtmNum" class="form-control input-sm" style="width: calc(100% - 15px);" value="<?=str_replace("L", "", $data["penLtmNum"])?>">
 
-<!--              <button type="button" id="btn_pen_update" class="btn btn-color btn-sm" style="margin-left: 15px;">요양정보 업데이트</button>-->
+              <button type="button" id="btn_pen_update" class="btn btn-color btn-sm" style="margin-left: 15px;">요양정보 업데이트</button>
             </div>
           </div>
 
           <div class="form-group has-feedback">
             <label class="col-sm-2 control-label">
-              <b>인정등급</b><strong id="asterisk">*</strong>
+              <b>인정등급</b>
             </label>
             <div class="col-sm-3">
 
-<!-- 기존(장기요양정보조회)              <input readonly type="text" name="penRecGraCd" value="--><?//=$data["penRecGraNm"]?><!--" class="form-control input-sm">-->
-              <select class="form-control input-sm penProRel" name="penRecGraCd" id="penRecGraCd" style="margin-bottom: 5px;"> <!-- 임시 -->
-                <option value="00" <?php echo option_selected('00', $data["penRecGraCd"], "등급외"); ?>>등급외</option>
-                <option value="01" <?php echo option_selected('01', $data["penRecGraCd"], "1등급"); ?>>1등급</option>
-                <option value="02" <?php echo option_selected('02', $data["penRecGraCd"], "2등급"); ?>>2등급</option>
-                <option value="03" <?php echo option_selected('03', $data["penRecGraCd"],"3등급"); ?>>3등급</option>
-                <option value="04" <?php echo option_selected('04', $data["penRecGraCd"],"4등급"); ?>>4등급</option>
-                <option value="05" <?php echo option_selected('05', $data["penRecGraCd"], "5등급"); ?>>5등급</option>
-                <option value="06" <?php echo option_selected('06', $data["penRecGraCd"], "6등급"); ?>>6등급</option>
-              </select>
+              <input readonly type="text" name="penRecGraCd" value="<?=$data["penRecGraNm"]?>" class="form-control input-sm">
 
             </div>
           </div>
 
-<!-- 기존(장기요양정보조회)
           <div class="form-group has-feedback">
             <label class="col-sm-2 control-label">
               <b>대상자구분</b>
@@ -194,62 +184,47 @@ input[type="number"]::-webkit-inner-spin-button {
               <input type="hidden" id="SbaCd" name="SbaCd" value="<?=$data["penTypeNm"]?>">
             </div>
           </div>
--->
 
           <div class="form-group has-feedback">
             <label class="col-sm-2 control-label">
-              <b>본인부담률</b><strong id="asterisk">*</strong>
+              <b>본인부담률</b>
             </label>
             <div class="col-sm-3">
-<!-- 기존(장기요양정보조회)              <input readonly type="text" name="penPayRate" value="--><?//=substr($data["penTypeNm"], 7);?><!--" class="form-control input-sm">-->
-              <select class="form-control input-sm penProRel" name="penPayRate" id="penPayRate" style="margin-bottom: 5px;"> <!-- 임시 -->
-                <option value="00" <?php echo option_selected('일반 15%', $data["penTypeNm"], '일반 15%'); ?>></option>
-                <option value="01" <?php echo option_selected('감경 9%', $data["penTypeNm"], '감경 9%'); ?>></option>
-                <option value="02" <?php echo option_selected('감경 6%', $data["penTypeNm"], '감경 6%'); ?>></option>
-                <option value="03" <?php echo option_selected('의료 6%', $data["penTypeNm"], '의료 6%'); ?>></option>
-                <option value="04" <?php echo option_selected('기초 0%', $data["penTypeNm"], '기초 0%'); ?>></option>
-              </select>
+              <input readonly type="text" name="penPayRate" value="<?=substr($data["penTypeNm"], 7);?>" class="form-control input-sm">
 
             </div>
           </div>
 
           <div class="form-group has-feedback">
             <label class="col-sm-2 control-label">
-              <b>유효기간</b><strong id="asterisk">*</strong>
+              <b>유효기간</b>
             </label>
             <div class="col-sm-4">
 
-              <input type="text" autocomplete="off" name="penExpiStDtm" class="form-control input-sm" dateonly2 style="display: inline-block;width:47%;" value="<?=$data["penExpiDtm"][0]?>"> ~  <!-- 임시 -->
-              <input type="text" autocomplete="off" name="penExpiEdDtm" class="form-control input-sm" dateonly style="display: inline-block;width:48%;" value="<?=$data["penExpiDtm"][1]?>"> <!-- 임시 -->
-
-<!-- 기존(장기요양정보조회)              <input readonly type="text" name="penExpiStDtm" class="form-control input-sm" dateonly2 style="display: inline-block;width:47%;" value="--><?//=$data["penExpiDtm"][0]?><!--"> ~-->
-<!-- 기존(장기요양정보조회)              <input readonly type="text" name="penExpiEdDtm" class="form-control input-sm" dateonly style="display: inline-block;width:48%;" value="--><?//=$data["penExpiDtm"][1]?><!--">-->
+              <input readonly type="text" name="penExpiStDtm" class="form-control input-sm" dateonly2 style="display: inline-block;width:47%;" value="<?=$data["penExpiDtm"][0]?>"> ~
+              <input readonly type="text" name="penExpiEdDtm" class="form-control input-sm" dateonly style="display: inline-block;width:48%;" value="<?=$data["penExpiDtm"][1]?>">
 
             </div>
           </div>
 
           <div class="form-group has-feedback">
             <label class="col-sm-2 control-label">
-              <b>적용기간</b><strong id="asterisk">*</strong>
+              <b>적용기간</b>
             </label>
             <div class="col-sm-4">
 
-              <input type="text" autocomplete="off" name="penApplyStDtm" class="form-control input-sm" dateonly2 style="display: inline-block;width:47%;" value="<?php $apped = substr($data["penAppEdDtm"],0,4)."-".substr($data["penAppEdDtm"],4,2)."-".substr($data["penAppEdDtm"],6,2); $timestamp = strtotime($apped." -1 years +1 days"); echo date("Y-m-d", $timestamp);?>"> ~ <!-- 임시 -->
-              <input type="text" autocomplete="off" name="penApplyEdDtm" class="form-control input-sm" dateonly style="display: inline-block;width:48%;" value="<?=substr($data["penAppEdDtm"],0,4)."-".substr($data["penAppEdDtm"],4,2)."-".substr($data["penAppEdDtm"],6,2)?>"> <!-- 임시 -->
-
-<!-- 기존(장기요양정보조회)              <input readonly type="text" name="penApplyStDtm" class="form-control input-sm" dateonly2 style="display: inline-block;width:47%;" value="--><?php //$apped = substr($data["penAppEdDtm"],0,4)."-".substr($data["penAppEdDtm"],4,2)."-".substr($data["penAppEdDtm"],6,2); $timestamp = strtotime($apped." -1 years +1 days"); echo date("Y-m-d", $timestamp);?><!--"> ~-->
-<!-- 기존(장기요양정보조회)              <input readonly type="text" name="penApplyEdDtm" class="form-control input-sm" dateonly style="display: inline-block;width:48%;" value="--><?//=substr($data["penAppEdDtm"],0,4)."-".substr($data["penAppEdDtm"],4,2)."-".substr($data["penAppEdDtm"],6,2)?><!--">-->
+              <input readonly type="text" name="penApplyStDtm" class="form-control input-sm" dateonly2 style="display: inline-block;width:47%;" value="<?php $apped = substr($data["penAppEdDtm"],0,4)."-".substr($data["penAppEdDtm"],4,2)."-".substr($data["penAppEdDtm"],6,2); $timestamp = strtotime($apped." -1 years +1 days"); echo date("Y-m-d", $timestamp);?>"> ~
+              <input readonly type="text" name="penApplyEdDtm" class="form-control input-sm" dateonly style="display: inline-block;width:48%;" value="<?=substr($data["penAppEdDtm"],0,4)."-".substr($data["penAppEdDtm"],4,2)."-".substr($data["penAppEdDtm"],6,2)?>">
             </div>
           </div>
 
           <div class="form-group has-feedback">
             <label class="col-sm-2 control-label">
-              <b>생년월일</b><strong id="asterisk">*</strong>
+              <b>생년월일</b>
             </label>
             <div class="col-sm-3">
 
-              <input type="text" autocomplete="off" maxlength="8" oninput="maxLengthCheck(this)" id="penBirth" name="penBirth" min="0"  class="form-control input-sm" dateonly2 value="<?=get_text(str_replace('.', '', $data['penBirth']))?>"> <!-- 임시 -->
-<!-- 기존(장기요양정보조회)              <input readonly type="number" maxlength="8" oninput="maxLengthCheck(this)" id="penBirth" name="penBirth" min="0"  class="form-control input-sm" value="--><?//=get_text(str_replace('.', '', $data['penBirth']))?><!--">-->
+              <input readonly type="number" maxlength="8" oninput="maxLengthCheck(this)" id="penBirth" name="penBirth" min="0"  class="form-control input-sm" value="<?=get_text(str_replace('.', '', $data['penBirth']))?>">
               <input type="hidden" maxlength="6" oninput="maxLengthCheck(this)" id="penJumin1" name="penJumin1" min="0"  class="form-control input-sm" value="<?=get_text(substr(str_replace('.', '', $data['penBirth']),2))?>">
               <input type="hidden" id="BDay" name="BDay" value="<?=get_text($data['penBirth']) ?: ''?>">
 
@@ -624,12 +599,7 @@ input[type="number"]::-webkit-inner-spin-button {
         <label class="col-sm-2 control-label">
           <b>판매품목</b>
         </label>
-
         <div class="col-sm-3 col-dealing">
-          <label class="checkbox-inline dealing" style="margin-left: 0px; width:146px;">
-            <input type="checkbox" class="chk_sale_product chk_sale_product_all" data-isall="1">전체
-          </label>
-          <br/>
           <?php
           // $sale_product_name0="미분류"; $sale_product_id0="ITM2021021300001";
           $sale_product_name1="경사로(실내용)"; $sale_product_id1="ITM2021010800001";
@@ -646,39 +616,13 @@ input[type="number"]::-webkit-inner-spin-button {
           $sale_product_name12="목욕의자"; $sale_product_id12="ITM2020092200002";
           $sale_product_name13="이동변기"; $sale_product_id13="ITM2020092200001";
           for($i=1; $i<14; $i++) {
+            $sale_ids[${'sale_product_name'. $i}] = ${'sale_product_id'.$i};
           ?>
           <label class="checkbox-inline dealing" style="margin-left: 0px; width:146px;">
-            <input type="checkbox" class="chk_sale_product chk_sale_product_child" name="<?=${'sale_product_id'.$i}; ?>" id="<?="sale_product_id".$i; ?>" value="<?=${'sale_product_id'.$i}; ?>" style="" ><?=${'sale_product_name'. $i}; ?>
+            <input disabled type="checkbox" class="chk_sale_product chk_sale_product_child" name="<?=${'sale_product_id'.$i}; ?>" id="<?="sale_product_id".$i; ?>" value="<?=${'sale_product_id'.$i}; ?>" style="" ><?=${'sale_product_name'. $i}; ?>
           </label>
           <?php } ?>
         </div>
-
-<!--        기존(장기요양정보조회)-->
-<!--        <div class="col-sm-3 col-dealing">-->
-<!--          --><?php
-//          // $sale_product_name0="미분류"; $sale_product_id0="ITM2021021300001";
-//          $sale_product_name1="경사로(실내용)"; $sale_product_id1="ITM2021010800001";
-//          $sale_product_name2="욕창예방매트리스"; $sale_product_id2="ITM2020092200020";
-//          $sale_product_name3="요실금팬티"; $sale_product_id3="ITM2020092200011";
-//          $sale_product_name4="자세변환용구"; $sale_product_id4="ITM2020092200010";
-//          $sale_product_name5="욕창예방방석"; $sale_product_id5="ITM2020092200009";
-//          $sale_product_name6="지팡이"; $sale_product_id6="ITM2020092200008";
-//          $sale_product_name7="간이변기"; $sale_product_id7="ITM2020092200007";
-//          $sale_product_name8="미끄럼방지용품(매트)"; $sale_product_id8="ITM2020092200006";
-//          $sale_product_name9="미끄럼방지용품(양말)"; $sale_product_id9="ITM2020092200005";
-//          $sale_product_name10="안전손잡이"; $sale_product_id10="ITM2020092200004";
-//          $sale_product_name11="성인용보행기"; $sale_product_id11="ITM2020092200003";
-//          $sale_product_name12="목욕의자"; $sale_product_id12="ITM2020092200002";
-//          $sale_product_name13="이동변기"; $sale_product_id13="ITM2020092200001";
-//          for($i=1; $i<14; $i++) {
-//            $sale_ids[${'sale_product_name'. $i}] = ${'sale_product_id'.$i};
-//          ?>
-<!--          <label class="checkbox-inline dealing" style="margin-left: 0px; width:146px;">-->
-<!--            <input disabled type="checkbox" class="chk_sale_product chk_sale_product_child" name="--><?//=${'sale_product_id'.$i}; ?><!--" id="--><?//="sale_product_id".$i; ?><!--" value="--><?//=${'sale_product_id'.$i}; ?><!--" style="" >--><?//=${'sale_product_name'. $i}; ?>
-<!--          </label>-->
-<!--          --><?php //} ?>
-<!--        </div>-->
-
       </div>
 
 
@@ -686,12 +630,7 @@ input[type="number"]::-webkit-inner-spin-button {
         <label class="col-sm-2 control-label">
           <b>대여품목</b>
         </label>
-
         <div class="col-sm-3 col-dealing">
-          <label class="checkbox-inline dealing" style="margin-left: 0px; width:146px;">
-            <input type="checkbox" class="chk_sale_product chk_sale_product_all" data-isall="1">전체
-          </label>
-          <br/>
           <?php
           $rental_product_name0="욕창예방매트리스"; $rental_product_id0="ITM2020092200019";
           $rental_product_name1="경사로(실외용)"; $rental_product_id1="ITM2020092200018";
@@ -702,33 +641,13 @@ input[type="number"]::-webkit-inner-spin-button {
           $rental_product_name6="전동침대"; $rental_product_id6="ITM2020092200013";
           $rental_product_name7="수동휠체어"; $rental_product_id7="ITM2020092200012";
           for($i=0; $i<8; $i++) {
+            $rent_ids[${'rental_product_name'. $i}] = ${'rental_product_id'.$i};
           ?>
           <label class="checkbox-inline dealing" style="margin-left: 0px; width:146px;">
-            <input type="checkbox" class="chk_sale_product chk_sale_product_child" name="<?=${'rental_product_id'. $i}; ?>" id="<?='rental_product_id'.$i; ?>" value="<?=${'rental_product_id'. $i}; ?>" style="" ><?=${'rental_product_name'. $i}; ?>
+            <input disabled type="checkbox" class="chk_sale_product chk_sale_product_child" name="<?=${'rental_product_id'. $i}; ?>" id="<?='rental_product_id'.$i; ?>" value="<?=${'rental_product_id'. $i}; ?>" style="" ><?=${'rental_product_name'. $i}; ?>
           </label>
           <?php } ?>
         </div>
-
-<!--        기존(장기요양정보조회)-->
-<!--        <div class="col-sm-3 col-dealing">-->
-<!--          --><?php
-//          $rental_product_name0="욕창예방매트리스"; $rental_product_id0="ITM2020092200019";
-//          $rental_product_name1="경사로(실외용)"; $rental_product_id1="ITM2020092200018";
-//          $rental_product_name2="배회감지기"; $rental_product_id2="ITM2020092200017";
-//          $rental_product_name3="목욕리프트"; $rental_product_id3="ITM2020092200016";
-//          $rental_product_name4="이동욕조"; $rental_product_id4="ITM2020092200015";
-//          $rental_product_name5="수동침대"; $rental_product_id5="ITM2020092200014";
-//          $rental_product_name6="전동침대"; $rental_product_id6="ITM2020092200013";
-//          $rental_product_name7="수동휠체어"; $rental_product_id7="ITM2020092200012";
-//          for($i=0; $i<8; $i++) {
-//            $rent_ids[${'rental_product_name'. $i}] = ${'rental_product_id'.$i};
-//          ?>
-<!--          <label class="checkbox-inline dealing" style="margin-left: 0px; width:146px;">-->
-<!--             <input disabled type="checkbox" class="chk_sale_product chk_sale_product_child" name="--><?//=${'rental_product_id'. $i}; ?><!--" id="--><?//='rental_product_id'.$i; ?><!--" value="--><?//=${'rental_product_id'. $i}; ?><!--" style="" >--><?//=${'rental_product_name'. $i}; ?>
-<!--          </label>-->
-<!--          --><?php //} ?>
-<!--        </div>-->
-
       </div>
     </div>
   </div>
@@ -867,41 +786,6 @@ input[type="number"]::-webkit-inner-spin-button {
 var zipPopupDom = document.getElementById("zipAddrPopupIframe");
 
 $(document).ready(function() {
-
-// ============================ 임시 변경
-  setTimeout(function() {
-    var parent = $('.sale-product-form');
-    var total = $(parent).find('.chk_sale_product_child').length;
-    var checkedTotal = $(parent).find('.chk_sale_product_child:checked').length;
-    $(parent).find('.chk_sale_product_all').prop('checked', total <= checkedTotal);
-  })
-
-  setTimeout(function() {
-    var parent = $('.rental-product-form');
-    var total = $(parent).find('.chk_sale_product_child').length;
-    var checkedTotal = $(parent).find('.chk_sale_product_child:checked').length;
-    $(parent).find('.chk_sale_product_all').prop('checked', total <= checkedTotal);
-  })
-
-  $('.chk_sale_product').click(function() {
-
-    var parent = $(this).closest('div');
-
-    if ($(this).data('isall')) {
-      var checked = $(this).is(":checked");
-      $(parent).find(".chk_sale_product").prop('checked', checked);
-      return;
-    }
-
-    var total = $(parent).find('.chk_sale_product_child').length;
-    var checkedTotal = $(parent).find('.chk_sale_product_child:checked').length;
-
-    $(parent).find('.chk_sale_product_all').prop('checked', total <= checkedTotal);
-
-    return;
-  });
-// ============================ 임시 변경
-
   setDateBox();
   //생년월일 세팅
   var penBirth = "<?=get_text($data['penBirth'])?>".split('.');
@@ -1104,8 +988,7 @@ $(function() {
         return false;
       }
     }
-
-/* 임시
+    
     if(ct_history_list.length != 0){
       let penPurchaseHist = <?=json_encode($recent_result)?>;
 
@@ -1134,16 +1017,15 @@ $(function() {
         })
       }
     }
-*/
 
+    var penJumin =  document.getElementById('penJumin1').value;
     var penLtmNum =  document.getElementById('penLtmNum');
     var penSpare = $(".register-form input[name='penSpare']:checked").val();
 
     if(penSpare != '1') {
       if(penLtmNum.value.length !== 10){  alert('장기요양번호는 10자리입니다.');  $(penLtmNum).focus(); return false;}
     }
-    var penBirth = $(".register-form input[name='penBirth']").val().length == 8 ?$(".register-form input[name='penBirth']").val().substr(0,4)+'-'+$(".register-form input[name='penBirth']").val().substr(4,2)+'-'+$(".register-form input[name='penBirth']").val().substr(6,2) :$(".register-form input[name='penBirth']").val();
-    var penJumin =  $(".register-form input[name='penBirth']").val().length == 8 ? document.getElementById('penJumin1').value : $(".register-form input[name='penBirth']").val().replace(/-/g, '').substr(2,6);
+    var penBirth = $(".register-form input[name='penBirth']").val().substr(0,4)+'-'+$(".register-form input[name='penBirth']").val().substr(4,2)+'-'+$(".register-form input[name='penBirth']").val().substr(6,2);
 
     var penProBirth = $(".register-form select[name='penProBirth1']").val()+'-'
     + $(".register-form select[name='penProBirth2']").val()+'-'
@@ -1179,23 +1061,15 @@ $(function() {
       pros.push(pro_data);
     });
 
-    	    // 임시
-    var penType = document.getElementById("penPayRate");
-    var penTypeCd = penType.options[penType.selectedIndex].value; //코드 일반15:00/감경9:01/감경6:02/의료6:03/기초0:04;
-    // 임시
-    var penRecGra = document.getElementById("penRecGraCd");
-    var penRecGraCd = penRecGra.options[penRecGra.selectedIndex].value;
-
-
     var sendData = {
       penId : "<?=$data["penId"]?>",
       penNm : $(".register-form input[name='penNm']").val(),
       penLtmNum : "L" + $(".register-form input[name='penLtmNum']").val(),
-      penRecGraCd : penRecGraCd,
+      penRecGraCd : "<?=$data["penRecGraCd"]?>",
       penGender : $(".register-form input[name='penGender']:checked").val(),
       penBirth : penBirth,
       penJumin : penJumin,
-      penTypeCd : penTypeCd,
+      penTypeCd : "<?=$data["penTypeCd"]?>",
       penConNum : $(".register-form input[name='penConNum']").val(),
       penConPnum : $(".register-form input[name='penConPnum']").val(),
       penExpiStDtm : $(".register-form input[name='penExpiStDtm']").val(),

@@ -155,10 +155,10 @@ $recent_result = sql_fetch($sql_recent);
           <div class="col-sm-2">· 장기요양기록지</div>
           <div class="col-sm-10">: 확인자(<?=$pen_cnm_type_cd[$pen['penCnmTypeCd']]?>), 수령방법(<?=$pen_rec_type_cd[$pen['penRecTypeCd']]?>) <?=$pen['penRecTypeTxt']?></div>
         </div>
-<!--        <div class="row">-->
-<!--          <div class="col-sm-2">· 최근 조회일</div>-->
-<!--          <div class="col-sm-10">: --><?php //echo substr($update_date,0,4).'-'.substr($update_date,4,2).'-'.substr($update_date,6,2)?><!--</div>-->
-<!--        </div>-->
+        <div class="row">
+          <div class="col-sm-2">· 최근 조회일</div>
+          <div class="col-sm-10">: <?php echo substr($update_date,0,4).'-'.substr($update_date,4,2).'-'.substr($update_date,6,2)?></div>
+        </div>
        <!-----	
         <div class="row">
           <div class="col-sm-2">· 유효기간</div>
@@ -174,7 +174,7 @@ $recent_result = sql_fetch($sql_recent);
         <ul>
             <a href="./my_recipient_update.php?id=<?=$pen['penId']?>" class="btn_so_edit">기본정보 수정</a>
 
-<!--            <button type="button" class="btn_so_sch" id="btn_so_sch">요양정보 </br>업데이트</button>-->
+            <button type="button" class="btn_so_sch" id="btn_so_sch">요양정보 </br>업데이트</button>
         </ul>
     </div>
 
@@ -513,12 +513,12 @@ $(function() {
     </div>
   </div>
   
-<!--  <iframe id="Example2"-->
-<!--  	title ="iframe Example 2"-->
-<!--	width = "100%" height="600"-->
-<!--	style ="border : radius 10px 10px 10px 10px blue"-->
-<!--	src="pop.recipient_info.php?id=--><?//=$pen['penId']?><!--&penNm=--><?//=$pen['penNm']?><!--&penLtmNum=--><?//=$pen['penLtmNum']?><!--" >-->
-<!--  </iframe>-->
+  <iframe id="Example2"
+  	title ="iframe Example 2"
+	width = "100%" height="600"
+	style ="border : radius 10px 10px 10px 10px blue"
+	src="pop.recipient_info.php?id=<?=$pen['penId']?>&penNm=<?=$pen['penNm']?>&penLtmNum=<?=$pen['penLtmNum']?>" >
+  </iframe>
 
   <div class="sub_title_wrap">
     <div class="sub_title">
