@@ -150,13 +150,20 @@ function Payment_Set_Order( order, _type, user, item ) {
 // BOOTPAY 결제 진행
 async function Payment_Request( order, method="", user="", item="" ){
 
-    // BOOTPAY Javascript 키
-    var application_id = '63bd16143049c8001c50c2f4'; //이로움Ver1.0_대금결제(상용)
-    var application_id = '63bd16643049c8001a50c306'; //이로움Ver1.0_대금결제(개발&테스트)
+
+    // BOOTPAY Javascript 키 (도메인에 따른 키값 변경 처리)
+    if( window.location.host == "www.eroumcare.com" || window.location.host == "eroumcare.com" ) {
+        var application_id = '63bd16143049c8001c50c2f4'; //이로움Ver1.0_대금결제(상용)
+    } else {
+        var application_id = '63bd16643049c8001a50c306'; //이로움Ver1.0_대금결제(개발&테스트)
+    }
+
 
     // BOOTPAY pg LIST
     var pg = "이니시스";
 
+    
+    // 결제시작
     try {
 
         var response = await Bootpay.requestPayment({

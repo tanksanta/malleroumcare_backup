@@ -65,6 +65,7 @@ if(
         $sql = ("   INSERT `payment_api_request`
                     SET `bl_id`         = '" . $_order_id . "',
                         `receipt_id`        = '" . $_data['receipt_id'] . "',
+                        `price`             = '" . $_data['price'] . "',
                         `method_symbol`     = '" . $_data['method_symbol'] ."',
                         `status_locale`     = '" . $_data['status_locale'] . "',
                         `card_company`      = '" . $_data['card_data']['card_company']  . "',

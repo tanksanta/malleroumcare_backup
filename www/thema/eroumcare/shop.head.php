@@ -363,7 +363,7 @@ if($is_main && !$is_member) {
                 if( ($_billing['OnOff'] == "Y") && ( ((int)$_billing['start_dt']<=date('d')) && ((int)$_billing['end_dt']>=date('d')) ) ) {
 
                 // 23.01.09 : 서원 - 해당 사업소에 대금 결제건이 있는지 확인.
-                $_sql = ("  SELECT COUNT(bl_id) as cnt
+                $_sql = ("  SELECT COUNT(bl_id) as cnt, price_total
                             FROM payment_billing_list
                             WHERE mb_id = '" . $member['mb_id'] . "'
                             AND mb_thezone = '" . $member['mb_thezone'] . "'
@@ -376,7 +376,7 @@ if($is_main && !$is_member) {
                 $_sql_bl = sql_fetch($_sql);
             ?>
 
-            <?php if( $_sql_bl['cnt'] > 0 ) { /* 해당 로그인 사업소에 경제가 미결제 청구금액이 있을 경우 버튼 출력. */ ?>
+            <?php if( ($_sql_bl['cnt'] > 0) && ($_sql_bl['price_total']>0) ) { /* 해당 로그인 사업소에 경제가 미결제 청구금액이 있을 경우 버튼 출력. */ ?>
               <a href='#' class='event_noti btn_OnlineBilling' onClick=''>대금 결제하기</a>
             <?php 
                   } else { 
@@ -412,7 +412,7 @@ if($is_main && !$is_member) {
             <style>
               /* 온라인결제 팝업 */
               #OnlineBilling_popup { display: none; position: fixed; width: 100%; height: 100%; left: 0; top: 0; z-index:500; background:rgba(229, 229, 229, 0.5); }
-              #OnlineBilling_popup iframe { width:600px; height:550px; max-height: 80%; position:absolute; top: 50%; left: 50%; transform:translate(-50%, -50%); background:white; }
+              #OnlineBilling_popup iframe { width:600px; height:580px; max-height: 80%; position:absolute; top: 50%; left: 50%; transform:translate(-50%, -50%); background:white; }
               .OnlineBilling_popup_close { position:absolute; top:15px; right: 15px; color: #000; font-size: 2.5em; cursor:pointer; }
               
               /* PG사 팝업 최상단 */

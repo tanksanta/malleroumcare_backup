@@ -78,7 +78,6 @@
     ");
     $_sql_bl = sql_fetch($_sql);
 
-
     $_sql = ("  SELECT bl.*, par.method_symbol, par.status_locale, par.card_company, par.card_quota
                 FROM 
                     payment_billing_list bl
@@ -100,15 +99,32 @@
 
     ");
     $result = sql_query($_sql);
+    $_num_rows = $result->num_rows;
 
-    $_billing = sql_fetch_array($result);
-    if( date("m",strtotime($_billing['create_dt'])) != date("m") ) {
-        mysqli_data_seek($result,0); // SQL 포인터 초기화
-        $_billing['create_dt'] = date("Y-m-d");
-        $_billing['price_tax'] = $_billing['price_tax_free'] = $_billing['price_total'] = 0;
-    } else {
-        mysqli_data_seek($result,0); // SQL 포인터 초기화
+    // 청구건이 없는 경우
+    if( !$_sql_bl ) {
+
+        $_billing = sql_fetch_array($result);
+        if( $_billing['billing_month'] != date("m", mktime(0, 0, 0, date("m")-1, 1)) ) {
+            mysqli_data_seek($result,0); // SQL 포인터 초기화
+            $_billing="";
+        } else {
+            mysqli_data_seek($result,1); // SQL 포인터 초기화
+            $_sql_bl = $_billing;
+            $_sql_bl['bl_id'] = "";
+            $_num_rows --;
+        }
+
     }
+
+    $_fee = (int)($_sql_bl['billing_fee'])?($_sql_bl['billing_fee']):(json_decode( $default['de_paymenet_billing_OnOff'], TRUE )['fee_card']);
+    
+    if( $_sql_bl['billing_fee_yn']=="Y" ) {
+        $_online_price_total = $_sql_bl['price_total'] + ( ceil(($_fee/100)*$_sql_bl['price_total']) );
+    } else {
+        $_online_price_total = $_sql_bl['price_total'];
+    }
+    
 
 ?>
 
@@ -133,7 +149,7 @@
 
     <script type="application/javascript">
         <?php if( $_sql_bl['bl_id'] ) { ?>
-        var order = {  _price: "<?=$_sql_bl['price_total'];?>",
+        var order = {  _price: "<?=($_online_price_total);?>",
                     _tax_free: "0",
                     _name: "청구_<?=$_sql_bl['mb_giup_bname'];?>_<?=date("m", mktime(0, 0, 0, date("m")-1, 1))?>월_<?=$_sql_bl['billing_type']?>결제",
                     _id: "<?=$_sql_bl['bl_id'];?>"
@@ -159,7 +175,7 @@
             $('.btn01').click(function() { 
 
             <?php if( $_sql_bl['price_total']>0 ) { ?>
-            ExcelDownload('<?=$_sql_bl['bl_id'];?>');
+            ExcelDownload('<?=($_sql_bl['bl_id'])?$_sql_bl['bl_id']:$_billing['bl_id'];?>');
             <?php } else { ?>
             alert("청구 금액이 없습니다."); 
             <?php } ?>
@@ -217,29 +233,40 @@
                 <div class="billWrap">                    
                     <div class="billTitle">[<?=$member['mb_giup_bname'];?>][<?=date("m", mktime(0, 0, 0, date("m")-1, 1));?>월]대금 결제 청구서</div>
                     <div class="billListWrap">
-                        <div class="price">
-                            <div class="pTitle">과세 물품 구매 금액</div>
-                            <div class="price">₩ <?=number_format(($_sql_bl['bl_id'])?($_sql_bl['price_tax']):($_billing['price_tax']));?></div>
+                        <div class="billList">
+                            <div class="price">
+                                <div class="pTitle">과세 물품 구매 금액</div>
+                                <div class="price">₩ <?=number_format(($_sql_bl['price_tax'])?($_sql_bl['price_tax']):(0));?></div>
+                            </div>
+                            <hr class="line01">
+                            <div class="price">
+                                <div class="pTitle">면세 물품 구매 금액</div>
+                                <div class="price">₩ <?=number_format(($_sql_bl['price_tax_free'])?($_sql_bl['price_tax_free']):(0));?></div>
+                            </div>
+                            <hr class="line02">
+                            <div class="totalrice">
+                                <div class="pTitle">총 청구 금액</div>
+                                <div class="price">₩ <?=number_format(($_sql_bl['price_total'])?($_sql_bl['price_total']):(0));?></div>
+                            </div>
                         </div>
-                        <hr class="line01">
-                        <div class="price">
-                            <div class="pTitle">면세 물품 구매 금액</div>
-                            <div class="price">₩ <?=number_format(($_sql_bl['bl_id'])?($_sql_bl['price_tax_free']):($_billing['price_tax_free']));?></div>
-                        </div>
-                        <hr class="line02">
-                        <div class="totalrice">
-                            <div class="pTitle">총 청구 금액</div>
-                            <div class="price">₩ <?=number_format(($_sql_bl['bl_id'])?($_sql_bl['price_total']):($_billing['price_total']));?></div>
+                        <div class="billList2">
+                            <div class="totalrice" >
+                                <div class="price" >신용 카드 결제 금액</div>
+                                <div class="price">₩ <?=number_format( $_online_price_total );?></div>
+                            </div>                            
                         </div>
                     </div>
+                    <?php if( $_sql_bl['billing_fee_yn'] == "Y" ) { ?>
+                    <div class="note">※ 온라인 결제 시에는 <span class="txt_b">결제 수수료(<?=($_fee);?>%)</span> 포함한 금액으로 결제합니다.</div>
+                    <?php } ?>
                     <div class="billBtnWrap">
                         <div class="btn01">정산 내역서 받기</div>
                         <div class="btn02W">
                         <?php if( $_sql_bl['bl_id'] ) { ?>
-                            <div class="btn02" onClick='parent.Payment_Set_Billing( order, "카드", user );'>카드 결제</div>
-                            <div class="btn02" onClick='parent.Payment_Set_Billing( order, "계좌이체", user );'>실시간계좌이체</div>
+                            <div class="btn02 btn02-01" onClick='parent.Payment_Set_Billing( order, "카드", user );'>카드 결제</div>
+                            <!-- <div class="btn02" onClick='parent.Payment_Set_Billing( order, "계좌이체", user );'>실시간계좌이체</div> -->
                         <?php } else { ?>
-                        <?php if( $_billing['price_total']>0 ) { ?>
+                        <?php if( $_sql_bl['price_total']>0 ) { ?>
                             <div class="btn03">대금 결제 완료</div>
                         <?php } else {?>
                             <div class="btn03">청구 금액 없음</div>
@@ -258,30 +285,36 @@
                             <th>결제일</th>
                             <th>결제금액</th>
                             <th>결제방식</th>
-                            <th>할부구분</th>
+                            <th>할부구분</th>                            
+                            <th>비고</th>
                         </tr>
 
-                        <?php if( ($result->num_rows > 0) ) { ?>
+                        <?php if( $_num_rows > 0 ) { ?>
                         <?php while( $row=sql_fetch_array($result) ) { ?>
                         <tr>
-                            <td><a href="#" Onclick="ExcelDownload('<?=$_sql_bl['bl_id'];?>')"><?=date("m",strtotime($row['create_dt']))?>월</a></td>
-                            <td><?=$row['pay_confirm_dt']?></td>
-                            <td><?=number_format($row['price_total'])?>원</td>
+                            <td><a href="#" Onclick="ExcelDownload('<?=$row['bl_id'];?>')"><?=$row['billing_month']?>월</a></td>
+                            <td><?=substr($row['pay_confirm_dt'],0,10);?></td>
+                            <td>
+                                <?php if( $row['billing_fee_yn'] == "Y" ) { ?>
+                                <?=number_format( $row['price_total'] + ( ceil(($row['billing_fee']/100)*$row['price_total']) ) );?>원
+                                <?php } else { ?> <?=number_format( $row['price_total'] );?>원 <?php } ?>
+                            </td>
                             <td><?=( ($row['method_symbol']=="card")?(txt_pay_ENUM($row['method_symbol'])."(".$row['card_company'].")"):(txt_pay_ENUM($row['method_symbol'])) )  ?></td>
                             <td><?=( ($row['card_quota']=="00")?("일시불"):("할부(".(int)$row['card_quota']."개월)") )?></td>
+                            <td>
+                                <?php if( $row['billing_fee_yn'] == "Y" ) { ?> 수수료적용(<?=$row['billing_fee']?>%) <?php } else { ?> 수수료미적용 <?php } ?>
+                            </td>
                         </tr>
                         <?php } ?>
                         <?php } else { ?>
                         <tr>
-                            <td colspan="5">
-                            이전 결제 내역이 없습니다.
-                            </td>
+                            <td colspan="6"> 이전 결제 내역이 없습니다. </td>
                         </tr>
                         <?php } ?>
                       </table>
                 </div>
              </div>
-            <?php if( !$_sql_bl['bl_id'] && $_billing['pay_confirm_receipt_id'] ) { ?>
+            <?php if( !$_sql_bl['bl_id'] ) { ?>
             <!-- 하단 확인 버튼 -->
             <div class="okBtn" onclick="parent.$('.OnlineBilling_popup_close').click();">확인</div>
             <?php } ?>
@@ -309,7 +342,7 @@
                         <h3>결제완료</h3>                    
                     </div>
                     <div class="txt">
-                        <span><?=date("m",strtotime( ($_sql_bl['bl_id'])?($_sql_bl['create_dt']):($row['create_dt']) ))?>월</span> 정산 금액 <span class="won"><?=number_format(($_sql_bl['bl_id'])?($_sql_bl['price_total']):($row['price_total']));?>원</span>의<br>
+                        <span><?=$_sql_bl['billing_month']?>월</span> 대금 <span class="won"><?=number_format($_online_price_total);?>원</span>의<br>
                         결제가 완료 되었습니다.
                     </div>
                 </div>
@@ -326,7 +359,6 @@
         <p>파일 다운로드 중입니다.</p>
         <p>잠시만 기다려주세요.</p>
         <img src="/shop/img/loading.gif" alt="loading">
-        <button onclick="cancelExcelDownload();" class="btn_cancel_excel">취소</button>
     </div>
     </div>
 

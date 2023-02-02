@@ -150,6 +150,11 @@ if( $_POST['mode_set']  == "ExcelDown" ) {
                         bl.price_tax_free,
                         bl.price_total,
 
+                        bl.billing_fee_yn,
+                        bl.billing_fee,
+                        ( price_total * (billing_fee/100) ) as billing_fee_price,
+                        par.price,
+
                         bl.billing_type,
                         bl.billing_status,
 
@@ -173,24 +178,28 @@ if( $_POST['mode_set']  == "ExcelDown" ) {
 
     $widths  = [
             25,
-            13,
-            20,
+            15,
+            35,
             12,
             
-            15,            
-            15,
-            15,
+            10,
+            10,
+            10,
 
             8,
-            15,     
+            10,
+            10,
 
-            18,
-            13,
+            8,
+            10,
+
+            15,
+            10,
 
             20,
             18,
-            15,            
-            20,
+            15,
+            10,
             8,
             
             30 ];
@@ -201,9 +210,13 @@ if( $_POST['mode_set']  == "ExcelDown" ) {
         '거래처 명칭',
         '거래처 코드',
 
-        '부가세 대상 금액',
-        '부가세 제외 금액',
-        '전체 금액',
+        '과세 구매 금액',
+        '면세 구매 금액',
+        '청구 금액',
+
+        '수수료율(%)',
+        '결제 수수료 금액',
+        '결제 금액',
 
         '청구타입',
         '청구상태',
@@ -234,6 +247,20 @@ if( $_POST['mode_set']  == "ExcelDown" ) {
             $row['method_symbol'] = txt_pay_ENUM($row['method_symbol'])."(".$row['card_company'].")";
         }
         
+        if( ( $row['billing_fee_yn']=="Y" ) && ($row['billing_fee_price'])&&($row['price']) ) {
+            $row['billing_fee_price'] = ceil( $row['billing_fee_price'] );   
+        } else {
+            if( $row['billing_fee_yn']=="N" ){
+                $row['billing_fee'] = "면제(".$row['billing_fee']."%)";
+                $row['billing_fee_price'] = '0';
+            } else {
+                $row['billing_fee_price'] = ' ';
+            }
+        }
+
+
+
+        unset( $row['billing_fee_yn'] );
         unset( $row['card_company'] );
 
         $data[] = $row;

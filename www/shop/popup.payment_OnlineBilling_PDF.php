@@ -38,9 +38,9 @@
         'page-size' => 'A4',
         'encoding' => 'UTF-8',
         'margin-top'    => '25px',
-        'margin-right'  => '10px',
+        'margin-right'  => '50px',
         'margin-bottom' => '10px',
-        'margin-left'   => '10px',
+        'margin-left'   => '50px',
         'dpi' => 100,
     );
     

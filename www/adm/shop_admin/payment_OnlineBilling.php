@@ -73,7 +73,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 if(! preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/", $fr_date) ) $fr_date = '';
 if(! preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/", $to_date) ) $to_date = '';
 
-$colspan = 11;
+$colspan = 14;
 
 ?>
 
@@ -81,10 +81,14 @@ $colspan = 11;
 
 <style>
 .local_sch01 button { width:80px; height: 26px; padding: 0 5px; border: 0; background: #9eacc6; color: #fff; }
+
+.local_sch02 div { padding: 0px; margin: 0px;}
+.local_sch02 div tr td { padding: 25px 0px 25px 0px;}
 .local_sch select { width: 120px;}
 </style>
 
 <?php
+    // 쇼핑몰 환경 설정에서 청구관련 설정값 json으로 가져와 배열 처리
     $_billing = json_decode( $default['de_paymenet_billing_OnOff'], TRUE );
 ?>
 
@@ -92,8 +96,8 @@ $colspan = 11;
 
         <table style="">
             <tr>
-                <td style="width:160px; height: 45px; text-align:center;"><strong>설정</strong></td>
-                <td style="padding-left:25px;">
+                <td style="width:160px; height: 45px; text-align:center;"><strong>활성화 설정</strong></td>
+                <td style="padding: 10px 25px;">
                         <div>
                             <span class="linear_span"> 청구결제 활성화 : </span>
                             <input type="radio" id="radio_onoff" name="OnOff" value="Y"<?=($_billing['OnOff'] == 'Y')?(' checked="checked"'):('');?>><label for="btn_button_on"> On</label>
@@ -107,10 +111,20 @@ $colspan = 11;
                             <select name="end_dt" id="select_end_dt"><?php for( $i=1 ; $i<=31 ; $i++ ) { ?><option value="<?=$i;?>" <?=($i==$_billing['end_dt'])?"selected":""?>> <?=$i;?>일 </option><?php } ?></select>
                         </div>
                     </td>
-                <td style=" text-align:center;">
+                <td style=" text-align:center; " rowspan="2">
                     <input type="button" value="설정저장" class="btn_submit" id="" onclick="Payment_Set_Billing_Setting();" style="width:100px; height:35px; background: #89a174 !important;">
                 </td>
             </tr>
+            <tr>
+                <td style="width:160px; height: 45px; text-align:center;"><strong>수수료 설정</strong></td>
+                <td style="padding: 10px 25px;">
+                    <div>
+                        <span class="linear_span">카드 결제 수수료 : </span>&nbsp;
+                        <input type="number" id="fee_card"  name="fee_card" value="<?=$_billing['fee_card']?>" class="frm_input" size="4" maxlength="4" autocomplete="off">
+                        <span class="linear_span">수수료율(%)</span>
+                    </div>
+                </td>
+            </tr>            
         </table>
 
 </div>
@@ -229,7 +243,10 @@ $colspan = 11;
         <th scope="col" style="width:100px;">거래일자</th>
         <th scope="col">거래처명</th>
         <th scope="col" style="width:100px;">거래처코드</th>
-        <th scope="col">거래금액</th>
+        <th scope="col">청구 금액</th>
+        <th scope="col" style="width:100px;">수수료율</th>
+        <th scope="col" style="width:100px;">수수료</th>
+        <th scope="col" style="">결제 금액</th>
         <th scope="col">거래종류</th>
         <th scope="col">거래상태</th>
         <th scope="col" style="width:70px;">할부구분</th>
@@ -261,7 +278,7 @@ $colspan = 11;
 
     // 검색어(거래처명)
     if ($stx) {
-        $where[] = " ( `mb_nm` LIKE '%{$stx}%' OR `mb_bnm` LIKE '%{$stx}%' ) ";
+        $where[] = " ( `mb_bnm` LIKE '%{$stx}%' ) ";
     }
 
     // 카드사명
@@ -318,7 +335,7 @@ $colspan = 11;
     if ($page < 1) $page = 1; // 페이지가 없으면 첫 페이지 (1 페이지)
     $from_record = ($page - 1) * $rows; // 시작 열을 구함
 
-    $sql = " SELECT bl.*, par.method_symbol, par.card_company, par.card_quota,  par.status_locale
+    $sql = " SELECT bl.*, par.method_symbol, par.price, par.card_company, par.card_quota,  par.status_locale
                 {$sql_common}
                 {$sql_search}
                 ORDER BY bl.pay_confirm_dt DESC, bl.create_dt DESC
@@ -334,6 +351,17 @@ $colspan = 11;
         <td scope="col"><?=$row['mb_bnm'];?></td>
         <td scope="col"><?=$row['mb_thezone'];?></td>
         <td scope="col" style="text-align:right;"><?=number_format($row['price_total']);?></td>
+        <td scope="col" style="text-align:right;">
+        <?php if( $row['billing_fee_yn'] == "Y" ) { ?>    
+            <?=($row['billing_fee'])?($row['billing_fee']."%"):("--");?>
+        <?php } else { ?>면제<?php } ?>
+        </td>
+        <td scope="col" style="text-align:right;">
+        <?php if( $row['billing_fee_yn'] == "Y" ) { ?>
+            <?=($row['price'])?(number_format($row['price']-$row['price_total'])):("--");?>
+        <?php } else { ?>--<?php } ?>
+        </td>
+        <td scope="col" style="text-align:right;"><?=number_format($row['price'])?></td>
         <td scope="col" style="text-align:center;"><?=txt_pay_ENUM($row['method_symbol'])?><?=( ($row['method_symbol']=="card")?(" (".$row['card_company'].")"):("-") )?></td>
         <td scope="col" style="text-align:center;"><?=($row['billing_yn']=="Y")?($row['status_locale']):$row['billing_status']?></td>
         <td scope="col" style="text-align:center;"><?=( ($row['method_symbol']=="card")?(($row['card_quota']=="00")?("일시불"):("할부(".$row['card_quota'].")")):("-") )?></td>
@@ -347,9 +375,6 @@ $colspan = 11;
         </td>        
         <td scope="col" style="text-align:center;">
             <a href="#"><input type="button" value=" 자세히 " class="btn_BillingDetail" id="" data-id="<?=$row['bl_id'];?>" style="width:60px; height:26px; cursor: pointer; "></a>
-            <?php if( (!$row['pay_confirm_dt']) && $row['billing_yn']=="Y" ) { ?>
-            <!--<a href="#" onclick="alert('삭제')"><input type="button" value=" 삭제 " class="btn_BillingDel" id="" style="width:40px; height:26px;"></a> -->
-            <?php } ?>
         </td>
     </tr>            
     <?php } ?>
@@ -397,7 +422,7 @@ function cancelExcelDownload() {
 <style>
     /* 팝업 */
     #BillingDetail_popup { display: none; position: fixed; width: 100%; height: 100%; left: 0; top: 0; z-index:9999; background:rgba(28, 26, 26, 0.5); }
-    #BillingDetail_popup iframe { position:absolute; width:1000px; height:700px; max-height: 90%; top: 50%; left: 50%; transform:translate(-50%, -50%); background:white; }
+    #BillingDetail_popup iframe { position:absolute; width:1000px; height:600px; max-height: 90%; top: 50%; left: 50%; transform:translate(-50%, -50%); background:white; }
     
     /* 로딩 팝업 */
     #loading_excel { display: none; width: 100%; height: 100%; position: fixed; left: 0; top: 0; z-index: 9999; background: rgba(0, 0, 0, 0.3); }
@@ -442,7 +467,7 @@ $(document).ready(function() {
 });
 
 function excelform(url){
-    var opt = "width=600,height=450,left=10,top=10,menubar=no,location=no,resizable=no,scrollbars=no,status=no";
+    var opt = "width=600,height=500,left=10,top=10,menubar=no,location=no,resizable=no,scrollbars=no,status=no";
     window.open(url, "win_excel", opt);
     return false;
 }
@@ -466,7 +491,8 @@ function Payment_Set_Billing_Setting(){
             "mode_set":'setting', 
             "radio_onoff": $("input[id='radio_onoff']:checked").val(),
             "select_start_dt": $("#select_start_dt option:selected").val(),
-            "select_end_dt": $("#select_end_dt option:selected").val()
+            "select_end_dt": $("#select_end_dt option:selected").val(),
+            "fee_card":$("#fee_card").val()
         },
         dataType: 'json',
         success: function(data) {

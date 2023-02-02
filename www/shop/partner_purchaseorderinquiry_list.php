@@ -424,6 +424,7 @@ tr.hover { background-color: #fbf9f7 !important; }
                     case '입고완료': $_bg_color = "#36a6de"; $_txt = $_txt."(출고후)"; break;
                     case '마감완료': $_bg_color = "#604A7B"; break;
 //                    case '파트너발주취소': $_bg_color = "#002060"; break;
+                    case '관리자발주취소': $_bg_color = "#6f6f6f"; break;
                     case '발주취소': $_bg_color = "#6f6f6f"; break;
                     default: break;
                   }
@@ -459,7 +460,7 @@ tr.hover { background-color: #fbf9f7 !important; }
                 <p> 출고준비 : <?=date('Y-m-d (H:i)', strtotime($row['ct_rdy_date']))?> </p>
                 <?php } ?>
 
-                <p>입고예정일 : <?php $ct_part_info = json_decode($row['ct_part_info'],true)[1]; $ct_part_info_indt = $ct_part_info['_in_dt'] ? date('Y-m-d', strtotime($ct_part_info['_in_dt'])) : ''; echo $ct_part_info_indt; ?> <?php if(!in_array($row['ct_status'], ['발주취소', '관리자발주취소'])) { ?><a href="./partner_purchaseorderinquiry_view.php?od_id=<?=$row['od_id']?>" class="btn_edit_delivery_info">변경</a><?php }?></p>
+                <p>입고예정일 : <?php $ct_part_info = json_decode($row['ct_part_info'],true)[1]; $ct_part_info_indt = $ct_part_info['_in_dt'] ? date('Y-m-d', strtotime($ct_part_info['_in_dt'])) : ''; echo $ct_part_info_indt; ?> <!--<?php if(!in_array($row['ct_status'], ['발주취소', '관리자발주취소'])) { ?><a href="./partner_purchaseorderinquiry_view.php?od_id=<?=$row['od_id']?>" class="btn_edit_delivery_info">변경</a><?php }?>--></p>
 
                 <?php if($ct_part_info['_out_dt']) { ?>
                 <p> 출고완료 : <?=$ct_part_info['_out_dt']?> </p>
@@ -481,7 +482,7 @@ tr.hover { background-color: #fbf9f7 !important; }
               </td>
               <td class="td_status text_c">
                 <?php
-                if($row['ct_status'] != '발주취소') { // 발주취소 건은 담당자 출력 안 함
+                if($row['ct_status'] != '발주취소' && $row['ct_status'] != '관리자발주취소') { // 발주취소 건은 담당자 출력 안 함
                     if ($manager_mb_id) {
                         $manager_txt = '미지정';
                         if ($row['od_partner_manager']) {
@@ -799,7 +800,7 @@ $(function() {
       });
     } else {
       // 주문상태 변경
-      if($('select[name="ct_status"]').val() == '취소' && !confirm('주문취소 후 상태 변경은 불가능합니다. 취소하시겠습니까?')) {
+      if($('select[name="ct_status"]').val() == '발주취소' && !confirm('주문취소 후 상태 변경은 불가능합니다. 취소하시겠습니까?')) {
         return false;
       }
 

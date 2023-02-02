@@ -12,7 +12,8 @@ $where = array();
 $sel_field = get_search_string($sel_field);
 
 // wetoz : naverpayorder - , 'od_naver_orderid' 추가
-if( !in_array($sel_field, array('od_all', 'it_name', 'ct_option', 'it_admin_memo', 'it_maker', 'od_id', 'mb_id', 'od_name', 'od_tel', 'od_hp', 'od_b_name', 'od_b_tel', 'od_b_hp', 'od_deposit_name', 'ct_delivery_num', 'od_naver_orderid', 'barcode', 'prodMemo', 'od_memo')) ){   //검색할 필드 대상이 아니면 값을 제거
+// if( !in_array($sel_field, array('od_all', 'it_name', 'ct_option', 'it_admin_memo', 'it_maker', 'od_id', 'mb_id', 'od_name', 'od_tel', 'od_hp', 'od_b_name', 'od_b_tel', 'od_b_hp', 'od_deposit_name', 'ct_delivery_num', 'od_naver_orderid', 'barcode', 'prodMemo', 'od_memo')) ){   //검색할 필드 대상이 아니면 값을 제거
+if( !in_array($sel_field, array('it_name', 'ct_option', 'it_admin_memo', 'mb_id', 'mb_name', 'ct_warehouse')) ){   //검색할 필드 대상이 아니면 값을 제거
   $sel_field = '';
 }
 
@@ -70,7 +71,8 @@ if ($search_add_add != "") {
 
 // 전체 검색
 if ($sel_field == 'od_all' && $search != "") {
-  $sel_arr = array('i.it_name', 'c.ct_option', 'it_admin_memo', 'it_maker', 'o.od_id', 'c.mb_id', 'mb_nick', 'od_name', 'od_tel', 'od_hp', 'od_b_name', 'od_b_tel', 'od_b_hp', 'od_deposit_name', 'ct_delivery_num', 'barcode', 'prodMemo', 'od_memo');
+  // $sel_arr = array('i.it_name', 'c.ct_option', 'it_admin_memo', 'it_maker', 'o.od_id', 'c.mb_id', 'mb_nick', 'od_name', 'od_tel', 'od_hp', 'od_b_name', 'od_b_tel', 'od_b_hp', 'od_deposit_name', 'ct_delivery_num', 'barcode', 'prodMemo', 'od_memo');
+  $sel_arr = array('i.it_name', 'c.ct_option', 'it_admin_memo', 'c.mb_id', 'mb_name', 'ct_warehouse');
 
   foreach ($sel_arr as $key => $value) {
     if($value=="barcode") {
@@ -96,7 +98,8 @@ if ($sel_field == 'od_all' && $search != "") {
 
 // 전체 검색2
 if ($sel_field_add == 'od_all' && $search_add != "") {
-  $sel_arr = array('i.it_name', 'c.ct_option', 'it_admin_memo', 'it_maker', 'o.od_id', 'c.mb_id', 'mb_nick', 'od_name', 'od_tel', 'od_hp', 'od_b_name', 'od_b_tel', 'od_b_hp', 'od_deposit_name', 'ct_delivery_num', 'barcode', 'prodMemo', 'od_memo');
+	// $sel_arr = array('i.it_name', 'c.ct_option', 'it_admin_memo', 'it_maker', 'o.od_id', 'c.mb_id', 'mb_nick', 'od_name', 'od_tel', 'od_hp', 'od_b_name', 'od_b_tel', 'od_b_hp', 'od_deposit_name', 'ct_delivery_num', 'barcode', 'prodMemo', 'od_memo');
+  $sel_arr = array('i.it_name', 'c.ct_option', 'it_admin_memo', 'c.mb_id', 'mb_name', 'ct_warehouse');
 
   foreach ($sel_arr as $key => $value) {
     if($value=="barcode") {
@@ -122,7 +125,8 @@ if ($sel_field_add == 'od_all' && $search_add != "") {
 
 // 전체 검색3
 if ($sel_field_add_add == 'od_all' && $search_add_add != "") {
-  $sel_arr = array('i.it_name', 'c.ct_option', 'it_admin_memo', 'it_maker', 'o.od_id', 'c.mb_id', 'mb_nick', 'od_name', 'od_tel', 'od_hp', 'od_b_name', 'od_b_tel', 'od_b_hp', 'od_deposit_name', 'ct_delivery_num', 'barcode', 'prodMemo', 'od_memo');
+	// $sel_arr = array('i.it_name', 'c.ct_option', 'it_admin_memo', 'it_maker', 'o.od_id', 'c.mb_id', 'mb_nick', 'od_name', 'od_tel', 'od_hp', 'od_b_name', 'od_b_tel', 'od_b_hp', 'od_deposit_name', 'ct_delivery_num', 'barcode', 'prodMemo', 'od_memo');
+  $sel_arr = array('i.it_name', 'c.ct_option', 'it_admin_memo', 'c.mb_id', 'mb_name', 'ct_warehouse');
 
   foreach ($sel_arr as $key => $value) {
     if($value=="barcode") {
@@ -336,7 +340,11 @@ if ($od_escrow) {
 }
 
 if ($fr_date && $to_date) {
-  $where[] = " ({$sel_date_field} between '$fr_date 00:00:00' and '$to_date 23:59:59') ";
+  if($sel_date_field == 'od_time' || $sel_date_field == 'ct_move_date'){
+    $where[] = " ({$sel_date_field} between '$fr_date 00:00:00' and '$to_date 23:59:59') ";
+  } else {
+    $where[] = " (SUBSTRING_INDEX(SUBSTRING_INDEX(ct_part_info, '\"{$sel_date_field}\":\"', -1),'\"',1) between '$fr_date 00:00:00' and '$to_date 23:59:59') ";
+  }
 }
 
 // 22.11.09 : 서원 - 검색조건추가(발주서발송상태)
@@ -520,7 +528,7 @@ $ret['main'] = "
             <th class=\"od_memo\">요청사항</th>
             <th class=\"od_expect_date\">입고예정일</th>
             <th class=\"od_expect_date_end\">입고완료일</th>
-            <th class=\"od_warehouse\">배송지</th>
+            <th class=\"ct_warehouse\">배송지</th>
             <th class=\"od_part\">발주수량<br />입고수량<!--<br />미입고수량</th>-->
             <th class=\"od_status\">발주서<br />발송상태</th>
             <th class=\"od_price\">발주금액<br />합계</th>
@@ -911,7 +919,7 @@ foreach($orderlist as $order) {
       </td>
       <td align=\"center\" class=\"od_expect_date\">{$od_expect_date}</td>
       <td align=\"center\" class=\"od_expect_date_end\">{$od_expect_date_end}</td>
-      <td align=\"center\" class=\"od_warehouse\"><b>{$ct_warehouse}</b></td>
+      <td align=\"center\" class=\"ct_warehouse\"><b>{$ct_warehouse}</b></td>
       <td align=\"center\" class=\"od_part\">{$od_part}</td>
       <td align=\"center\" class=\"od_status\">{$od_send}</td>
       <td align=\"center\" class=\"od_price\"><b>{$ct_price}</b></td>
