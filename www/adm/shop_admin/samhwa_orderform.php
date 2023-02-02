@@ -997,9 +997,13 @@ var od_id = '<?php echo $od['od_id']; ?>';
                 <?php echo number_format($options[$k]['ct_price_stotal']); ?>원
                 <p style="font-size:12px; font-weight: lighter;">
                 <?php
+                  // 23.02.02 : 서원 - 상품별 배송비 정책 안내 추가
                   $_cost = get_item_delivery_cost( $options[$k]['it_id'], $options[$k]['ct_qty'] );
                   echo($_cost['cost_title']);
-                  echo((($_cost['cost'])?"<br/>".$_cost['cost']."원":"")."");
+                  // 23.02.02 : 서원 - 배송비 타입이 쇼핑몰 기본 설정이 아닌경우 배송비 출력.
+                  if( $_cost['sc_type'] != 0 ) {
+                    echo((($_cost['cost'])?"<br/>".$_cost['cost']."원":"")."");
+                  }
                 ?>
                 </p>
               </td>
