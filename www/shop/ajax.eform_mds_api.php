@@ -4,8 +4,12 @@ include_once('./_common.php');
 $API_Key64 = base64_encode(G5_MDS_ID.":".G5_MDS_KEY); //API 접속 base64 인코딩 키
 //$client = new \GuzzleHttp\Client();
 
-$templateId = "7a417b10-79fa-11ed-aefd-238900a40a4b";//기본 템플릿 6p
-$templateId2 = "70a58eb0-90b2-11ed-850e-d7b33267b1e1";//기본 템플릿 4p
+$templateId1_1 = "932d23a0-a37a-11ed-aeef-1bb14ef4354c";//기본 템플릿 6p(15/5)
+$templateId1_2 = "ff3f3790-a38e-11ed-a8f1-9fe09be5e9a1";//기본 템플릿 6p(10/5)
+$templateId1_3 = "524b22a0-a38f-11ed-a8f1-9fe09be5e9a1";//기본 템플릿 6p(5/5)
+$templateId2_1 = "8176f0e0-a38f-11ed-a8f1-9fe09be5e9a1";//기본 템플릿 4p(15/5)
+$templateId2_2 = "bb70b510-a38f-11ed-a8f1-9fe09be5e9a1";//기본 템플릿 4p(10/5)
+$templateId2_3 = "eef248e0-a38f-11ed-9f87-3f9656f47c97";//기본 템플릿 4p(5/5)
 
 //if($_POST["div"] == ""){
 //서명 WebHook 시작
@@ -599,7 +603,13 @@ if($_REQUEST["signed"] == "ok"){?>
 	}
 	if($penTypeCd == "03" || $penTypeCd == "04" ){//의료6%,기초0%
 		$applicant_sign_info2 = ','.$applicant_sign_info;
-		$temp_doc_id = $templateId;//6p 
+		if($count_sale < 6){
+			$temp_doc_id = $templateId1_3;//6p(5/5)
+		}elseif($count_sale < 11){
+			$temp_doc_id = $templateId1_2;//6p(10/5)
+		}else{
+			$temp_doc_id = $templateId1_1;//6p(15/5)
+		}
 		$gicho_con = ',{"dataLabel":"app_name_1","value":"'.$app_name_1.'"}
 					,{"dataLabel":"app_relation_1","value":"'.$app_relation_1.'"}
 					,{"dataLabel":"app_birthday_1","value":"'.$app_birthday_1.'"}
@@ -630,7 +640,13 @@ if($_REQUEST["signed"] == "ok"){?>
 					,{"dataLabel":"dc_sumprice_sum_1","value":"'.$dc_sumprice_sum_1.'"}';
 	}else{
 		$applicant_sign_info2 = '';
-		$temp_doc_id = $templateId2;//4p
+		if($count_sale < 6){
+			$temp_doc_id = $templateId2_3;//4p(5/5)
+		}elseif($count_sale < 11){
+			$temp_doc_id = $templateId2_2;//4p(10/5)
+		}else{
+			$temp_doc_id = $templateId2_1;//4p(15/5)
+		}
 		$gicho_con = "";
 	}
 	$api_url = 'https://api.modusign.co.kr/documents/request-with-template';

@@ -351,9 +351,9 @@
 			,name3 : ($("#applicant_sign").is(":checked"))?$("#name3").val(): ""
 		}, 'json')
 		.done(function(data) {
-				if(data.api_stat != "1"){
-				alert("API 통신 장애가 있습니다. 잠시 후 이용해 주세요.");
+			if(data.api_stat != "1"){
 				loading_onoff('off');
+				alert("API 통신 장애가 있습니다. 잠시 후 이용해 주세요.");
 				return false;				
 			}
 			
@@ -368,6 +368,7 @@
 		})
 		.fail(function($xhr) {
 		  var data = $xhr.responseJSON;
+		  loading_onoff('off');
 		  alert(data && data.message);
 		});	
 		
@@ -387,7 +388,11 @@
 		var name2 = "";
 		var name3 = "";
 		
- 		$.post('ajax.eform_mds_api.php', {
+ 		$.ajaxSetup({
+			async:true,
+			beforeSend: loading_onoff('on')
+			});
+		$.post('ajax.eform_mds_api.php', {
 			dc_id:dc_id,
 			div:'sign_stat'
 		})
@@ -435,13 +440,15 @@
 				$("#gubun1").text(data.gubun1);
 				$("#sign_date1").text(data.sign_date1);
 			}
+			loading_onoff('off');
 			$("#doc_id").val(data.doc_id);
 			$('body').addClass('modal-open');
 			$('#popup_box8').show();
 		})
 		.fail(function($xhr) {
 		  var data = $xhr.responseJSON;
-		  alert(data && data.message);
+		  loading_onoff('off');
+		  alert(data && data.message);		  
 		});	
 	}
 
@@ -451,7 +458,11 @@
 		$("#rejection_msg").text('');
 		$("#rejection_member").text('');
 
- 		$.post('ajax.eform_mds_api.php', {
+ 		$.ajaxSetup({
+			async:true,
+			beforeSend: loading_onoff('on')
+			});
+		$.post('ajax.eform_mds_api.php', {
 			dc_id:dc_id,
 			div:'rejection_view'
 		})
@@ -466,32 +477,33 @@
 			$("#rejection_date").text(data.date);
 			$("#rejection_msg").text(data.msg);
 			$("#rejection_member").text(data.member);
-
+			loading_onoff('off');
 			$('body').addClass('modal-open');
 			$('#popup_box9').show();
 		})
 		.fail(function($xhr) {
 		  var data = $xhr.responseJSON;
+		  loading_onoff('off');
 		  alert(data && data.message);
 		});	
 	}
 	// 서명 진행 
 	function sign_doc(doc_id,part_id) {
-		
- 		$.post('ajax.eform_mds_api.php', {
+		$.post('ajax.eform_mds_api.php', {
 			doc_id:doc_id,
 			part_id:part_id,
 			div:'sign_doc'
 		})
 		.done(function(data) {
 			if(data.api_stat != "1"){
-				alert("API 통신 장애가 있습니다. 잠시 후 이용해 주세요.");
 				loading_onoff('off');
+				alert("API 통신 장애가 있습니다. 잠시 후 이용해 주세요.");				
 				return false;				
 			}
 			if(data.url != "url생성실패"){				
 				//$("#view_doc").attr("src",data.url);
 				//$('#iframe_wrap').fadeIn( 'slow' );
+				loading_onoff('off');
 				window.open(data.url, "PopupDoc", "width=1200,height=900");
 			}else{
 				alert(data.url);//url 생성실패 알림
@@ -512,11 +524,12 @@
 		})
 		.done(function(data) {
 			if(data.api_stat != "1"){
-				alert("API 통신 장애가 있습니다. 잠시 후 이용해 주세요.");
 				loading_onoff('off');
+				alert("API 통신 장애가 있습니다. 잠시 후 이용해 주세요.");
 				return false;				
 			}
 			if(data.url != "url생성실패"){				
+				loading_onoff('off');
 				window.open(data.url, "PopupDoc", "width=1000,height=1000");
 			}else{
 				alert(data.url);//url 생성실패 알림
@@ -535,6 +548,10 @@
 				,dc_id : dc_id
 			};
 		if(confirm("서명요청을 취소 하시겠습니까?")){
+			$.ajaxSetup({
+				async:true,
+				beforeSend: loading_onoff('on')
+			});
 			$.ajax({
 				type : "POST",            
 				url : "ajax.eform_mds_api.php",      
@@ -543,11 +560,12 @@
 				success : function(res){ 
 					//alert(JSON.stringify(res));
 					if(res.api_stat != "1"){
-						alert("API 통신 장애가 있습니다. 잠시 후 이용해 주세요.");
 						loading_onoff('off');
+						alert("API 통신 장애가 있습니다. 잠시 후 이용해 주세요.");
 						return false;				
 					}
 					if(res.url != "url생성실패"){				
+						loading_onoff('off');
 						alert("서명이 취소 되었습니다.");
 						history.replaceState({}, null, location.pathname);
 						location.reload();			
@@ -556,6 +574,7 @@
 					}
 				},
 				error : function(XMLHttpRequest, textStatus, errorThrown){ 
+					loading_onoff('off');
 					alert("통신 실패.")
 				}
 			});
@@ -569,6 +588,10 @@
 				,dc_id : dc_id
 			};
 		if(confirm("계약서 상태를 초기화 하시겠습니까?")){
+			$.ajaxSetup({
+				async:true,
+				beforeSend: loading_onoff('on')
+			});
 			$.ajax({
 				type : "POST",            
 				url : "ajax.eform_mds_api.php",      
@@ -576,11 +599,12 @@
 				dataType:"json",
 				success : function(res){ 
 					if(res.api_stat != "1"){
-						alert("API 통신 장애가 있습니다. 잠시 후 이용해 주세요.");
 						loading_onoff('off');
+						alert("API 통신 장애가 있습니다. 잠시 후 이용해 주세요.");
 						return false;				
 					}
 					if(res.url != "url생성실패"){				
+						loading_onoff('off');
 						alert("계약서 상태가 초기화 되었습니다.");
 						history.replaceState({}, null, location.pathname);
 						location.reload();	
@@ -602,6 +626,10 @@
 				,doc_id : $("#doc_id").val()
 			};
 		if(confirm("서명요청을 재전송 하시겠습니까?")){
+			$.ajaxSetup({
+				async:true,
+				beforeSend: loading_onoff('on')
+			});
 			$.ajax({
 				type : "POST",            
 				url : "ajax.eform_mds_api.php",      
@@ -609,17 +637,20 @@
 				dataType:"json",
 				success : function(res){ 
 					if(res.api_stat != "1"){
-						alert("API 통신 장애가 있습니다. 잠시 후 이용해 주세요.");
 						loading_onoff('off');
+						alert("API 통신 장애가 있습니다. 잠시 후 이용해 주세요.");
 						return false;				
 					}
 					if(res.url != "url생성실패"){				
+						loading_onoff('off');
 						alert("재전송이 완료 되었습니다.");
 					}else{
+						loading_onoff('off');
 						alert(res.url);//계약서 생성 실패 알림
 					}
 				},
 				error : function(XMLHttpRequest, textStatus, errorThrown){ 
+					loading_onoff('off');
 					alert("통신 실패.")
 				}
 			});
@@ -632,6 +663,10 @@
 				,dc_id : dc_id
 			};
 		if(confirm("계약서를 전송 하시겠습니까?")){
+			$.ajaxSetup({
+				async:true,
+				beforeSend: loading_onoff('on')
+			});
 			$.ajax({
 				type : "POST",            
 				url : "ajax.eform_mds_api.php",      
@@ -639,12 +674,15 @@
 				dataType:"json",
 				success : function(res){ 
 					if(res.api_stat != "1"){
+						loading_onoff('off');
 						alert("API 통신 장애가 있습니다. 잠시 후 이용해 주세요.");
 						return false;				
 					}
+					loading_onoff('off');
 					alert("계약서 전송이 완료 되었습니다.");
 				},
 				error : function(XMLHttpRequest, textStatus, errorThrown){ 
+					loading_onoff('off');
 					alert("통신 실패.")
 				}
 			});
