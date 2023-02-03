@@ -879,9 +879,9 @@ function calculate_order_price() {
     } else {
 
       if( it_sc_type == 0 ) {
-        $(this).find('.ct_delivery_price').text( "* 주문금액 <?=number_format($default['de_send_conditional']);?>원 미만시 유료배송, <?=number_format($default['de_send_conditional']);?>원 이상 무료배송");
+        $(this).find('.ct_delivery_price').text( "* 주문금액 <?=number_format($default['de_send_conditional']);?>원 이상 무료배송 상품");
       } else if( it_sc_type == 1 ) {
-        $(this).find('.ct_delivery_price').text( "배송비: 무료 (<?=number_format($default['de_send_conditional']);?>원 이상 무료배송 포함)" );
+        $(this).find('.ct_delivery_price').text( "배송비: 무료 (<?=number_format($default['de_send_conditional']);?>원 이상 무료배송 포함 상품)" );
       }
 
     }

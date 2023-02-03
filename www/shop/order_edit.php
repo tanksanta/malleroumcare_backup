@@ -613,6 +613,12 @@ function calculate_order_price() {
   var tmp_delivery_total = 0;
   var tmp_delivery_type0 = 0;  
   $li.each(function() {
+    
+    // 삭제된 상품의 경우 합산처리 하지 않음
+    if($(this).find('input[name="deleted[]"]').val() === '1') {
+      return;
+    }
+
     var _price = parseInt( $(this).find('input[name="it_delivery_price[]"]').val() ); 
     var _price_text = $(this).find('.ct_delivery_price').text();
     
@@ -647,9 +653,9 @@ function calculate_order_price() {
     } else {
      
       if( it_sc_type == 0 ) {
-        $(this).find('.ct_delivery_price').text( "* 주문금액 <?=number_format($default['de_send_conditional']);?>원 미만시 유료배송, <?=number_format($default['de_send_conditional']);?>원 이상 무료배송");
+        $(this).find('.ct_delivery_price').text( "* 주문금액 <?=number_format($default['de_send_conditional']);?>원 이상 무료배송 상품");
       } else if( it_sc_type == 1 ) {
-        $(this).find('.ct_delivery_price').text( "배송비: 무료 (<?=number_format($default['de_send_conditional']);?>원 이상 무료배송 포함)" );
+        $(this).find('.ct_delivery_price').text( "배송비: 무료 (<?=number_format($default['de_send_conditional']);?>원 이상 무료배송 포함 상품)" );
       }
 
     }

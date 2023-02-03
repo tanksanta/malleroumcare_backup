@@ -429,7 +429,7 @@ if ($it['ca_id']) {
                 // = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
                 
                 $sc_price_info = "<label class='quality-type'>배송비</label><label class='quality-text'>" . number_format($it['it_sc_price']) . "원 <span style='font-size:10px;'>(별도부과)</span></label>";
-                $sc_price_info = $sc_price_info ."<br />└ 수량 ". number_format($it['it_sc_qty']) . "개 이상 주문시 무료배송";
+                $sc_price_info = $sc_price_info ."<br />└ 수량 ". number_format($it['it_sc_qty']) . "개 마다 배송비 반복부과";
               }
               elseif( $it['it_sc_type']==5 ) {
                 // (별도) 홀수/짝수 배송
@@ -885,7 +885,7 @@ if ($it['ca_id']) {
                 // = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
                 
                 $sc_price_info = "<label class='quality-type'>배송비</label><label class='quality-text'>" . number_format($it['it_sc_price']) . "원 <span style='font-size:10px;'>(별도부과)</span></label>";
-                $sc_price_info = $sc_price_info ."<br />└ 수량 ". number_format($it['it_sc_qty']) . "개 이상 주문시 무료배송";
+                $sc_price_info = $sc_price_info ."<br />└ 수량 ". number_format($it['it_sc_qty']) . "개 마다 배송비 반복부과";
               }
               elseif( $it['it_sc_type']==5 ) {
                 // (별도) 홀수/짝수 배송
