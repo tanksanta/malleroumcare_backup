@@ -53,15 +53,54 @@ $barcode_memo = clean_xss_tags($barcode_memo);
 //  json_response(400, '수정된 값이 없습니다.');
 //}
 
+// 입고차수가 구분되지 않는 상황에서 입고 수량 업데이트 코드 --> 시작
+$sql = "select * from g5_cart_barcode where bc_del_yn = 'N' and pct_id = '{$ct_id}' order by bc_id asc ";
+$result = sql_query($sql);
+$complete_count = sql_num_rows($result);
+//$prev_delivered_qty = $ct_row['ct_delivered_qty'];
+$prev_delivered_qty = $complete_count;
+$new_delivered_qty = $prev_delivered_qty + $delivered_qty;
+$_tmp_sql_ct_part_info='';
+$_part_info = json_decode( $ct_row['ct_part_info'], true )[1]; // 차수 없을때
+$_part_info['_in_qty'] = $new_delivered_qty;
+$_part_info_enc[1] = $_part_info;
+$_tmp_sql_ct_part_info = "`ct_part_info` ='" . json_encode($_part_info_enc) . "',";
+//<-- 끝 (입고차수가 있는 코드는 아래의 /**/ 코드 사용)
+/*
 $prev_delivered_qty = $ct_row['ct_delivered_qty'];
 $new_delivered_qty = $prev_delivered_qty + $delivered_qty;
+
+// 22.11.10 : 서원 - 기존 입고완료 처리된 수량 정보 확인.
+$_tmp_sql_ct_part_info = $_tmp_qty = $_part_info = '';
+if( $ct_row['ct_part_info'] ) {
+  $_part_info = json_decode( $ct_row['ct_part_info'], true );
+  if( is_array( $_part_info ) ) {
+    foreach ($_part_info as $key => $val) {
+      if( $val['_in_dt_confirm'] )
+        $_tmp_qty += $val['_in_qty'];
+    }
+    // = = = = = = = = = = = = = = = = = = = = = = = =
+    // 22.11.10 : 서원 - 입고확인에 따른 입고정보 확정.
+    $_tmp_part = $_part_info[ $_POST['part_num'] ];
+    $_tmp_part['_in_qty'] = $delivered_qty;
+    $_tmp_part['_in_dt_confirm'] = date('Y-m-d');
+    $_part_info[ $_POST['part_num'] ] = $_tmp_part;
+    $_tmp_sql_ct_part_info = "`ct_part_info` ='" . json_encode($_part_info) . "',";
+  }
+}
+// 22.11.10 : 서원 - 부분입고된 수량이 발주 수량보다 작을 경우 부분입고처리(?)
+if( $_tmp_qty < $ct_row['ct_qty'] ){
+}
+*/
 
 $sql = "
   update purchase_cart
   set 
+    {$_tmp_sql_ct_part_info}
     ct_delivered_qty = '{$new_delivered_qty}',
     ct_barcode_memo = '{$barcode_memo}'
-  where od_id = '{$od_id}' and ct_id = '{$ct_id}'
+  where 
+    od_id = '{$od_id}' and ct_id = '{$ct_id}'
 ";
 
 sql_query($sql);
