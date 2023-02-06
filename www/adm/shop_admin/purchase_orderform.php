@@ -582,7 +582,7 @@ $deliveryCntBtnStatus = ($delivery_insert >= $od["od_delivery_total"]) ? " disab
                   <!-- 입고완료일 -->
                 </td>
                 <td class="btncol">
-                  <a href="javascript:void();" data-ct-id="<?=$options[$k]['ct_id']?>" class="prodBarNumCntBtn purchaseOrderViewBtn">입고관리 (<?=$options[$k]['ct_delivered_qty']?>/<?=$options[$k]['ct_qty']?>)</a>
+                  <a href="javascript:void();" data-ct-id="<?=$options[$k]['ct_id']?>" class="prodBarNumCntBtn purchaseOrderViewBtn">입고관리 (<?php echo $ct_part_info['_in_qty']?:'0';//$options[$k]['ct_delivered_qty']?>/<?=$options[$k]['ct_qty']?>)</a>
                 </td>
               </tr>
               <?php

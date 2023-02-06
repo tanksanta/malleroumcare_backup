@@ -10,7 +10,7 @@ if ($_SESSION['ss_manager_mb_id']) {
   $member = get_member($_SESSION['ss_mb_id']);
 }
 if ($member['mb_type'] === 'partner' || $member['mb_type'] === 'manager') {
-  $res = get_partner_member_list_by_partner_mb_id($_POST['partner_mb_id'], $member['mb_type']);
+  $res = get_partner_member_list_by_partner_mb_id($_POST['partner_mb_id']);
 } else if ($member['mb_type'] === 'default') {
   if ($member['mb_level'] >= 9) {
     $res = get_partner_list($member['mb_type']);

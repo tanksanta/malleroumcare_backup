@@ -204,6 +204,34 @@ $report['photo4'] = [];
 while($photo = sql_fetch_array($photo_result4)) {
   $report['photo4'][] = $photo;
 }
+
+$cart_result = sql_query("
+  SELECT
+    c.*,
+    i.it_img1
+  FROM
+    {$g5['g5_shop_cart_table']} c
+  LEFT JOIN
+    {$g5['g5_shop_item_table']} i ON c.it_id = i.it_id
+  WHERE
+    od_id = '{$od_id}' AND
+    ct_status IN('출고준비', '배송', '완료', '취소', '주문무효')
+  ORDER BY
+    ct_id ASC
+");
+
+$carts = [];
+$has_install = false; // 설치 상품 있는지 여부
+
+while($row = sql_fetch_array($cart_result)) {
+  $ct_direct_delivery_text = '배송';
+  if($row['ct_is_direct_delivery'] == '2') {
+    $ct_direct_delivery_text = '설치';
+    $has_install = true;
+  }
+  $row['ct_direct_delivery'] = $ct_direct_delivery_text;
+  $carts[] = $row;
+}
 ?>
 
 <script type="text/javascript">
@@ -424,156 +452,174 @@ $(function() {
           <?php } ?>
         </div>
       </div>
-      <?php if($report['photo'] || $report['photo2'] || $report['photo3'] || $report['photo4']) { ?>
-      <div class="install-report">
+
+      <?php
+      $show_install_btn = false;
+      foreach ($carts as $cart) {
+        if (($cart['ct_status'] == '배송' || $cart['ct_status'] == '완료') && $cart['ct_direct_delivery'] == "설치") $show_install_btn = true;
+      }
+      if ($show_install_btn == true) {
+        ?>
+        <div class="install-report">
         <div class="top-wrap row justify-space-between">
           <span>설치결과보고서</span>
-          <p><?=$report['member']['mb_name']?></p>
+          <p><?= $report['member']['mb_name'] ?></p>
         </div>
-        <?php if($report) { ?>
-        <div class="mid-wrap">
-          <?php if($report['ir_file_url']) { ?>
-          <a href="<?=G5_SHOP_URL."/eform/install_report_download.php?od_id={$od_id}"?>" class="btn_ir_download">결과보고서
-            다운로드</a>
-          <?php } ?>
-        </div>
+        <?php if ($report) { ?>
+          <div class="mid-wrap">
+            <?php if ($report['ir_file_url']) { ?>
+              <a href="<?= G5_SHOP_URL . "/eform/install_report_download.php?od_id={$od_id}" ?>"
+                 class="btn_ir_download">결과보고서
+                다운로드</a>
+            <?php } ?>
+          </div>
         <?php } ?>
 
-        <?php if($report['photo']) { ?>
-        <div class="row report-img-wrap">
-          <?php if($report['ir_cert_url']) { ?>
-          <div class="col">
-            <div class="report-img">
-              <a href="<?=G5_DATA_URL.'/partner/img/'.$report['ir_cert_url']?>" target="_blank" class="view_image">
-                <img src="<?=G5_DATA_URL.'/partner/img/'.$report['ir_cert_url']?>"
-                  onerror="this.src='/shop/img/no_image.gif';">
-              </a>
+        <?php if ($report['photo'] || $report['photo2'] || $report['photo3'] || $report['photo4']) { ?>
+          <?php if ($report['photo']) { ?>
+            <div class="row report-img-wrap">
+              <?php if ($report['ir_cert_url']) { ?>
+                <div class="col">
+                  <div class="report-img">
+                    <a href="<?= G5_DATA_URL . '/partner/img/' . $report['ir_cert_url'] ?>" target="_blank"
+                       class="view_image">
+                      <img src="<?= G5_DATA_URL . '/partner/img/' . $report['ir_cert_url'] ?>"
+                           onerror="this.src='/shop/img/no_image.gif';">
+                    </a>
+                  </div>
+                </div>
+              <?php } ?>
+
+              <?php foreach ($report['photo'] as $photo) { ?>
+                <div class="col">
+                  <div class="report-img">
+                    <a href="<?= G5_DATA_URL . '/partner/img/' . $photo['ip_photo_url'] ?>" target="_blank"
+                       class="view_image">
+                      <img
+                          src="<?php if (str_ends_with($photo['ip_photo_url'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo G5_DATA_URL . '/partner/img/' . $photo['ip_photo_url']; ?>"
+                          onerror="this.src='<?php if (strpos($photo['ip_photo_name'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo '/shop/img/no_image.gif'; ?>';">
+                    </a>
+                  </div>
+                </div>
+              <?php } ?>
             </div>
-          </div>
+            <div class="col title-wrap">
+              설치 사진(필수)
+            </div>
           <?php } ?>
 
-          <?php foreach($report['photo'] as $photo) { ?>
-          <div class="col">
-            <div class="report-img">
-              <a href="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" target="_blank" class="view_image">
-                <img
-                  src="<?php if (str_ends_with($photo['ip_photo_url'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']; ?>"
-                  onerror="this.src='<? if (strpos($photo['ip_photo_name'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo '/shop/img/no_image.gif'; ?>';">
-              </a>
+          <?php if ($report['photo2']) { ?>
+            <div class="row report-img-wrap">
+              <?php if ($report['ir_cert_url']) { ?>
+                <div class="col">
+                  <div class="report-img">
+                    <a href="<?= G5_DATA_URL . '/partner/img/' . $report['ir_cert_url'] ?>" target="_blank"
+                       class="view_image">
+                      <img src="<?= G5_DATA_URL . '/partner/img/' . $report['ir_cert_url'] ?>"
+                           onerror="this.src='<?php if (strpos($photo['ip_photo_name'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo '/shop/img/no_image.gif'; ?>';">
+                    </a>
+                  </div>
+                </div>
+              <?php } ?>
+              <?php foreach ($report['photo2'] as $photo) { ?>
+                <div class="col">
+                  <div class="report-img">
+                    <a href="<?= G5_DATA_URL . '/partner/img/' . $photo['ip_photo_url'] ?>" target="_blank"
+                       class="view_image">
+                      <img
+                          src="<?php if (str_ends_with($photo['ip_photo_url'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo G5_DATA_URL . '/partner/img/' . $photo['ip_photo_url']; ?>"
+                          onerror="this.src='<?php if (strpos($photo['ip_photo_name'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo '/shop/img/no_image.gif'; ?>';">
+                    </a>
+                  </div>
+                </div>
+              <?php } ?>
             </div>
-          </div>
+            <div class="col title-wrap">
+              실물 바코드 사진(필수)
+            </div>
           <?php } ?>
-        </div>
-        <div class="col title-wrap">
-          설치 사진(필수)
-        </div>
+
+          <?php if ($report['photo3']) { ?>
+            <div class="row report-img-wrap">
+              <?php if ($report['ir_cert_url']) { ?>
+                <div class="col">
+                  <div class="report-img">
+                    <a href="<?= G5_DATA_URL . '/partner/img/' . $report['ir_cert_url'] ?>" target="_blank"
+                       class="view_image">
+                      <img src="<?= G5_DATA_URL . '/partner/img/' . $report['ir_cert_url'] ?>"
+                           onerror="this.src='<?php if (strpos($photo['ip_photo_name'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo '/shop/img/no_image.gif'; ?>';">
+                    </a>
+                  </div>
+                </div>
+              <?php } ?>
+              <?php foreach ($report['photo3'] as $photo) { ?>
+                <div class="col">
+                  <div class="report-img">
+                    <a href="<?= G5_DATA_URL . '/partner/img/' . $photo['ip_photo_url'] ?>" target="_blank"
+                       class="view_image">
+                      <img
+                          src="<?php if (str_ends_with($photo['ip_photo_url'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo G5_DATA_URL . '/partner/img/' . $photo['ip_photo_url']; ?>"
+                          onerror="this.src='<?php if (strpos($photo['ip_photo_name'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo '/shop/img/no_image.gif'; ?>';">
+                    </a>
+                  </div>
+                </div>
+              <?php } ?>
+            </div>
+            <div class="col title-wrap">
+              설치ㆍ회수ㆍ소독확인서 사진(필수)
+            </div>
+          <?php } ?>
+
+          <?php if ($report['photo4']) { ?>
+            <div class="row report-img-wrap">
+              <?php if ($report['ir_cert_url']) { ?>
+                <div class="col">
+                  <div class="report-img">
+                    <a href="<?= G5_DATA_URL . '/partner/img/' . $report['ir_cert_url'] ?>" target="_blank"
+                       class="view_image">
+                      <img src="<?= G5_DATA_URL . '/partner/img/' . $report['ir_cert_url'] ?>"
+                           onerror="this.src='<?php if (strpos($photo['ip_photo_name'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo '/shop/img/no_image.gif'; ?>';">
+                    </a>
+                  </div>
+                </div>
+              <?php } ?>
+              <?php foreach ($report['photo4'] as $photo) { ?>
+                <div class="col">
+                  <div class="report-img">
+                    <a href="<?= G5_DATA_URL . '/partner/img/' . $photo['ip_photo_url'] ?>" target="_blank"
+                       class="view_image">
+                      <img
+                          src="<?php if (str_ends_with($photo['ip_photo_url'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo G5_DATA_URL . '/partner/img/' . $photo['ip_photo_url']; ?>"
+                          onerror="this.src='<?php if (strpos($photo['ip_photo_name'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo '/shop/img/no_image.gif'; ?>';">
+                    </a>
+                  </div>
+                </div>
+              <?php } ?>
+            </div>
+            <div class="col title-wrap">
+              추가사진(선택) - 상품변경 혹은 특이사항 발생 시
+            </div>
+            </div>
+          <?php } ?>
         <?php } ?>
 
-        <?php if($report['photo2']) { ?>
-        <div class="row report-img-wrap">
-          <?php if($report['ir_cert_url']) { ?>
-          <div class="col">
-            <div class="report-img">
-              <a href="<?=G5_DATA_URL.'/partner/img/'.$report['ir_cert_url']?>" target="_blank" class="view_image">
-                <img src="<?=G5_DATA_URL.'/partner/img/'.$report['ir_cert_url']?>"
-                  onerror="this.src='<? if (strpos($photo['ip_photo_name'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo '/shop/img/no_image.gif'; ?>';">
-              </a>
+        <?php if ($report['issue']) { ?>
+          <div class="col issue-wrap">
+            <div class="col title-wrap">
+              이슈사항
+            </div>
+            <div class="issue-select">
+              이슈사항 (
+              <?php echo implode(' /', $report['issue']); ?>
+              )
+            </div>
+            <div class="issue">
+              <p>
+                <?= nl2br($report['ir_issue']) ?>
+              </p>
             </div>
           </div>
-          <?php } ?>
-          <?php foreach($report['photo2'] as $photo) { ?>
-          <div class="col">
-            <div class="report-img">
-              <a href="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" target="_blank" class="view_image">
-                <img
-                  src="<?php if (str_ends_with($photo['ip_photo_url'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']; ?>"
-                  onerror="this.src='<? if (strpos($photo['ip_photo_name'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo '/shop/img/no_image.gif'; ?>';">
-              </a>
-            </div>
-          </div>
-          <?php } ?>
-        </div>
-        <div class="col title-wrap">
-          실물 바코드 사진(필수)
-        </div>
         <?php } ?>
-
-        <?php if($report['photo3']) { ?>
-        <div class="row report-img-wrap">
-          <?php if($report['ir_cert_url']) { ?>
-          <div class="col">
-            <div class="report-img">
-              <a href="<?=G5_DATA_URL.'/partner/img/'.$report['ir_cert_url']?>" target="_blank" class="view_image">
-                <img src="<?=G5_DATA_URL.'/partner/img/'.$report['ir_cert_url']?>"
-                  onerror="this.src='<? if (strpos($photo['ip_photo_name'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo '/shop/img/no_image.gif'; ?>';">
-              </a>
-            </div>
-          </div>
-          <?php } ?>
-          <?php foreach($report['photo3'] as $photo) { ?>
-          <div class="col">
-            <div class="report-img">
-              <a href="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" target="_blank" class="view_image">
-                <img
-                  src="<?php if (str_ends_with($photo['ip_photo_url'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']; ?>"
-                  onerror="this.src='<? if (strpos($photo['ip_photo_name'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo '/shop/img/no_image.gif'; ?>';">
-              </a>
-            </div>
-          </div>
-          <?php } ?>
-        </div>
-        <div class="col title-wrap">
-          설치ㆍ회수ㆍ소독확인서 사진(필수)
-        </div>
-        <?php } ?>
-
-        <?php if($report['photo4']) { ?>
-        <div class="row report-img-wrap">
-          <?php if($report['ir_cert_url']) { ?>
-          <div class="col">
-            <div class="report-img">
-              <a href="<?=G5_DATA_URL.'/partner/img/'.$report['ir_cert_url']?>" target="_blank" class="view_image">
-                <img src="<?=G5_DATA_URL.'/partner/img/'.$report['ir_cert_url']?>"
-                  onerror="this.src='<? if (strpos($photo['ip_photo_name'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo '/shop/img/no_image.gif'; ?>';">
-              </a>
-            </div>
-          </div>
-          <?php } ?>
-          <?php foreach($report['photo4'] as $photo) { ?>
-          <div class="col">
-            <div class="report-img">
-              <a href="<?=G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']?>" target="_blank" class="view_image">
-                <img
-                  src="<?php if (str_ends_with($photo['ip_photo_url'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo G5_DATA_URL.'/partner/img/'.$photo['ip_photo_url']; ?>"
-                  onerror="this.src='<? if (strpos($photo['ip_photo_name'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo '/shop/img/no_image.gif'; ?>';">
-              </a>
-            </div>
-          </div>
-          <?php } ?>
-        </div>
-        <div class="col title-wrap">
-          추가사진(선택) - 상품변경 혹은 특이사항 발생 시
-        </div>
-        <?php } ?>
-      </div>
-      <?php } ?>
-
-      <?php if($report['issue']) { ?>
-      <div class="col issue-wrap">
-        <div class="col title-wrap">
-          이슈사항
-        </div>
-        <div class="issue-select">
-          이슈사항 (
-          <?php echo implode(' /', $report['issue']); ?>
-          )
-        </div>
-        <div class="issue">
-          <p>
-            <?=nl2br($report['ir_issue'])?>
-          </p>
-        </div>
-      </div>
       <?php } ?>
 
       <h4>상품 정보</h4>

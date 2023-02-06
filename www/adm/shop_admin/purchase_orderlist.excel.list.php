@@ -460,7 +460,7 @@ foreach ($ct_items as $it) {
 
   $ct_delivery_complete_date = $ct_part_info['_in_dt_confirm']?date("Y-m-d H", strtotime($ct_part_info['_in_dt_confirm'])) :"-" ;
   $ct_delivery_expect_date = $ct_part_info['_in_dt']?date("Y-m-d H", strtotime($ct_part_info['_in_dt'])) :"-" ;
-  $ct_delivered_qty = $it['ct_delivered_qty']? :"-";
+  $ct_delivered_qty = $ct_part_info['_in_qty']?:"0" ;
   $item_price = number_format($it['ct_price'])?:"-";
   $basic_price = $it['ct_price']?number_format(round(($it['ct_price']*$it["ct_qty"])/1.1)):"-";
   $tax_price = $it['ct_price']?number_format(round(($it['ct_price']*$it["ct_qty"])/11)):"-";
