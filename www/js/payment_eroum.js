@@ -36,11 +36,20 @@
 
     $(function() {
 
-        $('.btn_OnlineBilling').click(function(e) { 
-          $('#OnlineBilling_popup iframe').attr('src', '/shop/popup.payment_OnlineBilling.php');
-          $('#OnlineBilling_popup iframe').attr('scrolling', 'no');
-          $('#OnlineBilling_popup iframe').attr('frameborder', '0');
-          $('#OnlineBilling_popup').show(); 
+        $('.btn_OnlineBilling').click(function(e) {
+
+            /* 모바일 체크 */
+            var deviceUserAgent = navigator.userAgent.toLowerCase();
+            if(deviceUserAgent.indexOf("android") > -1 || deviceUserAgent.indexOf("iphone") > -1 || deviceUserAgent.indexOf("ipad") > -1 || deviceUserAgent.indexOf("ipod") > -1){
+                alert("이용에 불편을 드려 죄송합니다.\n대금 결제는 모바일에서 불가능 합니다.\n컴퓨터(PC)를 이용해주세요.device");
+                $('.btn_OnlineBilling').hide();
+                return; 
+            }
+
+            $('#OnlineBilling_popup iframe').attr('src', '/shop/popup.payment_OnlineBilling.php');
+            $('#OnlineBilling_popup iframe').attr('scrolling', 'no');
+            $('#OnlineBilling_popup iframe').attr('frameborder', '0');
+            $('#OnlineBilling_popup').show(); 
         });
 
         $('.OnlineBilling_popup_close').click(function() { $('#OnlineBilling_popup').hide(); location.reload(); });
@@ -58,11 +67,7 @@ function Payment_Set_Billing( order, _type, user ) {
     /* 모바일 체크 */
     var deviceUserAgent = navigator.userAgent.toLowerCase();
     if(deviceUserAgent.indexOf("android") > -1 || deviceUserAgent.indexOf("iphone") > -1 || deviceUserAgent.indexOf("ipad") > -1 || deviceUserAgent.indexOf("ipod") > -1){
-        alert("이용에 불편을 드려 죄송합니다.\n대금 결제는 모바일에서 불가능 합니다.\n컴퓨터(PC)를 이용해주세요.device"); return; 
-    }
-
-    if( (screen.width < 500) || (screen.height < 400) ){ 
-        alert("이용에 불편을 드려 죄송합니다.\n대금 결제는 모바일에서 불가능 합니다.\n컴퓨터(PC)를 이용해주세요.screen"); return; 
+        alert("이용에 불편을 드려 죄송합니다.\n대금 결제는 모바일에서 불가능 합니다.\n컴퓨터(PC)를 이용해주세요. Device"); return; 
     }
 
     if( !order._price ) { alert("결제 데이터 일부가 누락되었습니다.price"); return; }

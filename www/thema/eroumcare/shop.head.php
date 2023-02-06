@@ -353,8 +353,18 @@ if($is_main && !$is_member) {
             </div>
 
             <?php
+
+              $mobile_agent = '/(iPod|iPhone|Android|BlackBerry|SymbianOS|SCH-M\d+|Opera Mini|Windows CE|Nokia|SonyEricsson|webOS|PalmOS)/';
+              $_isMobile = false;
+              // preg_match() 함수를 이용해 모바일 기기로 접속하였는지 확인
+              if (preg_match($mobile_agent, $_SERVER['HTTP_USER_AGENT'])) {
+                $_isMobile = true;
+                //echo "This mobile device!";
+                //exit();
+              }
               // 23.01.09 : 서원 - 사업소 권한을 가진 회원에게만 해당 버튼을 나타 낸다.
-              if( ($member['mb_level']==3) || ($member['mb_level']==4) ) {
+              // 23.02.06 : 서원 - 모바일 기기가 아닌경우에만 버튼 활성화
+              if( (!$_isMobile) && (($member['mb_level']==3) || ($member['mb_level']==4)) ) {
 
                 // 23.01.09 : 서원 - 관리자 설정값 확인.
                 //                    해당 값을 가져와서 대금 결제 버튼 활성화에 대한 조건 체크
