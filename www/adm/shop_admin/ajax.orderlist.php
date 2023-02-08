@@ -43,7 +43,7 @@ if ($search != "") {
     $result_barcode_search = sql_query($sql_barcode_search);
     $or = "";
     while( $row_barcode = sql_fetch_array($result_barcode_search) ) {
-      $bacode_search .= $or." o.stoId like '%".$row_barcode['stoId']."%' ";
+      $bacode_search .= $or." `o.stoId` like '%".$row_barcode['stoId']."%' ";
       $or = "or";
     }
     $where[] = $bacode_search;
@@ -56,41 +56,15 @@ if ($search != "") {
 
 if ($search_add != "") {
   $search_add = trim($search_add);
-  if ($sel_field_add != "" && $sel_field_add != "od_all" && $sel_field_add != "barcode") {
+  if ($sel_field_add != "" && $sel_field_add != "od_all") {
     $where[] = "$sel_field_add like '%$search_add%'";
-  }elseif($sel_field_add = "barcode"){
-	$sql_barcode_search ="select `stoId` from `g5_barcode_log` where `barcode` = '".$search_add."'";
-      $result_barcode_search = sql_query($sql_barcode_search);
-      $or = "";
-      while( $row_barcode = sql_fetch_array($result_barcode_search) ) {
-        $bacode_search .= $or." o.stoId like '%".$row_barcode['stoId']."%' ";
-        $or = "or";
-      }
-      if($bacode_search) {
-        $where[] = $bacode_search;
-      } else {
-        $where[] = "o.stoId like '%$search_add%'";
-      }
   }
 }
 
-if ($search_add_add != "") {//사용유무 불확실
+if ($search_add_add != "") {
   $search_add_add = trim($search_add_add);
-  if ($sel_field_add_add != "" && $sel_field_add_add != "od_all" && $sel_field_add_add != "barcode") {
+  if ($sel_field_add_add != "" && $sel_field_add_add != "od_all") {
     $where[] = "$sel_field_add_add like '%$search_add_add%'";
-  }elseif($sel_field_add_add = "barcode"){
-	$sql_barcode_search ="select `stoId` from `g5_barcode_log` where `barcode` = '".$search_add_add."'";
-      $result_barcode_search = sql_query($sql_barcode_search);
-      $or = "";
-      while( $row_barcode = sql_fetch_array($result_barcode_search) ) {
-        $bacode_search .= $or." o.stoId like '%".$row_barcode['stoId']."%' ";
-        $or = "or";
-      }
-      if($bacode_search) {
-        $where[] = $bacode_search;
-      } else {
-        $where[] = "o.stoId like '%$search_add_add%'";
-      }
   }
 }
 
@@ -104,7 +78,7 @@ if ($sel_field == 'od_all' && $search != "") {
       $result_barcode_search = sql_query($sql_barcode_search);
       $or = "";
       while ($row_barcode = sql_fetch_array($result_barcode_search)) {
-        $bacode_search .= $or . " o.stoId like '%" . $row_barcode['stoId'] . "%' ";
+        $bacode_search .= $or . " `o.stoId` like '%" . $row_barcode['stoId'] . "%' ";
         $or = "or";
       }
       if ($bacode_search) {
@@ -122,7 +96,7 @@ if ($sel_field == 'od_all' && $search != "") {
 
 // 전체 검색2
 if ($sel_field_add == 'od_all' && $search_add != "") {
-  $sel_arr = array('c.it_name', 'c.ct_option', 'it_admin_memo', 'it_maker', 'c.od_id', 'c.mb_id', 'mb_nick', 'od_name', 'od_tel', 'od_hp', 'od_b_name', 'od_b_tel', 'od_b_hp', 'od_deposit_name', 'ct_delivery_num', 'barcode','prodMemo', 'od_memo');
+  $sel_arr = array('c.it_name', 'c.ct_option', 'it_admin_memo', 'it_maker', 'c.od_id', 'c.mb_id', 'mb_nick', 'od_name', 'od_tel', 'od_hp', 'od_b_name', 'od_b_tel', 'od_b_hp', 'od_deposit_name', 'ct_delivery_num', /*'barcode',*/ 'prodMemo', 'od_memo');
 
   foreach ($sel_arr as $key => $value) {
     if($value=="barcode") {
@@ -130,7 +104,7 @@ if ($sel_field_add == 'od_all' && $search_add != "") {
       $result_barcode_search = sql_query($sql_barcode_search);
       $or = "";
       while( $row_barcode = sql_fetch_array($result_barcode_search) ) {
-        $bacode_search .= $or." o.stoId like '%".$row_barcode['stoId']."%' ";
+        $bacode_search .= $or." `o.stoId` like '%".$row_barcode['stoId']."%' ";
         $or = "or";
       }
       if($bacode_search) {
