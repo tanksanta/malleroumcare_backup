@@ -1,6 +1,15 @@
 <?php
 include_once('./_common.php');
 
+$query = "SHOW COLUMNS FROM g5_member WHERE `Field` = 'cert_reg_sts';";//인증서 항목 없을 시 추가
+$wzres = sql_fetch( $query );
+if(!$wzres['Field']) {
+    sql_query("ALTER TABLE `g5_member`
+	ADD `cert_reg_sts` varchar(20) DEFAULT NULL COMMENT '사업소의 공인 인증서 등록 상태' AFTER mb_account,
+	ADD `cert_reg_date` date DEFAULT NULL COMMENT '공인인증서 최초 등록일' AFTER cert_reg_date,
+	ADD `cert_data_ref` text NOT NULL COMMENT '공인인증서 key ref file' AFTER cert_reg_date", true);
+}
+
 // 회원이 아닌 경우
 if (!$is_member) goto_url(G5_BBS_URL.'/login.php?url='.urlencode(G5_SHOP_URL.'/claim_manage.php'));
 
@@ -114,6 +123,28 @@ for ($i=0; $row=sql_fetch_array($res_table); $i++) {
 }
 
 add_stylesheet('<link rel="stylesheet" href="'.G5_PLUGIN_URL.'/DataTables/datatables.min.css">', 13);
+//인증서 업로드 추가 영역
+$mobile_agent = "/(iPod|iPhone|Android|BlackBerry|SymbianOS|SCH-M\d+|Opera Mini|Windows CE|Nokia|SonyEricsson|webOS|PalmOS)/";
+
+if(preg_match($mobile_agent, $_SERVER['HTTP_USER_AGENT'])){
+	$mobile_yn = "Mobile";
+}else{
+	$mobile_yn = "Pc";
+}
+$is_file = false;
+if($member["cert_data_ref"] != ""){
+	$cert_data_ref =  explode("|",$member["cert_data_ref"]);
+	$cert_info = "사용자명:".base64_decode($cert_data_ref[1])." | 만료일자:".base64_decode($cert_data_ref[2]);
+	$upload_dir = $_SERVER['DOCUMENT_ROOT']."/data/file/member/tilko/";
+	$file_name = base64_encode($cert_data_ref[0]);
+	if(file_exists($upload_dir.$file_name.".enc")){
+		$is_file = true;
+	}
+}
+if($member["cert_reg_sts"] != "Y"){
+	$is_file = false;
+}
+//인증서 업로드 추가 영역 끝
 ?>
 
 <style>
@@ -231,6 +262,47 @@ input[type="number"]::-webkit-inner-spin-button {
   }
 }
 
+/* 인증서 비번 팝업 - 인증서 업로드 추가 */
+#cert_popup_box {
+  display: none;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  z-index:9999;
+  background: rgba(0, 0, 0, 0.5);
+}
+#cert_popup_box iframe {
+  width:322px;
+  height:307px;
+  max-height: 80%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+}
+
+#cert_guide_popup_box {
+  display: none;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  z-index:9999;
+  background: rgba(0, 0, 0, 0.5);
+}
+#cert_guide_popup_box iframe {
+  width:850px;
+  height:750px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+}
 </style>
 <section class="ltcare_wrap">
   <div class="ltcare_tit">
@@ -313,7 +385,80 @@ input[type="number"]::-webkit-inner-spin-button {
   </div>
   <iframe name="iframe" src="" scrolling="yes" frameborder="0" allowTransparency="false"></iframe>
 </div>
+<!-- 인증서 업로드 추가 영역 -->
+<div id="cert_popup_box">
+  <iframe name="cert_iframe" src="" scrolling="yes" frameborder="0" allowTransparency="false"></iframe>
+</div>
 
+<div id="cert_guide_popup_box">
+  <iframe name="cert_guide_iframe" src="" scrolling="yes" frameborder="0" allowTransparency="false"></iframe>
+</div>
+
+<iframe name="tilko" id="tilko" src="" scrolling="yes" frameborder="0" allowTransparency="false" height="0" width="0"></iframe>
+<script type="text/javascript">
+	$( document ).ready(function() {
+		<?php if(!$is_file){
+			if($mobile_yn == 'Pc'){?>
+		//공인인증서 등록 안내 및 등록 버튼 팝업 알림으로 교체 될 영역	
+			cert_guide();
+			tilko_call('1');
+		<?php }else{?>
+		alert("컴퓨터에서 공인인증서를 등록 후 이용이 가능한 서비스 입니다.");
+		<?php }
+		}?>
+		
+		$('#cert_popup_box').click(function() {
+		  $('body').removeClass('modal-open');
+		  $('#cert_popup_box').hide();
+		});
+		$('#cert_guide_popup_box').click(function() {
+		  $('body').removeClass('modal-open');
+		  $('#cert_guide_popup_box').hide();
+		});
+	});
+	
+	function tilko_call(a=1){
+		$("#tilko").attr("src","/tilko_test.php?option="+a);
+	}
+	
+	function tilko_download(){
+		alert("공인인증서 전송 프로그램 설치가 필요합니다. 설치 파일을 다운로드 합니다.");
+		$("#tilko").attr("src","/Resources/setup.exe");
+	}
+	function cert_guide(){// 공인인증서 등록 절차 가이드 창 오픈
+		var url = "/shop/pop.cert_guide.php";
+		$('#cert_guide_popup_box iframe').attr('src', url);
+		$('body').addClass('modal-open');
+		$('#cert_guide_popup_box').show();
+	}
+		
+	function pwd_insert(){// 공인인증서 비밀번호 입력 창 오픈
+		var url = "/shop/pop.certmobilelogin.php";
+		$('#cert_popup_box iframe').attr('src', url);
+		$('body').addClass('modal-open');
+		$('#cert_popup_box').show();
+	}
+	function cert_pwd(pwd){
+		var params = {
+				  mode      : 'pwd'
+				, Pwd       : pwd
+			}
+			$.ajax({
+				type : "POST",            // HTTP method type(GET, POST) 형식이다.
+				url : "/ajax.tilko.php",      // 컨트롤러에서 대기중인 URL 주소이다.
+				data : params, 
+				dataType: 'json',// Json 형식의 데이터이다.
+				success : function(res){ // 비동기통신의 성공일경우 success콜백으로 들어옵니다. 'res'는 응답받은 데이터이다.
+					$("#btn_submit").trigger("click");
+				  },
+				error : function(XMLHttpRequest, textStatus, errorThrown){ // 비동기 통신이 실패할경우 error 콜백으로 들어옵니다.
+					alert(XMLHttpRequest['responseJSON']['message']);
+					pwd_insert();
+				}
+			});
+	}
+</script>
+<!-- 인증서 업로드 추가 영역 끝-->
 <script>
     var recipient_list = <?=json_encode($recipient_list)?>;
     var table_result = <?=json_encode($result_arr)?>;
@@ -364,15 +509,18 @@ input[type="number"]::-webkit-inner-spin-button {
         var num = 'L'+$("#penNum").val();
         if (name.length < 2) {
             alert("수급자명을 정확히 입력하세요.");
+			btn_submit.disabled = false;//인증서 업로드 추가
             return false;
         }
         if (num.length < 10) {
             alert("수급자 번호를 정확히 입력하세요.");
+			btn_submit.disabled = false;//인증서 업로드 추가
             return false;
         }
         num = num.substring(1);
         if (/^[0-9]*$/.test(num) == false) {
             alert("수급자 번호는 숫자만 입력하세요.");
+			btn_submit.disabled = false;//인증서 업로드 추가
             return false;
         }
 
@@ -475,8 +623,31 @@ input[type="number"]::-webkit-inner-spin-button {
             },
             error: function (jqXhr, textStatus, errorMessage) {
                 var errMSG = typeof(jqXhr['responseJSON']) == "undefined"? "수급자명 / 장기요양인정번호 확인 후, 조회하시기 바랍니다.":jqXhr['responseJSON']['message'];
-                alert(errMSG);
-                btn_submit.disabled = false;
+                //alert(errMSG);
+                //인증서 업로드 추가 영역 
+				if(errMSG == "수급자명 / 장기요양인정번호 확인 후, 조회하시기 바랍니다." ){
+					alert(errMSG);
+				}else if(jqXhr['responseJSON']["data"]['err_code'] == "3"){
+					alert("등록된 인증서가 사용 기간이 만료 되었습니다.<?=($mobile_yn == 'Mobile')?' 컴퓨터에서':'';?> 공인인증서를 재등록 해 주세요.");
+					<?php if($mobile_yn == 'Pc'){?>tilko_call('1');<?php }?>
+				}else if(jqXhr['responseJSON']["data"]['err_code'] == "1"){
+					alert("등록된 인증서가 없습니다.<?=($mobile_yn == 'Mobile')?' 컴퓨터에서':'';?> 공인인증서를 등록 해 주세요.");
+					<?php if($mobile_yn == 'Pc'){?>tilko_call('1');<?php }?>
+				}else if(jqXhr['responseJSON']["data"]['err_code'] == "2"){
+					<?php //if($mobile_yn == "Mobile"){?>
+					pwd_insert();//모바일에서 로그인 시 레이어 팝업 노출
+					<?php //}else{?>
+					//tilko_call('2');
+					<?php //}?>
+				}else if(jqXhr['responseJSON']["data"]['err_code'] == "4"){
+					alert(errMSG);
+					if(errMSG.indexOf("비밀번호") !== -1 || errMSG.indexOf("암호") !== -1){
+						//tilko_call('2');
+						pwd_insert();
+					}
+				}
+				// 인증서 업로드 추가 영역 끝
+				btn_submit.disabled = false;
                 return false;
             }
           });
