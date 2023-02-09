@@ -215,7 +215,7 @@ include_once("./_common.php");
                                                     )}">
                         <div class="flex flex-col justify-center w-full max-h-6">
                           <div class="h-4 flex items-center flex-row">
-                            <div class="h-2 border-4 rounded-full border-green-600"></div>
+                            <div class="h-2 border-4 rounded-full border-[#95F702]"></div>
                             <span class="ml-1 text-xs" x-text="filter_mb_id == '' ?
                                                             Object.keys(events).filter(e => new Date(e).toDateString() === new Date(year, month, date).toDateString()).length !== 0 ?
                                                             '설치완료 ' + events[Object.keys(events).filter(e => new Date(e).toDateString() === new Date(year, month, date).toDateString())[0]].filter(e => e.type === 'schedule' && e.status === '완료').length + '건' :

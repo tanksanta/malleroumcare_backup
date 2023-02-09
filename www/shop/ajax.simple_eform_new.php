@@ -163,7 +163,7 @@ function calc_rental_price($str_date, $end_date, $price) {
     }
 
     // 마지막 달 계산
-    $rental_price += (int) floor(
+    $rental_price += (int) ceil(
         $price * (
             date('j', $end_time)
             /
@@ -173,7 +173,7 @@ function calc_rental_price($str_date, $end_date, $price) {
 
     if($diff > 0) {
         // 첫째 달 계산
-        $rental_price += (int) floor(
+        $rental_price += (int) ceil(
             $price * (
                 ( date('t', $str_time) - date('j', $str_time) + 1 )
                 /

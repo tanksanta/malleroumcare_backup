@@ -5,6 +5,77 @@ include_once("./_common.php");
 if(!$member["mb_id"] || !$member["mb_entId"])
   json_response(400, '먼저 로그인하세요.');
 
+
+
+if($member["cert_reg_sts"] == "Y" && $_SESSION['PriKey'] == "" && $_SESSION['PubKey'] == ""){//공인인증서 등록 완료
+	$cert_data_ref =  explode("|",$member["cert_data_ref"]);
+	if(strtotime(base64_decode($cert_data_ref[2])." 23:59:59") < time()){//인증서 만료
+		json_response(400, '등록된 인증서가 사용 기간이 만료 되었습니다. 공인인증서를 재등록 해 주세요.', array(
+		  'err_code' => "3",
+		));
+		exit;
+	}
+
+	if($_SESSION['Pwd'] == ""){
+		json_response(400, "[ ".base64_decode($cert_data_ref[1]).' ]로 등록된 공인인증서가 있습니다. 공인인증서 비밀번호를 입력해 주세요.', array(
+		  'err_code' => "2",
+		  'cert_name' => base64_decode($cert_data_ref[1]),
+		));
+		exit;
+	}
+
+	$upload_dir = $_SERVER['DOCUMENT_ROOT']."/data/file/member/tilko/";
+	
+	$file_name = base64_encode($cert_data_ref[0]);
+	if(file_exists($upload_dir.$file_name.".enc")){
+		if($_SESSION['Pwd'] != ""){//비밀번호를 받았을 때
+			//@system('echo -n '.base64_decode($_SESSION['Pwd']).' | openssl aes-256-cbc -d -in '.$upload_dir.$file_name.'.enc -out '.$upload_dir.$file_name.'.txt -pass stdin'); //입력 받은 비밀번호로 파일 복호화 저장
+			@system('echo -n '."thkc!@#".' | openssl aes-256-cbc -d -in '.$upload_dir.$file_name.'.enc -out '.$upload_dir.$file_name.'.txt -pass stdin'); //고정값으로 파일 복호화 저장
+			$fp = fopen($upload_dir.$file_name.".txt", 'r');    // list.txt 파일을 읽기 전용으로 열고 반환된 파일 포인터를 $fp에 저장함. 
+			$i = 0;
+			while(!feof($fp)){ // feof() 함수는 전달받은 파일 포인터가 파일의 끝에 도달하면, true를 반환
+				$cert[$i] = fgets($fp); // 한 줄씩 $member 변수에 저장하고 
+				//echo $cert[]."<br>";  // 출력함.
+				$i++;
+			}
+			$_SESSION['PriKey'] = $cert[0];
+			$_SESSION['PubKey'] = $cert[1];
+			unlink($upload_dir.$file_name.".txt");//암호화 안된 파일 삭제
+		}else{//비밀번호를 받지 않았을 때
+			json_response(400, "[ ".base64_decode($cert_data_ref[1]).' ]로 등록된 공인인증서가 있습니다. 공인인증서 비밀번호를 입력해 주세요.', array(
+			  'err_code' => "2",
+			  'cert_name' => base64_decode($cert_data_ref[1]),
+			));
+			exit;
+		}
+	}else{//등록 파일 삭제 된 경우
+		json_response(400, '먼저 공인인증서를 등록 해 주세요.',array(
+			'err_code' => "1",
+		));
+		exit;
+		
+	}
+}else{
+	if($_SESSION['Pwd'] == ""){
+		json_response(400, "[ ".base64_decode($cert_data_ref[1]).' ]로 등록된 공인인증서가 있습니다. 공인인증서 비밀번호를 입력해 주세요.', array(
+		  'err_code' => "2",
+		  'cert_name' => base64_decode($cert_data_ref[1]),
+		));
+		exit;
+	}
+}
+
+//json_response(400, $_SESSION['PriKey'],array(
+//		'err_code' => "1",
+//	));
+//exit;
+if($_SESSION['PriKey'] == "" || $_SESSION['PubKey'] == ""){
+	json_response(400, '먼저 공인인증서를 등록 해 주세요.',array(
+		'err_code' => "1",
+	));
+	
+}
+
 set_include_path(get_include_path() . PATH_SEPARATOR . G5_SHOP_PATH.'/tilko/phpseclib1.0.19');
 require_once('Crypt/RSA.php');
 class contractToolSetList { 
@@ -85,7 +156,8 @@ function getPublicKey($apiKey) {
         CURLOPT_RETURNTRANSFER  => true,
         CURLOPT_CUSTOMREQUEST   => "GET",
         CURLOPT_SSL_VERIFYHOST  => 0,
-        CURLOPT_SSL_VERIFYPEER  => 0
+        CURLOPT_SSL_VERIFYPEER  => 0,
+		CURLOPT_TIMEOUT => 5
     )); 
 
     $response   = curl_exec($curl);
@@ -123,11 +195,12 @@ $url_recipientContractHistory	  = $apiHost . "api/v1.0/Longtermcare/NPIA208P01";
 
 // 인증서 경로 설정
 //$certPath   = "C:/Users/username/AppData/LocalLow/NPKI/yessign/USER/user01/";
-$certPath   = G5_SHOP_PATH.'/tilko/'; //"C:/Users/username/AppData/LocalLow/NPKI/yessign/USER/user01/";
-$certFile   = $certPath . "signCert.der";
-$keyFile    = $certPath . "signPri.key";
-$certPw		= "thkc##1301493";
-
+//$certPath   = G5_SHOP_PATH.'/tilko/'; //"C:/Users/username/AppData/LocalLow/NPKI/yessign/USER/user01/";
+//$certFile   = $certPath . "signCert.der";
+//$keyFile    = $certPath . "signPri.key";
+$certPw = base64_decode($_SESSION['Pwd']);//"thkc##1301493";
+$PubKey = base64_decode($_SESSION['PubKey']);
+$PriKey = base64_decode($_SESSION['PriKey']);
 // API 요청 파라미터 설정
 $headers    = array(
     "Content-Type:"             . "application/json",
@@ -136,24 +209,24 @@ $headers    = array(
 );
 
 $bodies_recipientContractDetail     = array(
-    "CertFile" => aesEncrypt($aesKey, $aesIv, file_get_contents($certFile)),
-    "KeyFile" => aesEncrypt($aesKey, $aesIv, file_get_contents($keyFile)),
+    "CertFile" => aesEncrypt($aesKey, $aesIv, $PubKey),
+    "KeyFile" => aesEncrypt($aesKey, $aesIv, $PriKey),
     "CertPassword" => aesEncrypt($aesKey, $aesIv, $certPw),
     "BusinessNumber" => aesEncrypt($aesKey, $aesIv, $BusinessNumber),
     "Name" => aesEncrypt($aesKey, $aesIv, $RecipientName),
     "IdentityNumber" => aesEncrypt($aesKey, $aesIv, $RecipientId),
 );
 $bodies_recipientToolList = array(
-    "CertFile" => aesEncrypt($aesKey, $aesIv, file_get_contents($certFile)),
-    "KeyFile" => aesEncrypt($aesKey, $aesIv, file_get_contents($keyFile)),
+    "CertFile" => aesEncrypt($aesKey, $aesIv, $PubKey),
+    "KeyFile" => aesEncrypt($aesKey, $aesIv, $PriKey),
     "CertPassword" => aesEncrypt($aesKey, $aesIv, $certPw),
     "BusinessNumber" => aesEncrypt($aesKey, $aesIv, $BusinessNumber),
     "IdentityNumber" => aesEncrypt($aesKey, $aesIv, $RecipientId),
     "Col" => "__VALUE__", // = response_recipientContractDetail['Result']['ds_welToolTgHistList']['LTC_MGMT_NO_SEQ']
 );
 $bodies_recipientContractHistory = array(
-    "CertFile" => aesEncrypt($aesKey, $aesIv, file_get_contents($certFile)),
-    "KeyFile" => aesEncrypt($aesKey, $aesIv, file_get_contents($keyFile)),
+    "CertFile" => aesEncrypt($aesKey, $aesIv, $PubKey),
+    "KeyFile" => aesEncrypt($aesKey, $aesIv, $PriKey),
     "CertPassword" => aesEncrypt($aesKey, $aesIv, $certPw),
     "BusinessNumber" => aesEncrypt($aesKey, $aesIv, $BusinessNumber),
     "IdentityNumber" => aesEncrypt($aesKey, $aesIv, $RecipientId),
@@ -177,7 +250,9 @@ curl_setopt_array($curl, array(
     CURLOPT_HTTPHEADER      => $headers,
     CURLOPT_VERBOSE         => false,
     CURLOPT_SSL_VERIFYHOST  => 0,
-    CURLOPT_SSL_VERIFYPEER  => 0
+    CURLOPT_SSL_VERIFYPEER  => 0,
+	CURLOPT_TIMEOUT => 5
+
 ));
 
 $response   = curl_exec($curl);
@@ -189,7 +264,9 @@ curl_close($curl);
 $recipientContractDetail = json_decode(substr($response,strpos($response,'{')),TRUE);
 if ( strcmp($recipientContractDetail['Status'],'OK') != 0)
 {
-	return json_response(406, "조회오류 : ".$recipientContractDetail['Message']);
+	return json_response(406, "조회오류 : ".$recipientContractDetail['Message'],array(
+		  'err_code' => "4",
+		));
 }
 //print_r($recipientContractDetail);
 //print_r($recipientContractDetail['Result']);
@@ -212,7 +289,8 @@ curl_setopt_array($curl, array(
     CURLOPT_HTTPHEADER      => $headers,
     CURLOPT_VERBOSE         => false,
     CURLOPT_SSL_VERIFYHOST  => 0,
-    CURLOPT_SSL_VERIFYPEER  => 0
+    CURLOPT_SSL_VERIFYPEER  => 0,
+		CURLOPT_TIMEOUT => 5
 ));
 
 $response   = curl_exec($curl);
@@ -224,7 +302,9 @@ $recipientToolList = $response;
 $arr_recipientToolList = json_decode($recipientToolList,TRUE);
 if ( strcmp($arr_recipientToolList['Status'],'OK') != 0)
 {
-	return json_response(406, "조회오류 : ".$arr_recipientToolList['Message']);
+	return json_response(406, "조회오류 : ".$arr_recipientToolList['Message'],array(
+		  'err_code' => "4",
+		));
 }
 
 // 대여가능/불가능,구매가능/불가능 항목 체크
@@ -267,7 +347,9 @@ if ($arr_recipientToolList['Result']['ds_payPsblLnd1'] != null)
 		}
 		else
 		{
-			return json_response(400, '알수 없는 품목이 수신되었습니다.');
+			return json_response(400, '알수 없는 품목이 수신되었습니다.',array(
+		  'err_code' => "4",
+		));
 		}
 	
 	}
@@ -329,7 +411,9 @@ if ($arr_recipientToolList['Result']['ds_payPsbl1'] != null)
 		}
 		else
 		{
-			return json_response(400, '알수 없는 품목이 수신되었습니다.');
+			return json_response(400, '알수 없는 품목이 수신되었습니다.',array(
+		  'err_code' => "4",
+		));
 		}
 	
 	}
@@ -370,7 +454,8 @@ curl_setopt_array($curl, array(
     CURLOPT_HTTPHEADER      => $headers,
     CURLOPT_VERBOSE         => false,
     CURLOPT_SSL_VERIFYHOST  => 0,
-    CURLOPT_SSL_VERIFYPEER  => 0
+    CURLOPT_SSL_VERIFYPEER  => 0,
+		CURLOPT_TIMEOUT => 5
 ));
 
 $response   = curl_exec($curl);
@@ -379,7 +464,9 @@ curl_close($curl);
 $recipientContractHistory = json_decode($response,TRUE);
 if ( strcmp($recipientContractHistory['Status'],'OK') != 0)
 {
-	return json_response(406, "조회오류 : ".$recipientContractHistory['Message']);
+	return json_response(406, "조회오류 : ".$recipientContractHistory['Message'],array(
+		  'err_code' => "4",
+		));
 }
 //print_r($recipientContractHistory);
 ////////////count for the remaining right to purchase
@@ -454,7 +541,9 @@ if ($recipientContractHistory['Result']['ds_result'] != null){
 		}
 		else
 		{
-			return json_response(400, '알수 없는 품목이 수신되었습니다.');
+			return json_response(400, '알수 없는 품목이 수신되었습니다.',array(
+		  'err_code' => "4",
+		));
 		}
 	}
 }
