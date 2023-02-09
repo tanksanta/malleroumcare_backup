@@ -758,17 +758,16 @@ input[type="number"]::-webkit-inner-spin-button {
 <iframe name="tilko" id="tilko" src="" scrolling="yes" frameborder="0" allowTransparency="false" height="0" width="0"></iframe>
 <script type="text/javascript">
 	$( document ).ready(function() {
-		<?php if($member["cert_reg_sts"] != "Y"){//등록 안되어 있음
-			if($mobile_yn == 'Pc'){?>
+		<?php if(!$is_file){
+			if($mobile_yn == 'Pc'){
+				if($member["cert_reg_sts"] != "Y"){?>
 		//공인인증서 등록 안내 및 등록 버튼 팝업 알림으로 교체 될 영역	
 			cert_guide();
+			<?php }?>
+			tilko_call('1');
 		<?php }else{?>
 		alert("컴퓨터에서 공인인증서를 등록 후 이용이 가능한 서비스 입니다.");
 		<?php }
-		}else{//등록 되어 있음
-			if(!$is_file){
-	?>		tilko_call('1');
-	<?php	}
 		}?>
 		
 		$('#cert_popup_box').click(function() {
