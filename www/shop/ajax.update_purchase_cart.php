@@ -176,12 +176,21 @@ $ct_row = sql_fetch($sql);
 
 // 입고 수량이 발주 수량 초과
 if (($ct_row['ct_qty'] <= $ct_row['ct_delivered_qty']) && $ct_row['ct_status'] != '입고완료') {
+  $ct_part_info = json_decode( $ct_row['ct_part_info'], true )[1]; // 차수 없을때
+  $timestamp = time();
+  $ct_part_info['_in_dt_confirm'] = date('Y-m-d', $timestamp);
+  $ct_part_info_enc[1] = $ct_part_info;
+  $sql_ct_part_info = "`ct_part_info` ='" . json_encode($ct_part_info_enc) . "',";
+
   $sql = "
-    update purchase_cart
-    set 
+    UPDATE
+      purchase_cart
+    SET 
+      {$sql_ct_part_info}
       ct_status = '입고완료',
       is_purchase_end = '1'
-    where od_id = '{$od_id}' and ct_id = '{$ct_id}'
+    WHERE
+      od_id = '{$od_id}' and ct_id = '{$ct_id}'
   ";
   sql_query($sql);
 
