@@ -6,7 +6,7 @@ $wzres = sql_fetch( $query );
 if(!$wzres['Field']) {
     sql_query("ALTER TABLE `g5_member`
 	ADD `cert_reg_sts` varchar(20) DEFAULT NULL COMMENT '사업소의 공인 인증서 등록 상태' AFTER mb_account,
-	ADD `cert_reg_date` date DEFAULT NULL COMMENT '공인인증서 최초 등록일' AFTER cert_reg_date,
+	ADD `cert_reg_date` date DEFAULT NULL COMMENT '공인인증서 최초 등록일' AFTER cert_reg_sts,
 	ADD `cert_data_ref` text NOT NULL COMMENT '공인인증서 key ref file' AFTER cert_reg_date", true);
 }
 
@@ -140,9 +140,6 @@ if($member["cert_data_ref"] != ""){
 	if(file_exists($upload_dir.$file_name.".enc")){
 		$is_file = true;
 	}
-}
-if($member["cert_reg_sts"] != "Y"){
-	$is_file = false;
 }
 //인증서 업로드 추가 영역 끝
 ?>
@@ -398,9 +395,11 @@ input[type="number"]::-webkit-inner-spin-button {
 <script type="text/javascript">
 	$( document ).ready(function() {
 		<?php if(!$is_file){
-			if($mobile_yn == 'Pc'){?>
+			if($mobile_yn == 'Pc'){
+				if($member["cert_reg_sts"] != "Y"){?>
 		//공인인증서 등록 안내 및 등록 버튼 팝업 알림으로 교체 될 영역	
 			cert_guide();
+			<?php }?>
 			tilko_call('1');
 		<?php }else{?>
 		alert("컴퓨터에서 공인인증서를 등록 후 이용이 가능한 서비스 입니다.");

@@ -29,8 +29,8 @@ if($member["cert_reg_sts"] == "Y" && $_SESSION['PriKey'] == "" && $_SESSION['Pub
 	$file_name = base64_encode($cert_data_ref[0]);
 	if(file_exists($upload_dir.$file_name.".enc")){
 		if($_SESSION['Pwd'] != ""){//비밀번호를 받았을 때
-			//@system('echo -n '.base64_decode($_SESSION['Pwd']).' | openssl aes-256-cbc -d -in '.$upload_dir.$file_name.'.enc -out '.$upload_dir.$file_name.'.txt -pass stdin'); //입력 받은 비밀번호로 파일 복호화 저장
-			@system('echo -n '."thkc!@#".' | openssl aes-256-cbc -d -in '.$upload_dir.$file_name.'.enc -out '.$upload_dir.$file_name.'.txt -pass stdin'); //고정값으로 파일 복호화 저장
+			@system('echo -n '.base64_decode($_SESSION['Pwd']).' | openssl aes-256-cbc -d -in '.$upload_dir.$file_name.'.enc -out '.$upload_dir.$file_name.'.txt -pass stdin'); //입력 받은 비밀번호로 파일 복호화 저장
+			//@system('echo -n '."thkc!@#".' | openssl aes-256-cbc -d -in '.$upload_dir.$file_name.'.enc -out '.$upload_dir.$file_name.'.txt -pass stdin'); //고정값으로 파일 복호화 저장
 			$fp = fopen($upload_dir.$file_name.".txt", 'r');    // list.txt 파일을 읽기 전용으로 열고 반환된 파일 포인터를 $fp에 저장함. 
 			$i = 0;
 			while(!feof($fp)){ // feof() 함수는 전달받은 파일 포인터가 파일의 끝에 도달하면, true를 반환

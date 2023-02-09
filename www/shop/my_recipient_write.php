@@ -97,9 +97,6 @@ if($member["cert_data_ref"] != ""){
 		$is_file = true;
 	}
 }
-if($member["cert_reg_sts"] != "Y"){
-	$is_file = false;
-}
 //인증서 업로드 추가 영역 끝
 ?>
 
@@ -762,9 +759,11 @@ input[type="number"]::-webkit-inner-spin-button {
 <script type="text/javascript">
 	$( document ).ready(function() {
 		<?php if(!$is_file){
-			if($mobile_yn == 'Pc'){?>
-		//tilko_call('1');//공인인증서 등록 안내 및 등록 버튼 팝업 알림으로 교체 될 영역	
+			if($mobile_yn == 'Pc'){
+				if($member["cert_reg_sts"] != "Y"){?>
+		//공인인증서 등록 안내 및 등록 버튼 팝업 알림으로 교체 될 영역	
 			cert_guide();
+			<?php }?>
 			tilko_call('1');
 		<?php }else{?>
 		alert("컴퓨터에서 공인인증서를 등록 후 이용이 가능한 서비스 입니다.");
@@ -813,7 +812,7 @@ input[type="number"]::-webkit-inner-spin-button {
 				data : params, 
 				dataType: 'json',// Json 형식의 데이터이다.
 				success : function(res){ // 비동기통신의 성공일경우 success콜백으로 들어옵니다. 'res'는 응답받은 데이터이다.
-					$("#btn_submit").trigger("click");
+					$("#btn_pen_update").trigger("click");
 				  },
 				error : function(XMLHttpRequest, textStatus, errorThrown){ // 비동기 통신이 실패할경우 error 콜백으로 들어옵니다.
 					alert(XMLHttpRequest['responseJSON']['message']);

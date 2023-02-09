@@ -1,3 +1,6 @@
+<?php
+include_once('./_common.php');
+?>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -36,8 +39,8 @@
                 </div>                
                 <div class="topDownloadWrap">
                     <a href="#">
-                        <div class="topDownload" onClick="parent.tilko_download();" title="인증서 설치파일 다운로드">
-                            <div class="downloadName">인증서 설치파일 다운로드</div>
+                        <div class="topDownload" onClick="<?php if($member["cert_reg_sts"] != "Y"){?>parent.tilko_download();<?php }else{?>parent.tilko_call('1');<?php }?>" title="인증서 설치파일 다운로드">
+                            <div class="downloadName">인증서 설치파일 다운로드<?=$member["cert_reg_sts"]?></div>
                             <div><img src="/Resources/Images/icon_download.svg" alt="인증서 설치파일 다운로드"></div>                        
                         </div>
                     </a>
@@ -107,7 +110,7 @@
             </div>
             <!-- bottomWrap -->
             <a href="#">
-                <div class="bottomWrap" onClick="parent.tilko_download();" title="인증서 설치파일 다운로드">
+                <div class="bottomWrap" onClick="<?php if($member["cert_reg_sts"] != "Y"){?>parent.tilko_download();<?php }else{?>parent.tilko_call('1');<?php }?>" title="인증서 설치파일 다운로드">
                     인증서 설치파일 다운로드
                     <img src="/Resources/Images/icon_download.svg" alt="인증서 설치파일 다운로드">
                 </div>
