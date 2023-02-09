@@ -62,11 +62,19 @@
     // 23.01.03 : 서원 - 윈도우 테스트용
     //$_file_path = G5_DATA_PATH."\\cache\\".$_GET["bl_id"].".pdf";
     //exec("C:\_THKC\_Dev\wkhtmltox\bin\wkhtmltopdf.exe{$args} \"{$G5_URL}/shop/popup.payment_OnlineBilling_HTML.php?bl_id={$bl_id}\" \"{$_file_path}\"");
+    
 
+
+    $_Ymd = explode( "_", $bl_id )[2];
+    $_file_path = G5_DATA_PATH."/billing_upload/20".substr($_Ymd,0,2)."/".substr($_Ymd,2,2)."/BillingPDF_Download_".date("Ymd").".txt"; // 디버그용
+    $fp = fopen($_file_path, 'a+'); // 디버그용
     
     // 23.01.03 : 서원 - 리눅스용
     $_file_path = G5_DATA_PATH."/cache/".$_GET["bl_id"].".pdf";
     exec("wkhtmltopdf{$args} \"{$G5_URL}/shop/popup.payment_OnlineBilling_HTML.php?bl_id={$bl_id}\" \"{$_file_path}\"");
+    
+    fwrite($fp, date("Y-m-d H:i:s")." - 빌링ID: {$bl_id} | 다운로드: "."정산내역서_".$member['mb_id']."_".date("Ym").".pdf\r\n" ); // 디버그용
+    fclose($fp); // 디버그용
 
 
     @readfile($_file_path);

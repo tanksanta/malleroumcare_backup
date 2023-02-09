@@ -66,7 +66,8 @@ function txt_pay_ENUM( $val ) {
 
 $_sql = ("  SELECT 
                 bl.*, 
-                par.method_symbol, par.price, par.status_locale, card_company, card_quota
+                par.method_symbol, par.price, par.status_locale, card_company, card_quota,
+                ( SELECT mb_name FROM g5_member WHERE mb_id=create_id ) as mb_name
             FROM 
                 payment_billing_list bl
             LEFT OUTER JOIN
@@ -116,6 +117,16 @@ $result = sql_query($_sql);
 $data = [];
 
 while( $row = sql_fetch_array($result) ) {
+
+    // 23.02.08 : 서원 - PDF파일 숫자에 콤마 찍기!! 
+    $row['price_qty'] =  number_format( $row['price_qty'] )."　";
+    $row['price_supply'] =  number_format( $row['price_supply'] )."　";
+    $row['price_tax'] =  number_format( $row['price_tax'] )."　";
+    $row['price_total'] =  number_format( $row['price_total'] )."　";
+
+    // 상품명
+    $row['item_nm'] = "　".$row['item_nm'];
+
     $data[] = $row;
 }
 
@@ -133,48 +144,69 @@ $last_col = count($headers);
 $last_char = column_char($last_col-1);
 $last_row = count($data);
 
-// 테두리 처리
-$styleArray = array(
-    'font' => array(
-        'size' => 10,
-        'name' => 'Malgun Gothic'
-    ),
-    'borders' => array(
-        'allborders' => array(
-        'style' => PHPExcel_Style_Border::BORDER_THIN
+    // 테두리 처리
+    $styleArray = array(
+        'font' => array(
+            'size' => 10,
+            'name' => 'Malgun Gothic'
+        ),
+        'borders' => array(
+            'allborders' => array(
+            'style' => PHPExcel_Style_Border::BORDER_THIN
+            )
+        ),
+        'alignment' => array(
+            'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER,
+            'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER
         )
-    ),
-    'alignment' => array(
-        'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER,
-        'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER
-    )
-);
+    );
 
-$sheet
-->getStyle('A1:'.$last_char.$last_row)
-->applyFromArray($styleArray);
+    $sheet
+    ->getStyle('A1:'.$last_char.$last_row)
+    ->applyFromArray($styleArray);
 
-// 헤더 배경
-$header_bgcolor = 'FFD3D3D3';
-$sheet
-->getStyle( "A1:${last_char}1" )
-->getFill()
-->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
-->getStartColor()
-->setARGB($header_bgcolor);
+    // 헤더 배경
+    $header_bgcolor = 'FFD3D3D3';
+    $sheet
+    ->getStyle( "A1:${last_char}1" )
+    ->getFill()
+    ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+    ->getStartColor()
+    ->setARGB($header_bgcolor);
 
-// 헤더 폰트 굵기
-$sheet
-->getStyle( "A1:${last_char}1" )
-->getFont()
-->setBold(true);
+    // 헤더 폰트 굵기
+    $sheet
+    ->getStyle( "A1:${last_char}1" )
+    ->getFont()
+    ->setBold(true);
 
-// 열 높이
-for($i = 0; $i <= $last_row; $i++) {
-    $sheet->getRowDimension($i)->setRowHeight(30);
-}
+    // 열 높이
+    for($i = 0; $i <= $last_row; $i++) {
+        $sheet->getRowDimension($i)->setRowHeight(20);
+    }
 
-function column_char($i) { return chr( 65 + $i ); }
+    // 리스트 데이터 부분 - 상품명 왼쪽 정렬
+    $sheet->getStyle( "B2:B".($last_row) )->applyFromArray(
+        array(
+            'alignment' => array(
+                'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_LEFT,
+                'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER
+            )
+        )
+    );
+
+
+    // 리스트 데이터 부분 - 금액 부분 오른쪽 정렬
+    $sheet->getStyle( "D2:".$last_char.($last_row) )->applyFromArray(
+        array(
+            'alignment' => array(
+                'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_RIGHT,
+                'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER
+            )
+        )
+    );
+
+    function column_char($i) { return chr( 65 + $i ); }
 ?>
 
 <!DOCTYPE html>
@@ -312,7 +344,7 @@ function column_char($i) { return chr( 65 + $i ); }
 
 
 <div id="popupHeaderTopWrap">
-  <div class="title">청구 내역 상세보기</div>
+  <div class="title">대금청구서 내역 상세보기</div>
   <div class="close"> <a href="#"> × </a> </div>
 </div>
 
@@ -324,15 +356,15 @@ function column_char($i) { return chr( 65 + $i ); }
         <th scope="col">사업소 아이디 : </th><td><?=$result_bl['mb_id'];?></td>
     </tr>
     <tr>
-        <th scope="col" style="">청구 아이디 : </th>
+        <th scope="col" style="">청구서<br />아이디 : </th>
         <td colspan="3"><?=$result_bl['bl_id'];?><br />(<?=($result_bl['billing_yn']=="Y")?"청구완료":"청구취소";?>)</td>
-        <th scope="col" style="">청구 등록일 : </th><td style=""><?=$result_bl['create_dt'];?></td>
-        <th scope="col" style="">청구 등록자 : </th><td style=""><?=$result_bl['create_id'];?></td>
+        <th scope="col" style="">청구서<br />등록일 : </th><td style=""><?=$result_bl['create_dt'];?></td>
+        <th scope="col" style="">청구서<br />등록자 : </th><td style=""><?=$result_bl['mb_name'];?><br />(<?=$result_bl['create_id'];?>)</td>
     </tr>
     <tr>
-        <th scope="col" style="width:10%;">청구 금액 : </th><td style="width:15%;"><?=number_format($result_bl['price_total']);?></td>
-        <th scope="col" style="width:10%;">면세<br />구매금액 : </th><td style="width:15%;"><?=number_format($result_bl['price_tax_free']);?></td>
-        <th scope="col" style="width:10%;">과세<br />구매금액 : </th><td style="width:15%;"><?=number_format($result_bl['price_tax']);?></td>
+        <th scope="col" style="width:10%;">청구서 금액 : </th><td style="width:15%;"><?=number_format($result_bl['price_total']);?></td>
+        <th scope="col" style="width:10%;">면세 금액 : </th><td style="width:15%;"><?=number_format($result_bl['price_tax_free']);?></td>
+        <th scope="col" style="width:10%;">과세 금액 : </th><td style="width:15%;"><?=number_format($result_bl['price_tax']);?></td>
         <th scope="col" style="width:10%;">품목 건수 : </th><td style="width:15%;"><?=number_format($result->num_rows);?>건</td>
     </tr>
     <tr>
