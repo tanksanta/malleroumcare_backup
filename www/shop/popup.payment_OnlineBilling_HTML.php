@@ -177,7 +177,7 @@
     }
 
 
-    $widths  = [15, 50, 10, 15, 15, 12, 15];
+    $widths  = [10, 40, 8, 10, 10, 10, 12];
     $headers = [
         '일자',
         '품목명[규격]',
@@ -277,7 +277,7 @@
     // 리스트 데이터 부분 - 폰트 크기 지정
     $sheet->getStyle( "A3:".$last_char.($last_row) )->getFont()->setSize(10);
     // 리스트 데이터 부분 - ROW의 높이 지정
-    for($i = 3; $i <= $last_row; $i++) { $sheet->getRowDimension($i)->setRowHeight(25); }
+    for($i = 3; $i <= $last_row; $i++) { $sheet->getRowDimension($i)->setRowHeight(22); }
     // 리스트 데이터 부분 - 폰트 정렬, 굵기, 사이즈
     $sheet->getStyle( "A3:".$last_char.($last_row) )->applyFromArray(
         array(

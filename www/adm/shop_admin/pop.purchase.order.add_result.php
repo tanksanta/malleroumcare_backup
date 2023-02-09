@@ -377,7 +377,7 @@ try {
         ";
   sql_query($sql);
 
-  json_response(200, 'OK');
+  json_response(200, $od_id);
 } catch (Exception $e) {
   json_response(500, $e->getMessage());
 }

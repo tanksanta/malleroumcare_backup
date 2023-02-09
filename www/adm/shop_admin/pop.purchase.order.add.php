@@ -863,20 +863,20 @@ if (isset($_SESSION['smart_purchase_data'])) {
         dataType: 'json',
         async: false
       })
-      .done(function () {
+      .done(function (res) {
         console.log('저장 완료');
+        alert('저장 되었습니다.');
+        parent.window.location.href = "./purchase_orderform.php?od_id="+res.message+"&sub_menu=400480";
       })
       .fail(function ($xhr) {
         var data = $xhr.responseJSON;
         console.error(data && data.message);
+        parent.window.location.reload();
       })
       .always(function() {
         LOADING = false;
       });
     });
-
-    alert('저장 되었습니다.');
-    parent.window.location.reload();
   }
 
   function initialDateTimePicker() {

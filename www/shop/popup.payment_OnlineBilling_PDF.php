@@ -37,11 +37,10 @@
         'javascript-delay' => 500,
         'page-size' => 'A4',
         'encoding' => 'UTF-8',
-        'margin-top'    => '25px',
-        'margin-right'  => '50px',
+        'margin-top'    => '70px',
+        'margin-right'  => '28px',
         'margin-bottom' => '10px',
-        'margin-left'   => '50px',
-        'dpi' => 100,
+        'margin-left'   => '28px',
     );
     
     $args = '';

@@ -573,12 +573,12 @@ $deliveryCntBtnStatus = ($delivery_insert >= $od["od_delivery_total"]) ? " disab
                 </td>
                 <td class="btncol">
                   <!-- 입고예정일 -->
-                  <?php $ct_part_info = json_decode($options[$k]['ct_part_info'],true)[1]; echo $ct_part_info['_in_dt'] ? date('Y-m-d H시', strtotime($ct_part_info['_in_dt'])) : ''; ?>
+                  <?php $ct_part_info = json_decode($options[$k]['ct_part_info'],true)[1]; echo $ct_part_info['_in_dt'] ? date('Y-m-d', strtotime($ct_part_info['_in_dt'])) : ''; ?>
                   <!-- 입고예정일 -->
                 </td>
                 <td class="btncol">
                   <!-- 입고완료일 -->
-                  <?php echo $ct_part_info['_in_dt_confirm'] ? date('Y-m-d H시', strtotime($ct_part_info['_in_dt_confirm'])) : ''; ?>
+                  <?php echo $ct_part_info['_in_dt_confirm'] ? date('Y-m-d', strtotime($ct_part_info['_in_dt_confirm'])) : ''; ?>
                   <!-- 입고완료일 -->
                 </td>
                 <td class="btncol">
@@ -917,6 +917,18 @@ $deliveryCntBtnStatus = ($delivery_insert >= $od["od_delivery_total"]) ? " disab
       <div class="block">
         <h2>구매정보</h2>
         <ul class="bill_info">
+          <li>
+            <div class="left">발주금액</div>
+            <div class="right">
+              <?php echo number_format($tot_total); ?>
+                원</div>
+          </li>
+          <li>
+            <div class="left">할인/반품</div>
+            <div class="right red">
+              <?php echo number_format($total_discount); ?>
+                원</div>
+          </li>
           <li>
             <div class="left"><b>총금액</b></div>
             <div class="right">
