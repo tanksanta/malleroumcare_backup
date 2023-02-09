@@ -333,7 +333,7 @@ input[type="number"]::-webkit-inner-spin-button {
 </section>
 <p style="width: 100%; background: #f5f5f5; height: 1px; display: inline-block; content: ' '"/>
 <p id = "rep_cnt" style="float:left; display: inline-block; line-height: 20px; font-weight:bold; font-size:18px; margin : 5px 0px;">조회결과 <?php if($result_arr == null){echo "0";}else{echo sizeof($result_arr);}?>명</p>
-
+<?php if($mobile_yn == 'Pc'){?><button class="btn_write" style="float:right;width:150px;" onClick="tilko_call('1');">인증서 재 등록하기</button><?php }?>
 <div id="list_wrap" class="list_box" style="margin-top:20px;">
     <div class="table_box">
         <table id="table_list">
@@ -394,16 +394,17 @@ input[type="number"]::-webkit-inner-spin-button {
 <iframe name="tilko" id="tilko" src="" scrolling="yes" frameborder="0" allowTransparency="false" height="0" width="0"></iframe>
 <script type="text/javascript">
 	$( document ).ready(function() {
-		<?php if(!$is_file){
-			if($mobile_yn == 'Pc'){
-				if($member["cert_reg_sts"] != "Y"){?>
+		<?php if($member["cert_reg_sts"] != "Y"){//등록 안되어 있음
+			if($mobile_yn == 'Pc'){?>
 		//공인인증서 등록 안내 및 등록 버튼 팝업 알림으로 교체 될 영역	
 			cert_guide();
-			<?php }?>
-			tilko_call('1');
 		<?php }else{?>
 		alert("컴퓨터에서 공인인증서를 등록 후 이용이 가능한 서비스 입니다.");
 		<?php }
+		}else{//등록 되어 있음
+			if(!$is_file){
+	?>		tilko_call('1');
+	<?php	}
 		}?>
 		
 		$('#cert_popup_box').click(function() {
@@ -421,7 +422,7 @@ input[type="number"]::-webkit-inner-spin-button {
 	}
 	
 	function tilko_download(){
-		alert("공인인증서 전송 프로그램 설치가 필요합니다. 설치 파일을 다운로드 합니다.");
+		//alert("공인인증서 전송 프로그램 설치가 필요합니다. 설치 파일을 다운로드 합니다.");
 		$("#tilko").attr("src","/Resources/setup.exe");
 	}
 	function cert_guide(){// 공인인증서 등록 절차 가이드 창 오픈
