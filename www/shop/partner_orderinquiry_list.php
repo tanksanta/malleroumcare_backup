@@ -59,7 +59,7 @@ if($ct_status) {
 $where[] = " ( ct_status = '".implode("' OR ct_status = '", $ct_steps)."' ) ";
 
 # 검색어
-$attrs = ['all', 'mb_entNm', 'it_name', 'c.od_id', 'od_b_name', 'od_partner_manager'];
+$attrs = ['all', 'mb_entNm', 'it_name', 'c.od_id', 'od_b_name', 'od_partner_manager', 'barcode'];
 $sel_field = in_array($sel_field, $attrs) ? $sel_field : '';
 $search = get_search_string($search);
 if($sel_field && $search) {
@@ -71,7 +71,20 @@ if($sel_field && $search) {
           $where_all[] = " ( mb_entNm like '%{$search}%' or (mb_temp = TRUE and mb_name like '%{$search}%') ) ";
         } else if($attr == 'od_partner_manager') {
           $where_all[] = " ( ( select mb_name from g5_member where mb_id = o.od_partner_manager ) like '%{$search}%' ) ";
-        } else {
+        } else if($attr == 'barcode') {
+			$sql_barcode_search ="select `stoId` from `g5_barcode_log` where `barcode` = '".$search."'";
+			$result_barcode_search = sql_query($sql_barcode_search);
+			$or = "";
+			while( $row_barcode = sql_fetch_array($result_barcode_search) ) {
+				$bacode_search .= $or." o.stoId like '%".$row_barcode['stoId']."%' ";
+				$or = "or";
+			}
+			if($bacode_search) {
+				$where_all[] = $bacode_search;
+			} else {
+				$where_all[] = "o.stoId like '%{$search}%'";
+			}		  
+		} else {
           $where_all[] = " {$attr} like '%{$search}%' ";
         }
       }
@@ -81,6 +94,19 @@ if($sel_field && $search) {
     $where[] = " ( mb_entNm like '%{$search}%' or (mb_temp = TRUE and mb_name like '%{$search}%') ) ";
   } else if($sel_field == 'od_partner_manager') {
     $where[] = " ( ( select mb_name from g5_member where mb_id = o.od_partner_manager ) like '%{$search}%' ) ";
+  } else if($sel_field == 'barcode') {
+		$sql_barcode_search ="select `stoId` from `g5_barcode_log` where `barcode` = '".$search."'";
+		$result_barcode_search = sql_query($sql_barcode_search);
+		$or = "";
+		while( $row_barcode = sql_fetch_array($result_barcode_search) ) {
+			$bacode_search .= $or." o.stoId like '%".$row_barcode['stoId']."%' ";
+			$or = "or";
+		}
+		if($bacode_search) {
+			$where[] = "(".$bacode_search.")";
+		} else {
+			$where[] = "o.stoId like '%{$search}%'";
+		}	
   } else {
     $where[] = " {$sel_field} like '%{$search}%' ";
   }
@@ -608,6 +634,7 @@ a.btn_schedule {
         <option value="c.od_id" <?=get_selected($sel_field, 'c.od_id')?>>주문번호</option>
         <option value="od_b_name" <?=get_selected($sel_field, 'od_b_name')?>>받는분</option>
         <option value="od_partner_manager" <?=get_selected($sel_field, 'od_partner_manager')?>>담당자명</option>
+		<option value="barcode" <?=get_selected($sel_field, 'barcode')?>>바코드</option>
       </select>
       <div class="input_search">
         <input name="search" value="<?=$_GET["search"]?>" type="text">
