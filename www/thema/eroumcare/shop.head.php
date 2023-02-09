@@ -433,7 +433,12 @@ if($is_main && !$is_member) {
             <div class="manager_info">
               시스템문의 : 02-830-1301 (월~금 08:30~17:30)
             </div>
-            <?php if($show_partner_menu) { ?>
+
+            <?php 
+            /*
+            //  23.02.08 : 서원 - 팀장님 요청에 의해 해당 신용거래 내용 부분 삭제
+            
+              if($show_partner_menu) { 
             <div class="balance_info flex-justify">
               <div class="balance_title">신용거래 (<?php echo date('n');?>월)</div>
               <div class="balance"><?=number_format($balance)?>원</div>
@@ -442,7 +447,10 @@ if($is_main && !$is_member) {
               <div class="order">이번달 <?=number_format($order_count)?>건</div>
               <a href="<?php if($member['mb_type'] == 'partner') echo '/shop/partner_ledger_list.php'; else echo '/shop/my_ledger_list.php'; ?>" class="btn_small">거래처 원장</a>
             </div>
-            <?php } ?>
+             } 
+             */
+             ?>
+
             <?php if($event_count) { ?>
             <a class="event_noti" href="/bbs/board.php?bo_table=event">
               진행중인 이벤트

@@ -98,6 +98,7 @@ include_once("./_common.php");
         <li>* 기존 청구건을 변경 하고자하는 경우 기존 청구내역에서 '청구취소' 처리 후 가능합니다.</li>
         <li>* 수수료는 '수수료설정'에 입력된 값을 기본으로 파일 업로드시 일괄 적용 됩니다.</li>
         <li>* 소수점 자리 수수료의 경우 무조건 올림 처리되어 정산 됩니다.</li>
+        <li>* 결제금액이 '0원'이하의 경우 등록되더라도 시스템에서 자동취소 처리 됩니다.</li>
     </div>
 
     <form id="form_fitemexcel" name="fitemexcel" autocomplete="off" onsubmit="return false;">

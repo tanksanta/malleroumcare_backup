@@ -62,17 +62,63 @@
     $_billing_txt .= "\r\n\r\n";
 
 
-    // 23.02.01 : 서원 - 정산 내역서 결제 금액 관련 부분 정리
-    $_info_txt = "";
-    $_info_txt .= "\r\n";
-    $_info_txt .= "과세 물품 구매 금액: " . number_format($_Billing['price_tax']) . "원　　\r\n";
-    $_info_txt .= "면세 물품 구매 금액: " . number_format($_Billing['price_tax_free']) . "원　　\r\n";
-    $_info_txt .= "총 청구 금액: " . number_format($_Billing['price_total']) . "원　　";
-    if( $_Billing['price'] > 0 ) {
-        $_info_txt .= "\r\n\r\n";
-        if( $_Billing['billing_fee_yn'] == "Y" ) { $_info_txt .= "수수료(" . $_Billing['billing_fee'] . "%) 금액: " . number_format( $_Billing['price_total'] * ($_Billing['billing_fee']/100) )  . "원　　\r\n"; }
-        $_info_txt .= "결제 금액: " . number_format( $_Billing['price'] ) . "원　　";
+    if( $_Billing['price_total'] > 0 ) {
+        // 23.02.01 : 서원 - 정산 내역서 결제 금액 관련 부분 정리
+        $_info_txt_E = "";
+        $_info_txt_G = "";
+
+        $_info_txt_E .= "구매 금액　　　　\r\n";
+        $_info_txt_E .= "과세 품목:\r\n";
+        $_info_txt_E .= "면세 품목:\r\n";
+        $_info_txt_E .= " 　 \r\n";
+
+        $_info_txt_G .= number_format($_Billing['price_total']) . "원　\r\n";
+        $_info_txt_G .= number_format($_Billing['price_tax']) . "원　\r\n";
+        $_info_txt_G .= number_format($_Billing['price_tax_free']) . "원　\r\n";
+        $_info_txt_G .= " 　 \r\n";
+
+        // 결제 금액이 있는 경우
+        if( $_Billing['price'] > 0 ) {
+
+            $_info_txt_E .= "결제 금액　　　　\r\n";
+            
+            $_info_txt_E .= "수수료(".$_Billing['billing_fee'] ."%):\r\n";
+            $_info_txt_E .= "카드결제:\r\n";
+
+            $_info_txt_G .= " 　 \r\n";
+            $_info_txt_G .= number_format( $_Billing['price_total'] * ($_Billing['billing_fee']/100) ). "원　\r\n";
+            $_info_txt_G .= number_format( $_Billing['price'] ) . "원　\r\n";
+
+        } else {
+            
+            $_info_txt_E .= "결제 금액　　　　\r\n";
+            $_info_txt_E .= "현금결제 시:\r\n";
+            $_info_txt_E .= "카드결제 시:\r\n";
+
+            $_info_txt_G .= " 　 \r\n";
+            $_info_txt_G .= number_format($_Billing['price_total']). "원　\r\n";
+            
+            // 수수료 적용일 경우
+            if( $_Billing['billing_fee_yn'] == "Y" ) {
+                $_info_txt_G .= number_format( $_Billing['price_total']+($_Billing['price_total'] * ($_Billing['billing_fee']/100)) ) . "원　\r\n";
+            } else {
+                $_info_txt_G .= number_format( $_Billing['price_total'] ). "원　\r\n";
+            }
+        }
+
+        $_info_txt_E .= "";
+        $_info_txt_G .= "";
+    } else {
+        $_info_txt_E = "\r\n\r\n";
+        $_info_txt_G = "\r\n\r\n";
+
+        $_info_txt_E .= "합계:　\r\n";
+        $_info_txt_G .= number_format($_Billing['price_total'])."원　\r\n";
+
+        $_info_txt_E .= "\r\n\r\n";
+        $_info_txt_G .= "\r\n\r\n";
     }
+
 
     // 결제 수수료가 있는 경우
     $_billing_fee_info_txt = "";
@@ -80,11 +126,19 @@
 
         if( !$_Billing['price'] || ($_Billing['price'] <= 0) ) {
             $_billing_fee_info_txt .= "\r\n";
-            $_billing_fee_info_txt .= "* 온라인 결제 시에는 결제 수수료( " . $_Billing['billing_fee'] . "% / " . number_format( $_Billing['price_total'] * ($_Billing['billing_fee']/100) ). "원 ) 포함한 금액( " . number_format( $_Billing['price_total'] + ($_Billing['price_total'] * ($_Billing['billing_fee']/100)) ) . "원 )으로 결제합니다.　";
+            //$_billing_fee_info_txt .= "* 온라인 결제 시에는 결제 수수료( " . $_Billing['billing_fee'] . "% / " . number_format( $_Billing['price_total'] * ($_Billing['billing_fee']/100) ). "원 ) 포함한 금액( " . number_format( $_Billing['price_total'] + ($_Billing['price_total'] * ($_Billing['billing_fee']/100)) ) . "원 )으로 결제합니다.　";
+            $_billing_fee_info_txt .= "* 카드결제 시 금액은 수수료 " . $_Billing['billing_fee'] . "%( " . number_format( $_Billing['price_total'] * ($_Billing['billing_fee']/100) ). "원 ) 포함.　";
+            $_billing_fee_info_txt .= "\r\n\r\n";
+        } else if( $_Billing['price'] && ($_Billing['price'] > 0) ){
+            $_billing_fee_info_txt .= "\r\n";
+            $_billing_fee_info_txt .= "* 결제완료.　";
             $_billing_fee_info_txt .= "\r\n\r\n";
         }
+    } else if( $_Billing['billing_yn'] == "N"  ) {
+        $_billing_fee_info_txt .= "\r\n";
+        $_billing_fee_info_txt .= "* 대금청구서 취소.　";
+        $_billing_fee_info_txt .= "\r\n\r\n";
     }
-    $_info_txt .= "\r\n\r\n";
 
 
     // 내용(본문 리스트)
@@ -107,7 +161,20 @@
 
     $data = []; 
     // SQL 데이터 오브젝트에서 배열 처리
-    while( $row = sql_fetch_array($result) ) { $data[] = $row; }
+    while( $row = sql_fetch_array($result) ) { 
+
+        // 23.02.08 : 서원 - PDF파일 숫자에 콤마 찍기!! 
+        //$row['price_qty'] =  number_format( $row['price_qty'] )."　";
+        //$row['price_supply'] =  number_format( $row['price_supply'] )."　";
+        //$row['price_tax'] =  number_format( $row['price_tax'] )."　";
+        //$row['price_total'] =  number_format( $row['price_total'] )."　";
+    
+        // 상품명
+        $row['item_nm'] = "　".$row['item_nm'];
+
+        $data[] = $row;
+    
+    }
 
 
     $widths  = [15, 50, 10, 15, 15, 12, 15];
@@ -149,8 +216,14 @@
     $last_row = count($data)+2;
 
 
-    $sheet->mergeCells('A'.$last_row.':G'.$last_row);
-    $sheet->setCellValue('A'.$last_row,$_info_txt);
+    $sheet->mergeCells('A'.$last_row.':D'.$last_row);    
+    $sheet->mergeCells('E'.$last_row.':F'.$last_row);
+
+
+    //$sheet->mergeCells('A'.$last_row.':G'.$last_row);
+    $sheet->setCellValue('E'.$last_row,$_info_txt_E);
+    $sheet->setCellValue('G'.$last_row,$_info_txt_G);
+
 
     if( $_Billing['billing_fee_yn'] == "Y" && ($_billing_fee_info_txt) ) { 
         $last_row = count($data)+3;
@@ -173,7 +246,7 @@
                 'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
                 'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER
             )
-            ,'font' => array( 'bold' => true, 'size' => 18 )
+            ,'font' => array( 'name' => 'Malgun Gothic', 'bold' => true, 'size' => 18 )
         )
     );
 
@@ -193,7 +266,7 @@
                 'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
                 'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER
             )
-            ,'font' => array( 'bold' => true, 'size' => 12 )
+            ,'font' => array( 'name' => 'Malgun Gothic', 'bold' => true, 'size' => 12 )
         )
     );
 
@@ -202,11 +275,11 @@
     $sheet->getStyle( "A1:".$last_char.$last_row )->getFont()->setName('Malgun Gothic');
 
     // 리스트 데이터 부분 - 폰트 크기 지정
-    $sheet->getStyle( "A3:".$last_char.($last_row-1) )->getFont()->setSize(10);
+    $sheet->getStyle( "A3:".$last_char.($last_row) )->getFont()->setSize(10);
     // 리스트 데이터 부분 - ROW의 높이 지정
     for($i = 3; $i <= $last_row; $i++) { $sheet->getRowDimension($i)->setRowHeight(25); }
     // 리스트 데이터 부분 - 폰트 정렬, 굵기, 사이즈
-    $sheet->getStyle( "A3:".$last_char.($last_row-1) )->applyFromArray(
+    $sheet->getStyle( "A3:".$last_char.($last_row) )->applyFromArray(
         array(
             'borders' => array( 
                 'outline' => array( 'style' => PHPExcel_Style_Border::BORDER_THICK ),
@@ -216,50 +289,76 @@
                 'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
                 'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER
             )
-            ,'font' => array( 'bold' => false, 'size' => 10 )
+            ,'font' => array( 'name' => 'Malgun Gothic', 'bold' => false, 'size' => 10 )
         )
     );
 
+    // 리스트 데이터 부분 - 상품명 왼쪽 정렬
+    $sheet->getStyle( "B3:B".($last_row) )->applyFromArray(
+        array(
+            'alignment' => array(
+                'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_LEFT,
+                'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER
+            )
+        )
+    );
+
+    // 리스트 데이터 부분 - 금액 부분 오른쪽 정렬
+    $sheet->getStyle( "D3:".$last_char.($last_row-1) )->applyFromArray(
+        array(
+            'alignment' => array(
+                'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_RIGHT,
+                'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER
+            )
+        )
+    );
+
+    // 리스트 데이터 부분 - 금액 부분 데이터 형식 변경
+    $sheet->getStyle( "D3:".$last_char.($last_row-1) )->getNumberFormat()->setFormatCode('#,###,##0　');
 
     // 하단 결제 정보 부분 - 폰트 정렬, 굵기, 사이즈
     $sheet->getStyle( "A".(count($data)+2).":".$last_char.(count($data)+2) )->applyFromArray(
         array(
             'borders' => array( 
-                'allborders' => array( 'style' => PHPExcel_Style_Border::BORDER_THICK )
+                'outline' => array( 'style' => PHPExcel_Style_Border::BORDER_THICK ),                
+                'inside' => array( 'style' => PHPExcel_Style_Border::BORDER_NONE )
             ),
             'alignment' => array(
                 'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_RIGHT,
                 'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER
             )
-            ,'font' => array( 'bold' => true, 'size' => 12 )
+            ,
+            'font' => array( 'name' => 'Malgun Gothic', 'bold' => true, 'size' => 10 )
         )
     );
-
+    $sheet->getRowDimension( (count($data)+2) )->setRowHeight(140);
 
     if( $_Billing['billing_fee_yn'] == "Y" && ($_billing_fee_info_txt) ) { 
         // 하단 결제 정보 부분 - 폰트 정렬, 굵기, 사이즈
         $sheet->getStyle( "A".$last_row.":".$last_char.$last_row )->applyFromArray(
             array(
-                'alignment' => array(
-                    'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_RIGHT,
-                    'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER
-                )
-                ,'font' => array( 'bold' => true, 'size' => 10, 'color' => array('rgb'=>'FF0000') )
+                'borders' => array( 'outline' => array( 'style' => PHPExcel_Style_Border::BORDER_NONE ), 'inside' => array( 'style' => PHPExcel_Style_Border::BORDER_NONE ) ),
+                'alignment' => array( 'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_RIGHT, 'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER ),
+                'font' => array( 'name' => 'Malgun Gothic', 'bold' => true, 'size' => 10, 'color' => array('rgb'=>'FF0000') )
             )
         );    
     }
 
+    $sheet->setTitle("대금청구서");
+    $sheet->freezePane('A4');
 
     $writer = PHPExcel_IOFactory::createWriter($excel, 'HTML');
     $writer->save('php://output');
     
     function column_char($i) { return chr( 65 + $i ); }
+
 ?>
 
 <style>
     body { margin-left: 0in; margin-right: 0in; margin-top: 0in; margin-bottom: 0in; }
     table { width: 100%; }
 </style>
+
 <script src="//code.jquery.com/jquery.min.js"></script>
 <script type="application/javascript">
     $('tbody > tr:last').remove();

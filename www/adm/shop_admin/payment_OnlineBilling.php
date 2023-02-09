@@ -290,7 +290,7 @@ $colspan = 14;
     if( $select_status ) {
 
         if( $select_status == "미결제" ) {
-            $where[] = " ( pay_confirm_id IS NULL OR pay_confirm_id = '' ) AND ( pay_confirm_receipt_id IS NULL OR pay_confirm_receipt_id = '' ) AND ( billing_status IS NULL OR billing_status = '' ) ";
+            $where[] = " ( pay_confirm_id IS NULL OR pay_confirm_id = '' ) AND ( pay_confirm_receipt_id IS NULL OR pay_confirm_receipt_id = '' ) AND ( billing_status IS NULL OR billing_status = '' ) AND ( `billing_yn` = 'Y' )";
         }
         else if( $select_status == "결제완료" ) {
             $where[] = " ( `status_locale` = '결제완료' ) ";
@@ -349,7 +349,7 @@ $colspan = 14;
         <td scope="col" style="text-align:center;"><?=($i+$from_record+1);?></td>
         <td scope="col" style="text-align:center;"><?=str_replace(" ","<br />",$row['pay_confirm_dt']);?></td>
         <td scope="col"><?=$row['mb_bnm'];?></td>
-        <td scope="col"><?=$row['mb_thezone'];?></td>
+        <td scope="col" style="text-align:center;"><?=$row['mb_thezone'];?></td>
         <td scope="col" style="text-align:right;"><?=number_format($row['price_total']);?></td>
         <td scope="col" style="text-align:right;">
         <?php if( $row['billing_fee_yn'] == "Y" ) { ?>    
