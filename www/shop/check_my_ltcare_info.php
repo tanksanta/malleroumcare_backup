@@ -6,7 +6,7 @@ $wzres = sql_fetch( $query );
 if(!$wzres['Field']) {
     sql_query("ALTER TABLE `g5_member`
 	ADD `cert_reg_sts` varchar(20) DEFAULT NULL COMMENT '사업소의 공인 인증서 등록 상태' AFTER mb_account,
-	ADD `cert_reg_date` date DEFAULT NULL COMMENT '공인인증서 최초 등록일' AFTER cert_reg_sts,
+	ADD `cert_reg_date` date DEFAULT NULL COMMENT '공인인증서 최초 등록일' AFTER cert_reg_date,
 	ADD `cert_data_ref` text NOT NULL COMMENT '공인인증서 key ref file' AFTER cert_reg_date", true);
 }
 
