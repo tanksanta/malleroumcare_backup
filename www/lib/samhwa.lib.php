@@ -512,7 +512,7 @@ $purchase_order_steps = array(
   ),
   '5' => array(
     'name' => '발주취소',
-    'val' => '취소',
+    'val' => '발주취소',
     'orderlist' => true,
     'step' => 70,
     'chulgo' => '',
@@ -673,6 +673,8 @@ function get_purchase_step($od_status) {
   $ret = array();
 
   $k = -1;
+
+  if($od_status == '관리자발주취소' || $od_status == '취소') $od_status = '발주취소';
 
   for($i=0;$i<count($purchase_order_steps); $i++) {
     if ( $od_status == $purchase_order_steps[$i]['val'] ) {
