@@ -384,14 +384,14 @@ input[type="number"]::-webkit-inner-spin-button {
 </div>
 <!-- 인증서 업로드 추가 영역 -->
 <div id="cert_popup_box">
-  <iframe name="cert_iframe" src="" scrolling="yes" frameborder="0" allowTransparency="false"></iframe>
+  <iframe name="cert_iframe" src="" scrolling="no" frameborder="0" allowTransparency="false"></iframe>
 </div>
 
 <div id="cert_guide_popup_box">
-  <iframe name="cert_guide_iframe" src="" scrolling="yes" frameborder="0" allowTransparency="false"></iframe>
+  <iframe name="cert_guide_iframe" src="" scrolling="no" frameborder="0" allowTransparency="false"></iframe>
 </div>
 
-<iframe name="tilko" id="tilko" src="" scrolling="yes" frameborder="0" allowTransparency="false" height="0" width="0"></iframe>
+<iframe name="tilko" id="tilko" src="" scrolling="no" frameborder="0" allowTransparency="false" height="0" width="0"></iframe>
 <script type="text/javascript">
 	$( document ).ready(function() {
 		<?php if($member["cert_reg_sts"] != "Y"){//등록 안되어 있음
