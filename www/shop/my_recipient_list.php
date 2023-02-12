@@ -1,5 +1,15 @@
 <?php
 include_once("./_common.php");
+
+$query = "SHOW COLUMNS FROM g5_member WHERE `Field` = 'cert_reg_sts';";//인증서 항목 없을 시 추가
+$wzres = sql_fetch( $query );
+if(!$wzres['Field']) {
+    sql_query("ALTER TABLE `g5_member`
+	ADD `cert_reg_sts` varchar(20) DEFAULT NULL COMMENT '사업소의 공인 인증서 등록 상태' AFTER mb_account,
+	ADD `cert_reg_date` date DEFAULT NULL COMMENT '공인인증서 최초 등록일' AFTER cert_reg_sts,
+	ADD `cert_data_ref` text NOT NULL COMMENT '공인인증서 key ref file' AFTER cert_reg_date", true);
+}
+
 define('_RECIPIENT_', true);
 
 include_once("./_head.php");
@@ -239,6 +249,27 @@ while ($res_item = sql_fetch_array($ctr_cnt_res)) {
 */
 // 수급자 연결
 $links = get_recipient_links($member['mb_id']);
+
+
+//인증서 업로드 추가 영역
+$mobile_agent = "/(iPod|iPhone|Android|BlackBerry|SymbianOS|SCH-M\d+|Opera Mini|Windows CE|Nokia|SonyEricsson|webOS|PalmOS)/";
+
+if(preg_match($mobile_agent, $_SERVER['HTTP_USER_AGENT'])){
+	$mobile_yn = "Mobile";
+}else{
+	$mobile_yn = "Pc";
+}
+$is_file = false;
+if($member["cert_data_ref"] != ""){
+	$cert_data_ref =  explode("|",$member["cert_data_ref"]);
+	$cert_info = "사용자명:".base64_decode($cert_data_ref[1])." | 만료일자:".base64_decode($cert_data_ref[2]);
+	$upload_dir = $_SERVER['DOCUMENT_ROOT']."/data/file/member/tilko/";
+	$file_name = base64_encode($cert_data_ref[0]);
+	if(file_exists($upload_dir.$file_name.".enc")){
+		$is_file = true;
+	}
+}
+//인증서 업로드 추가 영역 끝
 ?>
 <script src="<?php echo G5_JS_URL; ?>/client.min.js"></script>
 <script src="<?php echo G5_JS_URL; ?>/recipient_device_security.js"></script>
@@ -527,6 +558,47 @@ function form_check(act) {
   #mobile_rep_list .info { width: 65%; }
   #mobile_rep_list .li_box_right_btn { width: 8rem; }
 }
+/* 인증서 비번 팝업 - 인증서 업로드 추가 */
+#cert_popup_box {
+  display: none;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  z-index:9999;
+  background: rgba(0, 0, 0, 0.5);
+}
+#cert_popup_box iframe {
+  width:322px;
+  height:307px;
+  max-height: 80%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+}
+
+#cert_guide_popup_box {
+  display: none;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  z-index:9999;
+  background: rgba(0, 0, 0, 0.5);
+}
+#cert_guide_popup_box iframe {
+  width:850px;
+  height:750px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+}
 </style>
 
 <!-- 210204 수급자목록 -->
@@ -649,6 +721,7 @@ function form_check(act) {
       <a href="javascript::" class="btn eroumcare_btn2" id="recipient_excel_download" title="수급자 엑셀 다운로드">수급자 엑셀 다운로드</a>
       <a href="./my_recipient_write.php" class="btn eroumcare_btn2" title="수급자 등록">수급자 등록</a>
       <a href="./recipientexcel.php" onclick="return excelform(this.href);" target="_blank" class="btn eroumcare_btn2" title="수급자일괄등록">수급자일괄등록</a>
+      <?php if($mobile_yn == 'Pc'){?><a href="javascript:;" class="btn eroumcare_btn2" title="인증서 재 등록하기" onClick="tilko_call('1');">인증서 재 등록하기</a><?php }?>
       <?php /*<div class="tooltip_btn">
         <a href="./recipientexcel_b.php" onclick="return excelform(this.href);" target="_blank" class="btn eroumcare_btn2" title="B사 엑셀 일괄등록">
           B사 엑셀 일괄등록
@@ -1433,4 +1506,82 @@ function excelPost(action, data) {
       }
   });
 </script>
+<!-- 인증서 업로드 추가 영역 -->
+<div id="cert_popup_box">
+  <iframe name="cert_iframe" src="" scrolling="no" frameborder="0" allowTransparency="false"></iframe>
+</div>
+
+<div id="cert_guide_popup_box">
+  <iframe name="cert_guide_iframe" src="" scrolling="no" frameborder="0" allowTransparency="false"></iframe>
+</div>
+
+<iframe name="tilko" id="tilko" src="" scrolling="no" frameborder="0" allowTransparency="false" height="0" width="0"></iframe>
+<script type="text/javascript">
+	$( document ).ready(function() {
+		<?php if($member["cert_reg_sts"] != "Y"){//등록 안되어 있음
+			if($mobile_yn == 'Pc'){?>
+		//공인인증서 등록 안내 및 등록 버튼 팝업 알림으로 교체 될 영역	
+			cert_guide();
+		<?php }else{?>
+		alert("컴퓨터에서 공인인증서를 등록 후 이용이 가능한 서비스 입니다.");
+		<?php }
+		}else{//등록 되어 있음
+			if(!$is_file){
+	?>		tilko_call('1');
+	<?php	}
+		}?>
+		
+		$('#cert_popup_box').click(function() {
+		  $('body').removeClass('modal-open');
+		  $('#cert_popup_box').hide();
+		});
+		$('#cert_guide_popup_box').click(function() {
+		  $('body').removeClass('modal-open');
+		  $('#cert_guide_popup_box').hide();
+		});
+	});
+	
+	function tilko_call(a=1){
+		$("#tilko").attr("src","/tilko_test.php?option="+a);
+	}
+	
+	function tilko_download(){
+		//alert("공인인증서 전송 프로그램 설치가 필요합니다. 설치 파일을 다운로드 합니다.");
+		$("#tilko").attr("src","/Resources/setup.exe");
+	}
+	function cert_guide(){// 공인인증서 등록 절차 가이드 창 오픈
+		var url = "/shop/pop.cert_guide.php";
+		$('#cert_guide_popup_box iframe').attr('src', url);
+		$('body').addClass('modal-open');
+		$('#cert_guide_popup_box').show();
+	}
+		
+	function pwd_insert(){// 공인인증서 비밀번호 입력 창 오픈
+		var url = "/shop/pop.certmobilelogin.php";
+		$('#cert_popup_box iframe').attr('src', url);
+		$('body').addClass('modal-open');
+		$('#cert_popup_box').show();
+	}
+	function cert_pwd(pwd){
+		var params = {
+				  mode      : 'pwd'
+				, Pwd       : pwd
+			}
+			$.ajax({
+				type : "POST",            // HTTP method type(GET, POST) 형식이다.
+				url : "/ajax.tilko.php",      // 컨트롤러에서 대기중인 URL 주소이다.
+				data : params, 
+				dataType: 'json',// Json 형식의 데이터이다.
+				success : function(res){ // 비동기통신의 성공일경우 success콜백으로 들어옵니다. 'res'는 응답받은 데이터이다.
+					$("#btn_submit").trigger("click");
+				  },
+				error : function(XMLHttpRequest, textStatus, errorThrown){ // 비동기 통신이 실패할경우 error 콜백으로 들어옵니다.
+					alert(XMLHttpRequest['responseJSON']['message']);
+					pwd_insert();
+				}
+			});
+	}
+</script>
+<!-- 인증서 업로드 추가 영역 끝-->
+
 <?php include_once("./_tail.php"); ?>
