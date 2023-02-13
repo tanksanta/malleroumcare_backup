@@ -1046,7 +1046,9 @@ function select_item(obj, io_id, ct_qty) {
   if (!obj.io_type) {
     obj.io_type = '0';
   }
-
+    if(obj.it_buy_min_qty > 0){//최소 구매수량 있을 경우 수량 기본 값 최소 구매수량으로 적용
+	  ct_qty = obj.it_buy_min_qty;
+	}
   // 묶음 할인 저장
   item_sale_obj[obj.it_id] = {
     it_sale_cnt: [

@@ -78,7 +78,8 @@ include_once('./_common.php');
                             </div>
                             <div class="contentsText">
                                 <h3 class="conTitle">3. 사업소 공인 인증서를 등록하세요!</h3>
-                                이로움의 [수급자관리] 또는 [요양정보 조회] 메뉴를 클릭하시면 '공인인증서 등록'창이 나타납니다.<br>
+                                설치 완료 후 안내창의 ‘설치파일 다운로드’버튼을 한번 더 클릭 하세요.<br>
+                                팝업창이 뜨면 [TilkoSign 열기] 버튼을 클릭하세요.<br>
                                 [하드디스크] 나 [USB] 버튼을 클릭하여 공인인증서를 찾은 후 비밀번호를 입력하세요.<br>
                                 인증서 성공 창이 나타나면 [확인] 버튼을 누르세요.                
                             </div>
@@ -97,7 +98,7 @@ include_once('./_common.php');
                     </div>                    
                 </div>
                 <div class="fullScreenWrap">
-                    <a href="/Resources/Images/Cert_installGuide.pdf" target="_blank">
+                    <a href="/Resources/Images/Cert_installGuide_0210.pdf" target="_blank">
                     <div class="fullScreen">전체화면
                         <img src="/Resources/Images/icon_enlarge.svg" alt="전체화면">
                      </div>
