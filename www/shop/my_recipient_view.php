@@ -301,6 +301,30 @@ $(function() {
     //$('body').addClass('modal-open');
     //$('#item_popup_box').hide();
 
+
+	<?php 
+		if($member["cert_reg_sts"] != "Y") {//등록 안되어 있음
+			if($mobile_yn == 'Pc') {
+	?>
+			//공인인증서 등록 안내 및 등록 버튼 팝업 알림으로 교체 될 영역	
+			cert_guide();
+			return;
+	<?php 
+			} else {
+	?>
+		alert("컴퓨터에서 공인인증서를 등록 후 이용이 가능한 서비스 입니다.");
+	<?php	}
+		} else { //등록 되어 있음
+			if(!$is_file){ 
+	?>
+		tilko_call('1');
+	<?php 
+			} 
+		}
+	?>
+
+
+
       var pen_info = <?=json_encode($pen);?>;
       console.log("pen_info : ", pen_info);
 
