@@ -1396,6 +1396,29 @@ $(function() {
 
   // 데이터 업데이트(장기요양정보 관련 입력 필드)
   $('#btn_pen_update').click(function() {
+
+	<?php 
+		if($member["cert_reg_sts"] != "Y") {//등록 안되어 있음
+			if($mobile_yn == 'Pc') {
+	?>
+			//공인인증서 등록 안내 및 등록 버튼 팝업 알림으로 교체 될 영역	
+			cert_guide();
+			return;
+	<?php 
+			} else {
+	?>
+		alert("컴퓨터에서 공인인증서를 등록 후 이용이 가능한 서비스 입니다.");	
+		return;
+	<?php	}
+		} else { //등록 되어 있음
+			if(!$is_file){ 
+	?>
+		tilko_call('1');
+	<?php 
+			} 
+		}
+	?>
+
       var str_rn = $("input[name='penNm']")[0].value;
       var str_id = $("input[name='penLtmNum']")[0].value;
       var btn_update = document.getElementById('btn_pen_update');
