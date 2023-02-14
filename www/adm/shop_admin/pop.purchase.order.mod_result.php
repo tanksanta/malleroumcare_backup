@@ -35,23 +35,27 @@ try {
 
 
   // 22.11.08 : 서원 - 할인/반품 정보 리스트 json 처리
-  $od_discount_info = [];
-  $_discount_it_name = $_POST['discount_it_name'];
-  if( $_discount_it_name ) {
-    foreach($_discount_it_name as $key => $val) {
-      if( $val ){ 
-        $od_discount_info[$key] = array(
-          "discount_it_name" => $_POST['discount_it_name'][$key], 
-          "discount_qty" => (int)preg_replace("/[^\d]/", "", $_POST['discount_qty'][$key]), 
-          "discount_it_price" => (int)preg_replace("/[^\d]/", "", $_POST['discount_it_price'][$key]),
-          "discount_memo" => $_POST['discount_memo'][$key]
-        );
+	$od_discount_info = [];
+  $type_key = ['r', 'd'];
+  $index = 0;
+  for($i = 0; $i <2; $i++) {
+    $_discount_it_name = $_POST[$type_key[$i].'_'.'discount_it_name'];
+    if ($_discount_it_name) {
+      foreach ($_discount_it_name as $key => $val) {
+        if ($val) {
+          $od_discount_info[$index] = array(
+            "discount_type" => $type_key[$i],
+            "discount_it_name" => $_POST[$type_key[$i] . '_' . 'discount_it_name'][$key],
+            "discount_qty" => (int)preg_replace("/[^\d]/", "", $_POST[$type_key[$i] . '_' . 'discount_qty'][$key]),
+            "discount_it_price" => (int)preg_replace("/[^\d]/", "", $_POST[$type_key[$i] . '_' . 'discount_it_price'][$key]),
+            "discount_memo" => $_POST[$type_key[$i] . '_' . 'discount_memo'][$key]
+          );
+          $index++;
+        }
       }
     }
-    $od_discount_info = json_encode( $od_discount_info, JSON_UNESCAPED_UNICODE );
-  } else { $od_discount_info=''; }
-  
-
+  }
+  $od_discount_info = json_encode( $od_discount_info, JSON_UNESCAPED_UNICODE );
 
   $_ct = ""; 
   $_ct = sql_query("SELECT * FROM purchase_cart WHERE od_id='{$_od_id}'");

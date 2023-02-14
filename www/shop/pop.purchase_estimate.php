@@ -610,7 +610,7 @@ $banks = $banks2;
                     <!-- <tr height="28" <?php echo $a % 2 ? 'bgcolor="#eeeeee"' : ''; ?>> -->
                     <tr>
                         <td align="center" style="padding-left:5px;"><div class="goods_name"><?php echo $carts[$i]['it_name']; ?></div></td>
-                        <td align="left" style="padding-left:5px;">
+                        <td align="center" style="padding-left:5px;">
                     <?php echo $options[$k]['ct_option'] != $options[$k]['it_name'] ? '옵션: ' . $options[$k]['ct_option'] : ''; ?>
                     </td>
 
@@ -670,7 +670,24 @@ $banks = $banks2;
                 </tr>
                 <?php $a++; } ?>
 
-                <?php if ( $od['od_cart_discount'] ) { ?>
+                <?php $od_discount_info = json_decode($od['od_discount_info'], true);
+                if ($od_discount_info) {
+                  foreach ($od_discount_info as $key => $val) {
+                    if($val['discount_type'] == 'r'){?>
+                      <tr height="28">
+                      <td align="center" style="padding-left:5px;"><div class="goods_name"><?=$val['discount_it_name']?></div></td>
+                      <td align="center" style="padding-left:5px;"> ― </td>
+                      <td align="center"><?=$val['discount_qty']?></td>
+                      <td align="center"><?php echo number_format($val['discount_it_price']); ?></td>
+                      <td align="center" style="color: red"><?php echo number_format($val['discount_it_price'] / 1.1); ?></td>
+                      <td align="center" style="color: red"><?php echo number_format($val['discount_it_price'] / 1.1 / 10); ?></td>
+                      <td align="center" style="color: red"><?php echo number_format($val['discount_it_price']); ?></td>
+                      </tr>
+                      <?php $a++;
+                    }
+                  }
+                } ?>
+                <?php /*if ( $od['od_cart_discount'] ) { ?>
                 <tr height="28" <?php echo $a % 2 ? 'bgcolor="#eeeeee"' : ''; ?>>
                 <td align="left" style="padding-left:5px;"><div class="goods_name">할인</div></td>
                 <td align="left" style="padding-left:5px;"></td>
@@ -692,7 +709,7 @@ $banks = $banks2;
                 <td align="center">- <?php echo number_format($od['od_cart_discount2'] / 1.1 / 10); ?></td>
                 <td align="center">- <?php echo number_format($od['od_cart_discount2'] / 1.1 + $od['od_cart_discount2'] / 1.1 / 10); ?></td>
                 </tr>
-                <?php $a++; } ?>
+                <?php $a++; }*/ ?>
 
                 <tr style="border: 1px solid #000;">
                 <th style="border: 1px solid #000;" align="center" colspan="4">총 합계</th>

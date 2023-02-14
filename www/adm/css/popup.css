@@ -1388,66 +1388,68 @@ display: none;
     border-bottom: 1px solid #ddd;
     margin-bottom: 20px;
 }
-.pop_order_add_item_table, .pop_order_add_discount_table {
+.pop_order_add_item_table, .pop_order_add_discount_r_table, .pop_order_add_discount_d_table {
     width: 100%;
 }
-.pop_order_add_item_table thead, .pop_order_add_discount_table thead {
+.pop_order_add_item_table thead, .pop_order_add_discount_r_table thead, .pop_order_add_discount_d_table thead {
     background-color: #f5f5f5;
     color: #999;
 }
-.pop_order_add_item_table thead th, .pop_order_add_discount_table thead th {
+.pop_order_add_item_table thead th, .pop_order_add_discount_r_table thead th, .pop_order_add_discount_d_table thead th {
     font-weight: normal;
     text-align: center;
     padding: 8px 6px;
     border-top: 1px solid #ddd;
     border-bottom: 1px solid #ddd;
 }
-.pop_order_add_item_table tbody td, .pop_order_add_discount_table tbody td {
+.pop_order_add_item_table tbody td, .pop_order_add_discount_r_table tbody td, .pop_order_add_discount_d_table tbody td {
     padding:5px 3px;
 }
 
-.purchase_order .pop_order_add_item_table tbody td, .purchase_order .pop_order_add_discount_table tbody td {
+.purchase_order .pop_order_add_item_table tbody td, .purchase_order .pop_order_add_discount_r_table tbody td, .purchase_order .pop_order_add_discount_d_table tbody td {
     padding-bottom: 18px;
     position: relative;
 }
 
-.purchase_order .pop_order_add_item_table .qty_info, .purchase_order .pop_order_add_discount_table .qty_info {
+.purchase_order .pop_order_add_item_table .qty_info, .purchase_order .pop_order_add_discount_r_table .qty_info, .purchase_order .pop_order_add_discount_d_table .qty_info {
     margin: 0;
     position: absolute;
     top: 38px;
     left: 10px;
 }
 
-.purchase_order .pop_order_add_item_table input:focus-visible, .purchase_order .pop_order_add_discount_table input:focus-visible {
+.purchase_order .pop_order_add_item_table input:focus-visible, .purchase_order .pop_order_add_discount_r_table input:focus-visible, .purchase_order .pop_order_add_discount_d_table input:focus-visible {
   outline: none;
 }
 
-.pop_order_add_item_table tbody td.no, .pop_order_add_discount_table tbody td.no {
+.pop_order_add_item_table tbody td.no, .pop_order_add_discount_r_table tbody td.no, .pop_order_add_discount_d_table tbody td.no {
     text-align: center;
 }
-.pop_order_add_item_table tbody .it_option, .pop_order_add_discount_table tbody .it_option {
+.pop_order_add_item_table tbody .it_option, .pop_order_add_discount_r_table tbody .it_option, .pop_order_add_discount_d_table tbody .it_option {
     text-align: center;
 }
-.pop_order_add_item_table tbody .it_option select, .pop_order_add_discount_table tbody .it_option select {
+.pop_order_add_item_table tbody .it_option select, .pop_order_add_discount_r_table tbody .it_option select, .pop_order_add_discount_d_table tbody .it_option select {
     width:100%;
 }
-.pop_order_add_item_table tbody td.basic_price, .pop_order_add_discount_table tbody td.basic_price {
+.pop_order_add_item_table tbody td.basic_price, .pop_order_add_discount_r_table tbody td.basic_price, .pop_order_add_discount_d_table tbody td.basic_price {
     text-align: center;
 }
-.pop_order_add_item_table tbody td.tax_price, .pop_order_add_discount_table tbody td.tax_price {
+.pop_order_add_item_table tbody td.tax_price, .pop_order_add_discount_r_table tbody td.tax_price, .pop_order_add_discount_d_table tbody td.tax_price {
     text-align: center;
 }
-.pop_order_add_item_table tbody td input, .pop_order_add_discount_table tbody td input {
+.pop_order_add_item_table tbody td input, .pop_order_add_discount_r_table tbody td input, .pop_order_add_discount_d_table tbody td input {
     width: 100%;
     min-width: 100% !important;
 }
-.pop_order_add_item_table tbody td input[type="number"], .pop_order_add_discount_table tbody td input[type="number"] {
+.pop_order_add_item_table tbody td input[type="number"], .pop_order_add_discount_r_table tbody td input[type="number"], .pop_order_add_discount_d_table tbody td input[type="number"] {
     text-align: center;
 }
 .pop_order_add_item_table tbody td input[type="number"]::-webkit-outer-spin-button,
 .pop_order_add_item_table tbody td input[type="number"]::-webkit-inner-spin-button,
-.pop_order_add_discount_table tbody td input[type="number"]::-webkit-outer-spin-button,
-.pop_order_add_discount_table tbody td input[type="number"]::-webkit-inner-spin-button {
+.pop_order_add_discount_r_table tbody td input[type="number"]::-webkit-outer-spin-button,
+.pop_order_add_discount_r_table tbody td input[type="number"]::-webkit-inner-spin-button,
+.pop_order_add_discount_d_table tbody td input[type="number"]::-webkit-outer-spin-button,
+.pop_order_add_discount_d_table tbody td input[type="number"]::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
 }
