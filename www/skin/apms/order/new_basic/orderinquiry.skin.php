@@ -578,7 +578,7 @@ $(function(){
                                     }
                                     sort($prodBarNum_arr); // 오름차순 정렬
 
-                                    $limit = count($prodBarNum_arr) > 5 ? 5 : count($prodBarNum_arr);
+                                    $limit = count($prodBarNum_arr) > 6 ? 6 : count($prodBarNum_arr);
                                     for ($j = 0; $j < $limit; $j++) {
                                         echo "<li>{$prodBarNum_arr[$j]}</li>";
                                     }
