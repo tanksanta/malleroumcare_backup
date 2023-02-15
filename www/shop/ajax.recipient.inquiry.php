@@ -6,8 +6,9 @@ if(!$member["mb_id"] || !$member["mb_entId"])
   json_response(400, '먼저 로그인하세요.');
 
 
+if($member["cert_reg_sts"] == "Y"){//공인인증서 등록이 완료 되었을 경우
 
-if($member["cert_reg_sts"] == "Y" && $_SESSION['PriKey'] == "" && $_SESSION['PubKey'] == ""){//공인인증서 등록 완료
+if($_SESSION['PriKey'] == "" && $_SESSION['PubKey'] == ""){//공인인증서 등록 완료
 	$cert_data_ref =  explode("|",$member["cert_data_ref"]);
 	if(strtotime(base64_decode($cert_data_ref[2])." 23:59:59") < time()){//인증서 만료
 		json_response(400, '등록된 인증서가 사용 기간이 만료 되었습니다. 공인인증서를 재등록 해 주세요.', array(
@@ -15,7 +16,14 @@ if($member["cert_reg_sts"] == "Y" && $_SESSION['PriKey'] == "" && $_SESSION['Pub
 		));
 		exit;
 	}
-
+	if($member["mb_level"]<9){
+		if($member["mb_ent_num"] == "" || strlen(preg_replace("/[^0-9]*/s","",$member["mb_ent_num"])) != 11){
+			json_response(400, '장기요양기관번호를 입력해 주세요.', array(
+			  'err_code' => "5",
+			));
+			exit;
+		}
+	}
 	if($_SESSION['Pwd'] == ""){
 		json_response(400, "[ ".base64_decode($cert_data_ref[1]).' ]로 등록된 공인인증서가 있습니다. 공인인증서 비밀번호를 입력해 주세요.', array(
 		  'err_code' => "2",
@@ -64,6 +72,16 @@ if($member["cert_reg_sts"] == "Y" && $_SESSION['PriKey'] == "" && $_SESSION['Pub
 		exit;
 	}
 }
+}
+
+if($member["mb_level"]<9){
+		if($member["mb_ent_num"] == "" || strlen(preg_replace("/[^0-9]*/s","",$member["mb_ent_num"])) != 11){
+			json_response(400, '장기요양기관번호를 입력해 주세요.', array(
+			  'err_code' => "5",
+			));
+			exit;
+		}
+	}
 
 //json_response(400, $_SESSION['PriKey'],array(
 //		'err_code' => "1",
@@ -119,7 +137,7 @@ $rn = $_POST['rn'];
 $str = ".$sid .$rn : 입력값이 잘못 되었습니다 ";
 //return json_response(400, $str);
 
-$BusinessNumber = '32623000271';//$data['BN'];
+$BusinessNumber = ($member["mb_level"]>8 || $member["mb_ent_num"] == "")?"32623000271":str_replace("-","",$member["mb_ent_num"]);//$data['BN'];
 $RecipientName= $rn; //'이간난'//$data['rn']
 $RecipientId= $id; //'1612104758';//$data['id'];
 

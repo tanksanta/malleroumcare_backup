@@ -253,6 +253,25 @@ if($member["cert_data_ref"] != ""){
   transform: translate(-50%, -50%);
   background: white;
 }
+#cert_ent_num_popup_box {
+  display: none;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  z-index:9999;
+  background: rgba(0, 0, 0, 0.5);
+}
+#cert_ent_num_popup_box iframe {
+  width:300px;
+  height:305.33px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+}
 </style>
 
 <div id="pop_add_item" class="admin_popup">
@@ -392,6 +411,10 @@ if($member["cert_data_ref"] != ""){
     </div>
 </div>
 <!-- 인증서 업로드 추가 영역 -->
+<div id="cert_ent_num_popup_box">
+  <iframe name="cert_ent_num_iframe" src="" scrolling="no" frameborder="0" allowTransparency="false"></iframe>
+</div>
+
 <div id="cert_popup_box">
   <iframe name="cert_iframe" src="" scrolling="no" frameborder="0" allowTransparency="false"></iframe>
 </div>
@@ -424,6 +447,10 @@ if($member["cert_data_ref"] != ""){
 		  $('body').removeClass('modal-open');
 		  $('#cert_guide_popup_box').hide();
 		});
+		$('#cert_ent_num_popup_box').click(function() {
+		  $('body').removeClass('modal-open');
+		  $('#cert_ent_num_popup_box').hide();
+		});
 	});
 	
 	function tilko_call(a=1){
@@ -446,6 +473,13 @@ if($member["cert_data_ref"] != ""){
 		$('#cert_popup_box iframe').attr('src', url);
 		$('body').addClass('modal-open');
 		$('#cert_popup_box').show();
+	}
+
+	function ent_num_insert(){// 장기요양기관번호 입력 창 오픈
+		var url = "/shop/pop.ent_num.php";
+		$('#cert_ent_num_popup_box iframe').attr('src', url);
+		$('body').addClass('modal-open');
+		$('#cert_ent_num_popup_box').show();
 	}
 	function cert_pwd(pwd){
 		var params = {
@@ -760,6 +794,8 @@ if($member["cert_data_ref"] != ""){
 						//tilko_call('2');
 						pwd_insert();
 					}
+				}else if(jqXhr['responseJSON']["data"]['err_code'] == "5"){
+					ent_num_insert();
 				}
 				// 인증서 업로드 추가 영역 끝
 					return false;
