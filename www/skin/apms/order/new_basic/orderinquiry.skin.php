@@ -497,11 +497,7 @@ $(function(){
                   <?=($item["prodSupYn"] == "N") ? "<b>비유통</b>" : ""?>
                   </a>
                   <?php if( $item['ct_direct_delivery_date'] ) { ?>
-                    <?php if( $item['ct_is_direct_delivery'] == '2' ) { ?>
-                    <span style="padding-left:50px; font-size:11px;"><?php echo '설치예정 : ' . date('n월 j일 (H:i)', strtotime($item['ct_direct_delivery_date'])); ?></span>
-                    <?php } else {?>
                     <span style="padding-left:50px; font-size:11px;"><?php echo '출고예정 : ' . date('n월 j일 (H:i)', strtotime($item['ct_direct_delivery_date'])); ?></span>
-                    <?php } ?>
                   <?php } ?>
                 </div>
                 <div>
@@ -582,7 +578,7 @@ $(function(){
                                     }
                                     sort($prodBarNum_arr); // 오름차순 정렬
 
-                                    $limit = count($prodBarNum_arr) > 6 ? 6 : count($prodBarNum_arr);
+                                    $limit = count($prodBarNum_arr) > 5 ? 5 : count($prodBarNum_arr);
                                     for ($j = 0; $j < $limit; $j++) {
                                         echo "<li>{$prodBarNum_arr[$j]}</li>";
                                     }
