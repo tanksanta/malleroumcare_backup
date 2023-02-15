@@ -186,6 +186,8 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
             </div>
           </div-->
           <div class="form-group">
+          </div>
+          <div class="form-group">
             <label for="penExpiStDtm" class="col-md-2 control-label">
               <strong>유효기간</strong>
             </label>
