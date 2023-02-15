@@ -46,7 +46,7 @@ include_once('./_common.php');
                     </a>
                 </div>                
             </div>
-            <div class="contentsWrap">
+            <div class="contentsWrap" style="padding:18px 60px 17px 60px;">
                 <!-- Swiper -->
                 <div class="swiper mySwiper">
                     <div class="swiper-wrapper">
@@ -89,16 +89,17 @@ include_once('./_common.php');
                             <img src="/Resources/Images/cert_guide04.png" alt="">
                             </div>
                             <div class="contentsText">
-                                <h3 class="conTitle">4. 사업소 공인 인증서로 로그인하고 요양 정보를 조회하세요!</h3>
-                                요양정보 조회 페이지에서 수급자명과 요양인정번호를 입력 후 [조회 요청] 버튼을 클릭하세요<br>
+                                <h3 class="conTitle"><h3 class="conTitle">4. 사업소 공인 인증서로 로그인하고 요양정보를 조회하세요!</h3>
+                                요양정보 조회페이지에서 수급자명과 요양인정번호를 입력 후 [조회 요청] 버튼을 클릭하세요.<br>
+                                회원가입시 장기요양기관번호를 기입하시지 않은 사업소는 장기요양기관번호 입력창에 번호를 입력하고 확인을 클릭하세요.<br>
                                 사업소 공인인증서 비밀번호를 입력하여 로그인하세요.<br>
-                                로그인 후 간단하게 요양 정보를 조회 하 실 수 있습니다.                    
+                                로그인 후 간단하게 요양정보를 조회하 실 수 있습니다.                      
                             </div>
                     </div>
                     </div>                    
                 </div>
                 <div class="fullScreenWrap">
-                    <a href="/Resources/Images/Cert_installGuide_0210.pdf" target="_blank">
+                    <a href="/Resources/Images/Cert_installGuide.pdf" target="_blank">
                     <div class="fullScreen">전체화면
                         <img src="/Resources/Images/icon_enlarge.svg" alt="전체화면">
                      </div>
