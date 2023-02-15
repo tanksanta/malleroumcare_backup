@@ -310,7 +310,9 @@ $row = sql_fetch($sql);
 $total_price = $row['ct_price'] + $row['ct_sendcost'] - $row['ct_discount'];
 $show_total_price = number_format($total_price);
 
-
+/*
+// 23.01.13 : 서원 - 사용하지 않는 데이터를 검색함으로 인한 프론트 페이지 속도저하 방지.
+//                    해당 소스 주석 처리. 편균 7.5s에서 300ms~1.5s 속도 개선
 $cate_counts = array();
 
 if ( $where2 || $where ) {
@@ -334,6 +336,7 @@ $result = sql_query($sql);
 while( $row = sql_fetch_array($result) ) {
   $cate_counts[$row['ct_status']] = $row['cnt'];
 }
+*/
 
 $rows = $config['cf_page_rows'];
 $total_page  = ceil($total_count / $rows);  // 전체 페이지 계산
@@ -361,7 +364,7 @@ while( $row = sql_fetch_array($result) ) {
 
 $ret = array();
 
-$ret['counts'] = $cate_counts;
+//$ret['counts'] = $cate_counts;
 
 if ( !$total_count ) {
     $ret['main'] .= "

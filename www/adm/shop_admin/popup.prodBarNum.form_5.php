@@ -331,8 +331,11 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
         
 	}
 
+
   var cur_ct_id = null;
   var cur_it_id = null;
+  var cur_pdcode = null;
+  
 
 	/* 기종체크 */
 	var deviceUserAgent = navigator.userAgent.toLowerCase();
@@ -613,6 +616,7 @@ sql_query("update {$g5['g5_shop_order_table']} set `od_edit_member` = '".$member
 
       cur_ct_id = $(this).data('ct-id');
       cur_it_id = $(this).data('it-id');
+      cur_pdcode = $(this).data('pd-code');
 
 			for(var i = 0; i < item.length; i++){
 				if(!$(item[i]).val() || $(item[i]).attr("data-frm-no") == frm_no){

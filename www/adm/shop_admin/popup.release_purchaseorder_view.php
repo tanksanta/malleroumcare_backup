@@ -7,8 +7,7 @@ auth_check($auth[$sub_menu], "r");
 $g5["title"] = "주문 내역 바코드 수정";
 // include_once(G5_ADMIN_PATH."/admin.head.php");
 
-$sql = " select * from purchase_order where od_id = ( SELECT od_id FROM purchase_cart WHERE ct_id = '$ct_id') ";
-$od = sql_fetch($sql);
+$od = sql_fetch(" SELECT * FROM `purchase_order` WHERE `od_id` = ( SELECT od_id FROM `purchase_cart` WHERE `ct_id` = '" . $ct_id . "') ");
 $od_id = $od['od_id'];
 $prodList = [];
 $prodListCnt = 0;
@@ -19,10 +18,8 @@ if (!$od['od_id']) {
   alert("해당 주문번호로 주문서가 존재하지 않습니다.");
 }
 
-$sql = "
-  select * from purchase_cart where od_id = {$od_id} and ct_id = {$ct_id}
-";
-$ct = sql_fetch($sql);
+$ct = sql_fetch(" SELECT * FROM `purchase_cart` WHERE `od_id` = '" . $od_id . "' AND `ct_id` = '" . $ct_id . "' " );
+
 ?>
 <!DOCTYPE html>
 <html lang="ko">
@@ -997,8 +994,10 @@ $ct = sql_fetch($sql);
           <img class="barcode_icon type3" src="/img/barcode_icon_2.png" alt="등록가능 (관리자 삭제)">
           <img class="barcode_icon type4" src="/img/barcode_icon_3.png" alt="등록불가 (보유재고)">
           <span class="overlap">중복</span>
+          <!-- 
           <img src="/img/bacod_img.png" class="nativePopupOpenBtn btn_bacod" onclick="openNativeBarcodeScan(this)" data-type="native" data-code="<?=$i?>" data-ct-id="<?php echo $ct['ct_id']; ?>" data-it-id="<?php echo $ct['it_id']; ?>">
-          <img src="/img/btn_pda.png" class="nativePopupOpenBtn btn_pda" onclick="openNativeBarcodeScan(this)" data-type="pda" data-code="<?=$i?>" data-ct-id="<?php echo $ct['ct_id']; ?>" data-it-id="<?php echo $ct['it_id']; ?>">
+          -->
+          <img src="/img/btn_pda.png" class="nativePopupOpenBtn btn_pda" onclick="openNativeBarcodeScan(this)" data-type="pda" data-code="<?=$i?>" data-ct-id="<?php echo $ct['ct_id']; ?>" data-it-id="<?php echo $ct['it_id']; ?>" data-pd-code="<?php echo $ct['prodpaycode']; ?>">
         </li>
         <?php
         $prodListCnt++;
@@ -1137,7 +1136,8 @@ sql_query("update purchase_cart set `ct_edit_member` = '" . $member['mb_id'] . "
   // 바코드 스캔용 전역변수
   var sendBarcodeTargetList;
   var cur_ct_id = null;
-  var cur_it_id = null;
+  var cur_it_id = null;  
+  var cur_pdcode = null;
 
   $(function() {
     window.addEventListener('beforeunload', function(event) {
@@ -1715,7 +1715,8 @@ sql_query("update purchase_cart set `ct_edit_member` = '" . $member['mb_id'] . "
     sendBarcodeTargetList = [];
 
     cur_ct_id = $(_this).data('ct-id');
-    cur_it_id = $(_this).data('it-id');
+    cur_it_id = $(_this).data('it-id');    
+    cur_pdcode = $(this).data('pd-code');
 
     for (var i = 0; i < item.length; i++) {
       if (!$(item[i]).val() || $(item[i]).attr("data-frm-no") == frm_no) {
