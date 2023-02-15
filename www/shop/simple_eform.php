@@ -170,7 +170,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
                 <option value="04" <?php if($dc) echo get_selected($dc['penTypeCd'], '04'); ?>>기초 0%</option>
               </select>
             </div>
-            <label for="applicantCd" class="col-md-4 control-label">
+            <!--label for="applicantCd" class="col-md-4 control-label">
               <strong id="applicantCd_subj"  <?php if(!$dc['applicantCd']) echo 'style="display: none"'; ?>>장기요양입소이용신청서 신청인</strong>
             </label>
             <div class="col-md-3" id="select_applicantCd" >
@@ -184,7 +184,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
                 <option value="02" <?php if($dc) echo get_selected($dc['applicantCd'], '02'); ?>>공란</option>
               </select>
             </div>
-          </div>
+          </div-->
           <div class="form-group">
             <label for="penExpiStDtm" class="col-md-2 control-label">
               <strong>유효기간</strong>
