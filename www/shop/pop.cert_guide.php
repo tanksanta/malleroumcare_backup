@@ -1,3 +1,6 @@
+<?php
+include_once('./_common.php');
+?>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -36,14 +39,14 @@
                 </div>                
                 <div class="topDownloadWrap">
                     <a href="#">
-                        <div class="topDownload" onClick="parent.tilko_download();" title="인증서 설치파일 다운로드">
-                            <div class="downloadName">인증서 설치파일 다운로드</div>
+                        <div class="topDownload" onClick="parent.tilko_call('1');" title="인증서 설치파일 다운로드">
+                            <div class="downloadName">인증서 설치파일 다운로드<?=$member["cert_reg_sts"]?></div>
                             <div><img src="/Resources/Images/icon_download.svg" alt="인증서 설치파일 다운로드"></div>                        
                         </div>
                     </a>
                 </div>                
             </div>
-            <div class="contentsWrap">
+            <div class="contentsWrap" style="padding:18px 60px 17px 60px;">
                 <!-- Swiper -->
                 <div class="swiper mySwiper">
                     <div class="swiper-wrapper">
@@ -75,7 +78,8 @@
                             </div>
                             <div class="contentsText">
                                 <h3 class="conTitle">3. 사업소 공인 인증서를 등록하세요!</h3>
-                                이로움의 [수급자관리] 또는 [요양정보 조회] 메뉴를 클릭하시면 '공인인증서 등록'창이 나타납니다.<br>
+                                설치 완료 후 안내창의 ‘설치파일 다운로드’버튼을 한번 더 클릭 하세요.<br>
+                                팝업창이 뜨면 [TilkoSign 열기] 버튼을 클릭하세요.<br>
                                 [하드디스크] 나 [USB] 버튼을 클릭하여 공인인증서를 찾은 후 비밀번호를 입력하세요.<br>
                                 인증서 성공 창이 나타나면 [확인] 버튼을 누르세요.                
                             </div>
@@ -85,10 +89,11 @@
                             <img src="/Resources/Images/cert_guide04.png" alt="">
                             </div>
                             <div class="contentsText">
-                                <h3 class="conTitle">4. 사업소 공인 인증서로 로그인하고 요양 정보를 조회하세요!</h3>
-                                요양정보 조회 페이지에서 수급자명과 요양인정번호를 입력 후 [조회 요청] 버튼을 클릭하세요<br>
+                                <h3 class="conTitle"><h3 class="conTitle">4. 사업소 공인 인증서로 로그인하고 요양정보를 조회하세요!</h3>
+                                요양정보 조회페이지에서 수급자명과 요양인정번호를 입력 후 [조회 요청] 버튼을 클릭하세요.<br>
+                                회원가입시 장기요양기관번호를 기입하시지 않은 사업소는 장기요양기관번호 입력창에 번호를 입력하고 확인을 클릭하세요.<br>
                                 사업소 공인인증서 비밀번호를 입력하여 로그인하세요.<br>
-                                로그인 후 간단하게 요양 정보를 조회 하 실 수 있습니다.                    
+                                로그인 후 간단하게 요양정보를 조회하 실 수 있습니다.                      
                             </div>
                     </div>
                     </div>                    
@@ -107,7 +112,7 @@
             </div>
             <!-- bottomWrap -->
             <a href="#">
-                <div class="bottomWrap" onClick="parent.tilko_download();" title="인증서 설치파일 다운로드">
+                <div class="bottomWrap" onClick="parent.tilko_call('1');" title="인증서 설치파일 다운로드">
                     인증서 설치파일 다운로드
                     <img src="/Resources/Images/icon_download.svg" alt="인증서 설치파일 다운로드">
                 </div>

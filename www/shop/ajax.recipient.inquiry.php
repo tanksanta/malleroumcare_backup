@@ -6,8 +6,9 @@ if(!$member["mb_id"] || !$member["mb_entId"])
   json_response(400, '먼저 로그인하세요.');
 
 
+if($member["cert_reg_sts"] == "Y"){//공인인증서 등록이 완료 되었을 경우
 
-if($member["cert_reg_sts"] == "Y" && $_SESSION['PriKey'] == "" && $_SESSION['PubKey'] == ""){//공인인증서 등록 완료
+if($_SESSION['PriKey'] == "" && $_SESSION['PubKey'] == ""){//공인인증서 등록 완료
 	$cert_data_ref =  explode("|",$member["cert_data_ref"]);
 	if(strtotime(base64_decode($cert_data_ref[2])." 23:59:59") < time()){//인증서 만료
 		json_response(400, '등록된 인증서가 사용 기간이 만료 되었습니다. 공인인증서를 재등록 해 주세요.', array(
@@ -15,7 +16,14 @@ if($member["cert_reg_sts"] == "Y" && $_SESSION['PriKey'] == "" && $_SESSION['Pub
 		));
 		exit;
 	}
-
+	if($member["mb_level"]<9){
+		if($member["mb_ent_num"] == "" || strlen(preg_replace("/[^0-9]*/s","",$member["mb_ent_num"])) != 11){
+			json_response(400, '장기요양기관번호를 입력해 주세요.', array(
+			  'err_code' => "5",
+			));
+			exit;
+		}
+	}
 	if($_SESSION['Pwd'] == ""){
 		json_response(400, "[ ".base64_decode($cert_data_ref[1]).' ]로 등록된 공인인증서가 있습니다. 공인인증서 비밀번호를 입력해 주세요.', array(
 		  'err_code' => "2",
@@ -29,8 +37,8 @@ if($member["cert_reg_sts"] == "Y" && $_SESSION['PriKey'] == "" && $_SESSION['Pub
 	$file_name = base64_encode($cert_data_ref[0]);
 	if(file_exists($upload_dir.$file_name.".enc")){
 		if($_SESSION['Pwd'] != ""){//비밀번호를 받았을 때
-			//@system('echo -n '.base64_decode($_SESSION['Pwd']).' | openssl aes-256-cbc -d -in '.$upload_dir.$file_name.'.enc -out '.$upload_dir.$file_name.'.txt -pass stdin'); //입력 받은 비밀번호로 파일 복호화 저장
-			@system('echo -n '."thkc!@#".' | openssl aes-256-cbc -d -in '.$upload_dir.$file_name.'.enc -out '.$upload_dir.$file_name.'.txt -pass stdin'); //고정값으로 파일 복호화 저장
+			@system('echo -n '.base64_decode($_SESSION['Pwd']).' | openssl aes-256-cbc -d -in '.$upload_dir.$file_name.'.enc -out '.$upload_dir.$file_name.'.txt -pass stdin'); //입력 받은 비밀번호로 파일 복호화 저장
+			//@system('echo -n '."thkc!@#".' | openssl aes-256-cbc -d -in '.$upload_dir.$file_name.'.enc -out '.$upload_dir.$file_name.'.txt -pass stdin'); //고정값으로 파일 복호화 저장
 			$fp = fopen($upload_dir.$file_name.".txt", 'r');    // list.txt 파일을 읽기 전용으로 열고 반환된 파일 포인터를 $fp에 저장함. 
 			$i = 0;
 			while(!feof($fp)){ // feof() 함수는 전달받은 파일 포인터가 파일의 끝에 도달하면, true를 반환
@@ -64,6 +72,16 @@ if($member["cert_reg_sts"] == "Y" && $_SESSION['PriKey'] == "" && $_SESSION['Pub
 		exit;
 	}
 }
+}
+
+if($member["mb_level"]<9){
+		if($member["mb_ent_num"] == "" || strlen(preg_replace("/[^0-9]*/s","",$member["mb_ent_num"])) != 11){
+			json_response(400, '장기요양기관번호를 입력해 주세요.', array(
+			  'err_code' => "5",
+			));
+			exit;
+		}
+	}
 
 //json_response(400, $_SESSION['PriKey'],array(
 //		'err_code' => "1",
@@ -119,7 +137,7 @@ $rn = $_POST['rn'];
 $str = ".$sid .$rn : 입력값이 잘못 되었습니다 ";
 //return json_response(400, $str);
 
-$BusinessNumber = '32623000271';//$data['BN'];
+$BusinessNumber = ($member["mb_level"]>8 || $member["mb_ent_num"] == "")?"32623000271":str_replace("-","",$member["mb_ent_num"]);//$data['BN'];
 $RecipientName= $rn; //'이간난'//$data['rn']
 $RecipientId= $id; //'1612104758';//$data['id'];
 

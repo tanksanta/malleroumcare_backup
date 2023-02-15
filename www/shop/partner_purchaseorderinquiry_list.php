@@ -51,7 +51,7 @@ if($manager_mb_id) {
 
 # 주문상태
 $ct_status = $_GET['ct_status'];
-$ct_steps = ['발주완료','출고완료','입고완료','마감완료','발주취소'];
+$ct_steps = ['발주완료','출고완료','입고완료','마감완료','발주취소','관리자발주취소'];
 if($ct_status) {
   $ct_steps = array_intersect($ct_steps, $ct_status);
 }
@@ -132,7 +132,8 @@ $result = sql_query("
     it_name,
     ct_option,
     ct_qty,
-    ct_status,
+    if(ct_status='관리자발주취소','발주취소',ct_status) as ct_status,
+    ct_status as ct_status_info,
     prodMemo,
     c.stoId,
     ct_delivery_num,

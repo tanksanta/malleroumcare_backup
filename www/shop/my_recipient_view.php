@@ -127,9 +127,6 @@ if($member["cert_data_ref"] != ""){
 		$is_file = true;
 	}
 }
-if($member["cert_reg_sts"] != "Y"){
-	$is_file = false;
-}
 //인증서 업로드 추가 영역 끝
 ?>
 <link rel="stylesheet" href="<?=G5_CSS_URL?>/my_recipient.css?v=210829">
@@ -212,25 +209,32 @@ if($member["cert_reg_sts"] != "Y"){
   <iframe name="iframe" src="" scrolling="yes" frameborder="0" allowTransparency="false"></iframe>
 </div>
 <!-- 인증서 업로드 추가 영역 -->
+<div id="cert_ent_num_popup_box">
+  <iframe name="cert_ent_num_iframe" src="" scrolling="no" frameborder="0" allowTransparency="false"></iframe>
+</div>
+
 <div id="cert_popup_box">
-  <iframe name="cert_iframe" src="" scrolling="yes" frameborder="0" allowTransparency="false"></iframe>
+  <iframe name="cert_iframe" src="" scrolling="no" frameborder="0" allowTransparency="false"></iframe>
 </div>
 
 <div id="cert_guide_popup_box">
-  <iframe name="cert_guide_iframe" src="" scrolling="yes" frameborder="0" allowTransparency="false"></iframe>
+  <iframe name="cert_guide_iframe" src="" scrolling="no" frameborder="0" allowTransparency="false"></iframe>
 </div>
 
-<iframe name="tilko" id="tilko" src="" scrolling="yes" frameborder="0" allowTransparency="false" height="0" width="0"></iframe>
+<iframe name="tilko" id="tilko" src="" scrolling="no" frameborder="0" allowTransparency="false" height="0" width="0"></iframe>
 <script type="text/javascript">
 	$( document ).ready(function() {
-		<?php if(!$is_file){
+		<?php if($member["cert_reg_sts"] != "Y"){//등록 안되어 있음
 			if($mobile_yn == 'Pc'){?>
-		//tilko_call('1');//공인인증서 등록 안내 및 등록 버튼 팝업 알림으로 교체 될 영역	
+		//공인인증서 등록 안내 및 등록 버튼 팝업 알림으로 교체 될 영역	
 			cert_guide();
-			tilko_call('1');
 		<?php }else{?>
 		alert("컴퓨터에서 공인인증서를 등록 후 이용이 가능한 서비스 입니다.");
 		<?php }
+		}else{//등록 되어 있음
+			if(!$is_file){
+	?>		tilko_call('1');
+	<?php	}
 		}?>
 		
 		$('#cert_popup_box').click(function() {
@@ -241,6 +245,10 @@ if($member["cert_reg_sts"] != "Y"){
 		  $('body').removeClass('modal-open');
 		  $('#cert_guide_popup_box').hide();
 		});
+		$('#cert_ent_num_popup_box').click(function() {
+		  $('body').removeClass('modal-open');
+		  $('#cert_ent_num_popup_box').hide();
+		});
 	});
 	
 	function tilko_call(a=1){
@@ -248,7 +256,7 @@ if($member["cert_reg_sts"] != "Y"){
 	}
 	
 	function tilko_download(){
-		alert("공인인증서 전송 프로그램 설치가 필요합니다. 설치 파일을 다운로드 합니다.");
+		//alert("공인인증서 전송 프로그램 설치가 필요합니다. 설치 파일을 다운로드 합니다.");
 		$("#tilko").attr("src","/Resources/setup.exe");
 	}
 	function cert_guide(){// 공인인증서 등록 절차 가이드 창 오픈
@@ -264,6 +272,13 @@ if($member["cert_reg_sts"] != "Y"){
 		$('body').addClass('modal-open');
 		$('#cert_popup_box').show();
 	}
+
+	function ent_num_insert(){// 장기요양기관번호 입력 창 오픈
+		var url = "/shop/pop.ent_num.php";
+		$('#cert_ent_num_popup_box iframe').attr('src', url);
+		$('body').addClass('modal-open');
+		$('#cert_ent_num_popup_box').show();
+	}
 	function cert_pwd(pwd){
 		var params = {
 				  mode      : 'pwd'
@@ -275,7 +290,7 @@ if($member["cert_reg_sts"] != "Y"){
 				data : params, 
 				dataType: 'json',// Json 형식의 데이터이다.
 				success : function(res){ // 비동기통신의 성공일경우 success콜백으로 들어옵니다. 'res'는 응답받은 데이터이다.
-					$("#btn_submit").trigger("click");
+					$(".btn_so_sch").trigger("click");
 				  },
 				error : function(XMLHttpRequest, textStatus, errorThrown){ // 비동기 통신이 실패할경우 error 콜백으로 들어옵니다.
 					alert(XMLHttpRequest['responseJSON']['message']);
@@ -300,6 +315,31 @@ $(function() {
     //$('#item_popup_box iframe').attr('src', url);
     //$('body').addClass('modal-open');
     //$('#item_popup_box').hide();
+
+
+	<?php 
+		if($member["cert_reg_sts"] != "Y") {//등록 안되어 있음
+			if($mobile_yn == 'Pc') {
+	?>
+			//공인인증서 등록 안내 및 등록 버튼 팝업 알림으로 교체 될 영역	
+			cert_guide();
+			return;
+	<?php 
+			} else {
+	?>
+		alert("컴퓨터에서 공인인증서를 등록 후 이용이 가능한 서비스 입니다.");
+		return;
+	<?php	}
+		} else { //등록 되어 있음
+			if(!$is_file){ 
+	?>
+		tilko_call('1');
+	<?php 
+			} 
+		}
+	?>
+
+
 
       var pen_info = <?=json_encode($pen);?>;
       console.log("pen_info : ", pen_info);
@@ -536,6 +576,8 @@ $(function() {
 						//tilko_call('2');
 						pwd_insert();
 					}
+				}else if(jqXhr['responseJSON']["data"]['err_code'] == "5"){
+					ent_num_insert();
 				}
 				// 인증서 업로드 추가 영역 끝
 			  btn_update.disabled = false;
@@ -644,6 +686,25 @@ $(function() {
 #cert_guide_popup_box iframe {
   width:850px;
   height:750px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+}
+#cert_ent_num_popup_box {
+  display: none;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  z-index:9999;
+  background: rgba(0, 0, 0, 0.5);
+}
+#cert_ent_num_popup_box iframe {
+  width:300px;
+  height:305.33px;
   position: absolute;
   top: 50%;
   left: 50%;

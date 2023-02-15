@@ -6,7 +6,7 @@ $wzres = sql_fetch( $query );
 if(!$wzres['Field']) {
     sql_query("ALTER TABLE `g5_member`
 	ADD `cert_reg_sts` varchar(20) DEFAULT NULL COMMENT '사업소의 공인 인증서 등록 상태' AFTER mb_account,
-	ADD `cert_reg_date` date DEFAULT NULL COMMENT '공인인증서 최초 등록일' AFTER cert_reg_date,
+	ADD `cert_reg_date` date DEFAULT NULL COMMENT '공인인증서 최초 등록일' AFTER cert_reg_sts,
 	ADD `cert_data_ref` text NOT NULL COMMENT '공인인증서 key ref file' AFTER cert_reg_date", true);
 }
 
@@ -268,9 +268,6 @@ if($member["cert_data_ref"] != ""){
 	if(file_exists($upload_dir.$file_name.".enc")){
 		$is_file = true;
 	}
-}
-if($member["cert_reg_sts"] != "Y"){
-	$is_file = false;
 }
 //인증서 업로드 추가 영역 끝
 ?>
@@ -724,6 +721,7 @@ function form_check(act) {
       <a href="javascript::" class="btn eroumcare_btn2" id="recipient_excel_download" title="수급자 엑셀 다운로드">수급자 엑셀 다운로드</a>
       <a href="./my_recipient_write.php" class="btn eroumcare_btn2" title="수급자 등록">수급자 등록</a>
       <a href="./recipientexcel.php" onclick="return excelform(this.href);" target="_blank" class="btn eroumcare_btn2" title="수급자일괄등록">수급자일괄등록</a>
+      <?php if($mobile_yn == 'Pc'){?><a href="javascript:;" class="btn eroumcare_btn2" title="인증서 재 등록하기" onClick="tilko_call('1');">인증서 재 등록하기</a><?php }?>
       <?php /*<div class="tooltip_btn">
         <a href="./recipientexcel_b.php" onclick="return excelform(this.href);" target="_blank" class="btn eroumcare_btn2" title="B사 엑셀 일괄등록">
           B사 엑셀 일괄등록
@@ -1510,24 +1508,27 @@ function excelPost(action, data) {
 </script>
 <!-- 인증서 업로드 추가 영역 -->
 <div id="cert_popup_box">
-  <iframe name="cert_iframe" src="" scrolling="yes" frameborder="0" allowTransparency="false"></iframe>
+  <iframe name="cert_iframe" src="" scrolling="no" frameborder="0" allowTransparency="false"></iframe>
 </div>
 
 <div id="cert_guide_popup_box">
-  <iframe name="cert_guide_iframe" src="" scrolling="yes" frameborder="0" allowTransparency="false"></iframe>
+  <iframe name="cert_guide_iframe" src="" scrolling="no" frameborder="0" allowTransparency="false"></iframe>
 </div>
 
-<iframe name="tilko" id="tilko" src="" scrolling="yes" frameborder="0" allowTransparency="false" height="0" width="0"></iframe>
+<iframe name="tilko" id="tilko" src="" scrolling="no" frameborder="0" allowTransparency="false" height="0" width="0"></iframe>
 <script type="text/javascript">
 	$( document ).ready(function() {
-		<?php if(!$is_file){
+		<?php if($member["cert_reg_sts"] != "Y"){//등록 안되어 있음
 			if($mobile_yn == 'Pc'){?>
 		//공인인증서 등록 안내 및 등록 버튼 팝업 알림으로 교체 될 영역	
 			cert_guide();
-			tilko_call('1');
 		<?php }else{?>
 		alert("컴퓨터에서 공인인증서를 등록 후 이용이 가능한 서비스 입니다.");
 		<?php }
+		}else{//등록 되어 있음
+			if(!$is_file){
+	?>		tilko_call('1');
+	<?php	}
 		}?>
 		
 		$('#cert_popup_box').click(function() {
@@ -1545,7 +1546,7 @@ function excelPost(action, data) {
 	}
 	
 	function tilko_download(){
-		alert("공인인증서 전송 프로그램 설치가 필요합니다. 설치 파일을 다운로드 합니다.");
+		//alert("공인인증서 전송 프로그램 설치가 필요합니다. 설치 파일을 다운로드 합니다.");
 		$("#tilko").attr("src","/Resources/setup.exe");
 	}
 	function cert_guide(){// 공인인증서 등록 절차 가이드 창 오픈

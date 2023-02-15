@@ -7,17 +7,36 @@ if(!$member["mb_id"] || !$member["mb_entId"])
 
 header('Content-type: application/json');
 if($_POST["mode"] == "pwd"){
-	//$cert_data_ref =  explode("|",$member["cert_data_ref"]);
+	$cert_data_ref =  explode("|",$member["cert_data_ref"]);
 	
-	//if(md5(base64_encode($_POST["Pwd"])) == $cert_data_ref[3]){
+	if(md5(base64_encode($_POST["Pwd"])) == $cert_data_ref[3]){
 	
 		$_SESSION['Pwd'] = base64_encode($_POST["Pwd"]);
 		json_response(200, '성공');
 		exit;
-	//}else{
-	//	json_response(400, '비밀번호를 확인해 주세요.');
-	//	exit;
-	//}
+	}else{
+		json_response(400, '비밀번호를 확인해 주세요.');
+		exit;
+	}
+}
+
+if($_POST["mode"] == "ent_num"){
+	$sql = "update g5_member set mb_ent_num='{$_POST['ent_num']}' where mb_id='".$member["mb_id"]."'";
+	sql_query($sql);
+
+	$sql2 = "select mb_ent_num
+	  from g5_member
+	  where mb_id = '{$member['mb_id']}' LIMIT 1
+	";
+	$result2 = sql_fetch($sql2);
+	
+	if($result2["mb_ent_num"] == $_POST['ent_num']){
+		json_response(200, '성공');
+		exit;
+	}else{
+		json_response(400, '장기요양기관번호 등록에 실패하였습니다. 다시 시도해 주세요.'.$result2["ent_num"]);
+		exit;
+	}
 }
 
 $upload_dir = $_SERVER['DOCUMENT_ROOT']."/data/file/member/tilko/";
@@ -40,8 +59,8 @@ $file_name2 = base64_encode($file_name); //파일명
 $file = fopen($upload_dir.$file_name2.".txt","w");
 fwrite($file,iconv("UTF-8", "CP949",$_POST["PriKey"])."\r\n".iconv("UTF-8", "CP949",$_POST["PubKey"])."\r\n".iconv("UTF-8", "CP949",$_POST["Expire"]));//개인키,공용키,만료일만 기록
 fclose($file);
-//@system('echo -n '.base64_decode($_POST["Pwd"]).' | openssl aes-256-cbc -in '.$upload_dir.$file_name2.'.txt -out '.$upload_dir.$file_name2.'.enc -pass stdin');//입력 받은 비밀번호로 파일 암호화 실행
-@system('echo -n '."thkc!@#".' | openssl aes-256-cbc -in '.$upload_dir.$file_name2.'.txt -out '.$upload_dir.$file_name2.'.enc -pass stdin');//고정값으로 파일 암호화 실행
+@system('echo -n '.base64_decode($_POST["Pwd"]).' | openssl aes-256-cbc -in '.$upload_dir.$file_name2.'.txt -out '.$upload_dir.$file_name2.'.enc -pass stdin');//입력 받은 비밀번호로 파일 암호화 실행
+//@system('echo -n '."thkc!@#".' | openssl aes-256-cbc -in '.$upload_dir.$file_name2.'.txt -out '.$upload_dir.$file_name2.'.enc -pass stdin');//고정값으로 파일 암호화 실행
 @unlink($upload_dir.$file_name2.".txt");//암호화 안된 파일 삭제
 
 $sql = "update g5_member set cert_reg_sts='Y',cert_reg_date=now(),cert_data_ref='".$file_name."|".base64_encode($_POST["Name"])."|".base64_encode($_POST["Expire"])."|".md5($_POST["Pwd"])."' where mb_id='".$member["mb_id"]."'";

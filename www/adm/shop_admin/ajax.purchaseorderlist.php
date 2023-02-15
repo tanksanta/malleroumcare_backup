@@ -20,7 +20,8 @@ if( !in_array($sel_field, array('it_name', 'ct_option', 'it_admin_memo', 'mb_id'
 $replace_table = array(
   'od_id' => 'o.od_id',
   'it_name' => 'i.it_name',
-  'mb_id' => 'c.mb_id'
+  'mb_id' => 'c.mb_id',
+  'it_admin_memo' => 'poam.om_content'
 );
 $sel_field = $replace_table[$sel_field] ?: $sel_field;
 $sel_field_add = $replace_table[$sel_field_add] ?: $sel_field_add;
@@ -62,17 +63,17 @@ if ($search_add != "") {
   }
 }
 
-if ($search_add_add != "") {
+/*if ($search_add_add != "") {
   $search_add_add = trim($search_add_add);
   if ($sel_field_add_add != "" && $sel_field_add_add != "od_all") {
     $where[] = "$sel_field_add_add like '%$search_add_add%'";
   }
-}
+}*/
 
 // 전체 검색
-if ($sel_field == 'od_all' && $search != "") {
+if (($sel_field == '' || $sel_field == 'od_all') && $search != "") {
   // $sel_arr = array('i.it_name', 'c.ct_option', 'it_admin_memo', 'it_maker', 'o.od_id', 'c.mb_id', 'mb_nick', 'od_name', 'od_tel', 'od_hp', 'od_b_name', 'od_b_tel', 'od_b_hp', 'od_deposit_name', 'ct_delivery_num', 'barcode', 'prodMemo', 'od_memo');
-  $sel_arr = array('i.it_name', 'c.ct_option', 'it_admin_memo', 'c.mb_id', 'mb_name', 'ct_warehouse');
+  $sel_arr = array('i.it_name', 'c.ct_option', 'poam.om_content', 'c.mb_id', 'mb_name', 'ct_warehouse');
 
   foreach ($sel_arr as $key => $value) {
     if($value=="barcode") {
@@ -93,13 +94,13 @@ if ($sel_field == 'od_all' && $search != "") {
     }
   }
 
-  $where[] = "(".implode(' or ', $sel_arr).")";
+  $where[] = "(".implode(' or ', array_values($sel_arr)).")";
 }
 
 // 전체 검색2
-if ($sel_field_add == 'od_all' && $search_add != "") {
+if (($sel_field_add == '' || $sel_field_add == 'od_all') && $search_add != "") {
 	// $sel_arr = array('i.it_name', 'c.ct_option', 'it_admin_memo', 'it_maker', 'o.od_id', 'c.mb_id', 'mb_nick', 'od_name', 'od_tel', 'od_hp', 'od_b_name', 'od_b_tel', 'od_b_hp', 'od_deposit_name', 'ct_delivery_num', 'barcode', 'prodMemo', 'od_memo');
-  $sel_arr = array('i.it_name', 'c.ct_option', 'it_admin_memo', 'c.mb_id', 'mb_name', 'ct_warehouse');
+  $sel_arr = array('i.it_name', 'c.ct_option', 'poam.om_content', 'c.mb_id', 'mb_name', 'ct_warehouse');
 
   foreach ($sel_arr as $key => $value) {
     if($value=="barcode") {
@@ -120,13 +121,13 @@ if ($sel_field_add == 'od_all' && $search_add != "") {
     }
   }
 
-  $where[] = "(".implode(' or ', $sel_arr).")";
+  $where[] = "(".implode(' or ', array_values($sel_arr)).")";
 }
 
 // 전체 검색3
-if ($sel_field_add_add == 'od_all' && $search_add_add != "") {
+/*if ($sel_field_add_add == 'od_all' && $search_add_add != "") {
 	// $sel_arr = array('i.it_name', 'c.ct_option', 'it_admin_memo', 'it_maker', 'o.od_id', 'c.mb_id', 'mb_nick', 'od_name', 'od_tel', 'od_hp', 'od_b_name', 'od_b_tel', 'od_b_hp', 'od_deposit_name', 'ct_delivery_num', 'barcode', 'prodMemo', 'od_memo');
-  $sel_arr = array('i.it_name', 'c.ct_option', 'it_admin_memo', 'c.mb_id', 'mb_name', 'ct_warehouse');
+  $sel_arr = array('i.it_name', 'c.ct_option', 'poam.om_content', 'c.mb_id', 'mb_name', 'ct_warehouse');
 
   foreach ($sel_arr as $key => $value) {
     if($value=="barcode") {
@@ -148,7 +149,7 @@ if ($sel_field_add_add == 'od_all' && $search_add_add != "") {
   }
 
   $where[] = "(".implode(' or ', $sel_arr).")";
-}
+}*/
 
 // 출고준비 3일경과만 보기
 //if($issue_1) {
@@ -422,6 +423,8 @@ $sql_common = "
     g5_member m ON c.mb_id = m.mb_id
   LEFT JOIN
     partner_install_report pir ON c.od_id = pir.od_id
+  LEFT JOIN
+    purchase_order_admin_memo poam ON c.od_id = poam.od_id
 ";
 //  LEFT JOIN
 //    g5_shop_order_cancel_request ocr ON c.od_id = ocr.od_id

@@ -573,12 +573,12 @@ $deliveryCntBtnStatus = ($delivery_insert >= $od["od_delivery_total"]) ? " disab
                 </td>
                 <td class="btncol">
                   <!-- 입고예정일 -->
-                  <?php $ct_part_info = json_decode($options[$k]['ct_part_info'],true)[1]; echo $ct_part_info['_in_dt'] ? date('Y-m-d H시', strtotime($ct_part_info['_in_dt'])) : ''; ?>
+                  <?php $ct_part_info = json_decode($options[$k]['ct_part_info'],true)[1]; echo $ct_part_info['_in_dt'] ? date('Y-m-d', strtotime($ct_part_info['_in_dt'])) : ''; ?>
                   <!-- 입고예정일 -->
                 </td>
                 <td class="btncol">
                   <!-- 입고완료일 -->
-                  <?php echo $ct_part_info['_in_dt_confirm'] ? date('Y-m-d H시', strtotime($ct_part_info['_in_dt_confirm'])) : ''; ?>
+                  <?php echo $ct_part_info['_in_dt_confirm'] ? date('Y-m-d', strtotime($ct_part_info['_in_dt_confirm'])) : ''; ?>
                   <!-- 입고완료일 -->
                 </td>
                 <td class="btncol">
@@ -628,13 +628,13 @@ $deliveryCntBtnStatus = ($delivery_insert >= $od["od_delivery_total"]) ? " disab
             <td class="btncol"></td>
             <td class="btncol"></td>
           </tr>
-          <?php $total_discount = 0; $total_qty = 0;
+          <?php $total_discount_r = 0; $total_qty_r = 0; $total_discount_d = 0; $total_qty_d = 0;
           if($od['od_discount_info']) {
             $od_discount_info = json_decode($od['od_discount_info'], true);
           ?>
           <tr style="margin-top: 10px;">
             <td colspan="13" style="text-align: left; padding: 10px 0 5px 0;">
-              <p style="font-size: small; font-weight: bolder; padding: 0 5px;">할인/반품 정보</p>
+              <p style="font-size: small; font-weight: bolder; padding: 0 5px;">반품 정보</p>
             </td>
           </tr>
           <tr style="border-top: 1px solid #dddddd; padding: 0; background-color: #f3f3f3;">
@@ -647,28 +647,71 @@ $deliveryCntBtnStatus = ($delivery_insert >= $od["od_delivery_total"]) ? " disab
             <th colspan="2">합계</th>
             <th colspan="3">요청사항</th>
           </tr>
-          <?php for($ind = 0; $ind <count($od_discount_info); $ind++) {
-            $total_qty += $od_discount_info[$ind]['discount_qty'];
-            $total_discount += $od_discount_info[$ind]['discount_it_price']*$od_discount_info[$ind]['discount_qty'];?>
+          <?php $index = 1;
+          for($ind = 0; $ind <count($od_discount_info); $ind++) {
+            if($od_discount_info[$ind]['discount_type'] == 'd') continue;
+            $total_qty_r += $od_discount_info[$ind]['discount_qty'];
+            $total_discount_r += $od_discount_info[$ind]['discount_it_price']*$od_discount_info[$ind]['discount_qty'];?>
           <tr style="border-top: 1px solid #dddddd;">
-            <td class="no"><span class="index"><?=$ind+1;?></span></td>
+            <td class="no"><span class="index"><?=$index;?></span></td>
             <td colspan="2" name="discount_it_name[]" ><?=$od_discount_info[$ind]['discount_it_name'];?></td>
             <td colspan="1" name="discount_qty[]"><?=$od_discount_info[$ind]['discount_qty'];?></td>
             <td colspan="2" name="discount_it_price[]"><?=number_format($od_discount_info[$ind]['discount_it_price']);?>원</td>
             <td colspan="1" class="basic_price"><?=number_format(round(($od_discount_info[$ind]['discount_it_price']*$od_discount_info[$ind]['discount_qty']) / 1.1));?>원</td>
             <td colspan="1" class="tax_price"><?=number_format(($od_discount_info[$ind]['discount_it_price']*$od_discount_info[$ind]['discount_qty']) - round(($od_discount_info[$ind]['discount_it_price']*$od_discount_info[$ind]['discount_qty']) / 1.1));?>원</td>
-            <td colspan="2" class="tax_price"><?=number_format($total_discount);?>원</td>
+            <td colspan="2" class="total_price"><?=number_format($od_discount_info[$ind]['discount_it_price']*$od_discount_info[$ind]['discount_qty']);?>원</td>
             <td colspan="3" name="discount_memo[]"><?=$od_discount_info[$ind]['discount_memo'];?></td>
           </tr>
-          <?php } ?>
+          <?php $index++;} ?>
           <tr style="border-top: 1px solid #dddddd; background-color: #f3f3f3;">
             <th></th>
             <th colspan="2"></th>
-            <th colspan="1"><?=$total_qty;?></th>
+            <th colspan="1"><?=$total_qty_r;?></th>
             <th colspan="2"></th>
             <th colspan="1"></th>
             <th colspan="1"></th>
-            <th colspan="2"><?=number_format($total_discount);?>원</th>
+            <th colspan="2"><?=number_format($total_discount_r);?>원</th>
+            <th colspan="3"></th>
+          </tr>
+          <tr style="margin-top: 10px;">
+            <td colspan="13" style="text-align: left; padding: 10px 0 5px 0;">
+              <p style="font-size: small; font-weight: bolder; padding: 0 5px;">할인 정보</p>
+            </td>
+          </tr>
+          <tr style="border-top: 1px solid #dddddd; padding: 0; background-color: #f3f3f3;">
+            <th>No.</th>
+            <th colspan="2">상품명</th>
+            <th colspan="1">수량</th>
+            <th colspan="2">가격</th>
+            <th colspan="1">공급가액</th>
+            <th colspan="1">부가세</th>
+            <th colspan="2">합계</th>
+            <th colspan="3">요청사항</th>
+          </tr>
+          <?php $index = 1;
+          for($ind = 0; $ind <count($od_discount_info); $ind++) {
+            if($od_discount_info[$ind]['discount_type'] == 'r') continue;
+            $total_qty_d += $od_discount_info[$ind]['discount_qty'];
+            $total_discount_d += $od_discount_info[$ind]['discount_it_price']*$od_discount_info[$ind]['discount_qty'];?>
+          <tr style="border-top: 1px solid #dddddd;">
+            <td class="no"><span class="index"><?=$index;?></span></td>
+            <td colspan="2" name="discount_it_name[]" ><?=$od_discount_info[$ind]['discount_it_name'];?></td>
+            <td colspan="1" name="discount_qty[]"><?=$od_discount_info[$ind]['discount_qty'];?></td>
+            <td colspan="2" name="discount_it_price[]"><?=number_format($od_discount_info[$ind]['discount_it_price']);?>원</td>
+            <td colspan="1" class="basic_price"><?=number_format(round(($od_discount_info[$ind]['discount_it_price']*$od_discount_info[$ind]['discount_qty']) / 1.1));?>원</td>
+            <td colspan="1" class="tax_price"><?=number_format(($od_discount_info[$ind]['discount_it_price']*$od_discount_info[$ind]['discount_qty']) - round(($od_discount_info[$ind]['discount_it_price']*$od_discount_info[$ind]['discount_qty']) / 1.1));?>원</td>
+            <td colspan="2" class="total_price"><?=number_format($od_discount_info[$ind]['discount_it_price']*$od_discount_info[$ind]['discount_qty']);?>원</td>
+            <td colspan="3" name="discount_memo[]"><?=$od_discount_info[$ind]['discount_memo'];?></td>
+          </tr>
+          <?php $index++; } ?>
+          <tr style="border-top: 1px solid #dddddd; background-color: #f3f3f3;">
+            <th></th>
+            <th colspan="2"></th>
+            <th colspan="1"><?=$total_qty_d;?></th>
+            <th colspan="2"></th>
+            <th colspan="1"></th>
+            <th colspan="1"></th>
+            <th colspan="2"><?=number_format($total_discount_d);?>원</th>
             <th colspan="3"></th>
           </tr>
           <?php } ?>
@@ -918,9 +961,27 @@ $deliveryCntBtnStatus = ($delivery_insert >= $od["od_delivery_total"]) ? " disab
         <h2>구매정보</h2>
         <ul class="bill_info">
           <li>
+            <div class="left">발주금액</div>
+            <div class="right">
+              <?php echo number_format($tot_total); ?>
+                원</div>
+          </li>
+          <li>
+            <div class="left">반품금액</div>
+            <div class="right red">
+              <?php echo number_format($total_discount_r); ?>
+                원</div>
+          </li>
+          <li>
+            <div class="left">할인금액</div>
+            <div class="right red">
+              <?php echo number_format($total_discount_d); ?>
+                원</div>
+          </li>
+          <li>
             <div class="left"><b>총금액</b></div>
             <div class="right">
-              <b><?php echo number_format($tot_total + $od['od_send_cost'] + $od['od_send_cost2'] + $od['od_cart_discount2'] - $od['od_sales_discount'] - $amount['coupon'] - $od['od_receipt_point'] - $total_discount); ?>
+              <b><?php echo number_format($tot_total + $od['od_send_cost'] + $od['od_send_cost2'] + $od['od_cart_discount2'] - $od['od_sales_discount'] - $amount['coupon'] - $od['od_receipt_point'] - $total_discount_d - $total_discount_r); ?>
                 원</b></div>
           </li>
         </ul>
