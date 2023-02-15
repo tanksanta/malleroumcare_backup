@@ -20,6 +20,25 @@ if($_POST["mode"] == "pwd"){
 	}
 }
 
+if($_POST["mode"] == "ent_num"){
+	$sql = "update g5_member set mb_ent_num='{$_POST['ent_num']}' where mb_id='".$member["mb_id"]."'";
+	sql_query($sql);
+
+	$sql2 = "select mb_ent_num
+	  from g5_member
+	  where mb_id = '{$member['mb_id']}' LIMIT 1
+	";
+	$result2 = sql_fetch($sql2);
+	
+	if($result2["mb_ent_num"] == $_POST['ent_num']){
+		json_response(200, '성공');
+		exit;
+	}else{
+		json_response(400, '장기요양기관번호 등록에 실패하였습니다. 다시 시도해 주세요.'.$result2["ent_num"]);
+		exit;
+	}
+}
+
 $upload_dir = $_SERVER['DOCUMENT_ROOT']."/data/file/member/tilko/";
 if(!is_dir($upload_dir)){//인증서 파일 생성할 폴더 확인 
 	@umask(0);
