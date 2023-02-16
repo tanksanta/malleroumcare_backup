@@ -1,12 +1,16 @@
 <?php
-
 include_once("./_common.php");
 
 $g5["title"] = "주문 내역 바코드 수정";
 // include_once(G5_ADMIN_PATH."/admin.head.php");
 
-$sql = " select * from {$g5['g5_shop_order_table']} where od_id = ( SELECT od_id FROM {$g5['g5_shop_cart_table']} WHERE ct_id = '$ct_id') ";
-$od = sql_fetch($sql);
+$od = sql_fetch(" SELECT od.*, 
+                ( SELECT COUNT(od_id) FROM `g5_shop_cart` WHERE `od_id` = od.od_id ) AS more_totalCnt,
+                ( SELECT it_name FROM `g5_shop_cart` WHERE `od_id` = od.od_id ORDER BY it_id ASC LIMIT 0, 1 ) AS more_it_name
+          FROM {$g5['g5_shop_order_table']} od 
+          WHERE `od_id` = ( SELECT `od_id` FROM {$g5['g5_shop_cart_table']} WHERE `ct_id` = '$ct_id' ORDER BY it_id ASC LIMIT 0, 1)
+");
+
 $od_id = $od['od_id'];
 $prodList = [];
 $prodListCnt = 0;
@@ -18,72 +22,41 @@ if (!$od['od_id']) {
 }
 
 $carts = [];
-$sql = " select a.ct_id,
+$sql = " SELECT a.ct_id,
 					a.it_id,
 					a.it_name,
-					a.cp_price,
-					a.ct_notax,
-					a.ct_send_cost,
-					a.ct_sendcost,
-					a.it_sc_type,
-					a.pt_it,
-					a.pt_id,
-					b.ca_id,
-					b.ca_id2,
-					b.ca_id3,
-					b.pt_msg1,
-					b.pt_msg2,
-					b.pt_msg3,
+          a.io_type,
 					a.ct_status,
-					b.it_model,
-					b.it_outsourcing_use,
-					b.it_outsourcing_company,
-					b.it_outsourcing_manager,
-					b.it_outsourcing_email,
-					b.it_outsourcing_option,
-					b.it_outsourcing_option2,
-					b.it_outsourcing_option3,
-					b.it_outsourcing_option4,
-					b.it_outsourcing_option5,
-					a.pt_old_name,
-					a.pt_old_opt,
-					a.ct_uid,
-					a.prodMemo,
-					a.prodSupYn,
 					a.ct_qty,
-					a.ct_stock_qty,
-					b.it_img1,
 					a.ct_delivery_company,
 					a.ct_delivery_num,
 					a.ct_combine_ct_id,
-					b.it_delivery_cnt,
-					b.it_delivery_price,
-					a.ct_delivery_cnt,
-					a.ct_delivery_price,
-					a.ct_is_direct_delivery,
-          b.it_name,
           a.ct_status,
-          a.io_type,
+          a.ct_option,
+          a.ct_barcode_insert,
           a.stoId,
-          ct_option,
-          ct_barcode_insert,
+					a.prodMemo,
+					b.ca_id,
+          b.it_name,
           b.it_use_short_barcode,
-          (SELECT io_use_short_barcode FROM g5_shop_item_option AS o WHERE o.it_id = a.it_id AND o.io_id = a.io_id) as io_use_short_barcode
-			  from {$g5['g5_shop_cart_table']} a 
-        left join {$g5['g5_shop_item_table']} b on ( a.it_id = b.it_id )
-			  where a.od_id = '$od_id'
+          b.prodpaycode,
+          ( SELECT io_use_short_barcode FROM g5_shop_item_option AS o WHERE o.it_id = a.it_id AND o.io_id = a.io_id ) AS io_use_short_barcode
+			  FROM {$g5['g5_shop_cart_table']} a 
+        LEFT JOIN {$g5['g5_shop_item_table']} b on ( a.it_id = b.it_id )
+			  WHERE a.od_id = '$od_id'
         AND (
           ct_id = '$ct_id'
           OR ct_combine_ct_id = '$ct_id'
           OR ct_id = ( SELECT ct_combine_ct_id FROM {$g5['g5_shop_cart_table']} WHERE ct_id = '$ct_id' LIMIT 1 )
           OR ct_combine_ct_id = ( SELECT ct_combine_ct_id FROM {$g5['g5_shop_cart_table']} WHERE ct_id = '$ct_id' LIMIT 1 )
         )
-			  order by a.ct_combine_ct_id, a.ct_id";
+			  ORDER bY a.ct_combine_ct_id, a.ct_id";
 
 $result = sql_query($sql);
 
 $sto_imsi = '';
 $combine_it_name = '';
+
 for ($i=0; $row=sql_fetch_array($result); $i++) {
   $carts[] = $row;
   if ($i === 0) {
@@ -99,24 +72,13 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
 $stoIdDataList = explode('|',$sto_imsi);
 $stoIdDataList = array_filter($stoIdDataList);
 $stoIdData = implode("|", $stoIdDataList);
-$res = api_post_call(EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP, array(
-  'stoId' => $stoIdData
-));
+$res = api_post_call(EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP, array(  'stoId' => $stoIdData ));
 $result_again = $res['data'];
 
-# 210317 추가정보
-$moreInfo = sql_fetch("
-  SELECT
-    ( SELECT it_name FROM g5_shop_cart WHERE od_id = a.od_id ORDER BY it_id ASC LIMIT 0, 1 ) AS it_name,
-    ( SELECT COUNT(*) FROM g5_shop_cart WHERE od_id = a.od_id ) AS totalCnt
-  FROM g5_shop_order a
-  WHERE od_id = '{$od_id}'
-");
-
 $moreInfoDisplayCnt = "";
-$moreInfo["totalCnt"]--;
-if($moreInfo["totalCnt"]){
-  $moreInfoDisplayCnt = "외 {$moreInfo["totalCnt"]}종";
+$od["more_totalCnt"]--;
+if($od["more_totalCnt"]){
+  $moreInfoDisplayCnt = "외 {$od["more_totalCnt"]}종";
 }
 
 # 210319 배송정보
@@ -131,8 +93,8 @@ if($od["od_b_tel"]) {
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">  
+  <meta name="viewport" content="initial-scale=1.0,user-scalable=no,maximum-scale=1,width=device-width" />
   <title>출고정보</title>
   <script src="//ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
   <script src="/js/barcode_utils.js"></script>
@@ -150,19 +112,19 @@ if($od["od_b_tel"]) {
     input { font-family: "Noto Sans KR", sans-serif;  }
 
     /* 고정 상단 */
-    #popupHeaderTopWrap { position: fixed; width: 100%; height: 60px; left: 0; top: 0; z-index: 10; background-color: #333; padding: 0 20px; }
+    #popupHeaderTopWrap { position: fixed; width: 100%; height: 50px; left: 0; top: 0; z-index: 10; background-color: #333; padding: 0 20px; }
     #popupHeaderTopWrap:after { display: block; content: ''; clear: both; }
-    #popupHeaderTopWrap > div { height: 100%; line-height: 60px; }
+    #popupHeaderTopWrap > div { height: 100%; line-height: 50px; }
     #popupHeaderTopWrap > .title { float: left; font-weight: bold; color: #FFF; font-size: 22px; }
     #popupHeaderTopWrap > .close { float: right; }
     #popupHeaderTopWrap > .close > a { color: #FFF; font-size: 40px; top: -2px; }
 
     /* 상품기본정보 */
-    #itInfoWrap { width: 100%; padding: 20px; border-bottom: 1px solid #DFDFDF; }
+    #itInfoWrap { width: 100%; padding: 10px 20px; border-bottom: 1px solid #DFDFDF; }
     #itInfoWrap > .name { width: 100%; font-weight: bold; font-size: 17px; }
     #itInfoWrap > .name > .delivery { color: #FF690F; }
     #itInfoWrap > .date { width: 100%; font-size: 13px; color: #666; }
-    #itInfoWrap > .deliveryInfo { width: 100%; border-radius: 5px; padding: 10px 15px; background-color: #F1F1F1; margin-top: 20px; }
+    #itInfoWrap > .deliveryInfo { width: 100%; border-radius: 5px; padding: 10px 15px; background-color: #F1F1F1; margin-top: 10px; }
     #itInfoWrap > .deliveryInfo > p { width: 100%; color: #000; font-size: 13px; }
     #itInfoWrap > .deliveryInfo > p.title { color: #666; font-size: 15px; font-weight: bold; margin-bottom: 10px; }
 
@@ -176,83 +138,73 @@ if($od["od_b_tel"]) {
 
     /* 상품목록 */
     #submitForm { width: 100%; }
-    .imfomation_box{ margin:0px;width:100%;position:relative; padding:0px;display:block; width:100%; height:auto;  }
-    .imfomation_box > a { width: 100%; }
-    .imfomation_box > a > li { width: 100%; padding: 20px; border-bottom: 1px solid #DDD; }
-    .imfomation_box a .li_box{ width:100%; height:auto;text-align:center;}
-    .imfomation_box a .li_box .li_box_line1{ width: 100%; height:auto; margin:auto; color:#000; }
-    .imfomation_box a .li_box .li_box_line1 .p1{ width:100%; color:#000; text-align:left; box-sizing: border-box; display: table; table-layout: fixed; }
-    .imfomation_box a .li_box .li_box_line1 .p1 > span { height: 100%; display: table-cell; vertical-align: middle; }
-    .imfomation_box a .li_box .li_box_line1 .p1 .span1{ font-size: 18px; word-break: keep-all; width: 60%; }
-    /* .imfomation_box a .li_box .li_box_line1 .p1 .span1{ font-size: 18px; overflow:hidden;text-overflow:ellipsis;white-space:nowrap; font-weight: bold; } */
-    .imfomation_box a .li_box .li_box_line1 .p1 .span2{ width: 120px; font-size:14px; text-align: right; }
-    .imfomation_box a .li_box .li_box_line1 .p1 .span2 img{ width: 13px; margin-left: 15px; vertical-align: middle; top: -1px; }
-    .imfomation_box a .li_box .li_box_line1 .p1 .span2 .up{ display: none;}
-    .imfomation_box a .li_box .li_box_line1 .p1 .span3 {
-      text-align:right;
-      font-size:0.8em;
-      color:#9b9b9b;
-    }
-    .imfomation_box a .li_box .li_box_line1 .p1 .span3 .outline {
-      border: 1px solid #9b9b9b; 
-      border-radius: 3px; 
-      padding: 5px 30px;
-      display: inline-block;
-    }
-    .imfomation_box a .li_box .li_box_line1 .p1 .span3 label {
-      color: #000;
-    }
-    .imfomation_box a .li_box .li_box_line1 .p1 .span3 input {
-      vertical-align:middle;
-    }
-    .imfomation_box a .li_box .li_box_line1 .cartProdMemo { width: 100%; font-size: 13px; margin-top: 2px; text-align: left; color: #FF690F; }
+    .imfomation_box{ margin:0px;width:100%;position:relative; padding:10px 20px; display:block; width:100%; height:auto;  }
+    .imfomation_box  ul { width: 100%; padding:5px 10px ; } */
+    .imfomation_box .li_box { width: 100%; padding: 20px; /* border-bottom: 1px solid #DDD; */ }
+    .imfomation_box .li_box{ width:100%; height:auto;text-align:center;}
+    .imfomation_box .li_box .li_box_line1{ width: 100%; height:auto; margin:auto; color:#000; }
+    .imfomation_box .li_box .li_box_line1 .p1{ width:100%; color:#000; text-align:left; box-sizing: border-box; display: table; table-layout: fixed; }
+    .imfomation_box .li_box .li_box_line1 .p1 > span { height: 100%; display: table-cell; vertical-align: middle; }
+    .imfomation_box .li_box .li_box_line1 .p1 .span1{ font-size: 18px; word-break: keep-all; width: 60%; }
+    /* .imfomation_box .li_box .li_box_line1 .p1 .span1{ font-size: 18px; overflow:hidden;text-overflow:ellipsis;white-space:nowrap; font-weight: bold; } */
+    .imfomation_box .li_box .li_box_line1 .p1 .span2{ width: 120px; font-size:14px; text-align: right; }
+    .imfomation_box .li_box .li_box_line1 .p1 .span2 img{ width: 13px; margin-left: 15px; vertical-align: middle; top: -1px; }
+    .imfomation_box .li_box .li_box_line1 .p1 .span2 .up{ display: none;}
+    .imfomation_box .li_box .li_box_line1 .p1 .span3 { text-align:right; font-size:0.8em; color:#9b9b9b; }
+    .imfomation_box .li_box .li_box_line1 .p1 .span3 .outline { border: 1px solid #9b9b9b; border-radius: 3px; padding: 5px 30px; display: inline-block; }
+    .imfomation_box .li_box .li_box_line1 .p1 .span3 label { color: #000; }
+    .imfomation_box .li_box .li_box_line1 .p1 .span3 input { vertical-align:middle; }
+    .imfomation_box .li_box .li_box_line1 .cartProdMemo { width: 100%; font-size: 13px; margin-top: 2px; text-align: left; color: #FF690F; }
     /* display:none; */
-    .imfomation_box a .li_box .folding_box{text-align: center; vertical-align:middle; width:100%; padding-top: 20px; display:none; box-sizing: border-box; }
-    .imfomation_box a .li_box .folding_box > span { display: block; width: 100%; }
-    .imfomation_box a .li_box .folding_box > span:after { display: block; content: ''; clear: both; }
-    .imfomation_box a .li_box .folding_box > .inputbox { width: 100%; position: relative; padding: 0; }
-    .imfomation_box a .li_box .folding_box > .inputbox > li { width: 100%; position: relative; }
-    .imfomation_box a .li_box .folding_box > .inputbox > li > .frm_input { width: 100%; height: 50px; padding-right: 85px; box-sizing: border-box; padding-left: 20px; font-size: 17px; border: 1px solid #E4E4E4; }
-    .imfomation_box a .li_box .folding_box > .inputbox > li > .frm_input.active { border-color: #FF5858; }
-    .imfomation_box a .li_box .folding_box > .inputbox > li > .frm_input::placeholder { font-size: 16px; color: #AAA; }
-    .imfomation_box a .li_box .folding_box > .inputbox > li > .btn_bacod { position: absolute; width: 30px; right: 50px; top: 11px; z-index: 2; cursor: pointer; }
-    .imfomation_box a .li_box .folding_box > .inputbox > li > .btn_pda { position: absolute; width: 30px; right: 15px; top: 11px; z-index: 2; cursor: pointer; }
-    .imfomation_box a .li_box .folding_box > .inputbox > li > img { position: absolute; width: 30px; right: 15px; top: 11px; z-index: 2; cursor: pointer; }
-    .imfomation_box a .li_box .folding_box > .inputbox > li > i { position: absolute; right: 100px; top: 17px; z-index: 2; font-size: 19px; color: #FF6105; opacity: 0; }
-    .imfomation_box a .li_box .folding_box > .inputbox > li > i.active { opacity: 1; }
-    .imfomation_box a .li_box .folding_box > .inputbox > li > .overlap { position: absolute; right: 55px; top: 15px; z-index: 2; font-size: 14px; color: #DC3333; opacity: 0; font-weight: bold; }
-    .imfomation_box a .li_box .folding_box > .inputbox > li > .overlap.active { opacity: 1; }
+    .imfomation_box .li_box .folding_box{text-align: center; vertical-align:middle; width:100%; padding-top: 10px; display:none; box-sizing: border-box; }
+    .imfomation_box .li_box .folding_box > span { display: block; width: 100%; }
+    .imfomation_box .li_box .folding_box > span:after { display: block; content: ''; clear: both; }
+    .imfomation_box .li_box .folding_box > .inputbox { width: 100%; position: relative; padding: 0; }
+    .imfomation_box .li_box .folding_box > .inputbox > li { width: 100%; position: relative; }
+    .imfomation_box .li_box .folding_box > .inputbox > li > .frm_input { width: 100%; height: 50px; padding-right: 85px; box-sizing: border-box; padding-left: 20px; font-size: 17px; border: 1px solid #E4E4E4; }
+    .imfomation_box .li_box .folding_box > .inputbox > li > .frm_input.active { border-color: #FF5858; }
+    .imfomation_box .li_box .folding_box > .inputbox > li > .frm_input::placeholder { font-size: 16px; color: #AAA; }
 
-    .imfomation_box a .li_box .folding_box .span{margin-left :20px;width:90%;}
-    .imfomation_box a .li_box .folding_box .all{margin-bottom:5px;padding-left :20px;font-size:17px;text-align:left;float:left;height:50px;width:55%; border-radius: 6px; background-color:#c0c0c0;  color:#fff; border:0px; box-sizing: border-box; }
-    .imfomation_box a .li_box .folding_box .all::placeholder{color:#fff;}
-    .imfomation_box a .li_box .folding_box .all::placeholder{color:#fff;}
+    .imfomation_box .li_box .folding_box > .inputbox > li > .btn_bacod { position: absolute; width: 30px; right: 50px; top: 11px; z-index: 2; cursor: pointer; }
+    .imfomation_box .li_box .folding_box > .inputbox > li > .btn_pda { position: absolute; width: 48px; right: 5px; top: 1px; z-index: 2; cursor: pointer; }
+    
+    .imfomation_box .li_box .folding_box > .inputbox > li > img { position: absolute; width: 30px; right: 15px; top: 11px; z-index: 2; cursor: pointer; }
+    .imfomation_box .li_box .folding_box > .inputbox > li > i { position: absolute; right: 100px; top: 17px; z-index: 2; font-size: 19px; color: #FF6105; opacity: 0; }
+    .imfomation_box .li_box .folding_box > .inputbox > li > i.active { opacity: 1; }
+    .imfomation_box .li_box .folding_box > .inputbox > li > .overlap { position: absolute; right: 55px; top: 15px; z-index: 2; font-size: 14px; color: #DC3333; opacity: 0; font-weight: bold; }
+    .imfomation_box .li_box .folding_box > .inputbox > li > .overlap.active { opacity: 1; }
 
-    .imfomation_box a .li_box .folding_box .all::placeholder{color:#fff;}
+    .imfomation_box .li_box .folding_box .span{margin-left :20px;width:90%;}
+    .imfomation_box .li_box .folding_box .all{margin-bottom:5px; padding-left :20px; font-size:15px;text-align:left;float:left;height:30px; width:60%; border-radius: 6px; background-color:#c0c0c0;  color:#fff; border:0px; box-sizing: border-box; }
+    .imfomation_box .li_box .folding_box .all::placeholder{color:#fff;}
 
-    .imfomation_box a .li_box .folding_box .barNumCustomSubmitBtn{float:left;margin-left:10px;color:#fff;font-size:17px;background-color:#494949; border:0px;border-radius: 6px;width:18%; height:50px; font-weight: bold; }
-    .imfomation_box a .li_box .folding_box .barNumGuideOpenBtn{float:left; position: relative; margin-left:10px;width:35px; cursor: pointer; top: 8px; }
-    .imfomation_box a .li_box .folding_box .notall{
+    .imfomation_box .li_box .folding_box .barNumCustomSubmitBtn{float:left;margin-left:10px;color:#fff;font-size:15px;background-color:#494949; border:0px;border-radius: 6px;width:18%; height:30px; font-weight: bold; }
+    .imfomation_box .li_box .folding_box .barNumGuideOpenBtn{float:left; position: relative; margin-left:10px; width:25px; cursor: pointer; top: 5px; }
+    .imfomation_box .li_box .folding_box .notall{
       margin-bottom:5px;font-size:20px;text-align:left;height:50px;width:90%; border-radius: 6px; background-color:#fff;  color:#666666; border:0px; ; border: 1px solid #c0c0c0;;
       /* background-image : url('<?php echo G5_IMG_URL?>/bacod_img.png');  */
       /* background-position:top right;  */
       /* background-repeat:no-repeat; */
 
-
     }
-    .imfomation_box a .li_box .deliveryInfoWrap { width: 100%; position: relative; background-color: #F1F1F1; border-radius: 5px; padding: 10px; margin-top: 15px; }
-    .imfomation_box a .li_box .deliveryInfoWrap:after { display: block; content: ''; clear: both; }
-    .imfomation_box a .li_box .deliveryInfoWrap > select { width: 34%; height: 40px; float: left; margin-right: 1%; border: 1px solid #DDD; font-size: 17px; color: #666; padding-left: 10px; border-radius: 5px; }
-    .imfomation_box a .li_box .deliveryInfoWrap > input[type="text"] { width: 65%; height: 40px; float: left; border: 1px solid #DDD; font-size: 17px; color: #666; padding: 0 40px 0 10px; border-radius: 5px; }
-    .imfomation_box a .li_box .deliveryInfoWrap > img { position: absolute; width: 30px; right: 15px; top: 50%; margin-top: -15px; z-index: 2; cursor: pointer; }
+
+
+    .imfomation_box .li_box .deliveryInfoWrap { width: 100%; position: relative; background-color: #F1F1F1; border-radius: 5px; padding: 10px; margin-top: 15px; }
+    .imfomation_box .li_box .deliveryInfoWrap:after { display: block; content: ''; clear: both; }
+    .imfomation_box .li_box .deliveryInfoWrap > select { width: 34%; height: 40px; float: left; margin-right: 1%; border: 1px solid #DDD; font-size: 17px; color: #666; padding-left: 10px; border-radius: 5px; }
+    .imfomation_box .li_box .deliveryInfoWrap > input[type="text"] { width: 65%; height: 40px; float: left; border: 1px solid #DDD; font-size: 17px; color: #666; padding: 0 40px 0 10px; border-radius: 5px; }
+    .imfomation_box .li_box .deliveryInfoWrap > img { position: absolute; width: 30px; right: 15px; top: 50%; margin-top: -15px; z-index: 2; cursor: pointer; }
+
 
     /* 고정 하단 */
-    #popupFooterBtnWrap { position: fixed; width: 100%; height: 70px; background-color: #000; bottom: 0px; z-index: 10; }
+    #popupFooterBtnWrap { position: fixed; width: 100%; height: 55px; background-color: #000; bottom: 0px; z-index: 10; }
     #popupFooterBtnWrap > button { font-size: 18px; font-weight: bold; }
     #popupFooterBtnWrap > .savebtn{ float: left; width: 75%; height: 100%; background-color:#000; color: #FFF; }
     #popupFooterBtnWrap > .cancelbtn{ float: right; width: 25%; height: 100%; color: #666; background-color: #DDD; }
+
+
     /* 바코드 순차입력 버튼 */
-    .imfomation_box a .li_box .folding_box > .inputbox > li > .barcode_add {
+    .imfomation_box .li_box .folding_box > .inputbox > li > .barcode_add {
       width:35px;
       height:35px;
       position: absolute;
@@ -276,7 +228,7 @@ if($od["od_b_tel"]) {
       line-height: 50px;
     }
 
-    .imfomation_box a .li_box .folding_box > .inputbox > li .barcode_icon.type5 {
+    .imfomation_box .li_box .folding_box > .inputbox > li .barcode_icon.type5 {
       position: absolute;
       width: 20px;
       right: 100px;
@@ -285,108 +237,30 @@ if($od["od_b_tel"]) {
       opacity: 0;
     }
 
-    .imfomation_box a .li_box .folding_box > .inputbox > li .barcode_icon.type5.active {
-      opacity: 1;
-    }
+    .imfomation_box .li_box .folding_box > .inputbox > li .barcode_icon.type5.active { opacity: 1; }
+    
 
-    .barcode_warning {
-      display: none;
-      font-size: 14px;
-      text-align: left;
-      padding: 10px 5px;
-    }
+    .barcode_warning { display: none; font-size: 14px; text-align: left; padding: 10px 5px; }
+    .barcode_infotext { font-size: 14px; text-align: left; padding: 10px 5px; }
 
-    #barcodeHistory {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 1000;
-    }
 
-    #barcodeHistory .mask {
-      background: rgba(0, 0, 0, 0.7);
-      width: 100%;
-      height: 100%;
-      position: absolute;
-    }
+    #barcodeHistory { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1000; }
+    #barcodeHistory .mask { background: rgba(0, 0, 0, 0.7); width: 100%; height: 100%; position: absolute; }
+    #barcodeHistory .historyContent { position: absolute; width: 100%; height: 40%; bottom: 0; left: 0; background: #fff; padding: 50px 20px 10px; }
+    #barcodeHistory .historyContent .header { position: absolute; top: 0; left: 0; width: 100%; padding: 10px 20px; border-bottom: 1px solid #d9d9d9; }
+    #barcodeHistory .historyContent .barcode { font-size: 18px; font-weight: bold; }
+    #barcodeHistory .historyContent .close { font-size: 37px; width: 33px; height: 33px; line-height: 33px; background: none; position: relative; top: -3px; }
+    #barcodeHistory .historyContent .content { margin-top: 5px; height: 100%; overflow-y: scroll; }
+    #barcodeHistory .historyContent li { border-bottom: 1px solid #d9d9d9; padding: 10px 0; }
+    #barcodeHistory .historyContent li .subtitle { font-size: 13px; }
+    #barcodeHistory .historyContent li .title { font-size: 17px; }
+ 
 
-    #barcodeHistory .historyContent {
-      position: absolute;
-      width: 100%;
-      height: 40%;
-      bottom: 0;
-      left: 0;
-      background: #fff;
-      padding: 50px 20px 10px;
-    }
-
-    #barcodeHistory .historyContent .header {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      padding: 10px 20px;
-      border-bottom: 1px solid #d9d9d9;
-    }
-
-    #barcodeHistory .historyContent .barcode {
-      font-size: 18px;
-      font-weight: bold;
-    }
-
-    #barcodeHistory .historyContent .close {
-      font-size: 37px;
-      width: 33px;
-      height: 33px;
-      line-height: 33px;
-      background: none;
-      position: relative;
-      top: -3px;
-    }
-
-    #barcodeHistory .historyContent .content {
-      margin-top: 5px;
-      height: 100%;
-      overflow-y: scroll;
-    }
-
-    #barcodeHistory .historyContent li {
-      border-bottom: 1px solid #d9d9d9;
-      padding: 10px 0;
-    }
-
-    #barcodeHistory .historyContent li .subtitle {
-      font-size: 13px;
-    }
-
-    #barcodeHistory .historyContent li .title {
-      font-size: 17px;
-    }
-
-    #order_log {
-      padding: 20px;
-    }
-
-    #order_log .title {
-      font-size: 18px;
-      margin-bottom: 15px;
-    }
-
-    #order_log .logs {
-      font-size: 14px;
-    }
-
-    #order_log .logs .row {
-      margin-bottom: 7px;
-      display: inline-block;
-    }
-
-    #order_log .logs .log_datetime {
-      margin-right: 10px;
-    }
+    #order_log { padding: 20px; }
+    #order_log .title { font-size: 18px; margin-bottom: 15px; }
+    #order_log .logs { font-size: 14px; }
+    #order_log .logs .row { margin-bottom: 7px; display: inline-block; }
+    #order_log .logs .log_datetime { margin-right: 10px; }
   </style>
 </head>
 
@@ -405,7 +279,7 @@ if($od["od_b_tel"]) {
   <!-- 상품기본정보 -->
   <div id="itInfoWrap">
     <p class="name">
-      [<?=($od["recipient_yn"] == "Y") ? "주문" : "재고"?>] <?=$moreInfo["it_name"]?> <?=$moreInfoDisplayCnt?>
+      [<?=($od["recipient_yn"] == "Y") ? "주문" : "재고"?>] <?=$od["more_it_name"]?> <?=$moreInfoDisplayCnt?>
       <!-- <span class="delivery">(배송 : <?=$od_cart_count?>개)</span> -->
     </p>
 
@@ -458,14 +332,15 @@ if($od["od_b_tel"]) {
         $gubun = $cate_gubun_table[substr($carts[$i]['ca_id'], 0, 2)];
       ?>
       <?php if ($carts[$i]['ct_combine_ct_id']) { ?>
-        <div style="margin:20px;margin-bottom:0px;background-color:#ff6105;color:white;text-align:center;border-radius:3px;padding:10px;font-size:13px;">
+        <div style="margin:5px 20px;margin-bottom:0px;background-color:#ff6105;color:white;text-align:center;border-radius:3px;padding:10px;font-size:13px;">
         <?php
-        echo stripslashes($combine_it_name);
-        echo ' 상품과 같이 배송 됩니다.';
+          echo ( stripslashes($combine_it_name) . ' 상품과 같이 배송 됩니다.' );
         ?>
         </div>
       <?php } ?>
-      <a href="javascript:void(0)" class="<?= $carts[$i]['ct_status'] !== "취소" && $carts[$i]['ct_status'] !== "주문무효" ? "" : "hide_area" ?> ">
+
+      <ul href="javascript:void(0)" class="<?= $carts[$i]['ct_status'] !== "취소" && $carts[$i]['ct_status'] !== "주문무효" ? "" : "hide_area" ?> ">
+
         <li class="li_box">
           <div class="li_box_line1"
             <?php if ($gubun != '02' && $carts[$i]['io_type'] == 0) { ?>
@@ -474,7 +349,8 @@ if($od["od_b_tel"]) {
             >
             <input type="hidden" id="it_name" value="<?=stripslashes($carts[$i]["it_name"])?>" data-it-id="<?=$carts[$i]["it_id"]?>">
             <input type="hidden" id="ct_option" value="<?=$carts[$i]["ct_option"]?>" data-it-id="<?=$carts[$i]["it_id"]?>">
-            <input type="hidden" id="ct_qty" value="<?=$carts[$i]["ct_qty"]?>" data-it-id="<?=$carts[$i]["it_id"]?>">
+            <input type="hidden" id="ct_qty" value="<?=$carts[$i]["ct_qty"]?>" data-it-id="<?=$carts[$i]["it_id"]?>">            
+
             <p class="p1" data-qty="<?=$carts[$i]["ct_qty"]?>">
               <span class="span1">
                 <!-- 상품명 -->
@@ -534,30 +410,30 @@ if($od["od_b_tel"]) {
           <?php if ($gubun != '02') { ?>
           <div class="folding_box id_<?php echo $carts[$i]['ct_id']; ?>" data-id="<?php echo $carts[$i]['ct_id']; ?>">
             <?php if ($carts[$i]["ct_qty"] >= 2) { ?>
+            <!--
             <span>
             <input type="text" class="all frm_input" placeholder="일괄 등록수식 입력">
             <button type="button" class="barNumCustomSubmitBtn">등록</button>
             <img src="<?php echo G5_IMG_URL?>/ask_btn.png" alt="" class="barNumGuideOpenBtn" onclick="showPopup(true)">
             </span>
+            -->
             <?php } ?>
             <ul class="inputbox">
               <?php for ($b = 0; $b< count($stoId_v); $b++) { ?>
               <li>
-                <input type="text" maxlength="12" oninput="maxLengthCheck(this)" value="<?=$prodList[$b]["prodBarNum"]?>"class="notall frm_input frm_input_<?=$prodListCnt?> required prodBarNumItem_<?=$prodList[$prodListCnt]["penStaSeq"]?> <?=$stoId_v[$b]?>" placeholder="바코드를 입력하세요." data-frm-no="<?=$prodListCnt?>" data-it-id="<?php echo $carts[$i]['it_id']; ?>">
+                <input type="number" maxlength="12" oninput="maxLengthCheck(this)" value="<?=$prodList[$b]["prodBarNum"]?>" class="notall frm_input frm_input_<?=$prodListCnt?> required prodBarNumItem_<?=$prodList[$prodListCnt]["penStaSeq"]?> <?=$stoId_v[$b]?>" placeholder="바코드를 입력하세요." data-frm-no="<?=$prodListCnt?>" data-it-id="<?php echo $carts[$i]['it_id']; ?>">
                 <img src="<?php echo G5_IMG_URL?>/bacod_add_img.png" class="barcode_add">
                 <i class="fa fa-check"></i>
                 <span class="overlap">중복</span>
                 <img class="barcode_icon type5" src="/img/barcode_icon_3.png" alt="등록불가 (미보유재고)">
-                
-                <img src="<?php echo G5_IMG_URL?>/bacod_img.png" class="nativePopupOpenBtn btn_bacod" data-type="native" data-code="<?=$b?>" data-ct-id="<?php echo $carts[$i]['ct_id']; ?>" data-it-id="<?php echo $carts[$i]['it_id']; ?>">
-                <img src="<?php echo G5_IMG_URL?>/btn_pda.png" class="nativePopupOpenBtn btn_pda" data-type="pda" data-code="<?=$b?>" data-ct-id="<?php echo $carts[$i]['ct_id']; ?>" data-it-id="<?php echo $carts[$i]['it_id']; ?>">
+                <img src="<?php echo G5_IMG_URL?>/btn_pda.png" class="nativePopupOpenBtn btn_pda" data-type="pda" data-code="<?=$b?>" data-ct-id="<?php echo $carts[$i]['ct_id']; ?>" data-it-id="<?php echo $carts[$i]['it_id']; ?>" data-pd-code="<?php echo $carts[$i]['prodpaycode']; ?>">
               </li>
               <?php $prodListCnt++; } ?>
             </ul>
 
-            <p class="barcode_warning">
-              <span style="color: red">(주의)</span> 재고가 없는 바코드가 있습니다. 관리자 승인 시 정상 등록 됩니다.
-            </p>
+            <p class="barcode_warning"><span style="color: red">(주의)</span> 재고가 없는 바코드가 있습니다. 관리자 승인 시 정상 등록 됩니다.</p>
+            <p class="barcode_infotext"><span style="">* 입력된 바코드를 더블 클릭하면 수정 가능 합니다.</span></p>
+
           </div>
           <?php } ?>
 
@@ -574,7 +450,8 @@ if($od["od_b_tel"]) {
           </div>
           <?php } ?>
         </li>
-      </a>
+      </ul>
+      <hr /><br />
       <?php
       }
       ?>
@@ -584,8 +461,8 @@ if($od["od_b_tel"]) {
   <div id="order_log">
     <p class="title">기록</p>
     <?php
-    $sql = "SELECT * FROM g5_shop_order_admin_log WHERE od_id = '{$od_id}' AND ol_content NOT LIKE '이카운트 엑셀%' ORDER BY ol_no DESC";
-    $result = sql_query($sql);
+
+    $result = sql_query("SELECT * FROM `g5_shop_order_admin_log` WHERE `od_id` = '{$od_id}' AND `ol_content` NOT LIKE '이카운트 엑셀%' ORDER BY ol_no DESC");
 
     $logs = array();
     while($row = sql_fetch_array($result)) {
@@ -671,24 +548,47 @@ if($od["od_b_tel"]) {
   sql_query("update {$g5['g5_shop_cart_table']} set `ct_edit_member` = '".$member['mb_id']."' where `od_id` = '{$od_id}'");
   ?>
 
+
   <script type="text/javascript">
     var LOADING = false;
+    var keyupTimer;
 
     $(".hide_area").hide();
 
-    var keyupTimer;
 
-    $(document).on('keyup, keydown', '.notall', function () {
+    $(document).on('keyup', '.notall', function () {
       var last_index = $(this).closest('ul').find('li').last().index();
       var this_index = $(this).closest('li').index();
 
       $(this).closest('ul').find('.barcode_add').hide();
-      if(last_index !== this_index && $(this).val().length == 12)
+      if(last_index !== this_index && $(this).val().length == 12) {        
           $(this).closest('li').find('.barcode_add').show();
+      }
 
       if(keyupTimer) clearTimeout(keyupTimer);
       keyupTimer = setTimeout(notallLengthCheck, 350);
+
     });
+    
+
+    $(".notall").dblclick(function() {
+      if(!confirm("해당 바코드를 다시 스캔 하시겠습니까?\n\n[확인]: 다시 스캔\n[취소]: 수동 입력")) {
+        $(this).attr("readonly",false);       
+        $(this).css({ "background-color": "#fff" });
+        $(this).focus();
+        $(this).closest('li').find(".nativePopupOpenBtn.btn_pda").show();
+      } else {
+        $(this).val("");
+        $(this).css({ "background-color": "#fff" });
+        $(this).closest('li').find('i').removeClass("active");
+        $(this).closest('li').find('.overlap').removeClass("active");
+        $(this).closest('li').find('.type5').removeClass("active");         
+        $(this).closest('li').find('.barcode_add').hide();
+        $(this).closest('li').find(".nativePopupOpenBtn.btn_pda").show();
+        $(this).closest('li').find('.nativePopupOpenBtn.btn_pda').click();        
+      }
+    });
+
 
     $('.notall').focus(function(){
 
@@ -696,10 +596,12 @@ if($od["od_b_tel"]) {
         var this_index = $(this).closest('li').index();
 
         $(this).closest('ul').find('.barcode_add').hide();
-        if(last_index !== this_index && $(this).val().length == 12)
+        if(last_index !== this_index && $(this).val().length == 12) {
             $(this).closest('li').find('.barcode_add').show();
+        }
     });
     
+
     $('.barcode_add').click(function() {
         var ul = $(this).closest('ul');
         var li_num = $(this).closest('li').index();
@@ -708,17 +610,185 @@ if($od["od_b_tel"]) {
         var p_num = 0;
 
         if(li_val.length !== 12){
-            alert('바코드 12자리를 입력해주세요.');
+            alert("바코드 12자리를 입력해주세요.");
             return false;
         }
+
         
-        for(var i = li_num+1; i<=li_last; i++){
-            p_num++;
-            $(ul).find('li').eq(i).find('.notall').val( (parseInt( li_val )+p_num) );
+        var _check = "Y";
+        if( !confirm("바코드 번호를 연속으로 적용 하시겠습니까?\n\n[확인] : 연속 적용\n[취소] : 빈칸 적용") ) {
+          _check = "N";
         }
+        
+
+        for(var i = li_num+1; i<=li_last; i++){
+          //p_num++;
+          //$(ul).find('li').eq(i).find('.notall').val( (parseInt( li_val )+p_num) );
+
+          if( (_check==="Y") ) {
+            p_num++;
+            // 연번 입력
+            $(ul).find('li').eq(i).find('.notall').val( (parseInt( li_val )+p_num) );
+          } else {            
+            // 비어 있는 칸에만 연번 입력
+            if( !$(ul).find('li').eq(i).find('.notall').val() ) {
+              p_num++;
+              $(ul).find('li').eq(i).find('.notall').val( (parseInt( li_val )+p_num) );
+            }
+          }
+
+          // 연속 번호로 12자리 이상을 입력할 수 없음.
+          if( $(ul).find('li').eq(i).find('.notall').val().length !== 12) {
+
+            if( $(ul).find('li').eq(i).find('.notall').val().length > 12 ) {
+              alert("12자리 이상의 연속 번호는 적용할 수 없습니다.\n연속 적용하려는 바코드를 확인해주세요.");
+              return false;
+            } else {
+
+              if( confirm("정확하지 않은 바코드 정보가 존재 합니다.\n바코드값: " + $(ul).find('li').eq(i).find('.notall').val() + "\n해당 필드의 바코드 정보를 덮어쓰기 하시겠습니까?") ) {
+                p_num++;
+                $(ul).find('li').eq(i).find('.notall').val( (parseInt( li_val )+p_num) );
+              }
+              
+            }
+
+          }
+         
+        }
+
         notallLengthCheck();
     });
 
+
+  /* 바코드 입력글자 수 체크 */
+  function notallLengthCheck() {
+    var $foldingBox = $('.folding_box');
+
+    //$(".imfomation_box .li_box .folding_box > .inputbox > li > i").removeClass("active");
+    //$(".imfomation_box .li_box .folding_box > .inputbox > li > .overlap").removeClass("active");
+    $foldingBox.find("i").removeClass("active");
+    $foldingBox.find(".overlap").removeClass("active");
+
+    $foldingBox.each(function() {
+
+      var $item = $(this).find('.notall');
+      $item.removeClass("active");
+
+      var dataTable = [];
+      $item.each(function(i) {
+
+        var $cur = $(this);
+        var barcode = $cur.val();
+
+        if( !barcode ) { return true; }
+
+        var maxlength = parseInt($cur.attr("maxlength"));
+        var it_id = $cur.attr("data-it-id");
+
+
+        $("input[name='it_use_short_barcode']").each(function(item) {
+          if ($(this).attr("data-it-id") == it_id && $(this).is(":checked")) {
+            maxlength = 8;
+          }
+        });
+
+        var length = barcode.length;
+        if(length < maxlength && length) {
+          $cur.addClass("active");
+        }
+
+        if(length == maxlength && /^-?\d+$/.test(barcode)) { //숫자만 입력되었는지 체크 로직 추가 211103
+          $cur.parent().find("i").addClass("active");
+          $cur.parent().find(".nativePopupOpenBtn.btn_pda").hide();
+
+          //$cur.parent().find('.frm_input').prop('readonly', true);
+          //$cur.parent().find('.frm_input').css({ "background-color": "#f1f1f1" });
+
+          if( !dataTable[barcode] ) { dataTable[barcode] = []; }
+          dataTable[barcode].push(i);
+        }
+
+      });
+
+      var keys = Object.keys(dataTable);
+
+      for(var i = 0; i < keys.length; i++) {
+        var val = dataTable[keys[i]];
+      
+        if(val.length > 1) {
+          for(var j = 0; j < val.length; j++) {
+            var idx = val[j];
+            $($item[idx]).parent().find("i").removeClass("active");
+            $($item[idx]).parent().find(".overlap").addClass("active");
+          }
+        }
+      }
+
+      var ct_id = $(this).data('id');
+      validateBarcodeBulk(ct_id);
+    });
+  }
+
+
+  function validateBarcodeBulk(ct_id) {
+    var barcodeArr = [];
+
+    $('.folding_box.id_' + ct_id + ' li').each(function () {
+      if( ($(this).find('.frm_input').val().length === 12)&&($(this).find('.frm_input').prop("readonly") == false) ) {
+          if( ($(this).find('.frm_input').val().length === 12) ) {
+          barcodeArr.push({
+            ct_id: ct_id,
+            index: $(this).index(),
+            barcode: $(this).find('.frm_input').val(),
+          });
+        }
+      }
+    })
+
+    if (barcodeArr.length > 0) {
+      //$('.folding_box.id_' + ct_id + ' .barcode_icon.type5').removeClass('active');
+      //$('.folding_box.id_' + ct_id + ' .barcode_warning').hide();
+
+      $.ajax({
+        url: './ajax.barcode_validate_bulk.php',
+        type: 'POST',
+        data: {
+          ct_id: ct_id,
+          barcodeArr: barcodeArr,
+        },
+        dataType: 'json',
+        async: false,
+      })
+      .done(function(result) {
+        // console.log(result.data);
+        var target = $('.folding_box.id_' + ct_id + ' li');
+        var activeCount = 0;
+
+        result.data.barcodeArr.forEach(function (_this) {
+          if( _this.status === '미보유재고' ) {
+            target.eq(_this.index).find('.fa-check').removeClass('active');
+            target.eq(_this.index).find('.barcode_icon.type5').addClass('active');
+            activeCount++;
+          }
+
+          target.eq(_this.index).find('.frm_input').prop('readonly', true);
+          target.eq(_this.index).find('.frm_input').css({ "background-color": "#f1f1f1" });
+
+        });
+
+        if (activeCount > 0) {
+          $('.folding_box.id_' + ct_id + ' .barcode_warning').show();
+        }
+
+      })
+      .fail(function($xhr) {
+        // msgResult = 'error'
+        var data = $xhr.responseJSON;
+        console.warn(data && data.message);
+        // alert('바코드 재고 확인 도중 오류가 발생했습니다. 관리자에게 문의해주세요.');
+      })
+    }
+  }
 
 
   var need_reload = false;
@@ -735,6 +805,7 @@ if($od["od_b_tel"]) {
       object.value = object.value.slice(0, maxlength);
     }
   }
+
 
   /* 바코드 입력란 설정 */
   function foldingBoxSetting() {
@@ -759,110 +830,6 @@ if($od["od_b_tel"]) {
     }
   }
 
-  /* 바코드 입력글자 수 체크 */
-  function notallLengthCheck() {
-    var $foldingBox = $('.folding_box');
-
-    $(".imfomation_box a .li_box .folding_box > .inputbox > li > i").removeClass("active");
-    $(".imfomation_box a .li_box .folding_box > .inputbox > li > .overlap").removeClass("active");
-
-    $foldingBox.each(function() {
-      var $item = $(this).find('.notall');
-      $item.removeClass("active");
-
-      var dataTable = {};
-      $item.each(function(i) {
-        var $cur = $(this);
-        var barcode = $cur.val();
-        var maxlength = parseInt($cur.attr("maxlength"));
-        var it_id = $cur.attr("data-it-id");
-        $("input[name='it_use_short_barcode']").each(function(item) {
-          if ($(this).attr("data-it-id") == it_id && $(this).is(":checked")) {
-            maxlength = 8;
-          }
-        });
-        var length = barcode.length;
-        if(length < maxlength && length) {
-          $cur.addClass("active");
-        }
-        if(length == maxlength && /^-?\d+$/.test(barcode)) { //숫자만 입력되었는지 체크 로직 추가 211103
-          $cur.parent().find("i").addClass("active");
-          
-          if(!dataTable[barcode])
-            dataTable[barcode] = [];
-          dataTable[barcode].push(i);
-        }
-      });
-
-      var keys = Object.keys(dataTable);
-      for(var i = 0; i < keys.length; i++) {
-        var val = dataTable[keys[i]];
-        if(val.length > 1) {
-          for(var j = 0; j < val.length; j++) {
-            var idx = val[j];
-            $($item[idx]).parent().find("i").removeClass("active");
-            $($item[idx]).parent().find(".overlap").addClass("active");
-          }
-        }
-      }
-
-      var ct_id = $(this).data('id');
-      validateBarcodeBulk(ct_id);
-    });
-  }
-
-  function validateBarcodeBulk(ct_id) {
-    var barcodeArr = [];
-
-    $('.folding_box.id_' + ct_id + ' li').each(function () {
-      if ($(this).find('.frm_input').val().length === 12) {
-        barcodeArr.push({
-          ct_id: ct_id,
-          index: $(this).index(),
-          barcode: $(this).find('.frm_input').val(),
-        });
-      }
-    })
-
-    if (barcodeArr.length > 0) {
-      $('.folding_box.id_' + ct_id + ' .barcode_icon.type5').removeClass('active');
-      $('.folding_box.id_' + ct_id + ' .barcode_warning').hide();
-
-      $.ajax({
-        url: './ajax.barcode_validate_bulk.php',
-        type: 'POST',
-        data: {
-          ct_id: ct_id,
-          barcodeArr: barcodeArr,
-        },
-        dataType: 'json',
-        async: false,
-      })
-      .done(function(result) {
-        // console.log(result.data);
-        var target = $('.folding_box.id_' + ct_id + ' li');
-        var activeCount = 0;
-
-        result.data.barcodeArr.forEach(function (_this) {
-          if (_this.status === '미보유재고') {
-            target.eq(_this.index).find('.fa-check').removeClass('active');
-            target.eq(_this.index).find('.barcode_icon.type5').addClass('active');
-            activeCount++;
-          }
-        });
-
-        if (activeCount > 0) {
-          $('.folding_box.id_' + ct_id + ' .barcode_warning').show();
-        }
-      })
-      .fail(function($xhr) {
-        // msgResult = 'error'
-        var data = $xhr.responseJSON;
-        console.warn(data && data.message);
-        // alert('바코드 재고 확인 도중 오류가 발생했습니다. 관리자에게 문의해주세요.');
-      })
-    }
-  }
 
   function check_option(cur_it_id) {
     var option_items = [];
@@ -891,6 +858,7 @@ if($od["od_b_tel"]) {
 
   var cur_ct_id = null;
   var cur_it_id = null;
+  var cur_pdcode = null;
 
   /* 기종체크 */
   var deviceUserAgent = navigator.userAgent.toLowerCase();
@@ -976,12 +944,14 @@ if($od["od_b_tel"]) {
   $(function() {
     <?php
     $stock_list = [];
-    foreach($result_again as $stock) {
-      $stock_list[] = array(
-        'prodId' => $stock['prodId'],
-        'stoId' => $stock['stoId'],
-        'prodBarNum' => $stock['prodBarNum']
-      );
+    if( is_array($result_again) ) {
+      foreach($result_again as $stock) {
+        $stock_list[] = array(
+          'prodId' => $stock['prodId'],
+          'stoId' => $stock['stoId'],
+          'prodBarNum' => $stock['prodBarNum']
+        );
+      }
     }
     ?>
     var stoldList = <?=json_encode($stock_list)?>;
@@ -1128,8 +1098,11 @@ if($od["od_b_tel"]) {
       var item = $(this).closest("ul").find(".frm_input");
       sendBarcodeTargetList = [];
 
+      
       cur_ct_id = $(this).data('ct-id');
       cur_it_id = $(this).data('it-id');
+      cur_pdcode = $(this).data('pd-code');
+
 
       for(var i = 0; i < item.length; i++) {
         if(!$(item[i]).val() || $(item[i]).attr("data-frm-no") == frm_no) {
@@ -1198,13 +1171,17 @@ if($od["od_b_tel"]) {
       if(error_arr.length > 0) {
         alert( error_arr.join(', ') + ' 품목의 모든 바코드가 입력되지 않아 저장할 수 없습니다.' );
         return false;
-        // let empty_item = error_arr.join(', ');
-        // if (confirm(empty_item + ' 상품 바코드가 비어있습니다. 계속 진행하시겠습니까?')) {
-        // }
-        // else {
-        //   $ipt_error.focus();
-        //   return false;
-        // }
+        
+        /*
+        // 23.01.16 : 서원 - 물류팀 재확인!! 인적 실수를 줄이고자 해당기능 오픈 금지!!
+        let empty_item = error_arr.join(', ');
+        if(confirm(empty_item + ' 상품 바코드가 비어있습니다.\n계속 진행하시겠습니까?')) {
+        }
+        else {
+          $ipt_error.focus();
+          return false;
+        }
+        */
       }
       
       barcode_arr.forEach(function(arr) {
@@ -1277,14 +1254,6 @@ if($od["od_b_tel"]) {
 
       $.ajax({
         url : "<?=G5_SHOP_URL?>/ajax.ct_barcode_insert.php",
-        type : "POST",
-        async : false,
-        data : {
-          od_id : "<?=$od_id?>",
-        }
-      });
-      $.ajax({
-        url : "/shop/ajax.order.prodBarNum.cnt.php",
         type : "POST",
         async : false,
         data : {
@@ -1371,16 +1340,6 @@ if($od["od_b_tel"]) {
       async : false,
       data : {
         od_id : "<?=$od_id?>"
-      }
-    });
-        
-    $.ajax({
-      url : "/shop/ajax.order.prodBarNum.cnt.php",
-      type : "POST",
-      async : false,
-      data : {
-        od_id : "<?=$od_id?>",
-        cancel : "y"
       },
       success : function(result) {
 
@@ -1393,6 +1352,7 @@ if($od["od_b_tel"]) {
       }
     });
   }
+
   function openCloseToc(click) {
     
     if($(click).closest('li').children('.folding_box').css("display")=="none"){
@@ -1480,6 +1440,7 @@ if($od["od_b_tel"]) {
     $('body').css('overflow', 'auto');
     $('#barcodeHistory').hide();
   }
+
 </script>
 <?php include_once( G5_PATH . '/shop/open_barcode.php'); ?>
 </body>

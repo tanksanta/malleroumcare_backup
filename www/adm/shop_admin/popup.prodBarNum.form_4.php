@@ -420,6 +420,7 @@ if($od["od_b_tel"]){
 
   var cur_ct_id = null;
   var cur_it_id = null;
+  var cur_pdcode = null;
 
   /* 기종체크 */
   var deviceUserAgent = navigator.userAgent.toLowerCase();
@@ -723,6 +724,7 @@ if($od["od_b_tel"]){
       
       cur_ct_id = $(this).data('ct-id');
       cur_it_id = $(this).data('it-id');
+      cur_pdcode = $(this).data('pd-code');
 
       for(var i = 0; i < item.length; i++){
         if(!$(item[i]).val() || $(item[i]).attr("data-frm-no") == frm_no){

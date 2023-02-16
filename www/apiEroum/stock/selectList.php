@@ -13,6 +13,8 @@
 	curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($_POST, JSON_UNESCAPED_UNICODE));
 	curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
 	curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
+	curl_setopt($oCurl, CURLOPT_CONNECTTIMEOUT, 2); // curl이 첫 응답 시간에 대한 timeout
+	curl_setopt($oCurl, CURLOPT_TIMEOUT, 5); // curl 전체 실행 시간에 대한 timeout
 	$res = curl_exec($oCurl);
 	$stockCntList = json_decode($res, true);
 	curl_close($oCurl);
