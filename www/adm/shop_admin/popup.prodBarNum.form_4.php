@@ -284,13 +284,15 @@ if($od["od_b_tel"]){
             <?php } ?>
           </div>
           <div class="folding_box">
-            <?php if($ct["ct_qty"] >= 2){ ?>
+          <?php /* 23.01.17 : 서원 - 화면상 동작하지 않는 기능 UI제거
+            if($ct["ct_qty"] >= 2){ ?>
             <span>
             <input type="text" class="all frm_input" placeholder="일괄 등록수식 입력">
             <button type="button" class="barNumCustomSubmitBtn">등록</button>
             <img src="<?php echo G5_IMG_URL?>/ask_btn.png" alt="" class="barNumGuideOpenBtn" onclick="showPopup(true)">
             </span>
-            <?php } ?>
+            <?php } */
+            ?>
             <ul class="inputbox">
               <?php 
               if($ct["prodSupYn"] == "N"||$od['od_stock_insert_yn']=="Y"){
@@ -418,6 +420,7 @@ if($od["od_b_tel"]){
 
   var cur_ct_id = null;
   var cur_it_id = null;
+  var cur_pdcode = null;
 
   /* 기종체크 */
   var deviceUserAgent = navigator.userAgent.toLowerCase();
@@ -721,6 +724,7 @@ if($od["od_b_tel"]){
       
       cur_ct_id = $(this).data('ct-id');
       cur_it_id = $(this).data('it-id');
+      cur_pdcode = $(this).data('pd-code');
 
       for(var i = 0; i < item.length; i++){
         if(!$(item[i]).val() || $(item[i]).attr("data-frm-no") == frm_no){
