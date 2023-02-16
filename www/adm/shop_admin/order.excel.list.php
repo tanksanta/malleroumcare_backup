@@ -354,7 +354,7 @@
   for($ii = 0; $ii < count($ct_id); $ii++) {
 
     $it = sql_fetch("
-      SELECT cart.*, item.it_thezone2, o.io_thezone, o.io_thezone as io_thezone2, item.ca_id, it_standard, io_standard
+      SELECT cart.*, item.it_thezone2
       FROM g5_shop_cart as cart
       INNER JOIN g5_shop_item as item ON cart.it_id = item.it_id
       WHERE cart.ct_id = '{$ct_id[$ii]}'
@@ -415,50 +415,27 @@
     $_ct_direct_delivery_date = ($it["ct_direct_delivery_date"])?mb_substr($it["ct_direct_delivery_date"],0,10):" ";
     $_ct_ex_date = ($it["ct_ex_date"])?mb_substr($it["ct_ex_date"],0,10):" ";
 
-    // 22.12.20 : 서원 - 주문내역 엑셀 양식 컬럼 추가 및 데이터 요청
-    $thezone_code = $it['io_thezone2'] ?: $it['io_thezone'] ?: $it['it_thezone2'];
-    $standard = $it['io_standard'] ?: $it['it_standard']; // 규격
-    $_price = $it['ct_price'] + $it['io_price'];
-    
-    // 22.12.20 : 서원 - 주문내역 엑셀 양식 컬럼 추가 및 데이터 요청
-    $total_price = $it["ct_qty"]*(int)$_price;
-    $_notax_price = $_tax = 0;
-    if( $it['ct_notax'] ) {
-      $_notax_price = $total_price;
-    } else {
-      $_notax_price = (round($total_price / 1.1)); //공급가액
-      $_tax = ($total_price - round($total_price / 1.1)); //부가세
-    }
-
     $rows[] = [ 
-      ' '.$it['od_id'],    /* "주문번호"   */
-      date("Y-m-d", strtotime($od["od_time"]))."-".($i),    /* "일자-No"    */
-      $_ct_direct_delivery_date,    /* "출고예정일"   */
-      $_ct_ex_date,    /* "출고완료일"   */
-      $it_name,    /* "품목명"   */
-      $standard,    /* "규격"   */
-      $thezone_code,    /* "품목코드"   */
-      $it["ct_qty"],    /* "수량"   */
-      ($it['ct_notax']?"비과세":"과세"),    /* "과세여부"   */
-      $_price,    /* "단가"   */
-      $_notax_price,    /* "공급가"   */
-      $_tax,    /* "부가세"   */
-      $total_price,    /* "합계"   */
-      $od["od_b_name"],    /* "배송지명"   */
-      ' '.$_thezone,    /* "사업자코드"   */
-      $od["od_b_name"],    /* "주문회원"   */
-      $it['sale_manager'],    /* "영업담당자"   */
-      $it['addr'],    /* "배송처"   */
-      $od["od_b_tel"],    /* "연락처"   */
-      $od["od_b_hp"],    /* "휴대폰"   */
-      $it["prodMemo"],    /* "적요"   */
-      $od["od_memo"],    /* "배송지요청사항"   */
-      $report['ir_issue'],    /* "메모"   */
-      $it['ct_id'],    /* "카트ID"   */
-      $ct_delivery_company,    /* "택배사"   */
-      $it['ct_delivery_num'],    /* "송장번호"   */
-      $it['ct_status']    /* "배송상태"   */
-      
+      ' '.$it['od_id'],
+      date("Y-m-d", strtotime($od["od_time"]))."-".($i),
+      $_ct_direct_delivery_date, /* 22.11.15 : 서원 - 주문내역 다운로드용 엑셀 양식 수정 */
+      $_ct_ex_date, /* 22.11.15 : 서원 - 주문내역 다운로드용 엑셀 양식 수정 */
+      $it_name,
+      $it["ct_qty"],
+      $it_name." / ".$it["ct_qty"].' EA',
+      $od["od_b_name"],
+      ' '.$_thezone,
+      $od["od_name"],
+      $it['sale_manager'],
+      $it['addr'],
+      $od["od_b_tel"],
+      $od["od_b_hp"],
+      ' '.$it["prodMemo"],
+      ' '.$od["od_memo"],
+      $report['ir_issue'], /* 22.11.15 : 서원 - 주문내역 다운로드용 엑셀 양식 수정 */
+      $it['ct_id'],
+      $ct_delivery_company,
+      $it['ct_delivery_num']
     ];
   }
 

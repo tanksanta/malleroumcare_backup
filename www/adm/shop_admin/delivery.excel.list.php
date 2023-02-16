@@ -463,8 +463,8 @@
         $it['addr'],
         $od["od_b_tel"],
         $od["od_b_hp"],
-        $it["prodMemo"],
-        $od["od_memo"],
+        ' '.$it["prodMemo"],
+        ' '.$od["od_memo"],
         $it['ct_id'],
         $ct_delivery_company,
         $it['ct_delivery_num']
