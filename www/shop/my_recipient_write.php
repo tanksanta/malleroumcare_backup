@@ -93,7 +93,7 @@ if($member["cert_data_ref"] != ""){
 	$cert_info = "사용자명:".base64_decode($cert_data_ref[1])." | 만료일자:".base64_decode($cert_data_ref[2]);
 	$upload_dir = $_SERVER['DOCUMENT_ROOT']."/data/file/member/tilko/";
 	$file_name = base64_encode($cert_data_ref[0]);
-	if(file_exists($upload_dir.$file_name.".enc")){
+	if(file_exists($upload_dir.$file_name.".enc") || file_exists($upload_dir.$file_name.".txt")){
 		$is_file = true;
 	}
 }
