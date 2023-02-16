@@ -12,10 +12,27 @@ foreach($price as $it_id => $entprice) {
         $mb_id = get_search_string($mb_id);
         $it_price = preg_replace('/[^0-9]/', '', $it_price);
 
-        if(!$it_price) continue;
+        $result = sql_fetch(" select * from g5_shop_item_entprice where it_id = '{$it_id}' and mb_id = '{$mb_id}' ");
 
-        $sql = " select * from g5_shop_item_entprice where it_id = '{$it_id}' and mb_id = '{$mb_id}' ";
-        $result = sql_fetch($sql);
+        // 가격이 없으면 continue
+        if($result['mb_id'] && !$it_price) {
+            $sql = "
+                update
+                    g5_shop_item_entprice
+                set
+                    it_price = NULL,
+                    updated_by = '{$member['mb_id']}',
+                    updated_at = NOW()
+                WHERE
+                    it_id = '$it_id' and
+                    mb_id = '$mb_id'
+            ";
+
+            sql_query($sql);
+            continue;
+        }
+
+
 
         if($result['mb_id']) {
             $sql = "
