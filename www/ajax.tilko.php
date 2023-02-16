@@ -53,6 +53,7 @@ $_SESSION['Pwd'] = $_POST["Pwd"];
 $cert_data_ref =  explode("|",$member["cert_data_ref"]);
 if($cert_data_ref[0] != ""){
 	@unlink($upload_dir.base64_encode($cert_data_ref[0]).".enc");//기존 파일 삭제
+	@unlink($upload_dir.base64_encode($cert_data_ref[0]).".txt");//기존 파일 삭제
 }
 $file_name = date("YmdHis")."_".str_replace("-","",$member["mb_giup_bnum"]); //파일명
 $file_name2 = base64_encode($file_name); //파일명
@@ -61,7 +62,10 @@ fwrite($file,iconv("UTF-8", "CP949",$_POST["PriKey"])."\r\n".iconv("UTF-8", "CP9
 fclose($file);
 @system('echo -n '.base64_decode($_POST["Pwd"]).' | openssl aes-256-cbc -in '.$upload_dir.$file_name2.'.txt -out '.$upload_dir.$file_name2.'.enc -pass stdin');//입력 받은 비밀번호로 파일 암호화 실행
 //@system('echo -n '."thkc!@#".' | openssl aes-256-cbc -in '.$upload_dir.$file_name2.'.txt -out '.$upload_dir.$file_name2.'.enc -pass stdin');//고정값으로 파일 암호화 실행
-@unlink($upload_dir.$file_name2.".txt");//암호화 안된 파일 삭제
+if(file_exists($upload_dir.$file_name2.".enc")){//암호화 파일이 생성 되면 txt 파일 삭제
+	@unlink($upload_dir.$file_name2.".txt");//암호화 안된 파일 삭제
+}
+
 
 $sql = "update g5_member set cert_reg_sts='Y',cert_reg_date=now(),cert_data_ref='".$file_name."|".base64_encode($_POST["Name"])."|".base64_encode($_POST["Expire"])."|".md5($_POST["Pwd"])."' where mb_id='".$member["mb_id"]."'";
 sql_query($sql);

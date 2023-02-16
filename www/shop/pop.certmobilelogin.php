@@ -37,9 +37,9 @@
             <!-- ContertsWrap -->
             <div class="contentsWrap">               
                 <!-- pwTitle -->
-                <div class="pwTitle">사업소 공인인증서 비밀번호</div>
+                <div class="pwTitle">공인인증서 비밀번호</div>
                 <div class="pwDesc">요양정보조회를 이용하시려면<br>
-                    사업소 공인인증서 비밀번호를 입력하셔야합니다.</div>
+                    공인인증서 비밀번호를 입력하셔야합니다.</div>
                 <!-- password -->
                 <div class="pw">
                     <input type="password" class="inType" id="cert_pwd" placeholder="사업소 공인인증서 비밀번호 입력">                                       
