@@ -196,7 +196,7 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.magnific-popup.js"></script>',
 	  <?php 
 		 $show_install_btn = false;
 		 foreach($carts as $cart){
-			 if ($cart['ct_status'] == '배송' || $cart['ct_status'] == '완료') $show_install_btn = true;
+			 if (($cart['ct_status'] == '배송' || $cart['ct_status'] == '완료') && $cart['ct_direct_delivery'] == "설치") $show_install_btn = true;
 		 }
 		 if ($show_install_btn == true) {
       ?>
@@ -361,7 +361,7 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.magnific-popup.js"></script>',
             <select name="ct_status" class="order-status-select">
               <option value="출고준비">출고준비</option>
               <option value="배송" selected>출고완료</option>
-              <!--option value="완료">배송완료</option-->
+              <option value="완료">배송완료</option>
               <option value="취소">주문취소</option>
             </select>
             <button type="button" id="btn_ct_status" class="order-status-btn">저장</button>
@@ -392,6 +392,11 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.magnific-popup.js"></script>',
                 <div class="qty full-width text-grey">
                   수량 : <?=$cart['ct_qty']?>개 / 위탁 : <?=$cart['ct_direct_delivery']?>
                 </div>
+                <?php if($cart['prodMemo']) {?>
+                <div class="memo full-width text-grey">
+                  요청사항 : <?=$cart['prodMemo']?>
+                </div>
+                <?php } ?>
               </div>
               <div class="col delivery-wrap text-center">
                 <?=trans_ct_status_text($cart['ct_status'])?>
@@ -880,7 +885,10 @@ $(function() {
   });
   $('#form_delivery_date').on('submit', function(e) {
     e.preventDefault();
-
+	if($('.sel_manager').val() === '') {
+      alert("먼저 담당자를 지정해주세요.");
+	  return false;
+    } 
     const send_data = {};
     const obj = $(this).serializeArray();
     send_data['od_id'] = obj[0].value;
@@ -903,7 +911,9 @@ $(function() {
     }).fail(function($xhr) {
       var data = $xhr.responseJSON;
       // 직배송에 대해서는 일정이 update 되어야 함. jake 2023.01.11
-      $.post('ajax.partner_deliverydate.php', send_data2, 'json')
+      alert(data && data.message);
+	  /*
+	  $.post('ajax.partner_deliverydate.php', send_data2, 'json')
         .done(function() {
           alert('변경이 완료되었습니다.');
           window.location.reload();
@@ -912,6 +922,7 @@ $(function() {
           var data = $xhr.responseJSON;
           alert(data && data.message);
         });
+		*/
       // jake END
     });
   });
