@@ -73,18 +73,23 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 if(! preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/", $fr_date) ) $fr_date = '';
 if(! preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/", $to_date) ) $to_date = '';
 
+if(!$fr_date){ $fr_date = date("Y-m-d",strtotime("-90 day", time())); }
+if(!$to_date){ $to_date = date("Y-m-d", time() ); }
+
 $colspan = 14;
+
+// 페이징 되는 주소 파라미터
+$qstr = ("select_date={$select_date}&amp;select_card_company={$select_card_company}&amp;select_status={$select_status}&amp;fr_date={$fr_date}&amp;to_date={$to_date}&amp;select_card_quota={$select_card_quota}&amp;stx={$stx}&amp;list_num={$list_num}&amp;");
 
 ?>
 
 <script src="<?=G5_JS_URL;?>/jquery.fileDownload.js"></script>
 
 <style>
-.local_sch01 button { width:80px; height: 26px; padding: 0 5px; border: 0; background: #9eacc6; color: #fff; }
+.new_form button { width:80px; height: 26px; padding: 0 5px; border: 0; background: #9eacc6; color: #fff; }
 
-.local_sch02 div { padding: 0px; margin: 0px;}
-.local_sch02 div tr td { padding: 25px 0px 25px 0px;}
-.local_sch select { width: 120px;}
+.new_form div { padding: 0px; margin: 0px;}
+.new_form select { width: 120px;}
 </style>
 
 <?php
@@ -92,9 +97,9 @@ $colspan = 14;
     $_billing = json_decode( $default['de_paymenet_billing_OnOff'], TRUE );
 ?>
 
-<div class="local_sch02 local_sch">
+<div class="new_form">
 
-        <table style="">
+        <table style="" class="new_form_table">
             <tr>
                 <td style="width:160px; height: 45px; text-align:center;"><strong>활성화 설정</strong></td>
                 <td style="padding: 10px 25px;">
@@ -132,9 +137,9 @@ $colspan = 14;
 
 <form name="onlinebilling" id="onlinebilling" method="get" onsubmit="return onlinebilling_submit_function(this);">
 
-    <div class="local_sch01 local_sch">
-        <div class="sch_last">
-            <table style="">
+    <div class="new_form">
+        <div class="sel_field">
+            <table style="" class="new_form_table">
                 <tr>
                     <td style="width:160px; height: 45px; text-align:center;"><strong>검색기간<br />(결제일)</strong></td>
                     <td style="padding-left:25px;">
@@ -144,12 +149,12 @@ $colspan = 14;
                         </select>
                         <input type="text" id="fr_date"  name="fr_date" value="<?=$fr_date; ?>" class="frm_input" size="10" maxlength="10" autocomplete="off"> ~
                         <input type="text" id="to_date"  name="to_date" value="<?=$to_date; ?>" class="frm_input" size="10" maxlength="10" autocomplete="off">
-                        <button type="button" onclick="javascript:set_date('전체');">전체</button>
-                        <button type="button" onclick="javascript:set_date('오늘');">오늘</button>
-                        <button type="button" onclick="javascript:set_date('어제');">어제</button>
-                        <button type="button" onclick="javascript:set_date('이번주');">일주일</button>
-                        <button type="button" onclick="javascript:set_date('이번달');">이번달</button>
-                        <button type="button" onclick="javascript:set_date('지난달');">지난달</button>
+                        <button type="button" class="select_date newbutton" onclick="javascript:set_date('전체');">전체</button>
+                        <button type="button" class="select_date newbutton" onclick="javascript:set_date('오늘');">오늘</button>
+                        <button type="button" class="select_date newbutton" onclick="javascript:set_date('어제');">어제</button>
+                        <button type="button" class="select_date newbutton" onclick="javascript:set_date('이번주');">일주일</button>
+                        <button type="button" class="select_date newbutton" onclick="javascript:set_date('이번달');">이번달</button>
+                        <button type="button" class="select_date newbutton" onclick="javascript:set_date('지난달');">지난달</button>
                     </td>
                 </tr>
                 <tr>
@@ -219,21 +224,36 @@ $colspan = 14;
                     <td style="height: 45px; text-align:center;"><strong>검색어</strong></td>
                     <td style="padding-left:25px;">
                         거래처명: 
-                        <input type="text" name="stx" size="20" value="<?php echo stripslashes($stx); ?>" id="sch_word" class="frm_input" placeholder="">
+                        <input type="text" name="stx" size="50" value="<?php echo stripslashes($stx); ?>" id="sch_word" class="frm_input" placeholder="" style="width:250px;">
                         <input type="submit" value="검색" class="btn_submit" id="onlinebilling_submit" style="width:100px; height:26px;">
                     </td>
                 </tr>
             </table>
         </div>
     </div>
+
+    <div style="padding: 0px 20px; height:40px; margin-bottom: 10px;">
+        <input type="button" value="엑셀다운로드" class="btn btn_02" id="ExcelDownload" style="width:100px;height:40px;font-size:12px;cursor:pointer; float:right;">
+        <input type="button" onclick="return excelform('/adm/shop_admin/popup.payment_OnlineBilling_Excel.php');" value="온라인 결제용 대금 청구서 업로드" class="btn btn_03" id="" style="width:250px;height:40px;font-size:14px;cursor:pointer; float:left;">
+    </div>
+
+
+    <div style="padding: 0px 20px; height:28px; margin-bottom: 0px;">
+        <select name="list_num" id="bn_position" style="width:120px; float:right;" onchange="submit();">
+            <option value="" <?=($list_num=="")?"selected":""?>> 시스템 기본 보기 </option>
+            <option value="50" <?=($list_num=="50")?"selected":""?>> 50씩 보기 </option>
+            <option value="100" <?=($list_num=="100")?"selected":""?>> 100씩 보기 </option>
+            <option value="200" <?=($list_num=="200")?"selected":""?>> 200씩 보기 </option>
+            <option value="500" <?=($list_num=="500")?"selected":""?>> 500씩 보기 </option>
+            <option value="1000" <?=($list_num=="1000")?"selected":""?>> 1000씩 보기 </option>
+        </select>
+
+        <div style="width:250px; font-size:12px; float:left;" >
+            검색 개수 : <span id="list_cnt"></span>
+        </div>
+    </div>
+
 </form>
-
-
-<div style="padding: 0px 20px; height:40px; margin-bottom: 10px;">
-    <input type="button" value="엑셀다운로드" class="btn btn_02" id="ExcelDownload" style="width:100px;height:40px;font-size:12px;cursor:pointer; float:right;">
-    <input type="button"  onclick="return excelform('/adm/shop_admin/popup.payment_OnlineBilling_Excel.php');" value="온라인 결제용 대금 청구서 업로드" class="btn btn_03" id="" style="width:250px;height:40px;font-size:14px;cursor:pointer; float:left;">
-</div>
-
 
 <div class="tbl_wrap tbl_head01">
     <table>
@@ -330,7 +350,7 @@ $colspan = 14;
     $row = sql_fetch($sql);
     $total_count = $row['cnt'];
 
-    $rows = $config['cf_page_rows'];
+    $rows = ($list_num)?$list_num:$config['cf_page_rows'];
     $total_page  = ceil($total_count / $rows);  // 전체 페이지 계산
     if ($page < 1) $page = 1; // 페이지가 없으면 첫 페이지 (1 페이지)
     $from_record = ($page - 1) * $rows; // 시작 열을 구함
@@ -392,6 +412,8 @@ echo $pagelist;
 
 <script type="application/javascript">
 $(function() {
+
+    $("#list_cnt").html('<?=number_format($total_count);?>건');
 
     $('.btn_BillingDetail').click(function(e) { 
         var id = $(this).attr("data-id");
