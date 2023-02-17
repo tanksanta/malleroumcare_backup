@@ -160,14 +160,16 @@ include_once('./pop.head.php');
             async: false,
             success : function(val){
               if( val['message'].yn == 'S' ) {
-                alert('발주서 발송 완료로 인하여 삭제할 수 없습니다.\n상품 삭제가 필요한 경우, 해당 발주는 ‘발주취소’ 처리하고 신규로 생성해주세요.');
+                // alert('발주서 발송 완료로 인하여 삭제할 수 없습니다.\n상품 삭제가 필요한 경우, 해당 발주는 ‘발주취소’ 처리하고 신규로 생성해주세요.');
+                alert("'발주서 발송' 이력이 확인되어 삭제할 수 없습니다. 해당 상품 '발주취소' 처리 후, 신규 생성 하시기 바랍니다.");
                 result = false;
                 return false;
               } else if ( val['message'].yn == 'N' ){
-                alert('[ 상품명: '+it_name+' ]\n입고완료(or부분출고) 정보가 확인되어 삭제할 수 없습니다.\n\n출고수량: '+val['message'].qty);
+                // alert('[ 상품명: '+it_name+' ]\n입고완료(or부분출고) 정보가 확인되어 삭제할 수 없습니다.\n\n출고수량: '+val['message'].qty);
+                alert("'입고완료'  이력이 확인되어 삭제할 수 없습니다.");
                 result = false;
                 return false;
-              } 
+              }
             }
           });
           if(!result) { return false; }
@@ -238,7 +240,7 @@ include_once('./pop.head.php');
 
           var qty = $(parent).find('.discount_qty').val().replace(/[\D\s\._\-]+/g, "");
           qty = qty ? parseInt(qty, 10) : 0;
-          
+
           // 단가
           if ($(this).attr('name').substring(2,19) === 'discount_it_price[]') {
             it_price = $(parent).find('.discount_it_price').val().replace(/[\D\s\._\-]+/g, "");
@@ -251,7 +253,7 @@ include_once('./pop.head.php');
           // 공급가액, 부가세
           $(parent).find('.basic_price').text(addComma(Math.round(it_price * qty / 1.1) || 0) + "원");
           $(parent).find('.tax_price').text(addComma(Math.round(it_price * qty / 11) || 0) + "원");
-          
+
           // 총 발주 금액
           var totalPrice = 0;
           $('input[name="qty[]"]').each(function () {
@@ -278,7 +280,7 @@ include_once('./pop.head.php');
 
           $('.total_price_span').text(addComma(totalPrice-totaldiscount));
         });
-        
+
 
         $(document).on("click", ".delete_discount", function () {
           var parent = $(this).closest('tr').remove();
@@ -467,7 +469,7 @@ include_once('./pop.head.php');
               url: 'ajax.purchase.order.mod_result.php',
               type: 'POST',
               data: {
-                mode: 'check_qty', 
+                mode: 'check_qty',
                 od_id: '<?php echo $od_id ?>',
                 it_id: it_id,
                 qty: qty
@@ -476,7 +478,8 @@ include_once('./pop.head.php');
               async: false,
               success : function(val){
                 if( val['message'].yn == 'N' ) {
-                  alert('[ 상품명: '+it_name+' ]\n부분출고된 수량 이하로 변경이 불가능 합니다.\n\n출고수량: '+val['message'].qty);
+                  // alert('[ 상품명: '+it_name+' ]\n부분출고된 수량 이하로 변경이 불가능 합니다.\n\n출고수량: '+val['message'].qty);
+                  alert('[ 상품명: '+it_name+' ]\n입고된 수량이 확인되어 해당 수량 이하로 변경할 수 없습니다.');
                   result = false;
                   return false;
                 } 
