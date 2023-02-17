@@ -35,9 +35,11 @@ if($_SESSION['PriKey'] == "" && $_SESSION['PubKey'] == ""){//공인인증서 등
 	$upload_dir = $_SERVER['DOCUMENT_ROOT']."/data/file/member/tilko/";
 	
 	$file_name = base64_encode($cert_data_ref[0]);
-	if(file_exists($upload_dir.$file_name.".enc")){
+	if(file_exists($upload_dir.$file_name.".enc") || file_exists($upload_dir.$file_name.".txt")){
 		if($_SESSION['Pwd'] != ""){//비밀번호를 받았을 때
-			@system('echo -n '.base64_decode($_SESSION['Pwd']).' | openssl aes-256-cbc -d -in '.$upload_dir.$file_name.'.enc -out '.$upload_dir.$file_name.'.txt -pass stdin'); //입력 받은 비밀번호로 파일 복호화 저장
+			if(file_exists($upload_dir.$file_name.".enc")){
+				@system('echo -n '.base64_decode($_SESSION['Pwd']).' | openssl aes-256-cbc -d -in '.$upload_dir.$file_name.'.enc -out '.$upload_dir.$file_name.'.txt -pass stdin'); //입력 받은 비밀번호로 파일 복호화 저장
+			}
 			//@system('echo -n '."thkc!@#".' | openssl aes-256-cbc -d -in '.$upload_dir.$file_name.'.enc -out '.$upload_dir.$file_name.'.txt -pass stdin'); //고정값으로 파일 복호화 저장
 			$fp = fopen($upload_dir.$file_name.".txt", 'r');    // list.txt 파일을 읽기 전용으로 열고 반환된 파일 포인터를 $fp에 저장함. 
 			$i = 0;
@@ -48,7 +50,9 @@ if($_SESSION['PriKey'] == "" && $_SESSION['PubKey'] == ""){//공인인증서 등
 			}
 			$_SESSION['PriKey'] = $cert[0];
 			$_SESSION['PubKey'] = $cert[1];
-			unlink($upload_dir.$file_name.".txt");//암호화 안된 파일 삭제
+			if(file_exists($upload_dir.$file_name.".enc")){
+				unlink($upload_dir.$file_name.".txt");//암호화 안된 파일 삭제
+			}
 		}else{//비밀번호를 받지 않았을 때
 			json_response(400, "[ ".base64_decode($cert_data_ref[1]).' ]로 등록된 공인인증서가 있습니다. 공인인증서 비밀번호를 입력해 주세요.', array(
 			  'err_code' => "2",

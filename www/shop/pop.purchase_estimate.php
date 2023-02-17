@@ -670,7 +670,7 @@ $banks = $banks2;
                 </tr>
                 <?php $a++; } ?>
 
-                <?php $od_discount_info = json_decode($od['od_discount_info'], true);
+                <?php $od_discount_info = json_decode($od['od_discount_info'], true); $total_discount = 0; $total_basic = 0; $total_tax = 0;
                 if ($od_discount_info) {
                   foreach ($od_discount_info as $key => $val) {
                     if($val['discount_type'] == 'r'){?>
@@ -679,9 +679,9 @@ $banks = $banks2;
                       <td align="center" style="padding-left:5px;"> ― </td>
                       <td align="center"><?=$val['discount_qty']?></td>
                       <td align="center"><?php echo number_format($val['discount_it_price']); ?></td>
-                      <td align="center" style="color: red"><?php echo number_format($val['discount_it_price'] / 1.1); ?></td>
-                      <td align="center" style="color: red"><?php echo number_format($val['discount_it_price'] / 1.1 / 10); ?></td>
-                      <td align="center" style="color: red"><?php echo number_format($val['discount_it_price']); ?></td>
+                      <td align="center" style="color: red"><?php echo number_format($val['discount_it_price'] / 1.1 * $val['discount_qty']); $total_basic += $val['discount_it_price'] / 1.1 * $val['discount_qty'];?></td>
+                      <td align="center" style="color: red"><?php echo number_format($val['discount_it_price'] / 1.1 / 10 * $val['discount_qty']); $total_tax += $val['discount_it_price'] / 1.1 / 10 * $val['discount_qty'];?></td>
+                      <td align="center" style="color: red"><?php echo number_format($val['discount_it_price']*$val['discount_qty']); $total_discount += $val['discount_it_price']*$val['discount_qty']; ?></td>
                       </tr>
                       <?php $a++;
                     }
@@ -713,9 +713,9 @@ $banks = $banks2;
 
                 <tr style="border: 1px solid #000;">
                 <th style="border: 1px solid #000;" align="center" colspan="4">총 합계</th>
-                <th style="border: 1px solid #000;" align="center"><?php echo number_format( $price1 );?></th>
-                <th style="border: 1px solid #000;" align="center"><?php echo number_format( $price2 ); ?></th>
-                <th style="border: 1px solid #000;" align="center"><?php echo number_format( ($money1 / 1.1 + $money2) + ($money1 / 1.1 / 10) ); ?></th>
+                <th style="border: 1px solid #000;" align="center"><?php echo number_format( $price1 - $total_basic );?></th>
+                <th style="border: 1px solid #000;" align="center"><?php echo number_format( $price2 - $total_tax ); ?></th>
+                <th style="border: 1px solid #000;" align="center"><?php echo number_format( ($money1 / 1.1 + $money2) + ($money1 / 1.1 / 10) - $total_discount ); ?></th>
                 </tr>
                 </table>
             </div>

@@ -16,7 +16,10 @@ $sql = "
     it_name,
     ct_option,
     ct_delivery_company,
-    ct_delivery_num
+    ct_delivery_num,
+    ct_status,
+    ct_is_direct_delivery,
+    od_partner_manager
   FROM
     {$g5['g5_shop_cart_table']} c
   LEFT JOIN
@@ -43,6 +46,12 @@ while($row = sql_fetch_array($result)) {
 
     $ct_delivery_num_name = $name;
     $row['ct_delivery_num'] = $num;
+  }
+
+  if($row['od_partner_manager']){
+    $manager = get_member($row['od_partner_manager']);
+    $row['od_partner_manager_name'] = $manager['mb_name'];
+    $row['od_partner_manager_hp'] = $manager['mb_hp'];
   }
 
   $row['ct_delivery_num_name'] = $ct_delivery_num_name;
@@ -111,6 +120,7 @@ while($row = sql_fetch_array($result)) {
       <ul class="imfomation_box" id="imfomation_box">
         <?php foreach($carts as $row) { ?>
         <li class="li_box">
+          <div>
           <div class="li_box_line1">
             <p class="p1">
               <span class="span1"><?=$row['it_name']?></span>
@@ -121,12 +131,16 @@ while($row = sql_fetch_array($result)) {
             <input type="hidden" name="ct_id[]" value="<?=$row['ct_id']?>">
             <select name="ct_delivery_company_<?=$row['ct_id']?>" class="ct_delivery_company">
               <?php foreach($delivery_companys as $data) { ?>
-              <option value="<?=$data["val"]?>" <?=get_selected($data['val'], $row['ct_delivery_company'])?>><?=$data["name"]?></option>
+              <option value="<?=$data["val"]?>" <?php echo $row['ct_is_direct_delivery']=='2'? get_selected($data['val'], 'install'):get_selected($data['val'], $row['ct_delivery_company']);?>><?=$data["name"]?></option>
               <?php } ?>
             </select>
-            <input type="text" value="<?=$row['ct_delivery_num_name']?>" name="ct_delivery_num_name_<?=$row['ct_id']?>" class="ct_delivery_num_name" placeholder="담당자명">
-            <input type="text" value="<?=$row['ct_delivery_num']?>" name="ct_delivery_num_<?=$row['ct_id']?>" class="ct_delivery_num" placeholder="송장번호/연락처 입력">
+            <input type="text" value="<?php if($row['ct_is_direct_delivery']=='2'&&$row['od_partner_manager']){$od_partner_manager = get_member($row['od_partner_manager']); echo $od_partner_manager['mb_name'];} else{echo $row['ct_delivery_num_name'];}?>" name="ct_delivery_num_name_<?=$row['ct_id']?>" class="ct_delivery_num_name" placeholder="담당자명">
+            <input type="text" value="<?=$od_partner_manager?$od_partner_manager['mb_tel']:$row['ct_delivery_num']?>" name="ct_delivery_num_<?=$row['ct_id']?>" class="ct_delivery_num" placeholder="송장번호/연락처 입력">
           </div>
+          </div>
+          <?php if($row['ct_status'] == '취소' || $row['ct_status'] == '주문무효') {?>
+          <div style="width: 100%; height: 100%; border:5px solid #fff; background-color: rgba( 95, 95, 95, 0.7 ); z-index:3; position: absolute; top: 0; left: 0;"><p style="margin: auto; font-size: x-large; font-weight: bold; color: #fff; top: 36%;">주문취소</p></div>
+          <?php }?>
         </li>
         <?php } ?>
       </ul>
