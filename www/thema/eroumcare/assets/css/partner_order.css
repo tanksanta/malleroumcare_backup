@@ -133,7 +133,7 @@
 }
 
 #partner-order .item-list li .delivery-wrap {
-  width: 15%;
+  width: 30%;
 }
 
 #partner-order .item-list li .barcode-wrap {
@@ -407,6 +407,16 @@
   margin-top: 20px;
 }
 
+#partner-order .delivery-info-list .part-modify-btn {
+  background: #FFC000;
+  color: #fff;
+  font-size: 15px;
+  width: 100%;
+  border-radius: 3px;
+  padding: 10px 0;
+  margin-top: 5px;
+}
+
 #partner-order .order-settle-title {
   padding: 15px 0;
   border-bottom: 1px solid #ddd;
@@ -497,11 +507,11 @@
 
   #partner-order .item-list li .item-info-wrap {
     width: calc(100% - 10% - 114px);
-    font-size: 14px;
+    font-size: 15px;
   }
 
   #partner-order .item-list li .item-info-wrap .title {
-    font-size: 15px;
+    font-size: 16px;
   }
 
   #partner-order .item-list li .delivery-wrap {

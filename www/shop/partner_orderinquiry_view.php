@@ -354,7 +354,10 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.magnific-popup.js"></script>',
 
       <form id="form_ct_status">
         <div class="top row no-gutter justify-space-between align-center">
-          <div class="col title">
+          <div class="col title" style="width: 60%; float: left">
+            <div style="width: 5%; margin: 0 2%; float:left;" class="text-center">
+              <input type="checkbox" id="chk_all"/>
+            </div>
             <?=$od['mb_entNm']?> (주문일시: <?=date('Y-m-d H:i:s', strtotime($od['od_time']))?>)
           </div>
           <div class="col">
@@ -372,10 +375,10 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.magnific-popup.js"></script>',
           <ul>
             <?php foreach($carts as $cart) { ?>
             <li class="item row align-center">
-              <div class="col checkbox-wrap text-center">
+              <div class="col checkbox-wrap text-center" id="item_chk">
                 <input type="checkbox" name="ct_id[]" value="<?=$cart['ct_id']?>" />
               </div>
-              <div class="col item-img-wrap">
+              <div class="col item-img-wrap" id="item_img">
                 <div class="item-img">
                   <img src="/data/item/<?=$cart["it_img1"]?>"
                     onerror="this.src='<? if (strpos($photo['ip_photo_name'], '.pdf')) echo '/shop/img/icon_pdf.png'; else echo '/shop/img/no_image.gif'; ?>';">
@@ -398,15 +401,16 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.magnific-popup.js"></script>',
                 </div>
                 <?php } ?>
               </div>
-              <div class="col delivery-wrap text-center">
+              <div class="col delivery-wrap text-center" style="display: block">
+                <!-- 영역 조절 : thema/eroumcare/assets/css/partner_order.css 파일내의 {영역명}-wrap 쪽의 width에 할당된 % 조절 -->
                 <?=trans_ct_status_text($cart['ct_status'])?>
               </div>
-              <div class="col barcode-wrap text-center">
-                <a href="javascript:void(0);" class="barcode-btn btn_barcode_info" data-id="<?=$cart['ct_id']?>">
-                  <img src="/skin/apms/order/new_basic/image/icon_02.png" alt="">
-                  바코드
-                </a>
-              </div>
+<!--              <div class="col barcode-wrap text-center">-->
+<!--                <a href="javascript:void(0);" class="barcode-btn btn_barcode_info" data-id="--><?//=$cart['ct_id']?><!--">-->
+<!--                  <img src="/skin/apms/order/new_basic/image/icon_02.png" alt="">-->
+<!--                  바코드-->
+<!--                </a>-->
+<!--              </div>-->
             </li>
             <?php
             }
@@ -419,6 +423,11 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.magnific-popup.js"></script>',
 
       <div class="row no-gutter">
         <div class="col title">배송정보</div>
+      </div>
+      <div class="row no-gutter" id="div_delivery_info_mobile" style="display: none">
+        <a href="javascript:void(0);" id="btn_delivery_info_mobile" class="delivery-status-info col full-width text-center">
+          배송정보 (<?=$count_delivery_inserted?>/<?=count($carts)?>)
+        </a>
       </div>
       <div class="row no-gutter delivery-info-wrap">
         <ul>
@@ -696,9 +705,10 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.magnific-popup.js"></script>',
           		<?php } ?>
                 <div class="col right">
                   <input type="hidden" name="ct_id[]" value="<?=$cart['ct_id']?>">
-                  <input type="text" class="datepicker" name="ct_direct_delivery_date_<?=$cart['ct_id']?>"
+                  <?php if($cart['ct_status'] != '취소' && $cart['ct_status'] != '주문무효') { ?>
+                  <input type="text" class="datepicker" name="ct_direct_delivery_date_<?=$cart['ct_id']?>" <?php if($cart['ct_status'] == '완료') { echo 'disabled';}?>
                     value="<?=$cart['ct_direct_delivery_date'] ? date('Y-m-d', strtotime($cart['ct_direct_delivery_date'])) : ''?>">
-                  <select name="ct_direct_delivery_time_<?=$cart['ct_id']?>">
+                  <select name="ct_direct_delivery_time_<?=$cart['ct_id']?>" <?php if($cart['ct_status'] == '완료') { echo 'disabled';}?>>
                     <?php
                     $ct_direct_delivery_time = $cart['ct_direct_delivery_date'] ? date('H', strtotime($cart['ct_direct_delivery_date'])) : '';
                     for($i = 0; $i < 24; $i++) {
@@ -706,14 +716,14 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.magnific-popup.js"></script>',
                     ?>
                     <option value="<?=$time?>" <?=get_selected($ct_direct_delivery_time, $time)?>>
                       <?=$time?>시</option>
-                    <?php } ?>
+                    <?php } } ?>
                   </select>
           		<input type="hidden" name="delivery_property" value="<?=$direct_delivery_type?>">
                 </div>
               </div>
               <div class="row">
                 <div class="col left">출고 완료일</div>
-                <div class="col right"><?=$cart['ct_ex_date'] ?: '대기'?></div>
+                <div class="col right"><?php if($cart['ct_status']!='취소'&&$cart['ct_status']!='주문무효') {echo $cart['ct_ex_date'] ?: '대기';}?></div>
               </div>
               <?php
               if($cart['ct_delivery_num']) {
@@ -733,7 +743,7 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.magnific-popup.js"></script>',
             </li>
             <?php } ?>
           </ul>
-          <button type="button" id="btn_delivery_date" class="delivery-save-btn">예정일 저장</button>
+          <button type="button" id="btn_delivery_date" class="delivery-save-btn">출고예정일 저장</button>
         </form>
       </div>
 
@@ -815,6 +825,16 @@ $(function() {
   $("#popup_box").hide();
   $("#popup_box").css("opacity", 1);
 
+  // 모바일 화면 보이는 것 수정
+  $(window).resize(function () {
+      var width_size = window.outerWidth;
+      if(width_size <= 1250) {
+          $("#div_delivery_info_mobile").show();
+      } else {
+          $("#div_delivery_info_mobile").hide();
+      }
+  });
+
   // 출고예정일 datepicker
   $('.datepicker').datepicker({
     changeMonth: true,
@@ -832,6 +852,31 @@ $(function() {
     $("#popup_box iframe").load(function() {
       $("#popup_box").show();
     });
+  });
+  // 모바일 배송정보 버튼
+  $('#btn_delivery_info_mobile').click(function(e) {
+    e.preventDefault();
+    $("body").addClass('modal-open');
+    $("#popup_box > div").html('<iframe src="popup.partner_deliveryinfo.php?od_id=<?=$od_id?>">');
+    $("#popup_box iframe").load(function() {
+      $("#popup_box").show();
+    });
+  });
+
+  // 체크박스 클릭
+  $('#chk_all').click(function() {
+    if ($(this).prop('checked')) {
+      $('input[name="ct_id[]"]').prop('checked', true);
+    } else {
+      $('input[name="ct_id[]"]').prop('checked', false);
+    }
+  });
+  $('input[name="ct_id[]"]').click(function() {
+    var chk_all = $('#chk_all');
+    if ($('input[name="ct_id[]"][type="checkbox"]').length === $('input[name="ct_id[]"]:checked').length)
+      chk_all.prop('checked', true);
+    else
+      chk_all.prop('checked', false);
   });
 
   // 설치결과보고서 작성 버튼
@@ -976,7 +1021,7 @@ $(function() {
             manager: manager
           }, 'json')
           .done(function() {
-            alert(manager_name + ' 담당자로 변경되었습니다.');
+            alert(manager_name.replaceAll(' ','').replace('\n',' ') + ' 담당자로 변경되었습니다.');
           })
           .fail(function($xhr) {
             var data = $xhr.responseJSON;
@@ -995,7 +1040,7 @@ $(function() {
           manager: manager
         }, 'json')
         .done(function() {
-          alert(manager_name + ' 담당자로 변경되었습니다.');
+          alert(manager_name.replaceAll(' ','').replace('\n',' ') + ' 담당자로 변경되었습니다.');
         })
         .fail(function($xhr) {
           var data = $xhr.responseJSON;
