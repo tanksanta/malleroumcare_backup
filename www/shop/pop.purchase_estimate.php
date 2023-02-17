@@ -7,8 +7,13 @@ $sql = " select * from purchase_order where od_id = '$od_id' ";
 $od = sql_fetch($sql);
 
 $od['od_send_cost'] = $send_cost ? $send_cost : $od['od_send_cost'];
-
-
+$od_discount_info = json_decode($od['od_discount_info'], true);
+$total_refund = 0;
+foreach ($od_discount_info as $key => $val) {
+  if($val['discount_type'] == 'r'){
+      $total_refund =+ $val['discount_it_price']*$val['discount_qty'];
+  }
+}
 // 파트너 정보
 $sql = " select mb_tel, mb_hp, mb_fax from g5_member where mb_id = '{$od['mb_id']}' ";
 $mb = sql_fetch($sql);
@@ -114,7 +119,8 @@ for($i=0; $row=sql_fetch_array($result); $i++) {
                     SUM(ct_send_cost) as sendcost
                 from purchase_cart
                 where it_id = '{$row['it_id']}'
-                    and od_id = '{$od_id}' ";
+                    and od_id = '{$od_id}'
+                    -- and ct_status not in ('관리자발주취소', '발주취소', '취소') ";
     $sum = sql_fetch($sql);
 
     $row['sum'] = $sum;
@@ -567,7 +573,7 @@ $banks = $banks2;
                             /
                             <span style="font-weight:bold;font-size:14px;letter-spacing:1px;">(&nbsp;&nbsp;&#8361;<?php echo number_format($amount['order']); ?>&nbsp;&nbsp;) VAT포함</span>
                             -->
-                            <span style="font-weight:bold;font-size:14px;letter-spacing:1px;"><?php echo number_format($amount['order']); ?>원&nbsp;&nbsp;/&nbsp;&nbsp;VAT포함</span>
+                            <span style="font-weight:bold;font-size:14px;letter-spacing:1px;"><?php echo number_format($amount['order']-$total_refund); ?>원&nbsp;&nbsp;/&nbsp;&nbsp;VAT포함</span>
                         </td>
                     </tr>
                 </table>
@@ -636,7 +642,7 @@ $banks = $banks2;
                         ?>
 
                         <td align="center"><?php echo $options[$k]['ct_qty']; ?></td>
-                        <td align="center"><?php echo number_format($options[$k]['opt_price'] / 1.1); ?></td>
+                        <td align="center"><?php echo number_format($options[$k]['opt_price'] ); ?></td>
                         <td align="center"><?php echo number_format($options[$k]['opt_price'] / 1.1 * $options[$k]['ct_qty']); ?></td>
                         <td align="center"><?php echo number_format($options[$k]['opt_price'] / 1.1 / 10 * $options[$k]['ct_qty']); ?></td>
                         <td align="center"><?php echo number_format(($options[$k]['opt_price'] / 1.1 * $options[$k]['ct_qty']) + ($options[$k]['opt_price'] / 1.1 / 10 * $options[$k]['ct_qty'])); ?></td>
@@ -670,7 +676,7 @@ $banks = $banks2;
                 </tr>
                 <?php $a++; } ?>
 
-                <?php $od_discount_info = json_decode($od['od_discount_info'], true); $total_discount = 0; $total_basic = 0; $total_tax = 0;
+                <?php $total_discount = 0; $total_basic = 0; $total_tax = 0;
                 if ($od_discount_info) {
                   foreach ($od_discount_info as $key => $val) {
                     if($val['discount_type'] == 'r'){?>
