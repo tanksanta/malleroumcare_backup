@@ -188,17 +188,30 @@ function getPublicKey($apiKey) {
 
     return json_decode($response, true)["PublicKey"];
 }
+function random_key(){	
+	$random_key = random_bytes(16);
+	if($random_key == ""){
+		random_key();
+	}else{
+		return $random_key;
+	}
+}
 
+$log_txt = "\r\n";
+$log_txt .= '(' . date("Y-m-d H:i:s") . ')'."\r\n";
+$log_txt .= "--  사업소: ".$member["mb_name"]."({$member['mb_id']})\r\n";
+$log_txt .= "--  수급자: ".$id."/".$rn."\r\n";
 
 // RSA Public Key 조회
-$rsaPublicKey   = getPublicKey($apiKey);
+//$rsaPublicKey   = getPublicKey($apiKey);
+$rsaPublicKey   = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAoX90PipEec8UkGBkaaoP1zMZG3FlvlpYjVuZpga5smxQXeN4efJjw8cejv19C4Dg082H+Oe4y+dmkstV+q9o8CrWYFBHs8DMSMAVFTgR+JwIugDU8XTQv7FwUf3B8iBEJ9K+hM42e93SoOed6TBakd0SDdMOTlk+gTwz7JDFSyIItQ8teQoygNL9M1jfT1aL6A5p2jTuLHsl7ul2G+H4ZoKswG3vb9LmYMscoaSlGCL24Gk6hnb6md6e+D/dSN/Lsv+ylkyGJJtYDaQbjO2w2bkeMPmQ3+Xxto5Q9DLm2mR3wfZMipGBMAZWo7ZsNs0b2oskbiyfqKl6/82hE8B9ZwIDAQAB";
 //print("rsaPublicKey:" . $rsaPublicKey);
 
 
 // AES Secret Key 및 IV 생성
-$aesKey     = random_bytes(16);
+$aesKey     = random_key();
 $aesIv      = str_repeat(chr(0), 16);
-
+$log_txt .= "--  aesKey: ".$aesKey."\r\n";
 
 // AES Key를 RSA Public Key로 암호화
 $rsa            = new Crypt_RSA();
@@ -206,7 +219,7 @@ $rsa->loadKey($rsaPublicKey);
 $rsa->setEncryptionMode(CRYPT_RSA_ENCRYPTION_PKCS1);
 
 $aesCipheredKey = $rsa->encrypt($aesKey);
-
+$log_txt .= "--  aesCipheredKey: ".$aesCipheredKey."\r\n";
 
 // API URL 설정
 // HELP: https://tilko.dev/Help/Api/POST-api-apiVersion-Longtermcare-NPIA201M01
@@ -229,6 +242,21 @@ $headers    = array(
     "API-Key:"                  . $apiKey,
     "ENC-Key:"                  . base64_encode($aesCipheredKey),
 );
+
+//ENC-Key 누락 점검 로그기록======================
+$log_dir = $_SERVER["DOCUMENT_ROOT"].'/data/log/';
+if(!is_dir($log_dir)){//인증서 파일 생성할 폴더 확인 
+	@umask(0);
+	@mkdir($log_dir,0777);
+	//@chmod($upload_dir, 0777);
+}
+
+$log_txt .= "--  ENC-Key: ".base64_encode($aesCipheredKey)."\r\n";
+
+$log_file = fopen($log_dir . 'log.txt', 'a');
+fwrite($log_file, $log_txt . "\r\n\r\n");
+fclose($log_file);
+//=============================================
 
 $bodies_recipientContractDetail     = array(
     "CertFile" => aesEncrypt($aesKey, $aesIv, $PubKey),
@@ -312,7 +340,7 @@ curl_setopt_array($curl, array(
     CURLOPT_VERBOSE         => false,
     CURLOPT_SSL_VERIFYHOST  => 0,
     CURLOPT_SSL_VERIFYPEER  => 0,
-		CURLOPT_TIMEOUT => 5
+	CURLOPT_TIMEOUT => 5
 ));
 
 $response   = curl_exec($curl);
