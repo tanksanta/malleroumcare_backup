@@ -9,8 +9,8 @@ if($manager_mb_id) {
   $manager = get_member($manager_mb_id);
 }
 
-// '발주완료', '출고완료', '입고완료', '취소' 중 파트너는 출고완료 취소만 가능
-$ct_status = in_array($_POST['ct_status'], ['출고완료', '취소']) ? $_POST['ct_status'] : '';
+// '출고완료', '발주취소' 중 파트너는 출고완료 취소만 가능
+$ct_status = in_array($_POST['ct_status'], ['출고완료', '발주취소']) ? $_POST['ct_status'] : '';
 $ct_id_arr = get_search_string($_POST['ct_id']);
 
 if(!$ct_status || !$ct_id_arr || !is_array($ct_id_arr))
@@ -20,6 +20,11 @@ $sto_id = [];
 $sql = [];
 $mb_id;
 $sto_id_od_id_table = [];
+
+$where_ct_id = "('".implode($ct_id_arr, "', '")."')";
+$cancel_chk = sql_fetch("select count(distinct ct_status) as cnt from purchase_cart where ct_id in {$where_ct_id} and ct_status like '%취소%' group by ct_status;");
+if($cancel_chk > 0) json_response(400, '발주취소 상품은 변경할 수 없습니다.');
+
 foreach($ct_id_arr as $ct_id) {
   $cart = sql_fetch("
     SELECT * FROM purchase_cart
@@ -31,8 +36,13 @@ foreach($ct_id_arr as $ct_id) {
 
   if(!$cart || !$cart['ct_id'])
     json_response(400, '해당 상품의 주문상태를 변경할 수 있는 권한이 없습니다.');
-  
-  if(!in_array($cart['ct_status'], ['발주완료', '출고완료', '입고완료']))
+
+  //출고완료 상태에서 발주취소 적용 불가
+  if($cart['ct_status'] == '출고완료' && $ct_status == '발주취소')
+    json_response(400, '출고완료 내역이 확인되어, 변경 할 수 없습니다.');
+
+  // 마감완료/출고완료/입고완료 상태의 발주건은 상태 변경 불가
+  if(in_array($cart['ct_status'], ['마감완료', '출고완료', '입고완료']))
     json_response(400, '해당 상품의 주문상태를 변경할 수 없습니다.');
 
   $od_id = $cart['od_id'];
@@ -70,7 +80,7 @@ foreach($ct_id_arr as $ct_id) {
     }
   }
 
-  if($ct_status == '취소') {
+  if($ct_status == '발주취소') {
     $sql[] = "
       delete from
         warehouse_stock
@@ -78,6 +88,13 @@ foreach($ct_id_arr as $ct_id) {
         od_id = '$od_id' and
         ct_id = '$ct_id'
     ";
+  }
+
+  if($ct_status == '출고완료') {
+    $_part_info = json_decode($cart['ct_part_info'],true);
+    $_part_info[1]['_out_dt'] = date("Y-m-d");
+    $ct_part_info = json_encode($_part_info);
+    $set_sql .= " , ct_part_info = '{$ct_part_info}' ";
   }
 
   $sql[] = "

@@ -7,6 +7,66 @@ auth_check($auth[$sub_menu], "w");
 $g5['title'] = "발주 내역 수정";
 include_once(G5_ADMIN_PATH . '/admin.head.php');
 
+/**
+* 기존에 있던  purchase_order,purchase_cart_memo,purchase_order_admin_log,purchase_cart 테이블을 재사용하기 위한 작업
+* 새로이 필요한 컬럼이 존재하는지 확인 후, 없으면 새로 추가하는 작업 진행
+* 기존 purchase_order_admin_memo 테이블의 om_datetime 컬럼 디폴트 값이 current_timestamp() 아니면 설정
+*/
+$sql_check = "
+  show columns from purchase_order where field in ('od_fax','od_send_mail_yn','od_send_hp_yn','od_send_fax_yn','od_send_yn','od_discount_info');
+";
+$res_check = sql_query($sql_check);
+if(sql_num_rows($res_check) == 0){
+  $append_col = "alter table purchase_order ".
+                "add column od_fax varchar(20) default null comment '팩스번호 저장' after od_hp,".
+                "add column od_send_mail_yn tinyint default '0' comment '발주서 메일발송 여부' after od_addr_jibeon,".
+                "add column od_send_hp_yn tinyint default '0' comment '발주서 문자발송 여부' after od_addr_jibeon,".
+                "add column od_send_fax_yn tinyint default '0' comment '발주서 팩스 발송 여부' after od_addr_jibeon,".
+                "add column od_send_yn tinyint default '0' comment '발주서 발송여부' after od_addr_jibeon,".
+                "add column od_discount_info text default null comment '할인 정보 json 방식 데이터 저장' after od_purchase_manager";
+  sql_query($append_col);
+}
+
+$sql_check = "
+  show columns from purchase_cart_memo where field in ('mb_id');
+";
+$res_check = sql_query($sql_check);
+if(sql_num_rows($res_check) == 0){
+  $append_col = "alter table purchase_cart_memo ".
+                "add column mb_id varchar(20) default null comment '작성자 id' after od_id";
+  sql_query($append_col);
+}
+
+$sql_check = "
+  show columns from purchase_order_admin_log where field in ('ol_type');
+";
+$res_check = sql_query($sql_check);
+if(sql_num_rows($res_check) == 0){
+  $append_col = "alter table purchase_order_admin_log ".
+                "add column ol_type tinyint default '0' comment '1:메일발송, 2:SMS방송, 3:FAX발송' after ol_content";
+  sql_query($append_col);
+}
+
+$sql_check = "
+  show columns from purchase_cart where field in ('ct_part_info', 'ct_modify_date');
+";
+$res_check = sql_query($sql_check);
+if(sql_num_rows($res_check) == 0){
+  $append_col = "alter table purchase_cart ".
+                "add column ct_modify_date datetime default null comment '부분 입,출고 차수에 따른 수량 및 배송정보' after ct_notax,".
+                "add column ct_part_info text default null comment '부분 입,출고 차수에 따른 수량 및 배송정보' after ct_notax";
+  sql_query($append_col);
+}
+
+$sql_check = "
+  show columns from purchase_order_admin_memo where field = 'om_datetime';
+";
+$res_check = sql_fetch($sql_check);
+if($res_check['Default'] != 'current_timestamp()') {
+  $append_col = "alter table purchase_order_admin_memo modify column om_datetime datetime not null default current_timestamp()";
+  sql_query($append_col);
+};
+
 //------------------------------------------------------------------------------
 // 주문서 정보
 //------------------------------------------------------------------------------
@@ -107,7 +167,8 @@ $sql = "
     b.it_img1,
     a.ct_warehouse,
     a.ct_warehouse_address,
-    a.ct_warehouse_phone
+    a.ct_warehouse_phone,
+    a.ct_part_info
   from
     purchase_cart a
   left join
@@ -367,7 +428,7 @@ $deliveryCntBtnStatus = ($delivery_insert >= $od["od_delivery_total"]) ? " disab
     </div>
     <div class="item_list">
       <form name="frmsamhwaorderform" method="post" id="frmsamhwaorderform">
-        <table>
+        <table style="border-collapse: collapse">
           <thead>
           <tr>
             <th class="chkbox">
@@ -429,6 +490,11 @@ $deliveryCntBtnStatus = ($delivery_insert >= $od["od_delivery_total"]) ? " disab
             $prodBarNum = $prodOptNum = '';
             $option_array = array();
             $barcode_array = array();
+
+            // 발주서 양식 개편으로 인해 발주서 내 모든 상품 도착지가 같음
+            $od_warehouse = $options[0]['ct_warehouse'];
+            $od_warehouse_phone = $options[0]['ct_warehouse_phone'];
+            $od_warehouse_address = $options[0]['ct_warehouse_address'];
 
             for ($k = 0; $k < count($options); $k++) {
               # 요청사항
@@ -507,38 +573,16 @@ $deliveryCntBtnStatus = ($delivery_insert >= $od["od_delivery_total"]) ? " disab
                 </td>
                 <td class="btncol">
                   <!-- 입고예정일 -->
-                  <?php echo $options[$k]['ct_delivery_expect_date'] ? date('Y-m-d H시', strtotime($options[$k]['ct_delivery_expect_date'])) : ''; ?>
+                  <?php $ct_part_info = json_decode($options[$k]['ct_part_info'],true)[1]; echo $ct_part_info['_in_dt'] ? date('Y-m-d', strtotime($ct_part_info['_in_dt'])) : ''; ?>
                   <!-- 입고예정일 -->
                 </td>
                 <td class="btncol">
                   <!-- 입고완료일 -->
-                  <?php echo $options[$k]['ct_delivery_complete_date'] ? date('Y-m-d H시', strtotime($options[$k]['ct_delivery_complete_date'])) : ''; ?>
+                  <?php echo $ct_part_info['_in_dt_confirm'] ? date('Y-m-d', strtotime($ct_part_info['_in_dt_confirm'])) : ''; ?>
                   <!-- 입고완료일 -->
                 </td>
                 <td class="btncol">
-                  <a href="javascript:void();" data-ct-id="<?=$options[$k]['ct_id']?>" class="prodBarNumCntBtn purchaseOrderViewBtn">입고관리 (<?=$options[$k]['ct_delivered_qty']?>/<?=$options[$k]['ct_qty']?>)</a>
-                </td>
-              </tr>
-              <tr>
-                <td colspan="13" style="text-align: left">
-                  <select class="" name="warehouse" style="width: 89%; margin-left: 11%;">
-                    <?php if ($options[$k]['ct_warehouse']) { ?>
-                    <option value="" selected><?php echo "배송주소 : [{$options[$k]['ct_warehouse']}] / {$options[$k]['ct_warehouse_phone']} / {$options[$k]['ct_warehouse_address']}" ?></option>
-                    <?php } else { ?>
-                    <option value="" selected>배송주소를 지정해주세요</option>
-                    <?php } ?>
-                    <?php
-                    foreach ($warehouse_list as $warehouse) {
-                      if ($options[$k]['ct_warehouse'] == $warehouse['wh_name']
-                        && $options[$k]['ct_warehouse_address'] == $warehouse['wh_address']
-                        && $options[$k]['ct_warehouse_phone'] == $warehouse['wh_phone']) {
-                        continue;
-                      } else {
-                        echo "<option value='{$warehouse['wh_id']}'>배송주소 : [{$warehouse['wh_name']}] / {$warehouse['wh_phone']} / {$warehouse['wh_address']}</option>";
-                      }
-                    }
-                    ?>
-                  </select>
+                  <a href="javascript:void();" data-ct-id="<?=$options[$k]['ct_id']?>" class="prodBarNumCntBtn purchaseOrderViewBtn">입고관리 (<?php echo $ct_part_info['_in_qty']?:'0';//$options[$k]['ct_delivered_qty']?>/<?=$options[$k]['ct_qty']?>)</a>
                 </td>
               </tr>
               <?php
@@ -550,13 +594,12 @@ $deliveryCntBtnStatus = ($delivery_insert >= $od["od_delivery_total"]) ? " disab
             $prodBarNum = implode('^', $barcode_array);
 
             if ($prodMemo) { ?>
-              <tr>
-                <td></td>
-                <td colspan="10" style="text-align: left;">
-                  <!-- <b>요청사항 : </b>
-                  <?= $prodMemo ?> -->
-                </td>
-              </tr>
+<!--              <tr>-->
+<!--                <td></td>-->
+<!--                <td colspan="11" style="text-align: left;">-->
+<!--                  <b>요청사항 : </b> --><?//= $prodMemo ?>
+<!--                </td>-->
+<!--              </tr>-->
             <?php } ?>
           <?php } ?>
           <tr class="result">
@@ -585,6 +628,98 @@ $deliveryCntBtnStatus = ($delivery_insert >= $od["od_delivery_total"]) ? " disab
             <td class="btncol"></td>
             <td class="btncol"></td>
           </tr>
+          <?php $total_discount_r = 0; $total_qty_r = 0; $total_discount_d = 0; $total_qty_d = 0;
+          if($od['od_discount_info']) {
+            $od_discount_info = json_decode($od['od_discount_info'], true);
+          ?>
+          <tr style="margin-top: 10px;">
+            <td colspan="13" style="text-align: left; padding: 10px 0 5px 0;">
+              <p style="font-size: small; font-weight: bolder; padding: 0 5px;">반품 정보</p>
+            </td>
+          </tr>
+          <tr style="border-top: 1px solid #dddddd; padding: 0; background-color: #f3f3f3;">
+            <th>No.</th>
+            <th colspan="2">상품명</th>
+            <th colspan="1">수량</th>
+            <th colspan="2">가격</th>
+            <th colspan="1">공급가액</th>
+            <th colspan="1">부가세</th>
+            <th colspan="2">합계</th>
+            <th colspan="3">요청사항</th>
+          </tr>
+          <?php $index = 1;
+          for($ind = 0; $ind <count($od_discount_info); $ind++) {
+            if($od_discount_info[$ind]['discount_type'] == 'd') continue;
+            $total_qty_r += $od_discount_info[$ind]['discount_qty'];
+            $total_discount_r += $od_discount_info[$ind]['discount_it_price']*$od_discount_info[$ind]['discount_qty'];?>
+          <tr style="border-top: 1px solid #dddddd;">
+            <td class="no"><span class="index"><?=$index;?></span></td>
+            <td colspan="2" name="discount_it_name[]" ><?=$od_discount_info[$ind]['discount_it_name'];?></td>
+            <td colspan="1" name="discount_qty[]"><?=$od_discount_info[$ind]['discount_qty'];?></td>
+            <td colspan="2" name="discount_it_price[]"><?=number_format($od_discount_info[$ind]['discount_it_price']);?>원</td>
+            <td colspan="1" class="basic_price"><?=number_format(round(($od_discount_info[$ind]['discount_it_price']*$od_discount_info[$ind]['discount_qty']) / 1.1));?>원</td>
+            <td colspan="1" class="tax_price"><?=number_format(($od_discount_info[$ind]['discount_it_price']*$od_discount_info[$ind]['discount_qty']) - round(($od_discount_info[$ind]['discount_it_price']*$od_discount_info[$ind]['discount_qty']) / 1.1));?>원</td>
+            <td colspan="2" class="total_price"><?=number_format($od_discount_info[$ind]['discount_it_price']*$od_discount_info[$ind]['discount_qty']);?>원</td>
+            <td colspan="3" name="discount_memo[]"><?=$od_discount_info[$ind]['discount_memo'];?></td>
+          </tr>
+          <?php $index++;} ?>
+          <tr style="border-top: 1px solid #dddddd; background-color: #f3f3f3;">
+            <th></th>
+            <th colspan="2"></th>
+            <th colspan="1"><?=$total_qty_r;?></th>
+            <th colspan="2"></th>
+            <th colspan="1"></th>
+            <th colspan="1"></th>
+            <th colspan="2"><?=number_format($total_discount_r);?>원</th>
+            <th colspan="3"></th>
+          </tr>
+          <tr style="margin-top: 10px;">
+            <td colspan="13" style="text-align: left; padding: 10px 0 5px 0;">
+              <p style="font-size: small; font-weight: bolder; padding: 0 5px;">할인 정보</p>
+            </td>
+          </tr>
+          <tr style="border-top: 1px solid #dddddd; padding: 0; background-color: #f3f3f3;">
+            <th>No.</th>
+            <th colspan="2">상품명</th>
+            <th colspan="1">수량</th>
+            <th colspan="2">가격</th>
+            <th colspan="1">공급가액</th>
+            <th colspan="1">부가세</th>
+            <th colspan="2">합계</th>
+            <th colspan="3">요청사항</th>
+          </tr>
+          <?php $index = 1;
+          for($ind = 0; $ind <count($od_discount_info); $ind++) {
+            if($od_discount_info[$ind]['discount_type'] == 'r') continue;
+            $total_qty_d += $od_discount_info[$ind]['discount_qty'];
+            $total_discount_d += $od_discount_info[$ind]['discount_it_price']*$od_discount_info[$ind]['discount_qty'];?>
+          <tr style="border-top: 1px solid #dddddd;">
+            <td class="no"><span class="index"><?=$index;?></span></td>
+            <td colspan="2" name="discount_it_name[]" ><?=$od_discount_info[$ind]['discount_it_name'];?></td>
+            <td colspan="1" name="discount_qty[]"><?=$od_discount_info[$ind]['discount_qty'];?></td>
+            <td colspan="2" name="discount_it_price[]"><?=number_format($od_discount_info[$ind]['discount_it_price']);?>원</td>
+            <td colspan="1" class="basic_price"><?=number_format(round(($od_discount_info[$ind]['discount_it_price']*$od_discount_info[$ind]['discount_qty']) / 1.1));?>원</td>
+            <td colspan="1" class="tax_price"><?=number_format(($od_discount_info[$ind]['discount_it_price']*$od_discount_info[$ind]['discount_qty']) - round(($od_discount_info[$ind]['discount_it_price']*$od_discount_info[$ind]['discount_qty']) / 1.1));?>원</td>
+            <td colspan="2" class="total_price"><?=number_format($od_discount_info[$ind]['discount_it_price']*$od_discount_info[$ind]['discount_qty']);?>원</td>
+            <td colspan="3" name="discount_memo[]"><?=$od_discount_info[$ind]['discount_memo'];?></td>
+          </tr>
+          <?php $index++; } ?>
+          <tr style="border-top: 1px solid #dddddd; background-color: #f3f3f3;">
+            <th></th>
+            <th colspan="2"></th>
+            <th colspan="1"><?=$total_qty_d;?></th>
+            <th colspan="2"></th>
+            <th colspan="1"></th>
+            <th colspan="1"></th>
+            <th colspan="2"><?=number_format($total_discount_d);?>원</th>
+            <th colspan="3"></th>
+          </tr>
+          <?php } ?>
+          <tr style="border-top: 1px solid #dddddd;">
+            <td colspan="13" style="text-align: left; padding: 5px 10px;">
+              <?php echo "배송주소 : {$od_warehouse} / {$od_warehouse_address} / {$od_warehouse_phone}" ?>
+            </td>
+          </tr>
           </tbody>
         </table>
 
@@ -596,15 +731,56 @@ $deliveryCntBtnStatus = ($delivery_insert >= $od["od_delivery_total"]) ? " disab
               <option value="발주완료">발주완료</option>
               <option value="출고완료">출고완료</option>
               <option value="입고완료">입고완료</option>
-              <option value="취소">취소</option>
+              <option value="마감완료">마감완료</option>
+              <option value="발주취소">발주취소</option>
             </select>
             <input type="button" value="변경하기" class="btn shbtn" id="change_cart_status">
           </div>
           <div style="float:right">
-            <input type="button" value="배송정보 저장" class="btn shbtn" id="change_warehouse">
+            <a href="javascript:void(0);" id="order_mod" onclick="popModOrder()" class="btn btn_02">발주서 수정</a>
+            <!-- <input type="button" value="배송정보 저장" class="btn shbtn" id="change_warehouse"> -->
           </div>
         </div>
       </form>
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="header">
+      <h2>발주서 메모(비고)</h2>
+      <div class="right"></div>
+    </div>
+    <div class="memo">
+      <div class="block-box memo">
+        <?php
+          $sql = "SELECT * FROM purchase_cart_memo WHERE od_id = '{$od['od_id']}' and mb_id is not null ORDER BY ctm_no DESC";
+          $result = sql_query($sql);
+          $row = sql_fetch_array($result); mysqli_data_seek($result,0);
+        ?>
+
+        <div class="om_write_box">
+          <textarea name="od_shop_memo" rows="8" placeholder="입력한 메모내용이 보여집니다."
+                    id="memo_cart_content"><?php echo htmlspecialchars($row['ctm_memo']); ?></textarea>
+          <input type="button" value="저장" class="btn" id="memo_cart_submit">
+        </div>
+        <ul class="memo_logs">
+          <?php
+            $memo_counts = 0;
+            while ($row = sql_fetch_array($result)) {
+              $om_mb = get_member($row['mb_id']);
+              $memo_counts++;
+              if( !$row['ctm_memo'] ) continue;
+          ?>
+          <li>
+            <div class="om_info" style="display: block; float: left; width: 23%; padding-right: 5px;"> <span class="log_datetime"><?php echo $row['ctm_date']; ?></span>(<?php echo $om_mb['mb_name']; ?> 매니저) </div>
+            <div class="om_content" style="display: block; float: left; width: 77%; padding-bottom: 5px;"> <span style="display: block;"><?php echo nl2br(htmlspecialchars($row['ctm_memo'])); ?></span> </div>
+          </li>
+          <?php }
+            if(!$memo_counts) { ?>
+          <li>기록이 없습니다.</li>
+          <?php } ?>
+        </ul>
+      </div>
     </div>
   </div>
 
@@ -617,42 +793,33 @@ $deliveryCntBtnStatus = ($delivery_insert >= $od["od_delivery_total"]) ? " disab
     <div class="memo">
       <div class="block-box memo">
         <?php
-        $sql = "SELECT * FROM purchase_order_admin_memo WHERE od_id = '{$od['od_id']}' ORDER BY om_no DESC";
-        $result = sql_fetch($sql);
+          $sql = "SELECT * FROM purchase_order_admin_memo WHERE od_id = '{$od['od_id']}' ORDER BY om_no DESC";
+          $result = sql_query($sql);
+          $row = sql_fetch_array($result);
+          mysqli_data_seek($result,0);
         ?>
         <div class="om_write_box">
-          <textarea name="od_shop_memo" rows="8" placeholder="입력한 메모내용이 보여집니다."
-                    id="memo_content"><?php echo htmlspecialchars($result['om_content']); ?></textarea>
-          <input type="button" value="저장" class="btn" id="memo_submit">
+          <textarea name="od_shop_memo" rows="8" placeholder="입력한 메모내용이 보여집니다." id="memo_content"><?php // echo htmlspecialchars($result['om_content']); htmlspecialchars=>오류 ?></textarea>
+          <input type="button" value="저장" class="btn" id="memo_admin_submit">
         </div>
         <ul class="memo_logs">
           <?php
-          $sql = "SELECT * FROM purchase_order_admin_memo WHERE od_id = '{$od['od_id']}' ORDER BY om_no DESC";
-          $result = sql_query($sql);
           $memo_counts = 0;
           while ($row = sql_fetch_array($result)) {
             $om_mb = get_member($row['mb_id']);
             $memo_counts++;
             ?>
             <li>
-              <div class="om_info">
-                <span class="log_datetime"><?php echo $row['om_datetime']; ?></span><?php echo $om_mb['mb_name']; ?> 매니저
-                수정
+              <div class="om_info" style="display: block; float: left; width: 23%; padding-right: 5px;">
+                  <span class="log_datetime"><?php echo $row['om_datetime']; ?></span>(<?php echo $om_mb['mb_name']; ?> 매니저)
               </div>
-              <div class="om_content">
-                <?php echo nl2br(htmlspecialchars($row['om_content'])); ?>
+              <div class="om_content" style="display: block; float: left; width: 77%; padding-bottom: 5px;">
+                  <?php echo nl2br(htmlspecialchars($row['om_content'])); ?>
               </div>
-            </li>
-            <?php
-          }
-          if (!$memo_counts) {
-            ?>
-            <li>
-              기록이 없습니다.
-            </li>
-            <?php
-          }
-          ?>
+          </li>
+          <?php } if (!$memo_counts) { ?>
+            <li> 기록이 없습니다. </li>
+          <?php } ?>
         </ul>
       </div>
     </div>
@@ -698,14 +865,34 @@ $deliveryCntBtnStatus = ($delivery_insert >= $od["od_delivery_total"]) ? " disab
     </div>
   </div>
 
+  <div class="block">
+    <div class="header">
+      <h2>발주서 발송 기록</h2>
+      <div class="right">
+      </div>
+    </div>
+    <div class="block-box gray logs">
+    <?php
+      $sql = "SELECT * FROM purchase_order_admin_log WHERE od_id = '{$od['od_id']}' AND ol_type IN ('1','2','3') ORDER BY ol_no DESC";
+      $result = sql_query($sql);
+      while ($row = sql_fetch_array($result)) {
+        $log_mb = get_member($log['mb_id']);
+        echo '<span class="log_datetime">' . $row['ol_datetime'] . '</span>(' . $log_mb['mb_name'] . ' 매니저) ' . $row['ol_content'] . '<br/>';
+      }
+      if($result->num_rows<1) { echo '기록이 없습니다.'; }
+      ?>
+    </div>
+  </div>
 
   <div id="order_summarize">
+  <!--
     <div class="header">
       <button class="shbtn order_prints">작업지시서 출력</button>
     </div>
+  -->
     <div class="content">
       <div class="block">
-        <h2>주문번호 <?php echo $od['od_id']; ?></h2>
+        <h2>발주번호 <?php echo $od['od_id']; ?></h2>
         <span class="so_nb"> SO-NB <?php echo $od['so_nb']; ?></span>
       </div>
       <div class="block">
@@ -719,28 +906,22 @@ $deliveryCntBtnStatus = ($delivery_insert >= $od["od_delivery_total"]) ? " disab
         <?php } ?>
         <?php echo $od['od_send_admin_memo'] ?>
         <p>
-          <?php if ($od['od_deposit_name']) { ?>
-            <?php echo $od['od_deposit_name']; ?>, <?php echo $od['od_bank_account']; ?><br/>
-          <?php } ?>
-          <?php echo $od['od_name']; ?> (<?php echo $od['od_email']; ?>)<br/>
-          HP : <?php echo $od['od_hp']; ?> / Tel : <?php echo $od['od_tel']; ?>
+          <?=$od['od_name']; ?> (<?=$od['od_email']; ?>)<br/>
+          HP : <?=$od['od_hp']; ?>  /  Tel : <?=$od['od_tel']; ?><br/>
+          Fax : <?=$od['od_fax']; ?>
         </p>
-        <?php
-        $customer_code = get_customer_code($od['od_id']);
-        $customer_code_step = get_customer_step($customer_code);
-        ?>
-        고객코드: <?php echo $customer_code; ?> (<?php echo $customer_code_step; ?>)
+
+        고객(거래처)코드: <?php if(get_member($od['mb_id'])['mb_thezone']) echo get_member($od['mb_id'])['mb_thezone']; else echo str_replace('-','',get_member($od['mb_id'])['mb_giup_bnum']);?>
         <br/><br/>
         <a class="shbtn send_estimate">
           구매발주서 전송
         </a>
       </div>
       <div class="block">
-        <h2>담당자</h2>
+        <h2>발주담당자</h2>
         <ul>
           <li>
             <div class="managers">
-              <span class="manager_name">- 영업담당자</span>
               <select name="od_purchase_manager">
                 <option value="">없음</option>
                 <?php
@@ -751,7 +932,18 @@ $deliveryCntBtnStatus = ($delivery_insert >= $od["od_delivery_total"]) ? " disab
                   $od_purchase_manager = $result_manager['mb_manager'];
                 }
 
-                $sql = " SELECT mb_name, mb_id FROM g5_member WHERE mb_level = 9 ORDER BY mb_name ASC ";
+                $sql = ("	
+                  SELECT 	
+                    mb.mb_name, mb.mb_id 	
+                  FROM 	
+                    g5_auth au, g5_member mb 	
+                  WHERE 	
+                    mb.mb_id = au.mb_id 	
+                    AND au_menu = '400480' 	
+                    AND au_auth 	
+                  LIKE '%w%' 	
+                  ORDER BY mb_name ASC	
+                ");
                 $auth_result = sql_query($sql);
                 while ($a_row = sql_fetch_array($auth_result)) {
                   $a_mb = get_member($a_row['mb_id']);
@@ -769,9 +961,27 @@ $deliveryCntBtnStatus = ($delivery_insert >= $od["od_delivery_total"]) ? " disab
         <h2>구매정보</h2>
         <ul class="bill_info">
           <li>
+            <div class="left">발주금액</div>
+            <div class="right">
+              <?php echo number_format($tot_total); ?>
+                원</div>
+          </li>
+          <li>
+            <div class="left">반품금액</div>
+            <div class="right red">
+              <?php echo number_format($total_discount_r); ?>
+                원</div>
+          </li>
+          <li>
+            <div class="left">할인금액</div>
+            <div class="right red">
+              <?php echo number_format($total_discount_d); ?>
+                원</div>
+          </li>
+          <li>
             <div class="left"><b>총금액</b></div>
             <div class="right">
-              <b><?php echo number_format($tot_total + $od['od_send_cost'] + $od['od_send_cost2'] + $od['od_cart_discount2'] - $od['od_sales_discount'] - $amount['coupon'] - $od['od_receipt_point']); ?>
+              <b><?php echo number_format($tot_total + $od['od_send_cost'] + $od['od_send_cost2'] + $od['od_cart_discount2'] - $od['od_sales_discount'] - $amount['coupon'] - $od['od_receipt_point'] - $total_discount_d - $total_discount_r); ?>
                 원</b></div>
           </li>
         </ul>
@@ -790,7 +1000,7 @@ $deliveryCntBtnStatus = ($delivery_insert >= $od["od_delivery_total"]) ? " disab
 </div>
 
 <style>
-  #popup_order_add {
+  #popup_order_mod {
     position: fixed;
     width: 100%;
     height: 100%;
@@ -801,7 +1011,7 @@ $deliveryCntBtnStatus = ($delivery_insert >= $od["od_delivery_total"]) ? " disab
     display: none;
   }
 
-  #popup_order_add > div {
+  #popup_order_mod > div {
     width: 1000px;
     max-width: 80%;
     height: 80%;
@@ -811,56 +1021,30 @@ $deliveryCntBtnStatus = ($delivery_insert >= $od["od_delivery_total"]) ? " disab
     transform: translate(-50%, -50%);
   }
 
-  #popup_order_add > div iframe {
+  #popup_order_mod > div iframe {
     width: 100%;
     height: 100%;
     border: 0;
     background-color: #FFF;
   }
 
-</style>
-<div id="popup_order_add">
-  <div>dd</div>
-</div>
-
-<script>
-  $(function () {
-
-    $(document).on("click", "#btn_order_edit", function (e) {
-      e.preventDefault();
-
-      $("#popup_order_add > div").html("<iframe src='./pop.order.edit.php?od_id=<?=$od_id?>'></iframe>");
-      $("#popup_order_add iframe").load(function () {
-        $("#popup_order_add").show();
-        $('#hd').css('z-index', 3);
-      });
-    });
-  });
-</script>
-
-<script>
-
-  //주문내역 숨김처리
-  function hide_control(od_id, ct_hide_control) {
-    $.ajax({
-      method: "POST",
-      url: "<?=G5_SHOP_URL?>/ajax.hide_control.php",
-      data: {
-        od_id: od_id,
-        ct_hide_control: ct_hide_control
-      }
-    }).done(function (data) {
-      if (data == "S1") {
-        alert('숨김처리가 완료되었습니다.');
-        window.location.reload();
-      }
-      if (data == "S2") {
-        alert('보이기처리가 완료되었습니다.');
-        window.location.reload();
-      }
-    })
+  #memo_cart_submit, #memo_admin_submit {
+    position: absolute;
+    border: 1px solid #cccccc;
+    top: 116px;
+    right: 14px;
+    font-size: 13px;hide_control
+    cursor: pointer;
+    padding: 8px 20px;
+    height: auto;
+    background-color: white;
+    color: #656565;
   }
+</style>
 
+<div id="popup_order_mod"><div>_</div></div>
+
+<script>
   var change_member_pop, add_item_pop, matching_item_pop, edit_item_pop, delivery_print_pop, edit_payment_pop,
     send_estimate_pop, order_prints_pop, release_purchaseorderview_pop;
 
@@ -901,8 +1085,8 @@ $deliveryCntBtnStatus = ($delivery_insert >= $od["od_delivery_total"]) ? " disab
     $(document).on("click", ".purchaseOrderViewBtn", function (e) {
       e.preventDefault();
 
-      var popupWidth = 600;
-      var popupHeight = 700;
+      var popupWidth = 650;
+      var popupHeight = 850;
 
       var popupX = (window.screen.width / 2) - (popupWidth / 2);
       var popupY = (window.screen.height / 2) - (popupHeight / 2);
@@ -1031,7 +1215,7 @@ $deliveryCntBtnStatus = ($delivery_insert >= $od["od_delivery_total"]) ? " disab
       })
     });
 
-    $('#memo_submit').click(function () {
+    $('#memo_admin_submit').click(function () {
       var content = $('#memo_content').val();
 
       if (!content.length) {
@@ -1044,6 +1228,7 @@ $deliveryCntBtnStatus = ($delivery_insert >= $od["od_delivery_total"]) ? " disab
         data: {
           od_id: od_id,
           content: content,
+          mod:'admin',
         },
       })
         .done(function (data) {
@@ -1053,6 +1238,29 @@ $deliveryCntBtnStatus = ($delivery_insert >= $od["od_delivery_total"]) ? " disab
           if (data.result === 'success') {
             location.reload();
           }
+        })
+    });
+
+    $('#memo_cart_submit').click(function () {
+        var content = $('#memo_cart_content').val();
+
+        if (!content.length) {
+            alert('메모 내용을 입력하세요.');
+            return;
+        }
+
+        $.ajax({
+            method: "POST",
+            url: "./ajax.purchase_order.memo.php",
+            data: {
+                od_id: od_id,
+                content: content,
+                mod: 'cart'
+            }
+        })
+        .done(function (data) {
+            if (data.msg) { alert(data.msg); }
+            if (data.result === 'success') { location.reload(); }
         })
     });
 
@@ -1134,8 +1342,8 @@ $deliveryCntBtnStatus = ($delivery_insert >= $od["od_delivery_total"]) ? " disab
         wh_ids.push($(this).closest('tr').next().find('select[name="warehouse"]').val());
       });
 
-      console.log(ct_ids);
-      console.log(wh_ids);
+      // console.log(ct_ids);
+      // console.log(wh_ids);
 
       $.ajax({
         method: "POST",
@@ -1209,7 +1417,7 @@ $deliveryCntBtnStatus = ($delivery_insert >= $od["od_delivery_total"]) ? " disab
 
     // 견적서 전송
     $('.send_estimate').click(function () {
-      send_estimate_pop = window.open('<?php echo G5_SHOP_URL; ?>/pop.purchase_estimate.php?od_id=' + od_id, "send_estimate", "width=730, height=800, resizable = no, scrollbars = no");
+      send_estimate_pop = window.open('<?php echo G5_SHOP_URL; ?>/pop.purchase_estimate.php?od_id=' + od_id, "send_estimate", "width=800, height=800, resizable = no, scrollbars = no");
     });
 
     // EDI 전송
@@ -1461,7 +1669,7 @@ $deliveryCntBtnStatus = ($delivery_insert >= $od["od_delivery_total"]) ? " disab
       var v = $("input[name='ot_typereceipt']:checked");
       $("input[name='ot_typereceipt']:checked").click();
 
-      console.log(v.val());
+      // console.log(v.val());
 
       if (v.val() === 31) {
         $("input[name='ot_typereceipt_cuse']:checked").click();
@@ -1896,16 +2104,9 @@ $deliveryCntBtnStatus = ($delivery_insert >= $od["od_delivery_total"]) ? " disab
             });
 
           // 다운로드
-          let $btn_download;
-          if (item._src) {
-            $btn_download = $('<a class="btn-bottom btn-download">다운로드</a>')
-              .attr('href', item._src)
-              .attr('download', '설치파일_' + item.index + '.pdf');
-          } else {
-            $btn_download = $('<a class="btn-bottom btn-download">다운로드</a>')
-              .attr('href', item.src)
-              .attr('download', '설치이미지_' + item.index + '.jpg');
-          }
+          var $btn_download = $('<a class="btn-bottom btn-download">다운로드</a>')
+            .attr('href', item.src)
+            .attr('download', '설치이미지_' + item.index + '.jpg');
 
           // 회전
           var rotate_deg = 0;
@@ -1930,6 +2131,15 @@ $deliveryCntBtnStatus = ($delivery_insert >= $od["od_delivery_total"]) ? " disab
       },
     });
   });
+
+  function popModOrder() {
+    $("#popup_order_mod > div").html("<iframe src='./pop.purchase.order.mod.php?od_id=<?=$od_id;?>'></iframe>");
+    $("#popup_order_mod iframe").load(function(){
+      $("#popup_order_mod").show();
+      $('#hd').css('z-index', 3);
+      $('#popup_order_mod iframe').contents().find('.mb_id_flexdatalist').focus();
+    });
+  }
 </script>
 
 <?php

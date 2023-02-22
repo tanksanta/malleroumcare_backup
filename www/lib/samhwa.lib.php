@@ -497,7 +497,22 @@ $purchase_order_steps = array(
     "statusY" => "01",
   ),
   '4' => array(
-    'name' => '취소',
+    'name' => '마감완료',
+    'val' => '마감완료',
+    'orderlist' => true,
+    'step' => 35,
+    'cart' => true,
+    'orderlist_complete' => false,
+    'deliverylist' => true,
+    'cart_editable' => true,
+    'cart_deletable' => true,
+    'direct_cancel' => true,
+    "statusN" => "06",
+    "statusY" => "01",
+  ),
+  '5' => array(
+    'name' => '발주취소',
+    'val' => '발주취소',
     'val' => '취소',
     'orderlist' => true,
     'step' => 70,
@@ -552,7 +567,6 @@ function get_typereceipt_step($od_id) {
         return array_merge($result, $typereceipt_types[0]);
     }
 }
-
 
 function get_typereceipt_cate($od_id) {
     global $typereceipt_cates;
@@ -623,7 +637,7 @@ function get_delivery_company_step($type) {
     }
 }
 
-function get_step($od_status) {
+function get_step($od_status, $partner = '') {
 
     global $order_steps;
 
@@ -631,9 +645,17 @@ function get_step($od_status) {
 
     $k = -1;
 
-    for($i=0;$i<count($order_steps); $i++) {
-        if ( $od_status == $order_steps[$i]['val'] ) {
-            $k = $i;
+    if($partner == 'partner'){
+        for ($i = 0; $i < count($order_steps); $i++) {
+            if ($od_status == $order_steps[$i]['name']) {
+                $k = $i;
+            }
+        }
+    } else {
+        for ($i = 0; $i < count($order_steps); $i++) {
+            if ($od_status == $order_steps[$i]['val']) {
+                $k = $i;
+            }
         }
     }
 
@@ -651,6 +673,8 @@ function get_purchase_step($od_status) {
   $ret = array();
 
   $k = -1;
+
+ if($od_status == '관리자발주취소' || $od_status == '취소') $od_status = '발주취소';
 
   for($i=0;$i<count($purchase_order_steps); $i++) {
     if ( $od_status == $purchase_order_steps[$i]['val'] ) {
@@ -864,7 +888,7 @@ function set_order_admin_log($od_id, $content) {
     return sql_query($sql);
 }
 
-function set_purchase_order_admin_log($od_id, $content, $ct_id = null) {
+function set_purchase_order_admin_log($od_id, $content, $ct_id = null, $type = null) {
   global $member;
 
   $mb_id = $member['mb_id'];
@@ -879,11 +903,16 @@ function set_purchase_order_admin_log($od_id, $content, $ct_id = null) {
     $set_ct_id = "ct_id = '{$ct_id}',";
   }
 
+  if( $type != null ) {
+    $set_type = "ol_type = '{$type}',";
+  }
+
   $sql = "INSERT INTO purchase_order_admin_log SET
                 od_id = '{$od_id}',
                 {$set_ct_id}
                 mb_id = '{$mb_id}',
                 ol_content = '{$content}',
+                {$set_type}
                 ol_datetime = now()
                 ";
 

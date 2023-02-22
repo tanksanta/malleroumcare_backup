@@ -33,10 +33,20 @@ $sql = "
 sql_query($sql);
 
 // 바코드 미등록 갯수 조절
+// 바코드 미등록 갯수 조절(입고 차수 없음)
+$pct_info_row = sql_fetch("select ct_part_info from purchase_cart where ct_id = '{$pct_id}' ");
+
+$_part_info = json_decode( $pct_info_row['ct_part_info'], true )[1]; // 차수 없을때
+if($_part_info['_in_qty'] == $bc_count) $_part_info['_in_dt_confirm'] = ''; // 전부 바코드 삭제이면 입고완료일 삭제
+$_part_info['_in_qty'] = $_part_info['_in_qty'] - $bc_count; // 삭제된 바코드 수만큼 입고 수량 조절
+$_part_info_enc[1] = $_part_info;
+$_tmp_sql_ct_part_info = "`ct_part_info` ='" . json_encode($_part_info_enc) . "',";
+
 $sql = "
   update
     purchase_cart
   set
+    {$_tmp_sql_ct_part_info}
     ct_delivered_qty = ct_delivered_qty - {$bc_count}
   where
     od_id = '{$pod_id}' and

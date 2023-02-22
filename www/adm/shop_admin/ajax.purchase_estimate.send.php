@@ -3,11 +3,17 @@ include_once('./_common.php');
 
 header('Content-Type: application/json');
 
-$od_id = trim($_POST['od_id']);
+$od_id = clean_xss_tags(trim($_POST['od_id']));
+
 $email_chk = trim($_POST['email_chk']);
 $u_email = trim($_POST['u_email']);
+
 $hp_chk = trim($_POST['hp_chk']);
 $u_hp = trim($_POST['u_hp']);
+
+$fax_chk = trim($_POST['fax_chk']);
+$u_fax = trim($_POST['u_fax']);
+
 
 if (!$od_id) {
     $ret = array(
@@ -191,6 +197,18 @@ if ( $email_chk == 'true' ) {
     include_once(G5_LIB_PATH.'/mailer.lib.php');
     mailer($config['cf_admin_email_name'], $config['cf_admin_email'], trim($u_email), '[이로움] ' . $od['od_name'] . '님 구매발주서', $mail_contents, 1);
 
+    // 22.10.27 : 서원 - 쿼리 실행
+    $result = sql_query("
+        UPDATE
+            purchase_order
+        SET
+            od_send_yn = '1',
+            od_send_mail_yn = '1'
+        WHERE
+            od_id = '{$od_id}'
+    ");
+
+    set_purchase_order_admin_log($od_id, "발주서 - 메일(".trim($u_email).")발송 완료", '' , '1');
 }
 
 
@@ -220,17 +238,99 @@ if ( $hp_chk == 'true' ) {
     $receive_number = preg_replace("/[^0-9]/", "", $u_hp);  // 수신자번호 (회원님의 핸드폰번호)
     $send_number = preg_replace("/[^0-9]/", "", $default['de_admin_company_tel']); // 발신자번호
 
-    include_once(G5_LIB_PATH.'/icode.sms.lib.php');
+    $strDest = array();
+    $strDest[0] = $receive_number;
 
-    $SMS = new SMS; // SMS 연결
-    $SMS->SMS_con($config['cf_icode_server_ip'], $config['cf_icode_id'], $config['cf_icode_pw'], $config['cf_icode_server_port']);
-    $SMS->Add($receive_number, $send_number, $config['cf_icode_id'], iconv_euckr(stripslashes($sms_contents)), "");
+    // 22.11.03: 서원 - 발주서 문자 내용상 SMS 단문자 전송 불가능 함.
+    //include_once(G5_LIB_PATH.'/icode.sms.lib.php');
+    // 22.11.03: 서원 - 장문자 전송으로 변경
+    include_once(G5_LIB_PATH.'/icode.lms.lib.php');
+
+    $SMS = new LMS; // SMS 연결
+    //$SMS->SMS_con($config['cf_icode_server_ip'], $config['cf_icode_id'], $config['cf_icode_pw'], $config['cf_icode_server_port']);
+    $SMS->SMS_con($config['cf_icode_server_ip'], $config['cf_icode_id'], $config['cf_icode_pw'], '1');
+    //$SMS->Add($receive_number, $send_number, $config['cf_icode_id'], iconv_euckr(stripslashes($sms_contents)), "");
+    $SMS->Add($strDest, $send_number, $config['cf_icode_id'],"","", iconv("utf-8", "euc-kr", stripslashes($sms_contents)), "","1");
     $SMS->Send();
     $SMS->Init(); // 보관하고 있던 결과값을 지웁니다.
-   
+
+    // 22.10.27 : 서원 - 쿼리 실행
+    $result = sql_query("
+        UPDATE
+            purchase_order
+        SET
+            od_send_yn = '1',
+            od_send_hp_yn = '1'
+        WHERE
+            od_id = '{$od_id}'
+    ");
+
+    set_purchase_order_admin_log($od_id, "발주서 - SMS(".trim($u_hp).")발송 완료", '' , '2');
 }
 
-set_purchase_order_admin_log($od_id, ' 발송');
+if( $fax_chk == 'true' ) {
+
+
+    $url = G5_URL."/shop/pop.purchase_estimate.php?od_id=".$od_id;
+
+    // PDF 파일 생성
+    $pdfdir = G5_DATA_PATH . "/purchase/" . date("Ym");
+    if(!is_dir($pdfdir)) {
+        @mkdir($pdfdir, G5_DIR_PERMISSION, true);
+        @chmod($pdfdir, G5_DIR_PERMISSION);
+    }
+
+    $mb_id = $member['mb_id'];
+    $manager_mb_id = get_session('ss_manager_mb_id');
+    if($manager_mb_id) {
+      $mb_id = $manager_mb_id;
+    }
+
+    $pdffile = "PurchaseOrder_".$od_id."_FaxSend_".date("ymdHis")."_".$mb_id.".pdf";
+    $pdfdir .= "/".$pdffile;
+
+    // 서버 내 wkhtmltopdf 파일 경로 :  /usr/local/bin
+    // 저장
+    // @exec('C:/_THKC/_Dev/wkhtmltox/bin/wkhtmltopdf "'.$url.'" "'.$pdfdir.'" 2>&1');
+    @exec('/usr/local/bin/wkhtmltopdf "'.$url.'" "'.$pdfdir.'" 2>&1');
+    @exec('wkhtmltopdf "'.$url.'" "'.$pdfdir.'" 2>&1');
+
+    $send_fax_arr = array();
+    array_push($send_fax_arr, array(
+        'type' => 'SendFAX',
+        'filename' => $pdfdir,
+        'rcvnm' => $od['od_name'],
+        'rcv' => $u_fax
+    ));
+
+    if (count($send_fax_arr) > 0) {
+        include_once(G5_LIB_PATH . '/fax.lib.php');
+        $response = sendFax($send_fax_arr);
+        if ($response) {
+            $ret = array(
+                'result' => 'fail',
+                'msg' => $response
+            );
+            echo json_encode($ret);
+            exit;
+        }
+    }
+
+    // 22.10.27 : 서원 - 쿼리 실행
+    $result = sql_query("
+        UPDATE
+            purchase_order
+        SET
+            od_send_yn = '1',
+            od_send_fax_yn = '1'
+        WHERE
+            od_id = '{$od_id}'
+    ");
+
+    set_purchase_order_admin_log($od_id, "발주서 - FAX(".trim($send_number).")발송 완료", '' , '2');
+
+}
+
 
 $ret = array(
     'result' => 'success',
