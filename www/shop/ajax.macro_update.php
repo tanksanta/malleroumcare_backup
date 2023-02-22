@@ -26,7 +26,29 @@ if($res_select['cnt'] == 0){
 }
 
 if($_POST['status'] != null && $_POST['status'] == "search"){
-    $sql_update = "UPDATE macro_request SET updated_at = now() WHERE mb_id = '{$mb_id}' and recipient_name = '{$recipient_name}' and recipient_num = '{$recipient_num}';";
+	$birth = $_POST['birth'];
+	$grade = $_POST['grade'];
+	$type = $_POST['type'];
+	$percent = $_POST['percent'];
+	$penApplyDtm = $_POST['penApplyDtm'];
+	$penExpiDtm = $_POST['penExpiDtm'];
+	$rem_amount = $_POST['rem_amount'];
+	$item_data = $_POST['item_data'];
+	$update = "";
+
+	for($i = 0; $i < sizeof(array_keys($item_data)); $i++){
+	  if(array_values($item_data)[$i] == -1){
+		$update = $update.array_keys($item_data)[$i]." = '".array_values($item_data)[$i]."', ";
+	  }
+	}
+
+    $sql_update = "UPDATE macro_request SET ".$update." birth = '{$birth}',
+    grade = '{$grade}',
+    type = '{$type}',
+    percent = '{$percent}',
+    penApplyDtm = '{$penApplyDtm}',
+    penExpiDtm = '{$penExpiDtm}',
+    rem_amount = '{$rem_amount}', updated_at = now() WHERE mb_id = '{$mb_id}' and recipient_name = '{$recipient_name}' and recipient_num = '{$recipient_num}';";
 } else {
     $sql_update = "UPDATE macro_request SET updated_at = now(), status = 'R' WHERE mb_id = '{$mb_id}' and recipient_name = '{$recipient_name}' and recipient_num = '{$recipient_num}';";
 }

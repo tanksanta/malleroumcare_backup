@@ -11,6 +11,7 @@ if($_POST["mode"] == "pwd"){
 	
 	if(md5(base64_encode($_POST["Pwd"])) == $cert_data_ref[3]){	
 		$_SESSION['Pwd'] = base64_encode($_POST["Pwd"]);
+		$_SESSION['CREATED'] = time();//세션 유지 시간
 		json_response(200, '성공');		
 	}else{
 		json_response(400, '비밀번호를 확인해 주세요.');		
@@ -46,6 +47,7 @@ if(!is_dir($upload_dir)){//인증서 파일 생성할 폴더 확인
 $_SESSION['PriKey'] = $_POST["PriKey"];
 $_SESSION['PubKey'] = $_POST["PubKey"];
 $_SESSION['Pwd'] = $_POST["Pwd"];
+$_SESSION['CREATED'] = time();//세션 유지 시간
 //파일 생성
 $cert_data_ref =  explode("|",$member["cert_data_ref"]);
 if($cert_data_ref[0] != ""){

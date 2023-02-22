@@ -7,7 +7,11 @@ if(!$member["mb_id"] || !$member["mb_entId"])
 
 
 if($member["cert_reg_sts"] == "Y"){//공인인증서 등록이 완료 되었을 경우
-
+	if (time() - $_SESSION['CREATED'] > 64800) {//18시간 : 64800, 3분 : 180;
+		// 세션생성 18시간 경과
+		$_SESSION['CREATED'] = 0;  // update creation time
+		$_SESSION['Pwd'] = "";
+	}
 if($_SESSION['PriKey'] == "" && $_SESSION['PubKey'] == ""){//공인인증서 등록 완료
 	$cert_data_ref =  explode("|",$member["cert_data_ref"]);
 	if(strtotime(base64_decode($cert_data_ref[2])." 23:59:59") < time()){//인증서 만료
@@ -588,6 +592,29 @@ if ($recipientContractHistory['Result']['ds_result'] != null){
 		else if (strcmp($recipientContractHistory['Result']['ds_result'][$i]['PROD_NM'], '전동침대') == 0)
 		{
 			$obj_purchaseHistory->eBed++; 		//경사로(실내용) : 6개
+		}else if ( strcmp($recipientContractHistory['Result']['ds_result'][$i]['PROD_NM'], '수동침대') == 0)
+		{
+			$obj_purchaseHistory->mBed++;
+		}
+		else if ( strcmp($recipientContractHistory['Result']['ds_result'][$i]['PROD_NM'], '욕창예방 매트리스') == 0)
+		{
+			$obj_purchaseHistory->lendBedsorePreventionMatriss++;
+		}
+		else if ( strcmp($recipientContractHistory['Result']['ds_result'][$i]['PROD_NM'], '이동욕조') == 0)
+		{
+			$obj_purchaseHistory->portableBath++;
+		}
+		else if ( strcmp($recipientContractHistory['Result']['ds_result'][$i]['PROD_NM'], '목욕리프트') == 0)
+		{
+			$obj_purchaseHistory->bathLift++;
+		}
+		else if ( strcmp($recipientContractHistory['Result']['ds_result'][$i]['PROD_NM'], '배회감지기') == 0)
+		{
+			$obj_purchaseHistory->loiteringDetection++;
+		}
+		else if ( strcmp($recipientContractHistory['Result']['ds_result'][$i]['PROD_NM'], '경사로(실외용)') == 0)
+		{
+			$obj_purchaseHistory->lendRunway++;
 		}
 		else
 		{

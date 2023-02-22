@@ -662,6 +662,13 @@ input[type="number"]::-webkit-inner-spin-button {
                 //인증서 업로드 추가 영역 
 				if(errMSG == "수급자명 / 장기요양인정번호 확인 후, 조회하시기 바랍니다." ){
 					alert(errMSG);
+					$.post('./ajax.inquiry_log.php', {
+					  data: { ent_id : "<?=$member['mb_id']?>",ent_nm : "<?=$member['mb_name']?>",pen_id : num,pen_nm : name,resultMsg : "fail",occur_page : "check_my_ltcare_info.php",err_msg:errMSG }
+					}, 'json')
+					.fail(function($xhr) {
+					  var data = $xhr.responseJSON;
+					  alert("로그 저장에 실패했습니다!");
+					});
 				}else if(jqXhr['responseJSON']["data"]['err_code'] == "3"){
 					alert("등록된 인증서가 사용 기간이 만료 되었습니다.<?=($mobile_yn == 'Mobile')?' 컴퓨터에서':'';?> 공인인증서를 재등록 해 주세요.");
 					<?php if($mobile_yn == 'Pc'){?>tilko_call('1');<?php }?>
@@ -680,9 +687,17 @@ input[type="number"]::-webkit-inner-spin-button {
 						//tilko_call('2');
 						pwd_insert();
 					}
+					$.post('./ajax.inquiry_log.php', {
+					  data: { ent_id : "<?=$member['mb_id']?>",ent_nm : "<?=$member['mb_name']?>",pen_id : num,pen_nm : name,resultMsg : "fail",occur_page : "check_my_ltcare_info.php",err_msg:errMSG }
+					}, 'json')
+					.fail(function($xhr) {
+					  var data = $xhr.responseJSON;
+					  alert("로그 저장에 실패했습니다!");
+					});
 				}else if(jqXhr['responseJSON']["data"]['err_code'] == "5"){
 					ent_num_insert();
 				}
+				
 				// 인증서 업로드 추가 영역 끝
 				btn_submit.disabled = false;
                 return false;
