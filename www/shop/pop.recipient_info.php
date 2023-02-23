@@ -273,9 +273,8 @@ if($member["cert_data_ref"] != ""){
   background: white;
 }
 </style>
-
 <div id="pop_add_item" class="admin_popup">
-    <div class="head">
+    <div class="head" style="height:27%;">
         <p class="head-title"><!-- <span class = "rep_common"><?php echo "홍길동(L1234567890)";?></span><span>님의 요양정보</span> --></p>
         <div class="rep_amount">
             <p style="color: #ee0000;"><span>급여 잔액 : </span><span class = "rem_amount">1,600,000원</span></p>
@@ -303,10 +302,13 @@ if($member["cert_data_ref"] != ""){
                 <td colspan="1"><span>적용기간</span></td>
                 <td colspan="3" class = "penAppDtm"> ~ </td>
               </tr>
-            </table>
-        </div>
+            </table>			
+        </div>	
     </div>
-    <div class="separator">
+	<?php if($page_type == "search"){?>
+		<span id="search_date" style="font-size:15px;float:left;margin-top:5px;">(조회 : 0000-00-00)</span> <input type="button" value="요양정보업데이트" id="pen_info_update" style="float:right;margin-top:5px;">
+	<?php }?>
+    <div class="separator" style="margin-top:-10px;">
         <p><span class="line"> </span> </p>
     </div>
     <div class="contents">
@@ -314,15 +316,15 @@ if($member["cert_data_ref"] != ""){
         <table>
             <colgroup>
               <col width="10%"/>
+              <col width="10%"/>
+              <col width="10%"/>
+              <col width="10%"/>
+              <col width="10%"/>
+              <col width="10%"/>
+              <col width="5%"/>
+              <col width="5%"/>
+              <col width="10%"/>
               <col width="20%"/>
-              <col width="10%"/>
-              <col width="10%"/>
-              <col width="10%"/>
-              <col width="10%"/>
-              <col width="5%"/>
-              <col width="5%"/>
-              <col width="5%"/>
-              <col width="15%"/>
             </colgroup>
             <thead>
                 <tr>
@@ -350,15 +352,15 @@ if($member["cert_data_ref"] != ""){
         <table>
             <colgroup>
               <col width="10%"/>
+              <col width="10%"/>
+              <col width="10%"/>
+              <col width="10%"/>
+              <col width="10%"/>
+              <col width="10%"/>
+              <col width="5%"/>
+              <col width="5%"/>
+              <col width="10%"/>
               <col width="20%"/>
-              <col width="10%"/>
-              <col width="10%"/>
-              <col width="10%"/>
-              <col width="10%"/>
-              <col width="5%"/>
-              <col width="5%"/>
-              <col width="5%"/>
-              <col width="15%"/>
             </colgroup>
             <thead>
                 <tr>
@@ -539,16 +541,16 @@ if($member["cert_data_ref"] != ""){
             penLtmNum_parent = "<?=str_replace('L','',$_GET['penLtmNum'])?>";
             penNm_parent = "<?=$_GET['penNm']?>";
             $(".rep_common").text(penNm_parent+"(L"+penLtmNum_parent+")");
-
+			/* 저장 데이터 불러옴으로 업데이트 안함
             $.post('ajax.macro_update.php', {
                 mb_id: '<?=$member['mb_id']?>',
                 recipient_name: penNm_parent,
                 recipient_num: penLtmNum_parent,
                 status: "search"
             }, 'json');
-            
+            */
             var add_contract_list = [];
-            $.ajax('ajax.recipient.inquiry.php', {
+            $.ajax('ajax.recipient.inquiry2.php', {
                 type: 'POST',  // http method
                 data: { id : penLtmNum_parent,rn : penNm_parent },  // data to submit
                 success: function (data, status, xhr) {
@@ -570,7 +572,8 @@ if($member["cert_data_ref"] != ""){
                         penPayRate_api = rep_info_api['SBA_CD'].replace('(', ' ').replace(')', '');
                     }
 
-                    for(var ind = 0; ind < rep_list_api['ds_toolPayLmtList'].length; ind++){
+                    /*
+					for(var ind = 0; ind < rep_list_api['ds_toolPayLmtList'].length; ind++){
                         var appst = new Date(rep_list_api['ds_toolPayLmtList'][ind]['APDT_FR_DT'].substr(0,4)+'-'+rep_list_api['ds_toolPayLmtList'][ind]['APDT_FR_DT'].substr(4,2)+'-'+rep_list_api['ds_toolPayLmtList'][ind]['APDT_FR_DT'].substr(6,2));
                         var apped = new Date(rep_list_api['ds_toolPayLmtList'][ind]['APDT_TO_DT'].substr(0,4)+'-'+rep_list_api['ds_toolPayLmtList'][ind]['APDT_TO_DT'].substr(4,2)+'-'+rep_list_api['ds_toolPayLmtList'][ind]['APDT_TO_DT'].substr(6,2));
                         var today = new Date();
@@ -581,40 +584,48 @@ if($member["cert_data_ref"] != ""){
                         if(ind == rep_list_api['ds_toolPayLmtList'].length-1){
                             applydtm = rep_list_api['ds_toolPayLmtList'][0]['APDT_FR_DT']+' ~ '+rep_list_api['ds_toolPayLmtList'][0]['APDT_TO_DT'];
                         }
-                    }
-
-                    $(".penRecGraNm").text(rep_info_api['LTC_RCGT_GRADE_CD']+"등급");
-                    $(".penTypeNm").text(penPayRate_api);
-                    $(".penExpiDtm").text(rep_info_api['RCGT_EDA_DT']);
-                    $(".penAppDtm").text(applydtm);
-
-                    var contract_list = data['data']['recipientContractHistory']['Result']['ds_result'] == null ?[] :data['data']['recipientContractHistory']['Result']['ds_result'];
+                    }*///API 조회시 주석 해재
+					applydtm = rep_info_api['applydtm'];//API 조회시 주석 처리
+                    $(".penRecGraNm").text(rep_info_api['LTC_RCGT_GRADE_CD']+"등급");//인정등급
+                    $(".penTypeNm").text(penPayRate_api);//본인부담율
+                    $(".penExpiDtm").text(rep_info_api['RCGT_EDA_DT']);//인정유효기간
+                    $(".penAppDtm").text(applydtm);//적용기간
+					$("#search_date").text("(조회 : "+rep_info_api['UPDATE']+")");//조회날짜
+                    $(".rem_amount").text(makeComma(rep_info_api['REMN_AMT'])+'원');//잔액
+                    $(".used_amount").text('사용 금액 : '+makeComma(rep_info_api['USE_AMT'])+'원');//사용금액
+					
+					var contract_list = data['data']['recipientContractHistory']['Result']['ds_result'] == null ?[] :data['data']['recipientContractHistory']['Result']['ds_result'];
                     var contract_cnt = [];
 
                     if(contract_list == null || contract_list == []){
                         $(".rem_amount").text(makeComma('1600000')+'원');
                         $(".used_amount").text('사용 금액 : 0원');
                     } else {
-                        for(var idx = 0; idx < rep_list_api['ds_toolPayLmtList'].length; idx++){
+                        /*
+						for(var idx = 0; idx < rep_list_api['ds_toolPayLmtList'].length; idx++){
                             if((rep_list_api['ds_toolPayLmtList'][idx]['APDT_FR_DT'].replace(' ','') == applydtm.split('~')[0].replaceAll('-','').replace(' ','')) && (rep_list_api['ds_toolPayLmtList'][idx]['APDT_TO_DT'].replace(' ','') == applydtm.split('~')[1].replace(/-/gi, "").replace(' ',''))){
                                 $(".rem_amount").text(makeComma(rep_list_api['ds_toolPayLmtList'][idx]['REMN_AMT'])+'원');
                                 $(".used_amount").text('사용 금액 : '+makeComma(rep_list_api['ds_toolPayLmtList'][idx]['USE_AMT'])+'원');
                                 break;
                             }
                         }
-
+						*/
                         for(var i = 0; i < contract_list.length; i++){
                             var paycode = contract_list[i]['WLR_MTHD_CD'] == '판매'?'01':'00';
-                            if(contract_cnt[contract_list[i]['PROD_NM']+paycode] == null)
+                            
+							if(contract_cnt[contract_list[i]['PROD_NM']+paycode] == null)
                                 contract_cnt[contract_list[i]['PROD_NM']+paycode] = 1;
                             else 
                                 contract_cnt[contract_list[i]['PROD_NM']+paycode] += 1;
+							
+							//alert(contract_list[i]['PROD_NM']+paycode+":"+contract_cnt[contract_list[i]['PROD_NM']+paycode]);
                         }
                     }
 
-                    let tool_list_api = JSON.parse(data['data']['recipientToolList'])['Result'];
+                    let tool_list_api = data['data']['recipientToolList']['Result'];
                     $('#table_rental').empty();
                     $('#table_sale').empty();
+					
 
                     let sale_y = tool_list_api['ds_payPsbl1'];
                     let sale_n = tool_list_api['ds_payPsbl2'];
@@ -654,6 +665,7 @@ if($member["cert_data_ref"] != ""){
                                         }
                                     }
                                 }
+								
                                 contract_cnt[sale_y[i]['WIM_ITM_CD']+'01'] = contract_cnt[sale_y[i]['WIM_ITM_CD']+'01'] == null ?item_period+'+' :contract_cnt[sale_y[i]['WIM_ITM_CD']+'01']+item_period+'+';
                             }
 
@@ -761,7 +773,7 @@ if($member["cert_data_ref"] != ""){
                     $('#table_contract').empty();
                     buildTable_api(contract_list);
                     buildTable_api(add_contract_list, 'add');
-                                        
+                    /* 저장 데이터 불러오는 내용이라 로그 안남김                   
                     $.post('./ajax.inquiry_log.php', {
                         data: { ent_id : "<?=$member['mb_id']?>",ent_nm : "<?=$member['mb_name']?>",pen_id : penLtmNum_parent,pen_nm : penNm_parent,resultMsg : status,occur_page : "pop.recipient_info.php" }
                     }, 'json')
@@ -769,10 +781,11 @@ if($member["cert_data_ref"] != ""){
                         var data = $xhr.responseJSON;
                         alert("로그 저장에 실패했습니다!");
                     });
+					*/
                 },
                 error: function (jqXhr, textStatus, errorMessage) {
                     var errMSG = typeof(jqXhr['responseJSON']) == "undefined"? "수급자명 / 장기요양인정번호 확인 후, 조회하시기 바랍니다.":jqXhr['responseJSON']['message'];
-                    //alert(errMSG);
+      
                     //인증서 업로드 추가 영역 
 				if(errMSG == "수급자명 / 장기요양인정번호 확인 후, 조회하시기 바랍니다." ){
 					alert(errMSG);
@@ -794,6 +807,7 @@ if($member["cert_data_ref"] != ""){
 						//tilko_call('2');
 						pwd_insert();
 					}
+					
 				}else if(jqXhr['responseJSON']["data"]['err_code'] == "5"){
 					ent_num_insert();
 				}
@@ -1077,6 +1091,317 @@ if($member["cert_data_ref"] != ""){
             }
         }
         
+		//요양정보업데이트 이벤트
+		$(document).on("click", "#pen_info_update", function (){
+			loading();
+			var head_title = `<span class = "rep_common"><?php echo "홍길동(L1234567890)";?></span><span>님의 요양정보</span>`;
+            $(".head-title").html('');
+			$(".head-title").append(head_title);
+			$("#search_date").text("");//조회날짜 지우기
+
+            penLtmNum_parent = "<?=str_replace('L','',$_GET['penLtmNum'])?>";
+            penNm_parent = "<?=$_GET['penNm']?>";
+            $(".rep_common").text(penNm_parent+"(L"+penLtmNum_parent+")");
+      
+            
+            var add_contract_list = [];
+            $.ajax('ajax.recipient.inquiry.php', {
+                type: 'POST',  // http method
+                data: { id : penLtmNum_parent,rn : penNm_parent },  // data to submit
+                success: function (data, status, xhr) {
+
+                    let rep_list_api = data['data']['recipientContractDetail']['Result'];                
+                    let rep_info_api = rep_list_api['ds_welToolTgtList'][0];
+                    
+					let today = new Date();
+	
+					if(rep_info_api['REDUCE_NM'] == '감경'){ //REDUCE_NM가 대상자 구분, 감경은 SBA_CD를 이용하여 본인부담율을 가져오기
+                        let penPayRate_api = rep_info_api['SBA_CD'].replace('(', ' ').replace(')', '');
+                    } else {
+                        let penPayRate_api = rep_info_api['REDUCE_NM'] == '일반' ? '일반 15%': rep_info_api['REDUCE_NM'] == '기초' ? '기초 0%'
+                                                                : rep_info_api['SBA_CD'];
+                    }
+                    
+                    let penPayRate_api = '';
+                    if(rep_info_api['REDUCE_NM'] != '감경'){ //REDUCE_NM가 대상자 구분, 감경은 SBA_CD를 이용하여 본인부담율을 가져오기
+                        penPayRate_api = rep_info_api['REDUCE_NM'] == '일반' ? '일반 15%': rep_info_api['REDUCE_NM'] == '기초' ? '기초 0%'
+                                                                : rep_info_api['SBA_CD'];
+                    } else {
+                        penPayRate_api = rep_info_api['SBA_CD'].replace('(', ' ').replace(')', '');
+                    }
+
+                    for(var ind = 0; ind < rep_list_api['ds_toolPayLmtList'].length; ind++){
+                        var appst = new Date(rep_list_api['ds_toolPayLmtList'][ind]['APDT_FR_DT'].substr(0,4)+'-'+rep_list_api['ds_toolPayLmtList'][ind]['APDT_FR_DT'].substr(4,2)+'-'+rep_list_api['ds_toolPayLmtList'][ind]['APDT_FR_DT'].substr(6,2));
+                        var apped = new Date(rep_list_api['ds_toolPayLmtList'][ind]['APDT_TO_DT'].substr(0,4)+'-'+rep_list_api['ds_toolPayLmtList'][ind]['APDT_TO_DT'].substr(4,2)+'-'+rep_list_api['ds_toolPayLmtList'][ind]['APDT_TO_DT'].substr(6,2));
+                        if(today < apped && today > appst){
+                            applydtm = appst.toISOString().split('T')[0]+' ~ '+apped.toISOString().split('T')[0];
+                            break;
+                        }
+                        if(ind == rep_list_api['ds_toolPayLmtList'].length-1){
+                            applydtm = rep_list_api['ds_toolPayLmtList'][0]['APDT_FR_DT']+' ~ '+rep_list_api['ds_toolPayLmtList'][0]['APDT_TO_DT'];
+                        }
+                    }
+
+                    $(".penRecGraNm").text(rep_info_api['LTC_RCGT_GRADE_CD']+"등급");
+                    $(".penTypeNm").text(penPayRate_api);
+                    $(".penExpiDtm").text(rep_info_api['RCGT_EDA_DT']);
+                    $(".penAppDtm").text(applydtm);					
+
+                    var contract_list = data['data']['recipientContractHistory']['Result']['ds_result'] == null ?[] :data['data']['recipientContractHistory']['Result']['ds_result'];
+                    var contract_cnt = [];
+					let rem_amount = 1600000;
+                    if(contract_list == null || contract_list == []){
+                        $(".rem_amount").text(makeComma('1600000')+'원');
+                        $(".used_amount").text('사용 금액 : 0원');
+                    } else {
+                        for(var idx = 0; idx < rep_list_api['ds_toolPayLmtList'].length; idx++){
+                            if((rep_list_api['ds_toolPayLmtList'][idx]['APDT_FR_DT'].replace(' ','') == applydtm.split('~')[0].replaceAll('-','').replace(' ','')) && (rep_list_api['ds_toolPayLmtList'][idx]['APDT_TO_DT'].replace(' ','') == applydtm.split('~')[1].replace(/-/gi, "").replace(' ',''))){
+                                $(".rem_amount").text(makeComma(rep_list_api['ds_toolPayLmtList'][idx]['REMN_AMT'])+'원');
+								rem_amount = rep_list_api['ds_toolPayLmtList'][idx]['REMN_AMT'];
+                                $(".used_amount").text('사용 금액 : '+makeComma(rep_list_api['ds_toolPayLmtList'][idx]['USE_AMT'])+'원');
+                                break;
+                            }
+                        }
+
+                        for(var i = 0; i < contract_list.length; i++){
+                            var paycode = contract_list[i]['WLR_MTHD_CD'] == '판매'?'01':'00';
+                            if(contract_cnt[contract_list[i]['PROD_NM']+paycode] == null)
+                                contract_cnt[contract_list[i]['PROD_NM']+paycode] = 1;
+                            else 
+                                contract_cnt[contract_list[i]['PROD_NM']+paycode] += 1;
+                        }
+                    }
+
+                    let tool_list_api = JSON.parse(data['data']['recipientToolList'])['Result'];
+                    $('#table_rental').empty();
+                    $('#table_sale').empty();
+
+                    let sale_y = tool_list_api['ds_payPsbl1'];
+                    let sale_n = tool_list_api['ds_payPsbl2'];
+                    let rent_y = tool_list_api['ds_payPsblLnd1'];
+                    let rent_n = tool_list_api['ds_payPsblLnd2'];
+                    let tool_list_cnt = <?=json_encode($key_list);?>;
+
+                    
+                    var index = 1;
+                    for(var i = 0; i < sale_y.length+sale_n.length; i++){
+                        if(i > sale_y.length-1){
+                            var row = `<tr id="${'gumae'+index}">
+                                        <td colspan="1">${i+1}</td>
+                                        <td colspan="5">${sale_n[i-(sale_y.length)]['WIM_ITM_CD'].replace(' ', '')}</td>
+                                        <td colspan="3" style = "background-color: #f5f5f5;">해당없음</td>
+                                        <td colspan="1" style = "background-color: #f5f5f5;">해당없음</td>
+                                    </tr>`;
+                            
+                        } else {  
+                            var used_item = used_period[sale_y[i]['WIM_ITM_CD'].replace(' ', '')+'01'] == null ?0:Number(used_period[sale_y[i]['WIM_ITM_CD'].replace(' ', '')+'01']);
+                            var item_period = cnt_period[sale_y[i]['WIM_ITM_CD'].replace(' ', '')+'01'] == null ?0:Number(cnt_period[sale_y[i]['WIM_ITM_CD'].replace(' ', '')+'01']);
+                            var cnt = contract_cnt[sale_y[i]['WIM_ITM_CD']+'01'] == null ?0 : Number(contract_cnt[sale_y[i]['WIM_ITM_CD']+'01']);
+                            item_period = item_period==0?0:item_period-cnt;
+                            var Sellable = sale_y[i]['WIM_ITM_CD'].replace(' ', '') == '미끄럼방지용품'? 11 :Number(tool_list_cnt[sale_y[i]['WIM_ITM_CD'].replace(' ', '')+'01']);
+                            var gumae_cnt = Sellable-cnt-item_period;
+                            cnt = cnt + item_period;
+
+                            var hist_ctr_arr = [];
+                            if(used_item && item_period) {
+                                for(var ii = 0; ii < hist_arr.length; ii++) {
+                                    if(hist_arr[ii]['ITEM_NM'].replace(' ', '') == sale_y[i]['WIM_ITM_CD'].replace(' ', '')){
+                                        var prev_date = new Date(hist_arr[ii]['ORD_DTM']);
+                                        var cal_date = new Date(prev_date.setFullYear(prev_date.getFullYear() + Number(used_item)));
+                                        var now = new Date();
+                                        if(cal_date > now){
+                                            hist_ctr_arr.push(hist_arr[ii]);
+                                        }
+                                    }
+                                }
+                                contract_cnt[sale_y[i]['WIM_ITM_CD']+'01'] = contract_cnt[sale_y[i]['WIM_ITM_CD']+'01'] == null ?item_period+'+' :contract_cnt[sale_y[i]['WIM_ITM_CD']+'01']+item_period+'+';
+                            }
+
+                            if(contract_cnt[sale_y[i]['WIM_ITM_CD']+'01'] != null) { 
+                                var row = `<tr id="${'gumae'+index}" class="normal-row">
+                                                <td colspan="1">${i+1}</td>
+                                                <td colspan="5">${sale_y[i]['WIM_ITM_CD'].replace(' ', '')}</td>
+                                                <td colspan="3"><a href="#" class="gumae-toggler" data-prod-contract-gumae=${index}>${cnt}개 ▼</a></td>
+                                                <td colspan="1">${gumae_cnt}개</td>
+                                            </tr>
+                                            <tr id="${'gumae'+index}" class="${'contract-gumae'+index}" style="display:none;">
+                                                <td colspan="1" style="border-top-style: none; border-bottom-style: none;"></td>
+                                                <td colspan="5"><span>제품명</span></td>
+                                                <td colspan="3"><span>계약일</span></td>
+                                                <td colspan="1" ><span>급여가</span></td>
+                                            </tr>`;
+                                for(var ind = 0; ind < contract_list.length; ind++){
+                                    if(contract_list[ind]['PROD_NM'] != sale_y[i]['WIM_ITM_CD']) continue;
+                                    if(contract_list[ind]['WLR_MTHD_CD'] == '대여') continue;
+                                    row += `<tr id="${'gumae'+index}" class="${'contract-gumae'+index}" style="display:none;">
+                                                <td colspan="1" style="border-top-style: none; border-bottom-style: none;"></td>
+                                                <td colspan="5">${contract_list[ind]['MGDS_NM']}</td>
+                                                <td colspan="3">${contract_list[ind]['POF_FR_DT'].split('~')[0]}</td>
+                                                <td colspan="1">${makeComma(contract_list[ind]['TOT_AMT'])}</td>
+                                            </tr>`;
+                                }
+
+                                if(hist_ctr_arr != []){
+                                    for(var ind = 0; ind < hist_ctr_arr.length; ind++){
+                                        if(hist_ctr_arr[ind]['ITEM_NM'].replace(' ', '') != sale_y[i]['WIM_ITM_CD'].replace(' ', '')) continue;
+                                        row += `<tr id="${'gumae'+index}" class="${'contract-gumae'+index}" style="display:none;">
+                                                    <td colspan="1" style="border-top-style: none; border-bottom-style: none;"></td>
+                                                    <td colspan="5">${hist_ctr_arr[ind]['PROD_NM']}</td>
+                                                    <td colspan="3">${hist_ctr_arr[ind]['ORD_DTM']}</td>
+                                                    <td colspan="1">${makeComma(hist_ctr_arr[ind]['TOTAL_PRICE'])}</td>
+                                                </tr>`;
+                                        add_contract_list.push(hist_ctr_arr[ind]);
+                                    }  
+                                }
+                            } else {
+                                var row = `<tr id="${'gumae'+index}">
+                                        <td colspan="1">${i+1}</td>
+                                        <td colspan="5">${sale_y[i]['WIM_ITM_CD'].replace(' ', '')}</td>
+                                        <td colspan="3">${cnt}개</td>
+                                        <td colspan="1">${gumae_cnt}개</td>
+                                    </tr>`;
+                            }                            
+                        }   
+                        index++;       
+                        $("#table_sale").append(row);
+                    }
+
+                    
+                    var index = 1;
+                    for(var i = 0; i < rent_y.length+rent_n.length; i++){
+                        if(i > rent_y.length-1){
+                            var row = `<tr id="${'daeyeo'+index}">
+                                        <td colspan="1">${i+1}</td>
+                                        <td colspan="5">${rent_n[i-(rent_y.length)]['WIM_ITM_CD'].replace(' ', '')}</td>
+                                        <td colspan="3" style = "background-color: #f5f5f5;">해당없음</td>
+                                        <td colspan="1" style = "background-color: #f5f5f5;">해당없음</td>
+                                    </tr>`;                            
+                        } else {   
+                            var item_period = cnt_period[rent_y[i]['WIM_ITM_CD'].replace(' ', '')+'00'] == null ?0:Number(cnt_period[rent_y[i]['WIM_ITM_CD'].replace(' ', '')+'00']);
+                            var cnt = 0;
+                            if(contract_cnt[rent_y[i]['WIM_ITM_CD']+'00'] != null) { 
+                                cnt = contract_cnt[rent_y[i]['WIM_ITM_CD']+'00']; 
+                                item_period = item_period==0?0:item_period-cnt;                                
+                                var tmp_cnt = Number(tool_list_cnt[rent_y[i]['WIM_ITM_CD'].replace(' ', '')+'00'])-cnt-item_period < 0 ? 0 : Number(tool_list_cnt[rent_y[i]['WIM_ITM_CD'].replace(' ', '')+'00'])-cnt-item_period;
+                                var row = `<tr id="${'daeyeo'+index}" class="normal-row">
+                                                <td colspan="1">${i+1}</td>
+                                                <td colspan="5">${rent_y[i]['WIM_ITM_CD'].replace(' ', '')}</td>
+                                                <td colspan="3"><a href="#" class="daeyeo-toggler" data-prod-contract-daeyeo=${index}>${cnt}개 ▼</a></td>
+                                                <td colspan="1">${tmp_cnt}개</td>
+                                            </tr>
+                                            <tr id="${'daeyeo'+index}" class="${'contract-daeyeo'+index}" style="display:none;">
+                                                <td colspan="1" style="border-top-style: none; border-bottom-style: none;"></td>
+                                                <td colspan="5"><span>제품명</span></td>
+                                                <td colspan="3"><span>대여기간</span></td>
+                                                <td colspan="1" ><span>급여가</span></td>
+                                            </tr>`;
+                                for(var ind = 0; ind < contract_list.length; ind++){
+                                    if(contract_list[ind]['PROD_NM'].replace(' ', '') != rent_y[i]['WIM_ITM_CD'].replace(' ', '')) continue;                                    
+                                    if(contract_list[ind]['WLR_MTHD_CD'] == '판매') continue;
+                                    row += `<tr id="${'daeyeo'+index}" class="${'contract-daeyeo'+index}" style="display:none;">
+                                                <td colspan="1" style="border-top-style: none; border-bottom-style: none;"></td>
+                                                <td colspan="5">${contract_list[ind]['MGDS_NM']}</td>
+                                                <td colspan="3">${contract_list[ind]['POF_FR_DT'].split('~')[0]}</br>~${contract_list[ind]['POF_FR_DT'].split('~')[1]}</td>
+                                                <td colspan="1">${makeComma(contract_list[ind]['TOT_AMT'])}</td>
+                                            </tr>`;
+                                } 
+                            } else {
+                                var row = `<tr id="${'daeyeo'+index}">
+                                                <td colspan="1">${i+1}</td>
+                                                <td colspan="5">${rent_y[i]['WIM_ITM_CD'].replace(' ', '')}</td>
+                                                <td colspan="3">${cnt}개</td>
+                                                <td colspan="1">${Number(tool_list_cnt[rent_y[i]['WIM_ITM_CD'].replace(' ', '')+'00'])-cnt-item_period}개</td>
+                                            </tr>`;
+                            }
+                        }                                                         
+                        index++; 
+                        $("#table_rental").append(row);                     
+                    }
+
+                    $('#table_contract').empty();
+                    buildTable_api(contract_list);
+                    buildTable_api(add_contract_list, 'add');
+                    let penPayRate2 = rep_info_api['REDUCE_NM'] == '일반' ? '15%': rep_info_api['REDUCE_NM'] == '기초' ? '0%' : rep_info_api['REDUCE_NM'] == '의료급여' ? '6%'
+                                                              : (rep_info_api['SBA_CD'].split('(')[1].substr(0, rep_info_api['SBA_CD'].split('(')[1].length-1));
+					$.post('ajax.macro_update.php', {
+						mb_id: '<?=$member['mb_id']?>',
+						recipient_name: penNm_parent,
+						recipient_num: penLtmNum_parent,
+						status: "search",
+                        birth: setDate(rep_info_api['BDAY']),
+                        grade: rep_info_api['LTC_RCGT_GRADE_CD']+"등급",
+                        type: rep_info_api['REDUCE_NM'],
+                        percent: penPayRate2,
+                        penApplyDtm: applydtm,
+                        penExpiDtm: rep_info_api['RCGT_EDA_DT'],
+                        rem_amount: rem_amount,
+                        item_data:  JSON.parse(data['data']['recipientPurchaseRecord'])
+					}, 'json');
+                    
+					$.post('./ajax.my.recipient.hist.php', {
+					  data: data['data'],
+					  status: false
+					}, 'json')
+					.fail(function($xhr) {
+					  var data = $xhr.responseJSON;
+					  alert("계약정보 업데이트에 실패했습니다!");
+					});
+					
+					$.post('./ajax.inquiry_log.php', {
+                        data: { ent_id : "<?=$member['mb_id']?>",ent_nm : "<?=$member['mb_name']?>",pen_id : penLtmNum_parent,pen_nm : penNm_parent,resultMsg : status,occur_page : "pop.recipient_info.php" }
+                    }, 'json')
+                    .fail(function($xhr) {
+                        var data = $xhr.responseJSON;
+                        alert("로그 저장에 실패했습니다!");
+                    });
+                },
+                error: function (jqXhr, textStatus, errorMessage) {
+                    var errMSG = typeof(jqXhr['responseJSON']) == "undefined"? "수급자명 / 장기요양인정번호 확인 후, 조회하시기 바랍니다.":jqXhr['responseJSON']['message'];
+                    //alert(errMSG);
+                    //인증서 업로드 추가 영역 
+				if(errMSG == "수급자명 / 장기요양인정번호 확인 후, 조회하시기 바랍니다." ){
+					alert(errMSG);
+					$.post('./ajax.inquiry_log.php', {
+                        data: { ent_id : "<?=$member['mb_id']?>",ent_nm : "<?=$member['mb_name']?>",pen_id : penLtmNum_parent,pen_nm : penNm_parent,resultMsg : "fail",occur_page : "pop.recipient_info.php",err_msg:errMSG }
+                    }, 'json')
+                    .fail(function($xhr) {
+                        var data = $xhr.responseJSON;
+                        alert("로그 저장에 실패했습니다!");
+                    });
+				}else if(jqXhr['responseJSON']["data"]['err_code'] == "3"){
+					alert("등록된 인증서가 사용 기간이 만료 되었습니다.<?=($mobile_yn == 'Mobile')?' 컴퓨터에서':'';?> 공인인증서를 재등록 해 주세요.");
+					<?php if($mobile_yn == 'Pc'){?>tilko_call('1');<?php }?>
+				}else if(jqXhr['responseJSON']["data"]['err_code'] == "1"){
+					alert("등록된 인증서가 없습니다.<?=($mobile_yn == 'Mobile')?' 컴퓨터에서':'';?> 공인인증서를 등록 해 주세요.");
+					<?php if($mobile_yn == 'Pc'){?>tilko_call('1');<?php }?>
+				}else if(jqXhr['responseJSON']["data"]['err_code'] == "2"){
+					<?php //if($mobile_yn == "Mobile"){?>
+					pwd_insert();//모바일에서 로그인 시 레이어 팝업 노출
+					<?php //}else{?>
+					//tilko_call('2');
+					<?php //}?>
+				}else if(jqXhr['responseJSON']["data"]['err_code'] == "4"){
+					alert(errMSG);
+					if(errMSG.indexOf("비밀번호") !== -1 || errMSG.indexOf("암호") !== -1){
+						//tilko_call('2');
+						pwd_insert();
+					}
+					$.post('./ajax.inquiry_log.php', {
+                        data: { ent_id : "<?=$member['mb_id']?>",ent_nm : "<?=$member['mb_name']?>",pen_id : penLtmNum_parent,pen_nm : penNm_parent,resultMsg : "fail",occur_page : "pop.recipient_info.php",err_msg:errMSG }
+                    }, 'json')
+                    .fail(function($xhr) {
+                        var data = $xhr.responseJSON;
+                        alert("로그 저장에 실패했습니다!");
+                    });
+				}else if(jqXhr['responseJSON']["data"]['err_code'] == "5"){
+					ent_num_insert();
+				}
+				// 인증서 업로드 추가 영역 끝
+					return false;
+                }
+            });
+		});
+
 
         // 판매급여품목 클릭이벤트
         $('#table_sale').on('click', '.gumae-toggler', function(e){
@@ -1211,7 +1536,9 @@ if($member["cert_data_ref"] != ""){
         return [year, month, day].join(delimiter);
     }
 
-    function makeComma(str) {str = String(str);return str.replace(/(\d)(?=(?:\d{3})+(?!\d))/g, '$1,');}
+    function setDate(str_date){ return str_date.substr(0,4)+'-'+str_date.substr(4,2)+'-'+str_date.substr(6,2);}
+
+	function makeComma(str) {str = String(str);return str.replace(/(\d)(?=(?:\d{3})+(?!\d))/g, '$1,');}
 
     function loading() {
         document.documentElement.style.overflowY = "hidden";

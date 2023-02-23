@@ -211,6 +211,8 @@ for($idx = 0; $idx < sizeof($insert_list); $idx++){
 	.$insert_list[$idx]['REG_USR_IP']."','".$insert_list[$idx]['MODIFY_USR_ID']."','".$insert_list[$idx]['MODIFY_USR_IP']."','"
 	.$insert_list[$idx]['SYNC_GOVERN']."')";
 }
+$sql_del = "delete from pen_purchase_hist where ENT_ID = '".$member["mb_entId"]."' and PEN_LTM_NUM = '".$insert_list[0]['PEN_LTM_NUM']."';";
+sql_query($sql_del);
 
 $sql = str_replace(')(', '),(', $sql);
 $sql = $sql.';';
