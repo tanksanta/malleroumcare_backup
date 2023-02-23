@@ -7,7 +7,7 @@ if(!$member["mb_id"] || !$member["mb_entId"])
 
 
 if($member["cert_reg_sts"] == "Y"){//공인인증서 등록이 완료 되었을 경우
-	if (time() - $_SESSION['CREATED'] > 64800) {//18시간 : 64800, 3분 : 180;
+	if ((time() - $_SESSION['CREATED']) > 64800) {//18시간 : 64800, 3분 : 180;
 		// 세션생성 18시간 경과
 		$_SESSION['CREATED'] = 0;  // update creation time
 		$_SESSION['Pwd'] = "";
@@ -318,6 +318,11 @@ curl_close($curl);
 $recipientContractDetail = json_decode(substr($response,strpos($response,'{')),TRUE);
 if ( strcmp($recipientContractDetail['Status'],'OK') != 0)
 {
+	if($recipientContractDetail['Message'] == ""){
+		return json_response(406, "조회오류 : 서버 응답시간이 초과 되었습니다. 잠시 후 다시 조회 해주세요.",array(
+		  'err_code' => "4",
+		));
+	}
 	return json_response(406, "조회오류 : ".$recipientContractDetail['Message'],array(
 		  'err_code' => "4",
 		));
@@ -356,6 +361,11 @@ $recipientToolList = $response;
 $arr_recipientToolList = json_decode($recipientToolList,TRUE);
 if ( strcmp($arr_recipientToolList['Status'],'OK') != 0)
 {
+	if($arr_recipientToolList['Message'] == ""){
+		return json_response(406, "조회오류 : 서버 응답시간이 초과 되었습니다. 잠시 후 다시 조회 해주세요.",array(
+		  'err_code' => "4",
+		));
+	}
 	return json_response(406, "조회오류 : ".$arr_recipientToolList['Message'],array(
 		  'err_code' => "4",
 		));
@@ -518,6 +528,11 @@ curl_close($curl);
 $recipientContractHistory = json_decode($response,TRUE);
 if ( strcmp($recipientContractHistory['Status'],'OK') != 0)
 {
+	if($recipientContractHistory['Message'] == ""){
+		return json_response(406, "조회오류 : 서버 응답시간이 초과 되었습니다. 잠시 후 다시 조회 해주세요.",array(
+		  'err_code' => "4",
+		));
+	}
 	return json_response(406, "조회오류 : ".$recipientContractHistory['Message'],array(
 		  'err_code' => "4",
 		));

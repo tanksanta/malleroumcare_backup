@@ -34,7 +34,7 @@ $obj_purchaseHistory->bathingChair = $row["bathingChair"]; //목욕의자
 $arr_ph = (array) $obj_purchaseHistory;
 */
 $recipientContractDetail["Result"]["ds_welToolTgtList"][0]["REDUCE_NM"] = $row["type"];
-$recipientContractDetail["Result"]["ds_welToolTgtList"][0]["SBA_CD"] = $row["percent"];
+$recipientContractDetail["Result"]["ds_welToolTgtList"][0]["SBA_CD"] = $row["type"]." ".$row["percent"];
 $recipientContractDetail["Result"]["ds_welToolTgtList"][0]["LTC_RCGT_GRADE_CD"] = str_replace("등급","",$row["grade"]);
 $recipientContractDetail["Result"]["ds_welToolTgtList"][0]["RCGT_EDA_DT"] = $row["penExpiDtm"];//인정유효기간
 $recipientContractDetail["Result"]["ds_welToolTgtList"][0]["applydtm"] = $row["penApplyDtm"];//적용기간
@@ -50,8 +50,8 @@ if($row["safetyHandGrip"] > 0){$recipientToolList["Result"]["ds_payPsbl1"][]["WI
 if($row["safetyPreventSlivery"] > 0){$recipientToolList["Result"]["ds_payPsbl1"][]["WIM_ITM_CD"] = "미끄럼방지용품";}else{$recipientToolList["Result"]["ds_payPsbl2"][]["WIM_ITM_CD"] = "미끄럼방지용품";}//미끄럼방지용품
 if($row["simpleToilet"] > 0){$recipientToolList["Result"]["ds_payPsbl1"][]["WIM_ITM_CD"] = "간이변기";}else{$recipientToolList["Result"]["ds_payPsbl2"][]["WIM_ITM_CD"] = "간이변기";}//간이변기
 if($row["cane"] > 0){$recipientToolList["Result"]["ds_payPsbl1"][]["WIM_ITM_CD"] = "지팡이";}else{$recipientToolList["Result"]["ds_payPsbl2"][]["WIM_ITM_CD"] = "지팡이";}//지팡이
-if($row["cushionPreventMatriss"] > 0){$recipientToolList["Result"][]["ds_payPsbl1"]["WIM_ITM_CD"] = "욕창예방방석";}else{$recipientToolList["Result"]["ds_payPsbl2"][]["WIM_ITM_CD"] = "욕창예방방석";}//욕창예방방석
-if($row["bedsorePreventMatriss"] > 0){$recipientToolList["Result"][]["ds_payPsbl1"]["WIM_ITM_CD"] = "욕창예방 매트리스";}else{$recipientToolList["Result"]["ds_payPsbl2"][]["WIM_ITM_CD"] = "욕창예방 매트리스";}//욕창예방매트리스
+if($row["cushionPreventMatriss"] > 0){$recipientToolList["Result"]["ds_payPsbl1"][]["WIM_ITM_CD"] = "욕창예방방석";}else{$recipientToolList["Result"]["ds_payPsbl2"][]["WIM_ITM_CD"] = "욕창예방방석";}//욕창예방방석
+if($row["bedsorePreventMatriss"] > 0){$recipientToolList["Result"]["ds_payPsbl1"][]["WIM_ITM_CD"] = "욕창예방 매트리스";}else{$recipientToolList["Result"]["ds_payPsbl2"][]["WIM_ITM_CD"] = "욕창예방 매트리스";}//욕창예방매트리스
 if($row["postureChangeTool"] > 0){$recipientToolList["Result"]["ds_payPsbl1"][]["WIM_ITM_CD"] = "자세변환용구";}else{$recipientToolList["Result"]["ds_payPsbl2"][]["WIM_ITM_CD"] = "자세변환용구";}//자세변환용구
 if($row["adultWalker"] > 0){$recipientToolList["Result"]["ds_payPsbl1"][]["WIM_ITM_CD"] = "성인용보행기";}else{$recipientToolList["Result"]["ds_payPsbl2"][]["WIM_ITM_CD"] = "성인용보행기";}//성인용보행기
 if($row["incontinencePanty"] > 0){$recipientToolList["Result"]["ds_payPsbl1"][]["WIM_ITM_CD"] = "요실금팬티";}else{$recipientToolList["Result"]["ds_payPsbl2"][]["WIM_ITM_CD"] = "요실금팬티";}//요실금팬티
@@ -72,7 +72,7 @@ if($row["lendRunway"] > 0){$recipientToolList["Result"]["ds_payPsblLnd1"][]["WIM
 $recipientContractHistory['Result']['ds_result'] = null;
 $PEN_EXPI_ST_DTM = substr($row["penApplyDtm"],0,10);
 $PEN_EXPI_ED_DTM = substr($row["penApplyDtm"],13,10);
-$sql2 = "select * from pen_purchase_hist where ENT_ID='{$member['mb_entId']}' and PEN_NM='{$rn}' and PEN_LTM_NUM ='L{$id}' and PEN_EXPI_ST_DTM>='{$PEN_EXPI_ST_DTM}' and PEN_EXPI_ED_DTM<='{$PEN_EXPI_ED_DTM}'";//구매한 품목
+$sql2 = "select * from pen_purchase_hist where ENT_ID='{$member['mb_entId']}' and PEN_NM='{$rn}' and PEN_LTM_NUM ='L{$id}' and PEN_EXPI_ST_DTM>='{$PEN_EXPI_ST_DTM}' and PEN_EXPI_ED_DTM<='{$PEN_EXPI_ED_DTM}' order by ORD_END_DTM DESC";//구매한 품목
 $result = sql_query($sql2);
 $i = 0;
 while ($res_item = sql_fetch_array($result)) {

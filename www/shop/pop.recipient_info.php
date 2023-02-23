@@ -273,9 +273,8 @@ if($member["cert_data_ref"] != ""){
   background: white;
 }
 </style>
-
 <div id="pop_add_item" class="admin_popup">
-    <div class="head">
+    <div class="head" style="height:27%;">
         <p class="head-title"><!-- <span class = "rep_common"><?php echo "홍길동(L1234567890)";?></span><span>님의 요양정보</span> --></p>
         <div class="rep_amount">
             <p style="color: #ee0000;"><span>급여 잔액 : </span><span class = "rem_amount">1,600,000원</span></p>
@@ -304,12 +303,12 @@ if($member["cert_data_ref"] != ""){
                 <td colspan="3" class = "penAppDtm"> ~ </td>
               </tr>
             </table>			
-        </div>
-	<?php if($page_type == "search"){?>
-		<input type="button" value="요양정보업데이트" id="pen_info_update" style="float:right;margin-top:5px;">
-	<?php }?>
+        </div>	
     </div>
-    <div class="separator">
+	<?php if($page_type == "search"){?>
+		<span id="search_date" style="font-size:15px;float:left;margin-top:5px;">(조회 : 0000-00-00)</span> <input type="button" value="요양정보업데이트" id="pen_info_update" style="float:right;margin-top:5px;">
+	<?php }?>
+    <div class="separator" style="margin-top:-10px;">
         <p><span class="line"> </span> </p>
     </div>
     <div class="contents">
@@ -317,15 +316,15 @@ if($member["cert_data_ref"] != ""){
         <table>
             <colgroup>
               <col width="10%"/>
+              <col width="10%"/>
+              <col width="10%"/>
+              <col width="10%"/>
+              <col width="10%"/>
+              <col width="10%"/>
+              <col width="5%"/>
+              <col width="5%"/>
+              <col width="10%"/>
               <col width="20%"/>
-              <col width="10%"/>
-              <col width="10%"/>
-              <col width="10%"/>
-              <col width="10%"/>
-              <col width="5%"/>
-              <col width="5%"/>
-              <col width="5%"/>
-              <col width="15%"/>
             </colgroup>
             <thead>
                 <tr>
@@ -353,15 +352,15 @@ if($member["cert_data_ref"] != ""){
         <table>
             <colgroup>
               <col width="10%"/>
+              <col width="10%"/>
+              <col width="10%"/>
+              <col width="10%"/>
+              <col width="10%"/>
+              <col width="10%"/>
+              <col width="5%"/>
+              <col width="5%"/>
+              <col width="10%"/>
               <col width="20%"/>
-              <col width="10%"/>
-              <col width="10%"/>
-              <col width="10%"/>
-              <col width="10%"/>
-              <col width="5%"/>
-              <col width="5%"/>
-              <col width="5%"/>
-              <col width="15%"/>
             </colgroup>
             <thead>
                 <tr>
@@ -536,7 +535,7 @@ if($member["cert_data_ref"] != ""){
         var used_period = <?=json_encode($used_period);?>;
         // 요양정보 간편조회 페이지에서 호출한 경우 => 직접 api에서 데이터 받아와서 뿌림
         if(page_type == 'search'){ 
-            var head_title = `<span class = "rep_common"><?php echo "홍길동(L1234567890)";?></span><span>님의 요양정보</span> <span id="search_date">(조회 : 0000-00-00)</span>`;
+            var head_title = `<span class = "rep_common"><?php echo "홍길동(L1234567890)";?></span><span>님의 요양정보</span>`;
             $(".head-title").append(head_title);
 
             penLtmNum_parent = "<?=str_replace('L','',$_GET['penLtmNum'])?>";
@@ -623,7 +622,7 @@ if($member["cert_data_ref"] != ""){
                         }
                     }
 
-                    let tool_list_api = JSON.parse(data['data']['recipientToolList'])['Result'];
+                    let tool_list_api = data['data']['recipientToolList']['Result'];
                     $('#table_rental').empty();
                     $('#table_sale').empty();
 					
@@ -1098,6 +1097,7 @@ if($member["cert_data_ref"] != ""){
 			var head_title = `<span class = "rep_common"><?php echo "홍길동(L1234567890)";?></span><span>님의 요양정보</span>`;
             $(".head-title").html('');
 			$(".head-title").append(head_title);
+			$("#search_date").text("");//조회날짜 지우기
 
             penLtmNum_parent = "<?=str_replace('L','',$_GET['penLtmNum'])?>";
             penNm_parent = "<?=$_GET['penNm']?>";
@@ -1145,7 +1145,7 @@ if($member["cert_data_ref"] != ""){
                     $(".penRecGraNm").text(rep_info_api['LTC_RCGT_GRADE_CD']+"등급");
                     $(".penTypeNm").text(penPayRate_api);
                     $(".penExpiDtm").text(rep_info_api['RCGT_EDA_DT']);
-                    $(".penAppDtm").text(applydtm);
+                    $(".penAppDtm").text(applydtm);					
 
                     var contract_list = data['data']['recipientContractHistory']['Result']['ds_result'] == null ?[] :data['data']['recipientContractHistory']['Result']['ds_result'];
                     var contract_cnt = [];
