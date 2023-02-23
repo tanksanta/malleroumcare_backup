@@ -7,15 +7,20 @@ $sql = " select * from purchase_order where od_id = '$od_id' ";
 $od = sql_fetch($sql);
 
 $od['od_send_cost'] = $send_cost ? $send_cost : $od['od_send_cost'];
-
-
+$od_discount_info = json_decode($od['od_discount_info'], true);
+$total_refund = 0;
+foreach ($od_discount_info as $key => $val) {
+  if($val['discount_type'] == 'r'){
+      $total_refund =+ $val['discount_it_price']*$val['discount_qty'];
+  }
+}
 // 파트너 정보
 $sql = " select mb_tel, mb_hp, mb_fax from g5_member where mb_id = '{$od['mb_id']}' ";
 $mb = sql_fetch($sql);
 
 
 // 상품목록
-$sql = "
+$sql = " 
     SELECT a.it_id,
         a.it_name,
         a.cp_price,
@@ -36,9 +41,9 @@ $sql = "
         a.ct_warehouse,
         a.ct_warehouse_address,
         a.ct_warehouse_phone
-    FROM
+    FROM 
         purchase_cart a left join {$g5['g5_shop_item_table']} b on ( a.it_id = b.it_id )
-    WHERE
+    WHERE 
         a.od_id = '$od_id'
         -- AND a.ct_status NOT IN ('관리자발주취소')
     GROUP BY a.it_id, a.ct_uid
@@ -56,7 +61,7 @@ for($i=0; $row=sql_fetch_array($result); $i++) {
 
     // 상품의 옵션정보
     $sql = "
-            SELECT
+            SELECT 
                 ct_id,
                 mb_id,
                 it_id,
@@ -80,7 +85,7 @@ for($i=0; $row=sql_fetch_array($result); $i++) {
             WHERE od_id = '{$od_id}'
                 AND it_id = '{$row['it_id']}'
                 AND ct_uid = '{$row['ct_uid']}'
-            ORDER BY
+            ORDER BY 
                 io_type asc, ct_id asc
     ";
     $res = sql_query($sql);
@@ -114,7 +119,8 @@ for($i=0; $row=sql_fetch_array($result); $i++) {
                     SUM(ct_send_cost) as sendcost
                 from purchase_cart
                 where it_id = '{$row['it_id']}'
-                    and od_id = '{$od_id}' ";
+                    and od_id = '{$od_id}'
+                    -- and ct_status not in ('관리자발주취소', '발주취소', '취소') ";
     $sum = sql_fetch($sql);
 
     $row['sum'] = $sum;
@@ -122,7 +128,7 @@ for($i=0; $row=sql_fetch_array($result); $i++) {
 
     $sql_taxInfo = 'select `it_taxInfo` from `g5_shop_item` where `it_id` = "'.$options[$k]['it_id'].'"';
     $it_taxInfo = sql_fetch($sql_taxInfo);
-    if($it_taxInfo['it_taxInfo']=="과세"){
+    if($it_taxInfo['it_taxInfo']=="과세"){ 
         $money1+=$sum['price'] - $sum['discount'];
     }else{
         $money2+=$sum['price'] - $sum['discount'];
@@ -567,7 +573,7 @@ $banks = $banks2;
                             /
                             <span style="font-weight:bold;font-size:14px;letter-spacing:1px;">(&nbsp;&nbsp;&#8361;<?php echo number_format($amount['order']); ?>&nbsp;&nbsp;) VAT포함</span>
                             -->
-                            <span style="font-weight:bold;font-size:14px;letter-spacing:1px;"><?php echo number_format($amount['order']); ?>원&nbsp;&nbsp;/&nbsp;&nbsp;VAT포함</span>
+                            <span style="font-weight:bold;font-size:14px;letter-spacing:1px;"><?php echo number_format($amount['order']-$total_refund); ?>원&nbsp;&nbsp;/&nbsp;&nbsp;VAT포함</span>
                         </td>
                     </tr>
                 </table>
@@ -636,7 +642,7 @@ $banks = $banks2;
                         ?>
 
                         <td align="center"><?php echo $options[$k]['ct_qty']; ?></td>
-                        <td align="center"><?php echo number_format($options[$k]['opt_price'] / 1.1); ?></td>
+                        <td align="center"><?php echo number_format($options[$k]['opt_price'] ); ?></td>
                         <td align="center"><?php echo number_format($options[$k]['opt_price'] / 1.1 * $options[$k]['ct_qty']); ?></td>
                         <td align="center"><?php echo number_format($options[$k]['opt_price'] / 1.1 / 10 * $options[$k]['ct_qty']); ?></td>
                         <td align="center"><?php echo number_format(($options[$k]['opt_price'] / 1.1 * $options[$k]['ct_qty']) + ($options[$k]['opt_price'] / 1.1 / 10 * $options[$k]['ct_qty'])); ?></td>
@@ -670,7 +676,7 @@ $banks = $banks2;
                 </tr>
                 <?php $a++; } ?>
 
-                <?php $od_discount_info = json_decode($od['od_discount_info'], true); $total_discount = 0; $total_basic = 0; $total_tax = 0;
+                <?php $total_discount = 0; $total_basic = 0; $total_tax = 0;
                 if ($od_discount_info) {
                   foreach ($od_discount_info as $key => $val) {
                     if($val['discount_type'] == 'r'){?>

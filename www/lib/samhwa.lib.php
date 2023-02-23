@@ -513,7 +513,6 @@ $purchase_order_steps = array(
   '5' => array(
     'name' => '발주취소',
     'val' => '발주취소',
-    'val' => '취소',
     'orderlist' => true,
     'step' => 70,
     'chulgo' => '',
