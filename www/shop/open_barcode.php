@@ -201,9 +201,13 @@ function receiveBarcode(tempBarcode) {
       return;
     }
 
-    var barcode =  scannedBarcode.replace(cur_pdcode,"");
+    var barcode =  scannedBarcode.replace(cur_pdcode,""); // 제품 코드 제거된 바코드 추출
+        barcode =  barcode.replace("-",""); // 추출된 바코드에서 '하이픈' 제거
+
     var target = findEmptyBarcodeInput();
 
+    // cur_pdcode 글로벌 변수로 상위에 무조건 정의 되어 있어야 한다.
+    // cur_pdcode 해당 변수는 상품의 급여제품 코드로 스캔된 앞 12자리와 화면상 선택된 제품의 급여제품 코드가 동일해야 한다.
     if( cur_pdcode === scannedBarcode.substr(0,12) ) {
 
       if (barcode.length !== 12) {
