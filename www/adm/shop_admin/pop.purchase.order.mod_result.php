@@ -287,6 +287,11 @@ try {
         //echo("기존");
         $_ct = "";
         $_ct = $ct_old[ $_ct_id[$key] ];
+
+        // ct_part_info
+        $ct_part_info = json_decode( $_ct['ct_part_info'], true )[1]; // 차수 없을때
+        $ct_part_info['_in_dt'] = $_POST['od_datetime_date'];
+        $enc_ct_part_info = '{ "1" : '.json_encode($ct_part_info).'}';
         
         $sql = "";
         $sql = ("
@@ -343,7 +348,7 @@ try {
             `ct_warehouse_phone` = '$ct_warehouse_phone',
             `ct_supply_partner` = '{$od_member['mb_id']}',
             `ct_delivery_expect_date` = '{$od_datetime_date}',
-            `ct_part_info` = '{$_ct['ct_part_info']}',
+            `ct_part_info` = '{$enc_ct_part_info}',
             `ct_modify_date` = '" . G5_TIME_YMD . "'
           WHERE 
             `od_id` = '{$_ct['od_id']}' 

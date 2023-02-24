@@ -43,7 +43,8 @@ if($od['mb_temp']) {
 $cart_result = sql_query("
   SELECT
     c.*,
-    i.it_img1
+    i.it_img1,
+    i.ca_id
   FROM
     purchase_cart c
   LEFT JOIN
@@ -63,6 +64,7 @@ $count_delivery_inserted = 0; // 배송비 정보 입력된 숫자
 $carts = [];
 $carts_on = [];
 $has_install = false; // 설치 상품 있는지 여부
+$ca_arr = ['1010','1040','1050','10a0','2010','2080','7020','7030','7040','7050','7060','7070'];
 while($row = sql_fetch_array($cart_result)) {
   if($row['ct_delivery_num'])
     $count_delivery_inserted++;
@@ -78,10 +80,14 @@ while($row = sql_fetch_array($cart_result)) {
 
   if(strpos($row['ct_status'], "취소") == false){ // 발주취소건은 정산정보에 포함시키지 않음
     $price = intval($row['ct_price']) * intval($row['ct_qty']);
-    // 공급가액
-    $price_p = @round(($price ?: 0) / 1.1);
-    // 부가세
-    $price_s = @round(($price ?: 0) / 1.1 / 10);
+
+    if(in_array($row['ca_id'],$ca_arr)){
+      $price_p = $price?:0; // 공급가액(특정 카테고리 상품은 발주 부가세 없음)
+      $price_s = 0; // 부가세(특정 카테고리 상품은 발주 부가세 없음)
+    } else {
+      $price_p = @round(($price ?: 0) / 1.1); // 공급가액
+      $price_s = @round(($price ?: 0) / 1.1 / 10); // 부가세
+    }
 
     $total_price_p += $price_p;
     $total_price_s += $price_s;
