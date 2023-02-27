@@ -933,7 +933,7 @@ if ($option) {
             <img class="barcode_icon type1" src="/img/barcode_icon_1.png" alt="등록가능">
             <span class="overlap">중복</span>
             <img class="barcode_icon type2" src="/img/barcode_icon_3.png" alt="등록불가 (이미존재)">
-            <img src="/img/btn_pda.png" class="btn_pda" data-type="pda" onclick="openWebBarcode(this)">
+            <img src="/img/btn_pda.png" class="nativePopupOpenBtn btn_pda" data-type="pda" onclick="openWebBarcode(this)">
           </li>
         </ul>
       </div>
@@ -953,7 +953,7 @@ if ($option) {
       <img class="barcode_icon type1" src="/img/barcode_icon_1.png" alt="등록가능">
       <span class="overlap">중복</span>
       <img class="barcode_icon type5" src="/img/barcode_icon_3.png" alt="등록불가 (이미존재)">
-      <img src="/img/btn_pda.png" class="btn_pda" data-type="pda" onclick="openWebBarcode(this)">
+      <img src="/img/btn_pda.png" class="nativePopupOpenBtn btn_pda" data-type="pda" onclick="openWebBarcode(this)">
     </li>
   </div>
 </div>
@@ -975,7 +975,7 @@ if (!$member['mb_id']) {
   $(function() {
     renderData(true);
 
-    $(document).on('keyup, keydown', '.notall', function () {
+    $(document).on('keyup', '.notall', function () {
       var last_index = $(this).closest('ul').find('li').last().index();
       var this_index = $(this).closest('li').index();
 
@@ -1866,8 +1866,9 @@ if (!$member['mb_id']) {
       clearInterval(BARCODE_INPUT_FOCUS_INTERVAL);
       return;
     }
+    $('#web-barcode-input').attr("readonly",true);
     $('#web-barcode-input').focus();
-    $('#web-barcode-input').click();
+    setTimeout(function(){ $('#web-barcode-input').attr("readonly",false); }, 80);
   }
 
   function openWebBarcode(target) {
@@ -1883,7 +1884,11 @@ if (!$member['mb_id']) {
     }
 
     $('#web-barcode').css('display', 'flex');
+
+    $('#web-barcode-input').attr("readonly",true);
     $('#web-barcode-input').focus();
+    setTimeout(function(){ $('#web-barcode-input').attr("readonly",false); }, 80);
+
     IS_OPEN_WEB_BARCODE = true;
     $('#web-barcode-input').val('');
     BARCODE_INPUT_FOCUS_INTERVAL = setInterval(barcodeInputFocus, 1000);
@@ -2208,6 +2213,12 @@ if (!$member['mb_id']) {
 	$('.qty_input').val('1');
     $('.barcode_input_list').empty();
     $('#add_barcode_pop .barcode_input_list').append($('#mockup').html());
+  }
+
+
+  // 앱이 아닌 경우 바코드버튼 숨김
+  if(!window.EroummallApp && !(window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.openBarcode )) {
+    $('.nativePopupOpenBtn').hide();
   }
 </script>
 

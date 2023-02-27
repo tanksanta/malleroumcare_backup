@@ -11,10 +11,8 @@ if (!$it_id || !$barcode) {
 // INNER JOIN g5_shop_item AS i ON c.od_id = i.od_id
 // WHERE ct_id = '{$ct_id}'
 // ";
-$sql = "SELECT i.prodPayCode as prod_pay_code FROM g5_shop_item as i
-WHERE i.it_id = '{$it_id}'
-";
-$item = sql_fetch($sql);
+
+$item = sql_fetch("	SELECT prodPayCode as prod_pay_code FROM `g5_shop_item` WHERE `it_id` = '{$it_id}' ");
 
 
 if (!$item['prod_pay_code']) {
@@ -27,7 +25,6 @@ if (strlen($barcode) > 13) {
 	if (strpos($barcode, $item['prod_pay_code']) === false) {
 		json_response(500, '상품과 바코드의 제품코드가 잘못되었습니다.');
 	}
-
 	$converted_barcode = explode($item['prod_pay_code'], $barcode)[1];
 }
 
