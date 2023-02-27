@@ -274,7 +274,7 @@ if($member["cert_data_ref"] != ""){
 }
 </style>
 <div id="pop_add_item" class="admin_popup">
-    <div class="head" style="height:27%;">
+    <div class="head" <?php if($page_type == "search"){?>style="height:27%;"<?php }?>>
         <p class="head-title"><!-- <span class = "rep_common"><?php echo "홍길동(L1234567890)";?></span><span>님의 요양정보</span> --></p>
         <div class="rep_amount">
             <p style="color: #ee0000;"><span>급여 잔액 : </span><span class = "rem_amount">1,600,000원</span></p>
@@ -308,7 +308,7 @@ if($member["cert_data_ref"] != ""){
 	<?php if($page_type == "search"){?>
 		<span id="search_date" style="font-size:15px;float:left;margin-top:5px;">(조회 : 0000-00-00)</span> <input type="button" value="요양정보업데이트" id="pen_info_update" style="float:right;margin-top:5px;">
 	<?php }?>
-    <div class="separator" style="margin-top:-10px;">
+    <div class="separator"<?php if($page_type == "search"){?> style="margin-top:-10px;"<?php }?>>
         <p><span class="line"> </span> </p>
     </div>
     <div class="contents">
@@ -784,7 +784,7 @@ if($member["cert_data_ref"] != ""){
 					*/
                 },
                 error: function (jqXhr, textStatus, errorMessage) {
-                    var errMSG = typeof(jqXhr['responseJSON']) == "undefined"? "수급자명 / 장기요양인정번호 확인 후, 조회하시기 바랍니다.":jqXhr['responseJSON']['message'];
+                    var errMSG = (typeof(jqXhr['responseJSON']) == "undefined")? "수급자명 / 장기요양인정번호 확인 후, 조회하시기 바랍니다.":jqXhr['responseJSON']['message'];
       
                     //인증서 업로드 추가 영역 
 				if(errMSG == "수급자명 / 장기요양인정번호 확인 후, 조회하시기 바랍니다." ){
@@ -1112,7 +1112,6 @@ if($member["cert_data_ref"] != ""){
 
                     let rep_list_api = data['data']['recipientContractDetail']['Result'];                
                     let rep_info_api = rep_list_api['ds_welToolTgtList'][0];
-                    
 					let today = new Date();
 	
 					if(rep_info_api['REDUCE_NM'] == '감경'){ //REDUCE_NM가 대상자 구분, 감경은 SBA_CD를 이용하여 본인부담율을 가져오기
@@ -1165,10 +1164,12 @@ if($member["cert_data_ref"] != ""){
 
                         for(var i = 0; i < contract_list.length; i++){
                             var paycode = contract_list[i]['WLR_MTHD_CD'] == '판매'?'01':'00';
-                            if(contract_cnt[contract_list[i]['PROD_NM']+paycode] == null)
+                            if(contract_list[i]['CNCL_YN'] == "정상"){
+							if(contract_cnt[contract_list[i]['PROD_NM']+paycode] == null)
                                 contract_cnt[contract_list[i]['PROD_NM']+paycode] = 1;
                             else 
                                 contract_cnt[contract_list[i]['PROD_NM']+paycode] += 1;
+							}
                         }
                     }
 
@@ -1231,6 +1232,7 @@ if($member["cert_data_ref"] != ""){
                                                 <td colspan="1" ><span>급여가</span></td>
                                             </tr>`;
                                 for(var ind = 0; ind < contract_list.length; ind++){
+									if(contract_list[ind]['CNCL_YN']!="정상")continue;
                                     if(contract_list[ind]['PROD_NM'] != sale_y[i]['WIM_ITM_CD']) continue;
                                     if(contract_list[ind]['WLR_MTHD_CD'] == '대여') continue;
                                     row += `<tr id="${'gumae'+index}" class="${'contract-gumae'+index}" style="display:none;">
@@ -1356,7 +1358,7 @@ if($member["cert_data_ref"] != ""){
                     });
                 },
                 error: function (jqXhr, textStatus, errorMessage) {
-                    var errMSG = typeof(jqXhr['responseJSON']) == "undefined"? "수급자명 / 장기요양인정번호 확인 후, 조회하시기 바랍니다.":jqXhr['responseJSON']['message'];
+                    var errMSG = (typeof(jqXhr['responseJSON']) == "undefined")? "수급자명 / 장기요양인정번호 확인 후, 조회하시기 바랍니다.":jqXhr['responseJSON']['message'];
                     //alert(errMSG);
                     //인증서 업로드 추가 영역 
 				if(errMSG == "수급자명 / 장기요양인정번호 확인 후, 조회하시기 바랍니다." ){
@@ -1548,7 +1550,7 @@ if($member["cert_data_ref"] != ""){
 
     function LoadingWithMask(gif) {
         //화면의 높이와 너비를 구합니다.
-        var maskHeight = window.document.body.clientHeight;
+        var maskHeight = window.document.body.clientHeight+1000;
         var maskWidth = window.document.body.clientWidth;
         //화면에 출력할 마스크를 설정해줍니다.
         var mask = "<div id='mask_loading' style='position:absolute; z-index:9000; background-color:#000000; left:0; top:0; display: flex; justify-content: center; align-items: center;'><img id ='loadingImg' src='"+ gif + "' style='position: absolute; display: block; margin: auto;'/></div>";
