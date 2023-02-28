@@ -380,7 +380,7 @@ $combine_ct_items = [];
 for ($ii = 0; $ii < count($ct_ids); $ii++) {
 
   $it = sql_fetch("
-      SELECT cart.*, item.it_thezone2
+      SELECT cart.*, item.it_thezone2, item.ca_id
       FROM purchase_cart as cart
       INNER JOIN g5_shop_item as item ON cart.it_id = item.it_id
       WHERE cart.ct_id = '{$ct_ids[$ii]}'
@@ -453,6 +453,7 @@ if (count($combine_ct_items) > 0) {
 
 $i = 1;
 $rows = [];
+$ca_arr = ['1010','1040','1050','10a0','2010','2080','7020','7030','7040','7050','7060','7070'];
 foreach ($ct_items as $it) {
   $od = $it['od_info'];
 
@@ -462,8 +463,13 @@ foreach ($ct_items as $it) {
   $ct_delivery_expect_date = $ct_part_info['_in_dt']?date("Y-m-d", strtotime($ct_part_info['_in_dt'])) :"-" ;
   $ct_delivered_qty = $ct_part_info['_in_qty']?:"0" ;
   $item_price = number_format($it['ct_price'])?:"-";
-  $basic_price = $it['ct_price']?number_format(round(($it['ct_price']*$it["ct_qty"])/1.1)):"-";
-  $tax_price = $it['ct_price']?number_format(round(($it['ct_price']*$it["ct_qty"])/11)):"-";
+  if(in_array($it['ca_id'],$ca_arr)){
+    $basic_price = $it['ct_price']?number_format(round($it['ct_price']*$it["ct_qty"])):"-";
+    $tax_price = $it['ct_price']?"0":"-";
+  } else {
+    $basic_price = $it['ct_price']?number_format(round(($it['ct_price']*$it["ct_qty"])/1.1)):"-";
+    $tax_price = $it['ct_price']?number_format(round(($it['ct_price']*$it["ct_qty"])/11)):"-";
+  }
   $total_price = $it['ct_price']?number_format($it['ct_price']*$it["ct_qty"]):"-";
 
   $rows[] = [

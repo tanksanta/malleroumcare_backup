@@ -16,8 +16,13 @@ $where = [];
 $sel_date = in_array($sel_date, ['od_time', 'ct_ex_date']) ? $sel_date : '';
 if(! preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/", $fr_date) ) $fr_date = '';
 if(! preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/", $to_date) ) $to_date = '';
-if($sel_date && $fr_date && $to_date)
+if($sel_date == 'od_time' && $fr_date && $to_date)
   $where[] = " ( {$sel_date} between '$fr_date 00:00:00' and '$to_date 23:59:59') ";
+else if($sel_date == 'ct_ex_date' && $fr_date && $to_date){
+  $timestamp = strtotime($fr_date." -1 days");
+  $fr_date_yesterday = date("Y-m-d", $timestamp);
+  $where[] = " ( SUBSTRING_INDEX(SUBSTRING_INDEX(ct_part_info, '\"_out_dt\":\"', -1),'\"',1) between '$fr_date_yesterday 23:59:59' and '$to_date 23:59:59') ";
+}
 
 # 작업상태
 $incompleted = $_GET['incompleted'];
@@ -425,8 +430,8 @@ tr.hover { background-color: #fbf9f7 !important; }
                     case '입고완료': $_bg_color = "#36a6de"; $_txt = $_txt."(출고후)"; break;
                     case '마감완료': $_bg_color = "#604A7B"; break;
 //                    case '파트너발주취소': $_bg_color = "#002060"; break;
-                     case '관리자발주취소': $_bg_color = "#6f6f6f"; break;
-                   case '발주취소': $_bg_color = "#6f6f6f"; break;
+                    case '관리자발주취소': $_bg_color = "#6f6f6f"; break;
+                    case '발주취소': $_bg_color = "#6f6f6f"; break;
                     default: break;
                   }
                   echo ('

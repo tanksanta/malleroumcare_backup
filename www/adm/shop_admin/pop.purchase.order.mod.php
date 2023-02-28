@@ -540,7 +540,7 @@ include_once('./pop.head.php');
   <body>
     <div style="padding-bottom: 60px">
       <div id="pop_order_add" class="admin_popup admin_popup_padding purchase_order">
-        <h4 class="h4_header"><?php echo $title; ?></h4>
+        <h4 class="h4_header"><?php echo $title; $ct_part_info = json_decode( $_array_ct_list[0]['ct_part_info'], true )[1]; // 차수 없을때?></h4>
         <p style="position: absolute;left: 436px;top: 20px;font-size: 14px;font-weight: 800;">총 발주 금액 : <span class="total_price_span">0</span>원</p>
         
         <form class="form_section active">
@@ -551,7 +551,7 @@ include_once('./pop.head.php');
                 <th>입고예정일</th>
                 <td>
                   <div style="position:relative;">
-                    <input type="text" name="od_datetime_date" value="<?=date("Y-m-d", strtotime($_array_ct_list[0]['ct_delivery_expect_date']));?>" class="frm_input datepicker" style="min-width: 100px;width: 100px;" autocomplete="off">
+                    <input type="text" name="od_datetime_date" value="<?=date("Y-m-d", strtotime($ct_part_info['_in_dt']));?>" class="frm_input datepicker" style="min-width: 100px;width: 100px;" autocomplete="off">
                   </div>
                 </td>
                 <th>배송지</th>
