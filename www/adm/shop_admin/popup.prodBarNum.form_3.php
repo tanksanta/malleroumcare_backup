@@ -161,17 +161,17 @@ if($od["od_b_tel"]) {
     .imfomation_box .li_box .folding_box > span:after { display: block; content: ''; clear: both; }
     .imfomation_box .li_box .folding_box > .inputbox { width: 100%; position: relative; padding: 0; }
     .imfomation_box .li_box .folding_box > .inputbox > li { width: 100%; position: relative; }
-    .imfomation_box .li_box .folding_box > .inputbox > li > .frm_input { width: 100%; height: 50px; padding-right: 85px; box-sizing: border-box; padding-left: 20px; font-size: 17px; border: 1px solid #E4E4E4; }
+    .imfomation_box .li_box .folding_box > .inputbox > li > .frm_input { width: 100%; height: 50px; padding-right: 85px; box-sizing: border-box; padding-left: 10px; font-size: 17px; border: 1px solid #E4E4E4; }
     .imfomation_box .li_box .folding_box > .inputbox > li > .frm_input.active { border-color: #FF5858; }
     .imfomation_box .li_box .folding_box > .inputbox > li > .frm_input::placeholder { font-size: 16px; color: #AAA; }
 
     .imfomation_box .li_box .folding_box > .inputbox > li > .btn_bacod { position: absolute; width: 30px; right: 50px; top: 11px; z-index: 2; cursor: pointer; }
-    .imfomation_box .li_box .folding_box > .inputbox > li > .btn_pda { position: absolute; width: 48px; right: 5px; top: 1px; z-index: 2; cursor: pointer; }
+    .imfomation_box .li_box .folding_box > .inputbox > li > .btn_pda { position: absolute; width: 35px; right: 1px; top: 7px; z-index: 2; cursor: pointer; }
     
     .imfomation_box .li_box .folding_box > .inputbox > li > img { position: absolute; width: 30px; right: 15px; top: 11px; z-index: 2; cursor: pointer; }
-    .imfomation_box .li_box .folding_box > .inputbox > li > i { position: absolute; right: 100px; top: 17px; z-index: 2; font-size: 19px; color: #FF6105; opacity: 0; }
+    .imfomation_box .li_box .folding_box > .inputbox > li > i { position: absolute; right: 38px; top: 17px; z-index: 2; font-size: 19px; color: #FF6105; opacity: 0; }
     .imfomation_box .li_box .folding_box > .inputbox > li > i.active { opacity: 1; }
-    .imfomation_box .li_box .folding_box > .inputbox > li > .overlap { position: absolute; right: 55px; top: 15px; z-index: 2; font-size: 14px; color: #DC3333; opacity: 0; font-weight: bold; }
+    .imfomation_box .li_box .folding_box > .inputbox > li > .overlap { position: absolute; right: 35px; top: 15px; z-index: 2; font-size: 14px; color: #DC3333; opacity: 0; font-weight: bold; }
     .imfomation_box .li_box .folding_box > .inputbox > li > .overlap.active { opacity: 1; }
 
     .imfomation_box .li_box .folding_box .span{margin-left :20px;width:90%;}
@@ -209,7 +209,7 @@ if($od["od_b_tel"]) {
       height:35px;
       position: absolute;
       top: 8px;
-      right: 130px;
+      right: 80px;
       display:none;
     }
 
@@ -231,7 +231,7 @@ if($od["od_b_tel"]) {
     .imfomation_box .li_box .folding_box > .inputbox > li .barcode_icon.type5 {
       position: absolute;
       width: 20px;
-      right: 100px;
+      right: 38px;
       top: 17px;
       z-index: 2;
       opacity: 0;
@@ -556,6 +556,8 @@ if($od["od_b_tel"]) {
     $(".hide_area").hide();
 
 
+
+
     $(document).on('keyup', '.notall', function () {
       var last_index = $(this).closest('ul').find('li').last().index();
       var this_index = $(this).closest('li').index();
@@ -569,15 +571,46 @@ if($od["od_b_tel"]) {
       keyupTimer = setTimeout(notallLengthCheck, 350);
 
     });
+
     
+    $.fn.setCursorPosition = function(position) {
+  if (this.length === 0) return this;
+  return this.each(function() {
+    if (typeof position !== "number") return;
+    if (this.setSelectionRange && this.type !== "number") {
+      this.setSelectionRange(position, position);
+    }
+  });
+};
+
+
 
     $(".notall").dblclick(function() {
       if(!confirm("해당 바코드를 다시 스캔 하시겠습니까?\n\n[확인]: 다시 스캔\n[취소]: 수동 입력")) {
+        // 수동 입력
+        
         $(this).attr("readonly",false);       
         $(this).css({ "background-color": "#fff" });
-        $(this).focus();
         $(this).closest('li').find(".nativePopupOpenBtn.btn_pda").show();
+       
+
+        var value = $(this).val();
+        var len = value.length;
+        $(this).focus();
+
+        if (this.type !== "number") {
+          this.setSelectionRange(len, len);
+        } else {
+          var input = $(this).get(0);
+          var temp = input.value;
+          input.value = '';
+          input.value = temp;
+          //input.setSelectionRange(len, len);
+        }
+
+        
       } else {
+        // 다시스캔
         $(this).val("");
         $(this).css({ "background-color": "#fff" });
         $(this).closest('li').find('i').removeClass("active");
@@ -603,60 +636,43 @@ if($od["od_b_tel"]) {
     
 
     $('.barcode_add').click(function() {
-        var ul = $(this).closest('ul');
-        var li_num = $(this).closest('li').index();
-        var li_val = $(this).closest('li').find('.notall').val();
-        var li_last = $(ul).find('li').last().index();
-        var p_num = 0;
 
-        if(li_val.length !== 12){
-            alert("바코드 12자리를 입력해주세요.");
+      var ul = $(this).closest('ul');
+      var li_num = $(this).closest('li').index();
+      var li_val = $(this).closest('li').find('.notall').val();
+      var li_last = $(ul).find('li').last().index();
+      var p_num = 0;
+
+      if(li_val.length !== 12){
+          alert("바코드 12자리를 입력해주세요.");
+          return false;
+      }     
+
+      for(var i = li_num+1; i<=li_last; i++){
+        p_num++;
+        $(ul).find('li').eq(i).find('.notall').prop('readonly', false);
+        $(ul).find('li').eq(i).find('.notall').val( (parseInt( li_val )+p_num) );
+
+        // 연속 번호로 12자리 이상을 입력할 수 없음.
+        if( $(ul).find('li').eq(i).find('.notall').val().length !== 12) {
+
+          if( $(ul).find('li').eq(i).find('.notall').val().length > 12 ) {
+            alert("12자리 이상의 연속 번호는 적용할 수 없습니다.\n연속 적용하려는 바코드를 확인해주세요.");
             return false;
-        }
+          } else {
 
-        
-        var _check = "Y";
-        if( !confirm("바코드 번호를 연속으로 적용 하시겠습니까?\n\n[확인] : 연속 적용\n[취소] : 빈칸 적용") ) {
-          _check = "N";
-        }
-        
-
-        for(var i = li_num+1; i<=li_last; i++){
-          //p_num++;
-          //$(ul).find('li').eq(i).find('.notall').val( (parseInt( li_val )+p_num) );
-
-          if( (_check==="Y") ) {
-            p_num++;
-            // 연번 입력
-            $(ul).find('li').eq(i).find('.notall').val( (parseInt( li_val )+p_num) );
-          } else {            
-            // 비어 있는 칸에만 연번 입력
-            if( !$(ul).find('li').eq(i).find('.notall').val() ) {
+            if( confirm("정확하지 않은 바코드 정보가 존재 합니다.\n바코드값: " + $(ul).find('li').eq(i).find('.notall').val() + "\n해당 필드의 바코드 정보를 덮어쓰기 하시겠습니까?") ) {
               p_num++;
               $(ul).find('li').eq(i).find('.notall').val( (parseInt( li_val )+p_num) );
             }
+            
           }
 
-          // 연속 번호로 12자리 이상을 입력할 수 없음.
-          if( $(ul).find('li').eq(i).find('.notall').val().length !== 12) {
-
-            if( $(ul).find('li').eq(i).find('.notall').val().length > 12 ) {
-              alert("12자리 이상의 연속 번호는 적용할 수 없습니다.\n연속 적용하려는 바코드를 확인해주세요.");
-              return false;
-            } else {
-
-              if( confirm("정확하지 않은 바코드 정보가 존재 합니다.\n바코드값: " + $(ul).find('li').eq(i).find('.notall').val() + "\n해당 필드의 바코드 정보를 덮어쓰기 하시겠습니까?") ) {
-                p_num++;
-                $(ul).find('li').eq(i).find('.notall').val( (parseInt( li_val )+p_num) );
-              }
-              
-            }
-
-          }
-         
         }
+        
+      }
 
-        notallLengthCheck();
+      notallLengthCheck();
     });
 
 
@@ -718,15 +734,18 @@ if($od["od_b_tel"]) {
         if(val.length > 1) {
           for(var j = 0; j < val.length; j++) {
             var idx = val[j];
-            $($item[idx]).parent().find("i").removeClass("active");
+            $($item[idx]).parent().find("i, .type5").removeClass("active");
             $($item[idx]).parent().find(".overlap").addClass("active");
           }
         }
       }
 
       var ct_id = $(this).data('id');
+ 
       validateBarcodeBulk(ct_id);
+
     });
+
   }
 
 
