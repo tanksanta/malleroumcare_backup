@@ -1426,7 +1426,7 @@ if($od["od_b_tel"]) {
 
 
             if (window.opener != null && IS_POP) {
-              opener.location.reload();
+              //opener.location.reload();
               window.close();
             }
             <?php if($no_refresh == 'partner') { ?>
