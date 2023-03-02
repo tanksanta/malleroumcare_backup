@@ -889,6 +889,9 @@ if($is_main && !$is_member) {
 
           <?php if ($member['mb_type'] !== 'normal') { ?>
           <div class="btn_info_area">
+            <a href="https://forms.gle/5zr5u4aFX4vbjrdT9" target="_blank">
+              <img src="<?=THEMA_URL?>/assets/img/btn_catalogue.jpg" alt="카탈로그 신청 안내" />
+            </a>
             <a href="/bbs/board.php?bo_table=rental">
               <img src="<?=THEMA_URL?>/assets/img/btn_rental.jpg" alt="렌탈 신청 게시판 안내" />
             </a>
