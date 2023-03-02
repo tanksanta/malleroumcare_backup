@@ -748,7 +748,7 @@ a.btn_schedule {
                     출고예정 :
                   <?php } ?>
                     <?=$row['ct_direct_delivery_date'] ? date('Y-m-d H시', strtotime($row['ct_direct_delivery_date'])) : ''?>
-                    <button type="button" class="btn_change"
+                    <button type="button" class="btn_change" <?php echo ($_check_ct_status=='배송완료'||$_check_ct_status=='주문취소')?'style="display:none;"':''; ?>
                       data-date="<?=date('Y-m-d', strtotime($row['ct_direct_delivery_date'] ?: 'now'))?>"
                       data-time="<?=date('H', strtotime($row['ct_direct_delivery_date'] ?: 'now'))?>"
 					  data-odtp="<?=$row['ct_is_direct_delivery']?>" 

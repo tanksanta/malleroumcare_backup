@@ -426,7 +426,8 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.magnific-popup.js"></script>',
       </div>
       <div class="row no-gutter" id="div_delivery_info_mobile" style="display: none">
         <a href="javascript:void(0);" id="btn_delivery_info_mobile" class="delivery-status-info col full-width text-center">
-          배송정보 (<?=$count_delivery_inserted?>/<?=count($carts)?>)
+          <!-- 배송정보 (<?=$count_delivery_inserted?>/<?=count($carts)?>)-->
+          <span style="font-weight: bold">바코드 ･ 배송정보</span>
         </a>
       </div>
       <div class="row no-gutter delivery-info-wrap">
@@ -683,7 +684,8 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.magnific-popup.js"></script>',
       </div>
       <div class="row no-gutter">
         <a href="javascript:void(0);" id="btn_delivery_info" class="delivery-status-info col full-width text-center">
-          배송정보 (<?=$count_delivery_inserted?>/<?=count($carts)?>)
+          <!-- 배송정보 (<?=$count_delivery_inserted?>/<?=count($carts)?>)-->
+          <span style="font-weight: bold">바코드 ･ 배송정보</span>
         </a>
       </div>
       <div class="delivery-info-list">
@@ -705,10 +707,9 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.magnific-popup.js"></script>',
           		<?php } ?>
                 <div class="col right">
                   <input type="hidden" name="ct_id[]" value="<?=$cart['ct_id']?>">
-                  <?php if($cart['ct_status'] != '취소' && $cart['ct_status'] != '주문무효') { ?>
-                  <input type="text" class="datepicker" name="ct_direct_delivery_date_<?=$cart['ct_id']?>" <?php if($cart['ct_status'] == '완료') { echo 'disabled';}?>
+                  <input type="text" class="datepicker" name="ct_direct_delivery_date_<?=$cart['ct_id']?>" <?php if(in_array($cart['ct_status'],array('완료', '주문무효', '취소'))) { echo 'disabled';}?>
                     value="<?=$cart['ct_direct_delivery_date'] ? date('Y-m-d', strtotime($cart['ct_direct_delivery_date'])) : ''?>">
-                  <select name="ct_direct_delivery_time_<?=$cart['ct_id']?>" <?php if($cart['ct_status'] == '완료') { echo 'disabled';}?>>
+                  <select name="ct_direct_delivery_time_<?=$cart['ct_id']?>" <?php if(in_array($cart['ct_status'],array('완료', '주문무효', '취소'))) { echo 'disabled';}?>>
                     <?php
                     $ct_direct_delivery_time = $cart['ct_direct_delivery_date'] ? date('H', strtotime($cart['ct_direct_delivery_date'])) : '';
                     for($i = 0; $i < 24; $i++) {
@@ -716,7 +717,7 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.magnific-popup.js"></script>',
                     ?>
                     <option value="<?=$time?>" <?=get_selected($ct_direct_delivery_time, $time)?>>
                       <?=$time?>시</option>
-                    <?php } } ?>
+                    <?php } ?>
                   </select>
           		<input type="hidden" name="delivery_property" value="<?=$direct_delivery_type?>">
                 </div>
@@ -793,8 +794,8 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.magnific-popup.js"></script>',
 
 #popup_box iframe {
   position: relative;
-  width: 500px;
-  height: 700px;
+  width: 600px;
+  height: 800px;
   border: 0;
   background-color: #FFF;
   left: 50%;
@@ -848,7 +849,7 @@ $(function() {
   $('#btn_delivery_info').click(function(e) {
     e.preventDefault();
     $("body").addClass('modal-open');
-    $("#popup_box > div").html('<iframe src="popup.partner_deliveryinfo.php?od_id=<?=$od_id?>">');
+    $("#popup_box > div").html('<iframe src="/adm/shop_admin/popup.prodBarNum.form.php?od_id=<?=$od_id?>">');
     $("#popup_box iframe").load(function() {
       $("#popup_box").show();
     });
@@ -857,7 +858,7 @@ $(function() {
   $('#btn_delivery_info_mobile').click(function(e) {
     e.preventDefault();
     $("body").addClass('modal-open');
-    $("#popup_box > div").html('<iframe src="popup.partner_deliveryinfo.php?od_id=<?=$od_id?>">');
+    $("#popup_box > div").html('<iframe src="/adm/shop_admin/popup.prodBarNum.form.php?od_id=<?=$od_id?>">');
     $("#popup_box iframe").load(function() {
       $("#popup_box").show();
     });
