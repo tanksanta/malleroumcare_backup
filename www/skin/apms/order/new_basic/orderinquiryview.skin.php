@@ -686,6 +686,10 @@ $(function() {
                       <?php echo $item[$i]['it_name']; ?>
                       <?php if($item[$i]['opt'][$k]['ct_stock_qty']) echo '[재고소진]'; ?>
                     </a>
+                    <?php if( $item[$i]['ct_direct_delivery_date'] ) { ?>
+                      <br>
+                      <span style="font-size:10px;"><?php echo '출고예정 : ' . date('n월 j일 (H:i)', strtotime($item[$i]['ct_direct_delivery_date'])); ?></span>
+                    <?php } ?>
                   </div>
                   <?php if($item[$i]['opt'][$k]['ct_option'] != $item[$i]['it_name']) { ?>
                   <div class="text"><?=$item[$i]['opt'][$k]['ct_option']?></div>
