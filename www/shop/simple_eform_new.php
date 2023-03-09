@@ -1,41 +1,29 @@
 <?php
 include_once('./_common.php');
 
-$param = "";
-if($_GET["ms_id"] != ""){
-	$param = "?ms_id=".$_GET["ms_id"];
-}elseif($_GET["dc_id"] != ""){
-	$param = "?dc_id=".$_GET["dc_id"];
-}elseif($_POST["sw_direct"] == "1"){
-	echo '
-	<body onload="window.document.fc.submit ()">
-	<form name="fc" action="./simple_eform_new.php'.$param.'" method="post" >';
-	if($_POST["sales_inventory"] != ""){echo '<input type="hidden" name="sales_inventory" value="'.$_POST["sales_inventory"].'"><!-- 판매완료처리 -->'; }
-	echo '<input type="hidden" name="sw_direct" value="'.$_POST["sw_direct"].'">                                              <!-- 바로가기 -->
-	  <input type="hidden" name="it_id[]" value="'.$_POST["it_id"][0].'" id="it_id_r">                   <!-- 상품아이디 -->
-	  <input type="hidden" name="io_type['.$_POST["it_id"][0].'][]" value="0" it="io_type_r">            <!-- 옵션타입 -->
-	  <input type="hidden" name="io_id['.$_POST["it_id"][0].'][]" value="'.$_POST["io_id"][$_POST["it_id"][0]][0].'" id="io_id_r">                 <!-- 옵션 값 -->
-	  <input type="hidden" name="io_value['.$_POST["it_id"][0].'][]" value="'.$_POST["io_value"][$_POST["it_id"][0]][0].'" id="io_value_r">           <!-- 옵션 명 -->
-	  <input type="hidden" name="ct_qty['.$_POST["it_id"][0].'][]" value="'.$_POST["ct_qty"][$_POST["it_id"][0]][0].'" id="ct_qty_r">               <!-- 수량 -->
-	  <input type="hidden" name="barcode_r" value="'.$_POST["barcode_r"].'" id="barcode_r">                                       <!-- 바코드 -->
-	  <input type="hidden" name="penId_r" value="'.$_POST["penId_r"].'" id="penId_r">                                           <!-- penId -->
-	  <input type="hidden" name="recipient_info" value="'.$_POST["recipient_info"].'">                            <!-- 구분 -->
-	  <input type="hidden" name="it_msg1[]" value="'.$_POST['pt_msg1'].'">
-	  <input type="hidden" name="it_msg2[]" value="'.$_POST['pt_msg2'].'">
-	  <input type="hidden" name="it_msg3[]" value="'.$_POST['pt_msg3'].'">
-	</form>
-	</body>
-	';//리다이렉트
-	exit;
-}
-Header("Location:simple_eform_new.php".$param) ;
-exit;
-
 if($member['mb_type'] !== 'default' || !$member['mb_entId'])
   alert('사업소 회원만 접근할 수 있습니다.');
 
 $g5['title'] = '계약서 작성';
 include_once("./_head.php");
+
+
+$query = "SHOW COLUMNS FROM eform_document WHERE `Field` = 'dc_sign_send_datetime';";//서명요청일 없을 시 추가
+$wzres = sql_fetch( $query );
+if(!$wzres['Field']) {
+    sql_query("ALTER TABLE `eform_document`
+	ADD `applicantNm` varchar(255) NULL DEFAULT '' COMMENT '신청인이름' AFTER penAddrDtl,
+	ADD `applicantRelation` varchar(20) NULL DEFAULT '' COMMENT '신청인관계' AFTER applicantNm,
+	ADD `applicantBirth` varchar(20) NULL DEFAULT '' COMMENT '신청인생년월일' AFTER applicantCd,
+	ADD `applicantAddr` varchar(255) NULL DEFAULT '' COMMENT '신청인주소' AFTER applicantBirth,
+	ADD `applicantTel` varchar(50) NULL DEFAULT '' COMMENT '신청인전화번호' AFTER applicantAddr,
+	ADD `applicantDate` varchar(20) NULL DEFAULT '' COMMENT '신청인신청일자' AFTER applicantTel,
+	ADD `do_date` datetime NOT NULL  COMMENT '계약서계약일' AFTER applicantDate,
+	ADD `dc_sign_send_datetime` datetime NOT NULL COMMENT '서명요청일' AFTER dc_send_kakao,
+	ADD `contract_tel` varchar(50) NULL DEFAULT '' COMMENT '대리인전화번호' AFTER contract_sign_name,
+	ADD `contract_addr` varchar(255) NULL DEFAULT '' COMMENT '대리인주소' AFTER contract_tel
+        ", true);
+}
 
 $dc_id = clean_xss_tags($_GET['dc_id']);
 if($dc_id) {
@@ -106,39 +94,141 @@ add_javascript('<script src="'.G5_JS_URL.'/ckeditor/ckeditor.js"></script>');
 include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 
 ?>
+<style type="text/css">
+	.form-group > .col-md-4 {
+	  max-width: 290px;
+	}
 
+	.form-group > .control-label {
+	  max-width: 110px;
+	}
+	.form-group > .control-label2 {
+	  max-width: 140px;
+	}
+	.form-group > .control-label3 {
+	  max-width: 70px;
+	  padding-right:0px;
+	}
+	@media only screen and (max-width: 480px)
+	.r_btn_area2 {
+		float: right;
+	}
+	.r_btn_area2{float: right;}
+	@media (min-width: 1px){
+		.col-md-3 {
+			width: 200px;
+		}
+	}
+	
+	@media (min-width: 300px) and (max-width: 991px) {
+	  .col-md-1, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-md-10, .col-md-11, .col-md-12 {
+			float: left;
+		}
+	}
+
+	@media (min-width: 10px) and (max-width: 1022px) {
+	  .popup_box_bottom {
+			width:100%;
+			top:91%; left:0%;margin-left:0px;
+		}
+		.popup_box_con {
+			position: relative;
+			width:412px;
+			margin-left:206px;
+			left: 50%;
+			top: 50%;
+		}
+	}
+	@media (min-width: 1023px){
+	  .popup_box_bottom {
+			width:1000px;
+			top:80%; left:50%;margin-left:-500px;
+		}
+		.popup_box_con {
+			position: relative;
+			width:412px;
+			margin-left:206px;
+			left: 50%;
+			top: 50%;
+		}
+	}
+	.popup_box_bottom {
+			z-index:99999999; background:#ededed; position:relative; height:82px; padding:10px 20px;
+		}
+
+	.popup_box2 {
+		display: none;
+		position: fixed;
+		width: 100%;
+		height: 100%;
+		left: 0;
+		top: 0;
+		z-index: 9999;
+		background: rgba(0, 0, 0, 0.8);		
+	}
+	.popup_box_con {
+		padding:20px 10px;
+		position: relative;
+		background: #ffffff;
+		z-index: 99999;
+		margin-left:-206px;
+	}
+	#sign-pad canvas {
+		position: absolute;
+		z-index: 9999;
+		
+	}
+	#sign-back {
+		position: absolute;
+		display: -ms-flexbox;
+		display: flex;
+		-ms-flex-align: center;
+		align-items: center;
+		-ms-flex-pack: center;
+		justify-content: center;
+		text-align: center;
+		color: #aaa;
+		background-color: #f2f2f2;
+	}
+	#sign-pad {
+		position: relative;
+		background-color: #fff;
+		width: 100%;
+		height: 80%;
+	}
+	.se_item_wr {
+		width: 100%;
+		transition: width 0.5s;
+	}
+	.col-pen-nm1 img {
+    display: block;
+    position: absolute;
+    top: 8px;
+    left: 23px;
+}
+
+</style>
 <section class="wrap">
-  <div class="sub_section_tit">
+  <div class="sub_section_tit" style="border-bottom:1px solid #aaaaaa;">
     간편 계약서 작성
-    <div class="r_btn_area">
-	  <!--a href="/shop/simple_eform_new.php" class="btn eroumcare_btn2" target="_blank">간편계약서 NEW</a-->
-      <a href="/shop/electronic_manage.php" class="btn eroumcare_btn2">계약서 목록보기</a>
+    <div class="r_btn_area2">
+      <a href="/shop/electronic_manage_new.php" class="btn eroumcare_btn2">목록보기</a>
+	  <a href="javascript:dc_view();" id="dc_view" class="btn eroumcare_btn2 btn-black" disabled>미리보기</a>
+	  <a href="javascript:$('#btn_se_submit').trigger('click');" class="btn eroumcare_btn2 btn_se_submit" id="btn_se_submit_new" style="color:#ffffff;width:150px;font-size:14px;">계약서생성/수정</a>
     </div>
-    <div style="clear: both;"></div>
   </div>
   <div class="inner">
   <!-- hula1202_1637198335.gif -->
-    <?php if(!$member['sealFile']) { ?>
-    <div class="se_seal_wr">
-      <form action="ajax.member.seal_upload.php" method="POST" id="form_seal" onsubmit="return false;" onkeydown="if(event.keyCode==13) return false;">
-        <div class="se_seal_desc">
-          등록된 사업소 직인이 없습니다.<br>
-          계약서 작성을 위해선 직인 이미지를 등록해주세요.
-        </div>
-        <button type="button" class="btn_se_seal">직인 이미지 업로드</button>
-        <br>
-        <label><input type="checkbox" name="chk_se_seal_self" id="chk_se_seal_self" <?php echo $member['sealFile_self']?'checked':''; ?>> 직접날인</label>
-      </form>
-    </div>
-    <?php } ?>
-    <form id="form_simple_eform" method="POST" class="form-horizontal" autocomplete="off" onsubmit="return false;" onkeydown="if(event.keyCode==13) return false;">
+    <input type="hidden" name="rent_count" id="rent_count" value="0" alt="대여총수량"><input type="hidden" name="sale_count" id="sale_count" value="0" alt="판매총수량">
+    <form id="form_simple_eform" name="form_simple_eform" method="POST" class="form-horizontal" autocomplete="off" onsubmit="return false;" onkeydown="if(event.keyCode==13) return false;">
       <input type="hidden" name="w" value="<?php if($dc) echo 'u'; ?>">
       <input type="hidden" name="dc_id" value="<?php if($dc) echo $dc['uuid']; ?>">
-      <input type="hidden" name="penRecTypeCd" id="penRecTypeCd" value="<?php if(!$dc) echo '02'; if($dc) echo $dc['penRecTypeCd']; ?>">
+      <input type="hidden" name="penRecTypeCd" id="penRecTypeCd" value="<?php if(!$dc) echo '01'; if($dc) echo $dc['penRecTypeCd']; ?>">
       <input type="hidden" name="penRecTypeTxt" id="penRecTypeTxt" value="<?php if($dc) echo $dc['penRecTypeTxt']; ?>">
-      <div class="panel panel-default">
+      
+	  <div class="panel-default col-sm-6" style="float:left">
         <div class="panel-body">
-          <div class="radio_wr" style="margin-top: -10px; margin-bottom: 10px; font-size: 14px;">
+		  <div class="radio_wr" style="margin-top: -10px; margin-bottom: 10px; font-size: 14px; display:none">
             <label class="radio-inline">
               <input type="radio" name="pen_type" id="pen_type_1" value="1" <?php if($dc['penId'] || !$dc) echo 'checked' ?>> 수급자 선택
             </label>
@@ -146,139 +236,190 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
               <input type="radio" name="pen_type" id="pen_type_0" value="0" <?php if($dc && !$dc['penId']) echo 'checked' ?>> 수급자 등록
             </label>
           </div>
-          <div class="form-group">
-            <label for="penNm" class="col-md-2 control-label">
-              <strong>수급자명</strong>
-            </label>
-            <div class="col-md-3 col-pen-nm" style="max-width: unset;">
-              <img style="display: none;" src="<?php echo THEMA_URL; ?>/assets/img/icon_search.png" >
-              <input type="hidden" name="penZip" id="penZip" value="<?php if($dc) echo $dc['penZip']; ?>" <?php if($dc) echo "data-orig=\"{$dc['penZip']}\""; ?>>
-              <input type="hidden" name="penAddr" id="penAddr" value="<?php if($dc) echo $dc['penAddr']; ?>" <?php if($dc) echo "data-orig=\"{$dc['penAddr']}\""; ?>>
-              <input type="hidden" name="penAddrDtl" id="penAddrDtl" value="<?php if($dc) echo $dc['penAddrDtl']; ?>" <?php if($dc) echo "data-orig=\"{$dc['penAddrDtl']}\""; ?>>
+		  <div class="form-group">
+            <div class="se_sch_hd" style="margin-left:15px;">수급자 정보</div>
+          </div>
+          <div class="form-group has-feedback">
+			<label class="col-sm-2 control-label" style="width:150px;"><b>수급자명</b></label>
+			<div class="col-sm-9">
+			  <label class="col-pen-nm">
+				<img style="display: none;" src="<?php echo THEMA_URL; ?>/assets/img/icon_search.png" >
+			  <input type="hidden" name="penAddrDtl2" id="penAddrDtl2"><input type="hidden" name="penAddr_jibeon" id="penAddr_jibeon">
               <input type="hidden" name="penId" id="penId" value="<?php if($dc) echo $dc['penId']; ?>" <?php if($dc) echo "data-orig=\"{$dc['penId']}\""; ?>>
-              <input type="text" name="penNm" id="penNm" class="form-control input-sm pen_id_flexdatalist" value="<?php if($dc) echo $dc['penNm']; ?>" placeholder="수급자명" <?php if($dc) echo "data-orig=\"{$dc['penNm']}\""; ?>>
-            </div>
-            <button type="button" id="btn_pen">수급자 목록</button>
-          </div>
-          <div class="form-group">
-            <label for="penLtmNum" class="col-md-2 control-label">
-              <strong>요양인정번호</strong>
-            </label>
-            <div class="col-md-3">
-              L <input type="text" name="penLtmNum" id="penLtmNum" class="form-control input-sm" value="<?php if($dc) echo preg_replace('/L([0-9]{10})/', '${1}', $dc['penLtmNum']); ?>" placeholder="10자리 입력" readonly <?php if($dc) echo "data-orig=\"" . preg_replace('/L([0-9]{10})/', '${1}', $dc['penLtmNum']) . "\""; ?>>
-            </div>
-            <label for="penGender" class="col-md-2 control-label">
-              <strong>휴대폰번호</strong>
-            </label>
-            <div class="col-md-3">
-              <input type="text" maxlength="11" oninput="max_length_check(this)" name="penConNum" id="penConNum" class="form-control input-sm" value="<?php if($dc) echo $dc['penConNum']; ?>" <?php if($dc) echo "data-orig=\"{$dc['penConNum']}\""; ?>>
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="penRecGraCd" class="col-md-2 control-label">
-              <strong>인정등급</strong>
-            </label>
-            <div class="col-md-3">
-              <select name="penRecGraCd" id="penRecGraCd" class="form-control input-sm" <?php if($dc) echo "data-orig=\"{$dc['penRecGraCd']}\""; ?>>
-                <option value="00" <?php if($dc) echo get_selected($dc['penRecGraCd'], '00'); ?>>등급외</option>
-                <option value="01" <?php if($dc) echo get_selected($dc['penRecGraCd'], '01'); ?>>1등급</option>
-                <option value="02" <?php if($dc) echo get_selected($dc['penRecGraCd'], '02'); ?>>2등급</option>
-                <option value="03" <?php if($dc) echo get_selected($dc['penRecGraCd'], '03'); ?>>3등급</option>
-                <option value="04" <?php if($dc) echo get_selected($dc['penRecGraCd'], '04'); ?>>4등급</option>
-                <option value="05" <?php if($dc) echo get_selected($dc['penRecGraCd'], '05'); ?>>5등급</option>
-                <option value="06" <?php if($dc) echo get_selected($dc['penRecGraCd'], '06'); ?>>6등급</option>
-              </select>
-            </div>
-            <label for="penTypeCd" class="col-md-2 control-label">
-              <strong>본인부담금율</strong>
-            </label>
-            <div class="col-md-3">
-              <select name="penTypeCd" id="penTypeCd" class="form-control input-sm" <?php if($dc) echo "data-orig=\"{$dc['penTypeCd']}\""; ?>>
-                <option value="00" <?php if($dc) echo get_selected($dc['penTypeCd'], '00'); ?>>일반 15%</option>
-                <option value="01" <?php if($dc) echo get_selected($dc['penTypeCd'], '01'); ?>>감경 9%</option>
-                <option value="02" <?php if($dc) echo get_selected($dc['penTypeCd'], '02'); ?>>감경 6%</option>
-                <option value="03" <?php if($dc) echo get_selected($dc['penTypeCd'], '03'); ?>>의료 6%</option>
-                <option value="04" <?php if($dc) echo get_selected($dc['penTypeCd'], '04'); ?>>기초 0%</option>
-              </select>
-            </div>
-            <!--label for="applicantCd" class="col-md-4 control-label">
-              <strong id="applicantCd_subj"  <?php if(!$dc['applicantCd']) echo 'style="display: none"'; ?>>장기요양입소이용신청서 신청인</strong>
-            </label>
-            <div class="col-md-3" id="select_applicantCd" >
-              <select name="applicantCd" id="applicantCd" class="form-control input-sm" <?php if(!$dc['applicantCd']) echo 'style="display: none"'; ?>>
-                <option value="00" <?php if($dc) echo get_selected($dc['applicantCd'], '00'); ?>>본인</option>
-                <?php if($dc) { // 계약서 수정인 경우 ?>
-                  <?php for($i = 0; $i < count($pros); $i++){ ?>
-                    <?php if(!empty($pros[$i]['pro_name'])&&!empty($pros[$i]['pro_hp'])&&!empty($pros[$i]['pro_addr1'])&&!empty($pros[$i]['pro_zip'])&&!empty($pros[$i]['pro_birth'])&&$pros[$i]['pro_type']!='02'){ // 정보가 완전하고 요양보호사가 아닌 경우 ?>
-                        <option value=<?php echo "\"".$pros[$i]['pro_name']."_".$pros[$i]['pro_birth']."\" ".get_selected(explode('_', $dc['applicantCd'])[0], $pros[$i]['pro_name']);  ?> >보호자<?php echo "(".$pros[$i]['pro_name'].") ";  ?></option>
-                 <?php  } } } ?>
-                <option value="02" <?php if($dc) echo get_selected($dc['applicantCd'], '02'); ?>>공란</option>
-              </select>
-            </div>
-          </div-->
-          <div class="form-group">
-          </div>
-          <div class="form-group">
-            <label for="penExpiStDtm" class="col-md-2 control-label">
-              <strong>유효기간</strong>
-            </label>
-            <div class="col-md-5">
-              <input type="text" name="penExpiStDtm" id="penExpiStDtm" class="datepicker form-control input-sm" value="<?php if($dc) echo explode(' ~ ', $dc['penExpiDtm'])[0]; ?>" <?php if($dc) echo "data-orig=\"" . explode(' ~ ', $dc['penExpiDtm'])[0] . "\""; ?>> ~ <input type="text" name="penExpiEdDtm" id="penExpiEdDtm" class="datepicker form-control input-sm" value="<?php if($dc) echo explode(' ~ ', $dc['penExpiDtm'])[1]; ?>" <?php if($dc) echo "data-orig=\"" . explode(' ~ ', $dc['penExpiDtm'])[1] . "\""; ?>>
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="penJumin" class="col-md-2 control-label">
-              <strong>주민번호(앞자리)</strong>
-            </label>
-            <div class="col-md-3">
-              <input type="text" maxlength="6" oninput="max_length_check(this)"  name="penJumin" id="penJumin" class="form-control input-sm" value="<?php if($dc) echo $dc['penJumin']; ?>" <?php if($dc) echo "data-orig=\"{$dc['penJumin']}\""; ?>>
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="penJumin" class="col-md-2 control-label">
-              <strong>계약서 날인</strong>
-            </label>
-            <div class="col-md-5">
-              <div class="radio_wr">
-                <label class="radio-inline">
-                  <input type="radio" name="contract_sign_type" id="contract_sign_type" value="0" <?php if($dc['contract_sign_type'] == 0) echo 'checked' ?>> 수급자
+              <input type="text" name="penNm" id="penNm" class="form-control input-sm pen_id_flexdatalist" value="<?php if($dc) echo $dc['penNm']; ?>" placeholder="수급자명" <?php if($dc) echo "data-orig=\"{$dc['penNm']}\""; ?> >
+			  </label>
+			  <label>
+				<button type="button" id="btn_pen" class="btn btn-black btn-sm" style="margin-top:0px;height:34px" onClick="$('#pen_type_1').trigger('click');">목록에서 검색</button>
+
+			  </label>
+			</div>	
+		  </div>
+		  <div class="form-group has-feedback">
+			<label class="col-sm-2 control-label"  style="width:150px;"><b>요양인정번호</b></label>
+			<div class="col-sm-9" style="width:363px !important;">
+			  <label>
+				L <input type="text" name="penLtmNum" id="penLtmNum" class="form-control input-sm" value="<?php if($dc) echo preg_replace('/L([0-9]{10})/', '${1}', $dc['penLtmNum']); ?>" placeholder="10자리 입력" readonly <?php if($dc) echo "data-orig=\"" . preg_replace('/L([0-9]{10})/', '${1}', $dc['penLtmNum']) . "\""; ?>  style="width:319px !important;">
+			  </label>
+			</div>	
+		  </div>
+		  <div class="form-group has-feedback">
+			<label class="col-sm-2 control-label"  style="width:150px;"><b>본인부담금율</b></label>
+			<div class="col-sm-2 control-label2" style="width:150px;">
+			  <label>
+				<select name="penTypeCd" id="penTypeCd" class="form-control input-sm" <?php if($dc) echo "data-orig=\"{$dc['penTypeCd']}\""; ?> onChange="pen_ltm_show(this.value);">
+					<option value="00" <?php if($dc) echo get_selected($dc['penTypeCd'], '00'); ?>>일반 15%</option>
+					<option value="01" <?php if($dc) echo get_selected($dc['penTypeCd'], '01'); ?>>감경 9%</option>
+					<option value="02" <?php if($dc) echo get_selected($dc['penTypeCd'], '02'); ?>>감경 6%</option>
+					<option value="03" <?php if($dc) echo get_selected($dc['penTypeCd'], '03'); ?>>의료 6%</option>
+					<option value="04" <?php if($dc) echo get_selected($dc['penTypeCd'], '04'); ?>>기초 0%</option>
+				  </select>
+			  </label>
+			</div>
+			<label class="col-sm-2 control-label3"  style="width:150px;"><b>인정등급</b></label>
+			<div class="col-sm-2 control-label" style>
+			  <label>
+				<select name="penRecGraCd" id="penRecGraCd" class="form-control input-sm" <?php if($dc) echo "data-orig=\"{$dc['penRecGraCd']}\""; ?>>
+					<option value="00" <?php if($dc) echo get_selected($dc['penRecGraCd'], '00'); ?>>등급외</option>
+					<option value="01" <?php if($dc) echo get_selected($dc['penRecGraCd'], '01'); ?>>1등급</option>
+					<option value="02" <?php if($dc) echo get_selected($dc['penRecGraCd'], '02'); ?>>2등급</option>
+					<option value="03" <?php if($dc) echo get_selected($dc['penRecGraCd'], '03'); ?>>3등급</option>
+					<option value="04" <?php if($dc) echo get_selected($dc['penRecGraCd'], '04'); ?>>4등급</option>
+					<option value="05" <?php if($dc) echo get_selected($dc['penRecGraCd'], '05'); ?>>5등급</option>
+					<option value="06" <?php if($dc) echo get_selected($dc['penRecGraCd'], '06'); ?>>6등급</option>
+				  </select>
+			  </label>
+			</div>
+		  </div>
+		  <div class="form-group has-feedback">
+			<label class="col-sm-2 control-label"  style="width:150px;"><b>휴대폰번호</b></label>
+			<div class="col-sm-2 control-label2" style="width:150px;">
+			  <label>
+				<input type="text" maxlength="11" oninput="max_length_check(this)" name="penConNum" id="penConNum" class="form-control input-sm" value="<?php if($dc) echo $dc['penConNum']; ?>" <?php if($dc) echo "data-orig=\"{$dc['penConNum']}\""; ?>>
+			  </label>
+			</div>
+			<label class="col-sm-2 control-label3"  style="width:150px;"><b>생년월일</b></label>
+			<div class="col-sm-2 control-label">
+			  <label>
+				<input type="text" maxlength="6" oninput="max_length_check(this)"  name="penJumin" id="penJumin" class="form-control input-sm" value="<?php if($dc) echo $dc['penJumin']; ?>" <?php if($dc) echo "data-orig=\"{$dc['penJumin']}\""; ?>>
+			  </label>
+			</div>
+		  </div>
+		  <div class="form-group has-feedback">
+			<label class="col-sm-2 control-label"  style="width:150px;"><b>유효기간</b></label>
+			<div class="col-sm-9" style="width:363px !important;">
+			  <label>
+				<input type="text" name="penExpiStDtm" id="penExpiStDtm" class="datepicker form-control input-sm" value="<?php if($dc) echo explode(' ~ ', $dc['penExpiDtm'])[0]; ?>" <?php if($dc) echo "data-orig=\"" . explode(' ~ ', $dc['penExpiDtm'])[0] . "\""; ?> style="width:155px !important;">&nbsp;&nbsp;~&nbsp;&nbsp;<input type="text" name="penExpiEdDtm" id="penExpiEdDtm" class="datepicker form-control input-sm" value="<?php if($dc) echo explode(' ~ ', $dc['penExpiDtm'])[1]; ?>" <?php if($dc) echo "data-orig=\"" . explode(' ~ ', $dc['penExpiDtm'])[1] . "\""; ?>  style="width:155px !important;">
+			  </label>
+			</div>
+			
+		  </div>
+		<div class="form-group has-feedback">
+			<label class="col-sm-2 control-label" style="width:150px;"><b>우편번호</b></label>
+			<div class="col-sm-9"  style="width:363px !important;">
+			  <label>
+				<input type="text" name="penZip" id="penZip" class="form-control input-sm" size="6" maxlength="6" placeholder="우편번호" value="<?php if($dc) echo $dc['penZip']; ?>" <?php if($dc) echo "data-orig=\"{$dc['penZip']}\""; ?>  style="width:258px !important;">
+			  </label>
+			  <label>
+				<button type="button" class="btn btn-black btn-sm" style="margin-top:0px;" onclick="win_zip_chk();"><b>주소 검색</b></button>
+			  </label>
+			</div>	
+		</div>
+		<div class="form-group has-feedback">
+			<label class="col-sm-2 control-label" style="width:150px;"><b>신청인 주소</b></label>
+			<div class="col-sm-8">
+		         
+				<input type="text" name="penAddr" id="penAddr" class="form-control input-sm" size="50" placeholder="신청인 주소" value="<?php if($dc) echo $dc['penAddr']; ?>" <?php if($dc) echo "data-orig=\"{$dc['penAddr']}\""; ?> style="width:330px !important;">
+
+			</div>		
+		</div>
+		<div class="form-group has-feedback">
+			<label class="col-sm-2 control-label" style="width:150px;"><b>상세주소</b></label>
+			<div class="col-sm-5">
+         
+				<input type="text" name="penAddrDtl" id="penAddrDtl" value="<?php if($dc) echo $dc['penAddrDtl']; ?>" class="form-control input-sm" size="50" placeholder="상세주소" <?php if($dc) echo "data-orig=\"{$dc['penAddrDtl']}\""; ?> style="width:330px !important;">
+	
+			</div>		
+		</div>
+		<div class="form-group has-feedback">
+			<label class="col-sm-2 control-label" style="width:150px;"><b>계약일자</b></label>
+			<div class="col-sm-5">
+				<label class="col-pen-nm1">
+				<img src="/skin/apms/order/new_basic/image/icon_17.png">
+				<input type="text" name="do_date" id="do_date" class="datepicker form-control input-sm" value="<?php if($dc){ echo substr($dc['do_date'],0,10);}else{ echo date("Y-m-d");} ?>" <?php if($dc) echo "data-orig=\"" . $dc['do_date'] . "\""; ?> placeholder="계약일자" style="width:330px !important;padding-left:40px;">
+				</label>
+			</div>		
+		</div>
+		<div class="form-group has-feedback">
+			<label class="col-sm-2 control-label" style="width:150px;"><b>서명확인방법</b></label>
+			<div class="col-sm-5">
+	            <label class="radio-inline">
+                  <input type="radio" name="penRecTypeCd_radio" class="penRecTypeCd_radio penRecTypeCd01" value="01" <?php if(!$dc || $dc['penRecTypeCd'] == '02') echo 'checked' ?>> 유선
                 </label>
-                <label class="radio-inline">
-                  <input type="radio" name="contract_sign_type" id="contract_sign_type" value="1" <?php if($dc['contract_sign_type'] > 0) echo 'checked' ?>> 대리인
+				<label class="radio-inline">
+                  <input type="radio" name="penRecTypeCd_radio" class="penRecTypeCd_radio penRecTypeCd02" value="02" <?php if( $dc && $dc['penRecTypeCd'] != '02') echo 'checked' ?>> 방문
                 </label>
-                <input style="margin:0px 5px;" type="text" name="contract_sign_name" id="contract_sign_name" class="form-control input-sm" value="<?php if($dc['contract_sign_type'] > 0) echo $dc['contract_sign_name']; ?>" <?php if($dc['contract_sign_type'] == 0) echo 'disabled' ?> >
-                <select name="contract_sign_relation" id="contract_sign_relation" class="form-control input-sm" <?php if($dc['contract_sign_type'] == 0) echo 'disabled' ?>>
-                  <option value="1" <?php if($dc) echo get_selected($dc['contract_sign_relation'], '1'); ?>>가족</option>
-                  <option value="2" <?php if($dc) echo get_selected($dc['contract_sign_relation'], '2'); ?>>친족</option>
-                  <option value="3" <?php if($dc) echo get_selected($dc['contract_sign_relation'], '3'); ?>>기타</option>
-              </select>
-              </div>
-            </div>
+			</div>		
+		</div>
+		  <div class="form-group" style="border-top:1px solid #aaaaaa;">
+            <div class="se_sch_hd" style="margin-left:15px;padding-top:10px;">계약서 필수정보 입력</div>
+          </div>  
+		  <div class="form-group">
+            <label style="min-width:220px;">
+              <input type="checkbox" name="sealFile_chk" id="sealFile_chk" value="1" class="input-sm" style="width:20px;"<?php if($member['sealFile']) { ?>checked<?php }?> onClick="return false;" readonly>&nbsp;&nbsp;&nbsp;<strong>사업자 직인정보 등록 여부</strong><span id="red_text">
+			  <?php if(!$member['sealFile']) { ?><br>&nbsp;&nbsp;&nbsp;&nbsp;<font size="" color="red">* 현재 등록된 직인 정보가 없습니다. </font><?php }?></span>
+            </label>
+            <label style="float:right;">
+              <button type="button" id="btn_ent" class="btn btn-black" >&nbsp;&nbsp;<b>사업자 정보 입력</b>&nbsp;&nbsp;</button>
+            </label>
+          </div>
+		  <div class="form-group" style="border-top:1px solid #aaaaaa;">
+            <div class="se_sch_hd" style="margin-left:15px;padding-top:10px;">계약서 추가정보 입력</div>
           </div>
           <div class="form-group">
-            <label for="penJumin" class="col-md-2 control-label">
-              <strong>확인 방법</strong>
+            <label style="min-width:220px;">
+              <input type="checkbox" name="contract_sign_type" id="contract_sign_type" value="1" class="input-sm" style="width:20px;" <?php if($dc['contract_sign_type'] == 1) { ?>checked<?php }?> onClick="if(this.checked == true){btn_contract_click();}">&nbsp;&nbsp;&nbsp;<strong>대리인 계약 시</strong>
+			  <input type="hidden" name="contract_sign_relation" id="contract_sign_relation" value="<?=$dc['contract_sign_relation']?>" alt="수급인과의 관계">
+			  <input type="hidden" name="contract_sign_name" id="contract_sign_name" value="<?=$dc['contract_sign_name']?>" alt="대리인 성명">
+			  <input type="hidden" name="contract_tel" id="contract_tel" value="<?=$dc['contract_tel']?>" alt="대리인 전화번호">
+			  <input type="hidden" name="contract_addr" id="contract_addr" value="<?=$dc['contract_addr']?>" alt="대리인 주소">
             </label>
-            <div class="col-md-5">
-              <div class="radio_wr">
-                <label class="radio-inline">
-                  <input type="radio" name="penRecTypeCd_radio" class="penRecTypeCd_radio penRecTypeCd02" value="02" <?php if(!$dc || $dc['penRecTypeCd'] == '02') echo 'checked' ?>> 방문
-                </label>
-                <label class="radio-inline">
-                  <input type="radio" name="penRecTypeCd_radio" class="penRecTypeCd_radio penRecTypeCd01" value="01" <?php if($dc['penRecTypeCd'] == '01') echo 'checked' ?>> 유선
-                </label>
-              </div>
-            </div>
-          </div>
+            <label style="float:right;">
+              <button type="button" id="btn_contract"  class="btn btn-black" onClick="btn_contract_click()"><b>&nbsp;&nbsp;대리인 정보 입력&nbsp;&nbsp;</b></button>
+            </label>
+		  </div>
+		  <div class="form-group">
+            <label style="min-width:220px;">
+              <input type="checkbox" name="acc_chk" id="acc_chk" value="1" class="input-sm" style="width:20px;" <?php if($dc['entConAcc01'] != "") { ?>checked<?php }?> onClick="if(this.checked == true){btn_acc_click();}">&nbsp;&nbsp;&nbsp;<strong>특약사항 입력 시</strong>
+            </label>
+            <label style="float:right;">
+              <button type="button" id="btn_acc"  class="btn btn-black" onClick="btn_acc_click()"><b>특약사항 정보 입력</b></button>
+			  <input type="hidden" name="entConAcc01" id="entConAcc01" value="<?=$dc['entConAcc01']?>" alt="특약사항 정보">
+			  <input type="hidden" name="save_conacc" id="save_conacc" value="" alt="특약사항 저장유무">
+            </label>
+		  </div>
+		  <div class="form-group" id="ltm_check" style="display:<?php if($dc['penTypeCd'] == "03" || $dc['penTypeCd'] == "04") { echo "block";}else{echo "none";}?>;">
+            <label style="min-width:220px;">
+              <input type="checkbox" name="ltm_chk" id="ltm_chk" value="1" class="input-sm" style="width:20px;" <?php if($dc['penTypeCd'] == "03" || $dc['penTypeCd'] == "04") { ?>checked<?php }?>  onClick="return false;" readonly>&nbsp;&nbsp;&nbsp;<strong>장기요양재가서비스 신청 시</strong>
+            </label>
+            <label style="float:right;">
+              <button type="button" id="btn_ltm"  class="btn btn-black" onClick="btn_ltm_click()">&nbsp;&nbsp;<b>신청인 정보 입력</b>&nbsp;&nbsp;</button>
+			  <input type="hidden" name="applicantRelation" id="applicantRelation" value="<?=$dc['applicantRelation']?>" alt="수급인과의 관계">
+			  <input type="hidden" name="applicantNm" id="applicantNm" value="<?=$dc['applicantNm']?>" alt="신청인명">
+			  <input type="hidden" name="applicantTel" id="applicantTel" value="<?=$dc['applicantTel']?>" alt="신청인 전화번호">
+			  <input type="hidden" name="applicantBirth" id="applicantBirth" value="<?=$dc['applicantBirth']?>" alt="신청인 생년월일">
+			  <input type="hidden" name="applicantAddr" id="applicantAddr" value="<?=$dc['applicantAddr']?>" alt="신청인 주소">
+			  <input type="hidden" name="applicantDate" id="applicantDate" value="<?=($dc['applicantDate']!="")?$dc['applicantDate']:date("Y-m-d");?>" alt="신청일자">
+            </label>
+		  </div>          
         </div>
-        <div class="se_btn_wr">
+        <div class="se_btn_wr" style="display:none;">
           <button type="submit" id="btn_se_submit" class="btn_se_submit">
             <img src="<?=THEMA_URL?>/assets/img/icon_contract.png" alt="">
-            계약서 생성
+            계약서생성/수정
           </button>
         </div>
       </div>
-      <div id="se_body_wr" class="flex space-between <?php if($dc) echo 'active' ;?>" >
+      <div id="se_body_wr" class="col-md-6 active<?php //if($dc) echo 'active' ;?>" style="min-width:412px;float:left;padding:15px;">
         <div class="se_item_wr">
           <div class="se_sch_wr">
             <div class="flex space-between align-items">
@@ -307,6 +448,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
           <ul id="buy_list" class="se_item_list">
             <?php
             if($dc) {
+				$sale_count = 0;
               $sql = "
                 SELECT
                  i.*,
@@ -355,6 +497,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
                 while($barcode = sql_fetch_array($result_barcode)) {
                   $barcodes[] = $barcode['it_barcode'];
                 }
+				
             ?>
             <li class="list item" data-code="<?=$row['id']?>" data-uid="<?=$row['it_id']?>">
               <input type="hidden" name="it_id[]" value="<?=$row['id']?>">
@@ -371,7 +514,8 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
                     <div class="input-group-btn">
                       <button type="button" class="it_qty_minus btn btn-lightgray btn-sm"><i class="fa fa-minus"></i><span class="sound_only">감소</span></button>
                     </div>
-                    <input type="text" name="it_qty[]" value="<?=$row['qty']?>" class="form-control input-sm">
+					<input type="hidden" name="gubun" value="판매">
+                    <input type="text" name="it_qty[]" value="<?=$row['qty']?>" class="form-control input-sm" readonly>
                     <div class="input-group-btn">
                       <button type="button" class="it_qty_plus btn btn-lightgray btn-sm"><i class="fa fa-plus"></i><span class="sound_only">증가</span></button>
                     </div>
@@ -405,14 +549,21 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
               </div>
             </li>
             <?php
+				$sale_count += $row['qty'];
               }
-            }
+			  ?>
+<script>
+	$("#sale_count").val('<?=$sale_count?>');
+</script>
+			
+          <?php }
             ?>
           </ul>
           <div class="se_item_hd">대여품목</div>
           <ul id="rent_list" class="se_item_list">
           <?php
             if($dc) {
+				$rent_count = 0;
               $sql = "
                 SELECT
                  i.*,
@@ -478,7 +629,8 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
                     <div class="input-group-btn">
                       <button type="button" class="it_qty_minus btn btn-lightgray btn-sm"><i class="fa fa-minus"></i><span class="sound_only">감소</span></button>
                     </div>
-                    <input type="text" name="it_qty[]" value="<?=$row['qty']?>" class="form-control input-sm">
+					<input type="hidden" name="gubun" value="대여">
+                    <input type="text" name="it_qty[]" value="<?=$row['qty']?>" class="form-control input-sm" readonly>
                     <div class="input-group-btn">
                       <button type="button" class="it_qty_plus btn btn-lightgray btn-sm"><i class="fa fa-plus"></i><span class="sound_only">증가</span></button>
                     </div>
@@ -520,34 +672,28 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
               </div>
             </li>
             <?php
+				$rent_count += $row['qty'];
               }
+			  ?>
+<script>
+	$("#rent_count").val('<?=$rent_count?>');
+</script>
+			
+          <?php
             }
             ?>
           </ul>
-          <div class="se_conacc">
+          <!--div class="se_conacc">
             <div class="se_conacc_hd">계약서의 특약사항 내용</div>
             <textarea name="entConAcc01" id="entConAcc01"><?php if($dc) echo $dc['entConAcc01']; else echo nl2br($member['mb_entConAcc01']); ?></textarea>
             <label class="se_save_conacc_wr" for="chk_save_conacc">
               <input type="checkbox" name="save_conacc" id="chk_save_conacc" value="1">
               작성 된 특약사항 내 정보에 저장하기
             </label>
-          </div>
+          </div-->
           <!--<button type="button" id="btn_se_save" onclick="save_eform();">저장</button>-->
         </div>
-        <div class="se_preview_wr">
-          <div class="se_preview_hd_wr">
-            <div class="se_preview_hd">공급계약서 미리보기</div>
-            <button type="button" id="btn_zoom">확대 100%</button>
-            <button type="button" id="btn_refresh" onclick="save_eform();">새로고침</button>
-          </div>
-          <div id="se_preview" class="se_preview">
-            <?php if($dc) { ?>
-            <iframe src="/shop/eform/renderEform.php?preview=1&dc_id=<?=$dc['uuid']?>" frameborder="0"></iframe>
-            <?php } else { ?>
-            <div class="empty">품목선택 시 생성됩니다.</div>
-            <?php } ?>
-          </div>
-        </div>
+        
       </div>
 	  <div id="list_wrap" class="list_box"></div>
     </form>
@@ -559,21 +705,257 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
         <i class="fa fa-times"></i>
     </div>
     <iframe name="iframe" src="" scrolling="yes" frameborder="0" allowTransparency="false"></iframe>
+	<div id="" class="popup_box_bottom">
+		<div style="text-align:left;height:20px;">
+			<span  id="left_text">* 등록 된 수급자가 없으신가요? <b><a href="javascript:$('#pen_type_0').trigger('click');">수동으로 입력하기</a></b></span>
+		</div> 
+		<div style="text-align:right;">
+			 <button type="button" id="btn_pen4" class="btn btn-black btn-sm">돌아가기</button>
+		</div>
+	</div>
 </div>
 
+<div id="popup_box2" class="popup_box2">
+    <div id="" class="popup_box_con" style="height:370px;margin-top:-185px;">
+		<div class="form-group">
+            <div class="se_sch_hd" style="margin-left:30px;">사업자 정보 입력</div>
+        </div>
+
+		<form action="ajax.member.seal_upload_new.php" method="POST" id="form_seal" onsubmit="return false;">
+		<div id="" style="float:left;width:55%;margin-left:15px;">
+			<b>직인 파일 업로드</b><br>
+        <button type="button" class="btn_se_seal" style="margin-top:10px;">직인 이미지 업로드</button>
+        <br>
+		* 배경이 투명한 png 파일 업로드를 권장 합니다.<br>
+       
+        </div>
+		<div id="" class="" style="float:right;width:35%;margin-right:15px">
+			<b>서명정보</b><br>
+			<div class="" style="position:relative;width:100%;height:90px;border:1px solid #aaa; background:#eeeeee;text-align:center;padding:5px;margin-top:10px;line-height:80px;">
+				<?php if($member["sealFile"]!=""){?><img id='sealFile_img' src="/data/file/member/stamp/<?=$member["sealFile"]; ?>" style="max-width:100%;max-height:100%;"><?php }
+				else{echo "<span id='no_img'>이미지가 없습니다.</span><img src='' id='sealFile_img' style='max-width:100%;max-height:100%;display:none;'>";} ?>
+			</div>
+		</div>
+      </form>
+	  <div id="" style="float:left;width:100%;margin:15px;">
+		* 직인 파일이 없다면? <a href="javascript:;" id="btn_sign"><b>날인정보로 입력하기</b></a>
+      </div>
+	  <input type="hidden" name="link" value="simple_eform_test.php">
+	  <div id="" class="" style="float:left;width:100%;padding:0px 15px;">
+		<b>사업자 계좌정보</b><br>
+		<label><input type="text" name="mb_account" id="mb_account" class="form-control input-sm" style="width:292px !important;" value="<?=$member["mb_account"]; ?>" placeholder="예) 신한 110-1234-123456 (홍길동)"></label> <label><button type="button" class="btn btn-black btn-sm" style="background:black" onClick="faccount_submit()">저장하기</button></label><br>
+		* 등록된 계좌번호는 급여비용명세서에서 사용 됩니다.
+	  </div>
+	  <div style="text-align:right;bottom:0px;float:left;width:100%;margin-top:10px;">
+			 <button type="button" class="btn btn-black btn-sm btn_close" style="margin-right:15px;">돌아가기</button>
+		</div>
+	</div>
+	
+</div>
+
+<div id="popup_box2_1" class="popup_box2" style="background: rgba(0, 0, 0, 0);	">
+    <div id="" class="popup_box_con" style="height:370px;margin-top:-185px;">
+		<div class="form-group">
+            <div class="se_sch_hd" style="margin-left:30px;">서명정보 제작하기</div>
+        </div>
+		<div id="sign-pad" style="float:left;width:100%">
+          <canvas id="myCanvas" width="390" style="touch-action: none; top: 10px; left: 0px;" height="220"></canvas>
+          <div id="sign-back" style="top: 10px; left: 0px; width: 390px; height: 220px;">이곳에 사인해주세요.</div>
+        </div>
+		
+	  
+	  
+	  <div style="text-align:right;bottom:0px;float:left;width:100%;">
+			 <button type="button" class="btn btn-black btn-sm btn_close2" onClick="clearCanvas()">돌아가기</button> <button type="button" id="btn-sign-submit" class="btn btn-black btn-sm ;" style="margin-right:15px;background:black;" >등록하기</button>
+		</div>
+
+		
+		
+	</div>
+	
+</div>
+
+<div id="popup_box3" class="popup_box2">
+    <div id="" class="popup_box_con" style="height:290px;margin-top:-145px;">
+		<div class="form-group">
+            <div class="se_sch_hd" style="margin-left:30px;">대리인 정보 입력</div>
+        </div>
+		<div id="" style="float:left;width:100%;margin-left:15px;">
+			
+			  <label style="width:120px;">
+				<b>수급인과의 관계</b>
+			  </label>
+			  <label style="width:238px;">
+				<select name="contract_sign_relation2" id="contract_sign_relation2" class="form-control input-sm" <?php if($dc) echo "data-orig=\"{$dc['contract_sign_relation']}\""; ?>>
+					<option value="1" <?php if($dc) echo get_selected($dc['contract_sign_relation'], '1'); ?>>가족</option>
+					<option value="2" <?php if($dc) echo get_selected($dc['contract_sign_relation'], '2'); ?>>친족</option>
+					<option value="3" <?php if($dc) echo get_selected($dc['contract_sign_relation'], '3'); ?>>기타</option>
+				  </select>
+			  </label><br>		
+			  <label style="width:120px;">
+				<b>대리인 성명</b>
+			  </label>
+			  <label style="width:240px;">
+				<input type="text" name="contract_sign_name2" id="contract_sign_name2" maxlength="8" class="form-control input-sm" style="width:99% !important;" value="<?php if($dc) echo $dc['contract_sign_name']; ?>" placeholder="대리인 성명을 입력해 주세요." <?php if($dc) echo "data-orig=\"{$dc['contract_sign_name']}\""; ?>>
+			  </label><br>
+			  <label style="width:120px;">
+				<b>대리인 전화번호</b>
+			  </label>
+			  <label style="width:240px;">
+				<input type="text" name="contract_tel2" id="contract_tel2" maxlength="11" class="form-control input-sm" style="width:99% !important;" value="<?php if($dc) echo $dc['contract_tel']; ?>" placeholder="대리인 전화번호를 입력해 주세요." <?php if($dc) echo "data-orig=\"{$dc['contract_tel']}\""; ?>>
+			  </label><br>
+			  <label style="width:120px;">
+				<b>대리인 주소</b>
+			  </label>
+			  <label style="width:240px;">
+				<input type="text" name="contract_addr2" id="contract_addr2" class="form-control input-sm" style="width:99% !important;" value="<?php if($dc) echo $dc['contract_addr']; ?>" placeholder="대리인 주소를 입력해 주세요." <?php if($dc) echo "data-orig=\"{$dc['contract_addr']}\""; ?>>
+			  </label>			
+      </div>
+	
+	  <div id="" class="" style="float:left;width:100%;padding:10px 15px;">
+		* 구매계약서 작성 시 대리인 정보가 입력됩니다.
+	  </div>
+	  <div style="text-align:right;bottom:0px;float:left;width:100%;">
+			 <button type="button" class="btn btn-black btn-sm btn_close" style="margin-right:15px;" onClick="info_close('대리인','popup_box3','contract_sign_type')">돌아가기</button> <button type="button" class="btn btn-black btn-sm" style="margin-right:15px;background:black;" onClick="contract_info_chk()">입력완료</button>
+		</div>
+	</div>
+	
+</div>
+
+<div id="popup_box4" class="popup_box2">
+    <div id="" class="popup_box_con" style="height:410px;margin-top:-205px;">
+		<div class="form-group">
+            <div class="se_sch_hd" style="margin-left:30px;">특약사항 정보 입력</div>
+        </div>
+
+		<div id="" style="float:left;width:100%;margin-left:15px;">			
+			<label style="width:363px;">
+			<textarea name="entConAcc01_2" id="entConAcc01_2"><?php if($dc) echo $dc['entConAcc01']; else echo nl2br($member['mb_entConAcc01']); ?></textarea>
+			</label>
+			  		
+		</div>
+	
+		<div id="" class="" style="float:left;width:100%;padding:10px 15px;">
+			<input type="checkbox" name="entConAcc01_save2" id="entConAcc01_save2" value="1" class="input-sm" style="width:20px;">&nbsp;&nbsp;작성된 특약사항을 내 정보에 저장합니다.
+		</div>
+		<div style="text-align:right;bottom:0px;float:left;width:100%;">
+			<button type="button" class="btn btn-black btn-sm btn_close" style="margin-right:15px;"  onClick="info_close('특약사항','popup_box4','acc_chk')">돌아가기</button> <button type="button"  class="btn btn-black btn-sm" style="margin-right:15px;background:black;" onClick="acc_info_chk()">입력완료</button>
+		</div>
+	</div>
+	</div>
+	
+</div>
+
+<div id="popup_box5" class="popup_box2">
+    <div id="" class="popup_box_con" style="height:340px;margin-top:-170px;">
+		<div class="form-group">
+            <div class="se_sch_hd" style="margin-left:30px;">장기요양 재가서비스 신청인 정보 입력</div>
+        </div>
+
+		<div id="" style="float:left;width:100%;margin-left:15px;">
+			
+			  <label style="width:120px;">
+				<b>수급인과의 관계</b>
+			  </label>
+			  <label style="width:238px;">
+				<select name="applicantRelation2" id="applicantRelation2" class="form-control input-sm" <?php if($dc) echo "data-orig=\"{$dc['applicantRelation']}\""; ?> onChange="applicantRelation_chg(this.value)">
+					<option value="0" <?php if($dc) echo get_selected($dc['applicantRelation'], '0'); ?>>본인</option>
+					<option value="1" <?php if($dc) echo get_selected($dc['applicantRelation'], '1'); ?>>가족</option>
+					<option value="2" <?php if($dc) echo get_selected($dc['applicantRelation'], '2'); ?>>친족</option>
+					<option value="3" <?php if($dc) echo get_selected($dc['applicantRelation'], '3'); ?>>기타</option>
+					<option value="4" <?php if($dc) echo get_selected($dc['applicantRelation'], '4'); ?>>대리인</option>
+					<option value="5" <?php if($dc) echo get_selected($dc['applicantRelation'], '5'); ?>>공란</option>
+					
+				  </select>
+			  </label><br>		
+			  <label style="width:120px;">
+				<b>신청인명</b>
+			  </label>
+			  <label style="width:240px;">
+				<input type="text" name="applicantNm2" id="applicantNm2" class="form-control input-sm" style="width:99% !important;" value="<?php if($dc) echo $dc['applicantNm']; ?>" placeholder="신청인 성명을 입력해 주세요." <?php if($dc) echo "data-orig=\"{$dc['applicantNm']}\""; ?> disabled>
+			  </label><br>
+			  <label style="width:120px;">
+				<b>신청인 전화번호</b>
+			  </label>
+			  <label style="width:240px;">
+				<input type="text" name="applicantTel2" id="applicantTel2" class="form-control input-sm" style="width:99% !important;" value="<?php if($dc) echo $dc['applicantTel']; ?>" placeholder="신청인 전화번호를 입력해 주세요." <?php if($dc) echo "data-orig=\"{$dc['applicantTel']}\""; ?> disabled>
+			  </label><br>
+			  <label style="width:120px;">
+				<b>신청인 생년월일</b>
+			  </label>
+			  <label style="width:240px;">
+				<input type="text" name="applicantBirth2" id="applicantBirth2" class="form-control input-sm" style="width:99% !important;" value="<?php if($dc) echo $dc['applicantBirth']; ?>" placeholder="신청인 생년월일을 입력해 주세요. ex)630319" <?php if($dc) echo "data-orig=\"{$dc['applicantBirth']}\""; ?> disabled>
+			  </label><br>
+			  <label style="width:120px;">
+				<b>신청인 주소</b>
+			  </label>
+			  <label style="width:240px;">
+				<input type="text" name="applicantAddr2" id="applicantAddr2" class="form-control input-sm" style="width:99% !important;" value="<?php if($dc) echo $dc['applicantAddr']; ?>" placeholder="신청인의 주소를 입력해 주세요." <?php if($dc) echo "data-orig=\"{$dc['applicantAddr']}\""; ?> disabled>
+			  </label><br>
+			  <label style="width:120px;">
+				<b>신청일자</b>
+			  </label>
+			  <label style="width:240px;">
+				<img style=" position:absolute; top: 228px; right:30px;cursor:pointer;" src="<?php echo THEMA_URL; ?>/assets/img/btn_top_menu_x.png" onClick="$('#applicantDate2').val('');">
+			  	<input type="text" name="applicantDate2" id="applicantDate2" class="datepicker form-control input-sm" value="<?php if($dc){ echo $dc['applicantDate'];}else{ echo date("Y-m-d");}?>" <?php if($dc) echo "data-orig=\"" . $dc['applicantDate'] . "\""; ?> placeholder="신청일자" style="width:99% !important;display: inline-block;">
+			  </label>
+      </div>
+	  <div id="" class="" style="float:left;width:100%;padding:10px 15px;">
+		</div>
+	  <div style="text-align:right;bottom:0px;float:left;width:100%;">
+			 <button type="button" class="btn btn-black btn-sm btn_close" style="margin-right:15px;" onClick="info_close('장기요양 재가서비스 신청인','popup_box5')">돌아가기</button> <button type="button" class="btn btn-black btn-sm" style="margin-right:15px;background:black;"  onClick="applicant_info_chk()">입력완료</button>
+		</div>
+	</div>
+	
+</div>
+
+<div id="popup_box6" class="popup_box2">
+    <div id="" class="popup_box_con" style="height:700px;margin-top:-350px;margin-left:-206px;">
+		<iframe name="barcode_popup_iframe" src="" id="barcode_popup_iframe" scrolling="yes" frameborder="0" allowTransparency="false" ></iframe>
+	</div>
+	</div>
+	
+</div>
+
+<div id="popup_box9" class="popup_box2">
+    <div id="" class="popup_box_con" style="height:750px;margin-top:-375px;">
+		<div class="se_preview_wr" style="width:100% !important;height:650px !important;">
+          <div class="se_preview_hd_wr">
+            <div class="se_preview_hd">공급계약서 미리보기</div>
+            <button type="button" id="btn_zoom">확대 100%</button>
+            <button type="button" id="btn_refresh" onclick="save_eform();">새로고침</button>
+          </div>
+          <div id="se_preview" class="se_preview" style="height:610px;">
+            <?php if($dc) { ?>
+            <iframe src="/shop/eform/renderEform_new.php?preview=1&dc_id=<?=$dc['uuid']?>" frameborder="0"></iframe>
+            <?php } else { ?>
+            <div class="empty">품목선택 시 생성됩니다.</div>
+            <?php } ?>
+          </div>
+        <div style="text-align:right;bottom:0px;float:left;width:100%;margin-top:10px;">
+			<button type="button" class="btn btn-black btn-sm btn_close" style="margin-right:15px;">돌아가기</button>
+		</div>
+		</div>
+		
+	</div>
+	</div>
+	
+</div>
+<?php include_once('./popup_sign_send.php');?>
 <style>
 #barcode_popup_iframe {
-    display: none;
-    position: fixed;
+    display: block;
     width: 100%;
-    height: 100%;
+    height: 90%;
     right: 0;
     top: 0;
     z-index:9999;
 }
 
 </style>
-<iframe name="barcode_popup_iframe" id="barcode_popup_iframe" src="" scrolling="yes" frameborder="0" allowTransparency="false"></iframe>
+<!--iframe name="barcode_popup_iframe" id="barcode_popup_iframe" src="" scrolling="yes" frameborder="0" allowTransparency="false"></iframe-->
+<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script src="<?=G5_JS_URL?>/signature_pad.umd.js"></script>
 <script>
 function sendBarcode(text){
     $('#barcode_popup_iframe')[0].contentWindow.sendBarcode(text);
@@ -586,11 +968,185 @@ function sendBarcode(text){
 	<input type=text name="barcodes" value="">
 	<input type="button" name="button1" value="전 송">
 </form>
-
+<script src="<?=G5_JS_URL?>/signature_pad.umd.js"></script>
 <script>
+$(function(){
+  open_chatroom();
+<?php if(!$dc){?>
+	$('#btn_se_submit_new').attr('disabled', true);
+	$('#btn_se_submit').attr('disabled', true);
+	$('#dc_view').attr('disabled', true);
+<?php	}?>
+});
+
 var stock_table = [];
 var pen = null;
 
+$( window ).resize(function() {
+   //창크기 변화 감지
+   open_chatroom();
+});
+
+var origWidth = 390;
+var origHeight = 220;
+
+//var wrapper = document.getElementById('sign-pad');
+var canvas = document.getElementById('myCanvas');
+
+var signaturePad = new SignaturePad(canvas, {
+	backgroundColor: 'transparent',
+    minDistance: 5,
+    throttle: 3,
+    minWidth: 4,
+    maxWidth: 4
+    });
+
+function clearCanvas(){
+    // canvas
+    var cnvs = document.getElementById('myCanvas');
+    // context
+    var ctx = canvas.getContext('2d');
+
+    // 픽셀 정리
+    ctx.clearRect(0, 0, cnvs.width, cnvs.height);
+    // 컨텍스트 리셋
+    ctx.beginPath();
+}
+
+
+function applicantRelation_chg(chg_value){//장기용양 재가서비스 관계 선택 시 본인은 입력란 비활성화
+	if(chg_value == 4 && !$("#contract_sign_type").is(":checked")){
+		alert("대리인 정보 입력 후 선택 가능하십니다. 대리인 정보를 입력 해 주세요.");
+		$("#applicantRelation2").val("0");
+		$('#applicantNm2').prop('disabled', true); 
+		$('#applicantTel2').prop('disabled', true);
+		$('#applicantBirth2').prop('disabled', true); 
+		$('#applicantAddr2').prop('disabled', true);
+		return false;
+	}
+	if(chg_value == 0 || chg_value == 4){
+		$('#applicantNm2').prop('disabled', true); 
+		$('#applicantTel2').prop('disabled', true);
+		$('#applicantBirth2').prop('disabled', true); 
+		$('#applicantAddr2').prop('disabled', true);
+	}else{
+		$('#applicantNm2').prop('disabled', false); 
+		$('#applicantTel2').prop('disabled', false); 
+		$('#applicantBirth2').prop('disabled', false); 
+		$('#applicantAddr2').prop('disabled', false);  
+	}
+	
+}
+
+function toResizedDataURL(canvas, origWidth, origHeight) {
+	var resizedCanvas = document.createElement('canvas');
+	var resizedContext = resizedCanvas.getContext('2d');
+
+	resizedCanvas.width = origWidth * 1;
+	resizedCanvas.height = origHeight * 1;
+
+	var $signBack = $('#sign-back');
+	var ratio = Math.max(window.devicePixelRatio || 1, 1);
+
+	resizedContext.drawImage(canvas,
+		$signBack.css('left').replace(/[^-\d\.]/g, '') , ($signBack.css('top').replace(/[^-\d\.]/g, '')) ,
+		$signBack.width(), $signBack.height() ,
+		0, 0,
+		origWidth * 1, origHeight * 1
+	);
+	return resizedCanvas.toDataURL();
+}
+
+$('#btn-sign-submit').click(function(e) {
+      e.preventDefault();
+
+        if (signaturePad.isEmpty()) {
+          return alert("서명을 입력해주세요.");
+        } else {
+          var dataURL = toResizedDataURL(canvas, origWidth, origHeight);
+		  state = dataURL;
+		$.post('ajax.sign_save.php', {
+			img_data: JSON.stringify(state)
+		  }, 'json')
+		  .done(function(data) {//저장 성공시 하단 정보 재 호출 ajax 호출 필요			
+			alert(data.msg);
+			if(data.ok == "ok"){
+				$('.se_seal_wr').remove();
+				$("span").remove("#no_img");
+				$("#sealFile_img").attr("src",'/data/file/member/stamp/'+data.sealFile).show();
+				$('#popup_box2_1').hide();
+				clearCanvas();
+			}
+		  })
+		  .fail(function($xhr) {
+			var data = $xhr.responseJSON;
+			alert(data && data.message);
+		  });
+        }
+      
+    });
+
+//장기재가서비스 보이기
+function pen_ltm_show(ltm_val){
+	if(ltm_val == '04' || ltm_val == '03'){
+		$("#ltm_check").show();
+		$('#ltm_chk').prop('checked', true);
+
+		//$('#applicantRelation').val("0");
+		//$('#applicantNm').val($('#penNm').val()); 
+		//$('#applicantTel').val($('#penConNum').val()); 
+		//$('#applicantBirth').val($('#penJumin').val()); 
+		//$('#applicantAddr').val($('#penAddr').val()+" "+$('#penAddrDtl').val()); 
+	}else{
+		$("#ltm_check").hide();
+		$('#ltm_chk').prop('checked', false);
+	}
+
+}
+// 내 계좌정보 변경
+function faccount_submit(f) {
+  if(confirm("계좌정보를 수정 하시겠습니까?")){
+		var params = {
+			mb_account : $("#mb_account").val()
+		};
+		$.ajax({
+				type : "POST",            
+				url : "ajax.account_update.php",      
+				data : params, 
+				dataType:"json",
+				success : function(res){ 
+					alert(res.msg);
+				},
+				error : function(XMLHttpRequest, textStatus, errorThrown){ 
+					alert("통신 실패.")
+				}
+			});	
+
+  }else{
+	return false;
+  }
+}
+//주소검색 제한
+function win_zip_chk(){
+	if($("input[name='pen_type']").val() == 0 || $("#penLtmNum").val() != ""){
+		win_zip('form_simple_eform', 'penZip', 'penAddr', 'penAddrDtl', 'penAddrDtl2', 'penAddr_jibeon');
+	}else{
+		alert("사용이 제한 되었습니다.\n수급자명 등록 후 이용하시기 바랍니다.");
+	}
+}
+
+function open_chatroom(){
+   var windowWidth = $( window ).width();
+   if(windowWidth < 960) {
+      //창 가로 크기가 960 미만일 경우 
+	  $("#btn_se_submit_new").hide();
+	  $(".se_btn_wr").show();
+   } else {
+      //창 가로 크기가 960보다 클 경우
+	  $("#btn_se_submit_new").show();
+	  $(".se_btn_wr").hide();
+   }
+}
 //바코드입력 함수
 $(document).on("click", "a.open_input_barcode", function(){
   var it_id = $(this).closest('.item').data('code');
@@ -606,16 +1162,22 @@ $(document).on("click", "a.open_input_barcode", function(){
   });
 
   window.name = "barcode_parent";
-  var url = "./popup.order_barcode_form.php";
+  var url = "./popup.order_barcode_form2.php";
   var open_win;
 
   if(is_mobile) {
-    $('#barcode_popup_iframe').show();
+    //$('#barcode_popup_iframe').show();
+	$('body').addClass('modal-open');
+	$('#popup_box6').show();
   } else {
-    open_win = window.open("", "barcode_child", "width=683, height=800, resizable = no, scrollbars = no");
+    //open_win = window.open("", "barcode_child", "width=683, height=800, resizable = no, scrollbars = no");
+	//$('#barcode_popup_iframe').show();
+	$('body').addClass('modal-open');
+	$('#popup_box6').show();
   }
 
-  $('#barcode_popup_form').attr('target', is_mobile ? 'barcode_popup_iframe' : 'barcode_child');
+  //$('#barcode_popup_form').attr('target', is_mobile ? 'barcode_popup_iframe' : 'barcode_child');
+  $('#barcode_popup_form').attr('target', 'barcode_popup_iframe');
 
   $('#barcode_popup_form').attr('action', url);
   $('#barcode_popup_form').attr('method', 'post');
@@ -638,7 +1200,7 @@ $(document).on('click', '.btn_del_eform', function(e) {
   if(!confirm('정말 삭제하시겠습니까?'))
     return;
 
-  $.post('ajax.simple_eform.php', {
+  $.post('ajax.simple_eform_new.php', {
     w: 'd',
     dc_id: $(this).data('id')
   }, 'json')
@@ -665,17 +1227,29 @@ function check_no_item() {
     }
     total += selected;
   });
-
   if(total == 0) {
     $('.no_item_info').show();
     $('.se_item_list_hd').hide();
+	$('#btn_se_submit_new').attr('disabled', true);
+	$('#btn_se_submit').attr('disabled', true);
+	$('#dc_view').attr('disabled', true);
     $('.btn_se_submit').removeClass('active');
   } else {
-    $('.no_item_info').hide();
-    $('.se_item_list_hd').show();
-    var dc_id = $('input[name="dc_id"]').val();
-    if(dc_id)
-      $('.btn_se_submit').addClass('active');
+	  $('.no_item_info').hide();
+	  $('.se_item_list_hd').show();
+	  $('#list_wrap').hide();
+	  if($("#penLtmNum").val() != ""){		
+		//var dc_id = $('input[name="dc_id"]').val();
+		//if(dc_id){
+		$('#btn_se_submit_new').attr('disabled', false);
+		$('#btn_se_submit').attr('disabled', false);
+		$('#dc_view').attr('disabled', false);
+		$('.btn_se_submit').addClass('active');
+		<?php if(!$dc){?>
+		save_eform();
+		<?php }?>
+		//}
+	  }
   }
 }
 
@@ -683,9 +1257,36 @@ function check_no_item() {
 function select_item(obj, qty) {
 
   if(!qty) qty = 1;
-
+  if(parseInt($("#rent_count").val())==5 && obj.gubun == '대여'){
+	alert("대여 상품은 총 수량이 5개까지만 가능합니다.");
+	$('body').removeClass('modal-open');
+	$('#popup_box').hide();
+	return false;
+  }
+  if(parseInt($("#sale_count").val())==15 && obj.gubun != '대여'){
+	alert("판매 상품은 총 수량이 15개까지만 가능합니다.");
+	$('body').removeClass('modal-open');
+	$('#popup_box').hide();
+	return false;
+  }
+  
+  if(obj.gubun == '대여'){
+	$("#rent_count").val(parseInt($("#rent_count").val())+parseInt(qty));
+  }else{
+	$("#sale_count").val(parseInt($("#sale_count").val())+parseInt(qty));
+  }
+  
   $('body').removeClass('modal-open');
   $('#popup_box').hide();
+  $('#popup_box2').hide();
+  $('#popup_box2_1').hide();
+  $('#popup_box3').hide();
+  $('#popup_box4').hide();
+  $('#popup_box5').hide();
+  $('#popup_box6').hide();
+  $('#popup_box7').hide();
+  $('#popup_box8').hide();
+  $('#popup_box9').hide();
 
   var $li = $('<li class="list item" data-code="' + obj.it_id + '" data-uid="' + Date.now().toString(36) + Math.random().toString(36).substr(2) + '">')
     .append('<input type="hidden" name="it_id[]" value="' + obj.it_id + '">')
@@ -703,7 +1304,7 @@ function select_item(obj, qty) {
     $it_info.append('<p class="it_price">급여가 : ' + parseInt(obj.it_cust_price).toLocaleString('en-US') + '원</p>'); 
   }
   $li.append($it_info);
-
+if(obj.gubun == '대여') {
   $li.append('\
     <div class="it_btn_wr flex align-items space-between">\
       <div class="it_qty">\
@@ -711,7 +1312,8 @@ function select_item(obj, qty) {
         <div class="input-group-btn">\
           <button type="button" class="it_qty_minus btn btn-lightgray btn-sm"><i class="fa fa-minus"></i><span class="sound_only">감소</span></button>\
         </div>\
-        <input type="text" name="it_qty[]" value="1" class="form-control input-sm">\
+        <input type="text" name="it_qty[]" value="1" class="form-control input-sm" readonly>\
+		<input type="hidden" name="gubun" value="대여">\
         <div class="input-group-btn">\
           <button type="button" class="it_qty_plus btn btn-lightgray btn-sm"><i class="fa fa-plus"></i><span class="sound_only">증가</span></button>\
         </div>\
@@ -720,6 +1322,25 @@ function select_item(obj, qty) {
       <button type="button" class="btn_del_item">삭제</button>\
     </div>\
   ');
+}else{
+	$li.append('\
+    <div class="it_btn_wr flex align-items space-between">\
+      <div class="it_qty">\
+        <div class="input-group">\
+        <div class="input-group-btn">\
+          <button type="button" class="it_qty_minus btn btn-lightgray btn-sm"><i class="fa fa-minus"></i><span class="sound_only">감소</span></button>\
+        </div>\
+        <input type="text" name="it_qty[]" value="1" class="form-control input-sm" readonly>\
+		<input type="hidden" name="gubun" value="판매">\
+        <div class="input-group-btn">\
+          <button type="button" class="it_qty_plus btn btn-lightgray btn-sm"><i class="fa fa-plus"></i><span class="sound_only">증가</span></button>\
+        </div>\
+        </div>\
+      </div>\
+      <button type="button" class="btn_del_item">삭제</button>\
+    </div>\
+  ');
+}
 
   var $it_ipt = $('<div class="it_ipt_wr">');
   if(obj.gubun == '대여') {
@@ -817,7 +1438,16 @@ function set_rent_date($parent, months) {
 var loading = false;
 function save_eform() {
   if(loading) return;
-
+  /*
+  var src = jQuery('#sealFile_img').attr("src");
+  var _fileLen = src.length;
+  var _lastDot = (src.lastIndexOf('.'));
+  var _fileExt = src.substring(_lastDot+1, _fileLen).toLowerCase(); 
+  if(_fileExt != "png"){
+	alert("직인은 png 파일만 사용 가능합니다. 직인 파일을 변경해 주세요.");
+	$('#btn_ent').trigger("click");
+	return false;
+  }*/
   if($('.pen_id_flexdatalist').val() !== $('.pen_id_flexdatalist').next().val())
     $('.pen_id_flexdatalist').val($('.pen_id_flexdatalist').next().val());
 
@@ -842,8 +1472,8 @@ function save_eform() {
   });
 
   // 특약사항 값 적용
-  var data = CKEDITOR.instances.entConAcc01.getData();
-  $('#entConAcc01').val(data);
+  var data = CKEDITOR.instances.entConAcc01_2.getData();
+  $('#entConAcc01_2').val(data);
 
   loading = true;
   var $form = $('#form_simple_eform');
@@ -855,19 +1485,19 @@ function save_eform() {
     formdata += "&sealFile_self=false";
   }
 
-  $.post('ajax.simple_eform.php', formdata, 'json')
+  $.post('ajax.simple_eform_new.php', formdata, 'json')
     .done(function(result) {
       var dc_id = result.data;
 
       var w = $('input[name="w"]').val();
       if(w === 'w') {
-        window.location.href = '/shop/electronic_manage.php?dc_id=' + dc_id;
+        window.location.href = '/shop/electronic_manage_new.php?dc_id=' + dc_id;
       }
 
       $('input[name="w"]').val('u');
       $('input[name="dc_id"]').val(dc_id);
 
-      var preview_url = '/shop/eform/renderEform.php?preview=1&dc_id=' + dc_id;
+      var preview_url = '/shop/eform/renderEform_new.php?preview=1&dc_id=' + dc_id;
       $('#se_preview').empty().append($('<iframe>').attr('src', preview_url).attr('frameborder', 0));
       check_no_item();
     })
@@ -883,18 +1513,18 @@ function save_eform() {
 let pen_info = [];
 // 계약서 작성
 $('#btn_se_submit').on('click', function() {
-  // if(!!pen_info){
-  //     if(!(!!pen_info['penZip'])&&!(!!pen_info['penAddr'])) {
-  //       if(confirm("수급자 정보가 완전하지 않습니다.\n수급자 정보 수정을 진행하시겠습니까?") == true){ // 등록되지 않은 수급자이기 때문에 보호자 정보 없음
-  //         window.location.href = './my_recipient_update.php?id='+pen_info['penId'];
-  //         return false;
-  //       } else {
-  //         alert("수급자 선택을 초기화합니다.");
-  //         window.location.href = './simple_eform.php';
-  //         return false;
-  //       }
-  //     }
-  // }
+   //if(!!pen_info){
+   //    if(!(!!pen_info['penZip'])&&!(!!pen_info['penAddr'])) {
+   //      if(confirm("수급자 정보가 완전하지 않습니다.\n수급자 정보 수정을 진행하시겠습니까?") == true){ // 등록되지 않은 수급자이기 때문에 보호자 정보 없음
+   //        window.location.href = './my_recipient_update.php?id='+pen_info['penId'];
+   //        return false;
+   //      } else {
+   //        alert("수급자 선택을 초기화합니다.");
+   //        window.location.href = './simple_eform.php';
+   //        return false;
+   //      }
+   //    }
+  //}
 
   if(loading) {
     alert('계약서 저장 중입니다. 잠시 기다려주세요.');
@@ -905,12 +1535,12 @@ $('#btn_se_submit').on('click', function() {
   var dc_id = $('input[name="dc_id"]').val();
 
   if(!dc_id)
-      return alert('먼저 품목 선택 후 저장을 해주세요.');
-
+      //return alert('먼저 수급자,품목 선택 후 저장을 해주세요.');
+	
   var contract_type = $('input[name="contract_sign_type"]:checked').val();
-  if (contract_type == 1) {
+  if (contract_type == 1) {	
     if ($('#contract_sign_name').val().length == 0) {
-      return alert('대리인 이름을 입력하세요.');
+      //return alert('대리인 이름을 입력하세요.');
     }
   }
   
@@ -927,7 +1557,11 @@ $('#btn_se_submit').on('click', function() {
       }
     });
   }
-
+  var sealFile_chk = $('input[name="sealFile_chk"]:checked').val();
+  if(sealFile_chk != "1"){
+	alert("사업자 직인정보를 등록 해 주세요.");
+	$('#btn_ent').trigger("click");
+  }
   if(changed && confirm('변경된 수급자 정보가 있습니다. 변경된 정보로 수급자 정보를 변경하시겠습니까? ')) {
     $.post('ajax.recipient.update.php', {
       penId: $('#penId').val(),
@@ -984,15 +1618,16 @@ function update_barcode_field() {
           sel_count = it_qty;
 
         $sel_barcode_wr.html('<p>해당 상품은 보유재고가 ' + stock.length + '개 있습니다.</p>');
-        $sel_barcode_wr.append('\
-          <label class="radio-inline">\
+        
+		$sel_barcode_wr.append('\
+          <label class="radio-inline" style="display:none">\
             <input type="radio" name="barcode_' + key + '_type" value="0"' + (sel_type == '0' ? ' checked' : '') + '> 직접입력\
           </label>\
-          <label class="radio-inline">\
+          <label class="radio-inline"  style="display:none">\
             <input type="radio" name="barcode_' + key + '_type" value="1"' + (sel_type == '1' ? ' checked' : '') + '> 보유재고선택\
           </label>\
         ');
-        var $sel_stock_count = $('<select class="sel_stock_count">');
+        var $sel_stock_count = $('<select class="sel_stock_count"  style="display:none">');
         for(var i = 1; i <= (it_qty > stock.length ? stock.length : it_qty); i++) {
           $sel_stock_count.append('<option value="' + i + '"' + (i == sel_count ? ' selected' : '') + '>' + i + '개</option>');
         }
@@ -1034,7 +1669,7 @@ function update_barcode_field() {
             }
           }
 
-          var $sel_barcode = $('<select class="it_barcode">');
+          var $sel_barcode = $('<select class="it_barcode"  style="display:none;">');
           $sel_barcode.append('<option value="">바코드 선택</option>');
           for(var s = 0; s < stock.length; s++) {
             $sel_barcode.append('<option value="' + stock[s]['prodBarNum'] + '"' + (selected == stock[s]['prodBarNum'] ? ' selected' : '') + '>' + stock[s]['prodBarNum'] + '</option>')
@@ -1083,14 +1718,14 @@ function update_barcode_field() {
 
         $sel_barcode_wr.html('<p>해당 상품은 보유재고가 ' + stock.length + '개 있습니다.</p>');
         $sel_barcode_wr.append('\
-          <label class="radio-inline">\
+          <label class="radio-inline" style="display:none">\
             <input type="radio" name="barcode_' + key + '000' + '_type" value="0"' + (sel_type == '0' ? ' checked' : '') + '> 직접입력\
           </label>\
-          <label class="radio-inline">\
+          <label class="radio-inline" style="display:none">\
             <input type="radio" name="barcode_' + key + '000' + '_type" value="1"' + (sel_type == '1' ? ' checked' : '') + '> 보유재고선택\
           </label>\
         ');
-        var $sel_stock_count = $('<select class="sel_stock_count">');
+        var $sel_stock_count = $('<select class="sel_stock_count"  style="display:none">');
         for(var i = 1; i <= (it_qty > stock.length ? stock.length : it_qty); i++) {
           $sel_stock_count.append('<option value="' + i + '"' + (i == sel_count ? ' selected' : '') + '>' + i + '개</option>');
         }
@@ -1132,7 +1767,7 @@ function update_barcode_field() {
             }
           }
 
-          var $sel_barcode = $('<select class="it_barcode">');
+          var $sel_barcode = $('<select class="it_barcode"  style="display:none;">');
           $sel_barcode.append('<option value="">바코드 선택</option>');
           for(var s = 0; s < stock.length; s++) {
             $sel_barcode.append('<option value="' + stock[s]['prodBarNum'] + '"' + (selected == stock[s]['prodBarNum'] ? ' selected' : '') + '>' + stock[s]['prodBarNum'] + '</option>')
@@ -1217,7 +1852,7 @@ function select_recipient(obj) {
                         <option value="00" <?php if($dc) echo get_selected($dc['applicantCd'], '00'); ?>>본인</option>
                         <option value="02" <?php if($dc) echo get_selected($dc['applicantCd'], '02'); ?>>공란</option>
                       </select>`;
-            select.innerHTML += row;
+            //select.innerHTML += row;
         } else {
             var row = `<select name="applicantCd" id="applicantCd" class="form-control input-sm">
                         <option value="00" <?php if($dc) echo get_selected($dc['applicantCd'], '00'); ?>>본인</option>`;
@@ -1236,7 +1871,7 @@ function select_recipient(obj) {
             row += `
                         <option value="02" <?php if($dc) echo get_selected($dc['applicantCd'], '02'); ?>>공란</option>
                     </select>`;
-            select.innerHTML += row;
+            //select.innerHTML += row;
         }
         console.log("result_pros : ",result.data);
       })
@@ -1247,7 +1882,7 @@ function select_recipient(obj) {
                         <option value="00" <?php if($dc) echo get_selected($dc['applicantCd'], '00'); ?>>본인</option>
                         <option value="02" <?php if($dc) echo get_selected($dc['applicantCd'], '02'); ?>>공란</option>
                       </select>`;
-            select.innerHTML += row;
+            //select.innerHTML += row;
         }
         else{
            alert("수급자 관리 페이지로 이동합니다.");
@@ -1261,7 +1896,7 @@ function select_recipient(obj) {
 
   obj['applicantCd'] = $('#applicantCd').val();
 
-  $('.panel-body .form-group').show();
+  //$('.panel-body .form-group').show();
   $('#penLtmNum').prop('disabled', false).prop('readonly', true);
   $('#penConNum').prop('disabled', false);
   $('#penRecGraCd').prop('disabled', false);
@@ -1270,8 +1905,11 @@ function select_recipient(obj) {
   $('#penExpiStDtm').prop('disabled', false);
   $('#penExpiEdDtm').prop('disabled', false);
   $('#penJumin').prop('disabled', false);
-  $('#se_body_wr').show();
-  $('#se_body_wr').addClass('active');
+  $('#penZip').prop('disabled', false);
+  $('#penAddr').prop('disabled', false);
+  $('#penAddrDtl').prop('disabled', false);
+  $('#se_body_wr').show();//상품정보
+  $('#se_body_wr').addClass('active');//상품정보
 
   $('#list_wrap').hide();
 }
@@ -1319,28 +1957,174 @@ function update_pen(obj) {
     $('#penJumin').val(obj.penJumin).data('orig', obj.penJumin).change();
     $('#penRecTypeCd').val(obj.penRecTypeCd).data('orig', obj.penRecTypeCd).change(); // 값을 들고오지 않음 -> ajax.get_pen_id.php 에서 추가
     if(obj.penRecTypeCd == '01') {
-      $('input[name="penRecTypeCd_radio"]').val(1).prop('checked', true);
-      $('input[name="penRecTypeCd_radio"]').val(1).prop('checked', false);
+      $(":radio[name='penRecTypeCd_radio'][value='01']").attr('checked', true);
+	  $(":radio[name='penRecTypeCd_radio'][value='02']").attr('checked', false);
     } else {
-      $('input[name="penRecTypeCd_radio"]').val(1).prop('checked', false);
-      $('input[name="penRecTypeCd_radio"]').val(1).prop('checked', true);
+	  $(":radio[name='penRecTypeCd_radio'][value='01']").attr('checked', false);
+	  $(":radio[name='penRecTypeCd_radio'][value='02']").attr('checked', true);
     }
     if(obj.penRecTypeTxt) $('#penRecTypeTxt').val(obj.penRecTypeTxt); // 값을 들고오지 않음 -> ajax.get_pen_id.php 에서 추가
   }
 }
-
+//미리보기
+function dc_view(){
+	if($("#ltm_chk").is(":checked") && $("#contract_sign_type").is(":checked")){//대리인 체크에 장기요양 신청서 있을 경우
+		if($("#applicantRelation2").val() == '0'){//본인일때
+			alert("장기요양 재가서비스 신청인에 수급인과의 관계가 본인 입니다.\n본인을 제외 하고 선택해주세요.");
+			
+			btn_ltm_click();
+			return false;
+		}		
+	}
+	$('body').addClass('modal-open');	
+	save_eform();
+	var dc_id = $('input[name="dc_id"]').val();
+	if(dc_id != ""){
+		$('#popup_box9').show();
+	}
+}
 // 수급자 목록
 $('#btn_pen').click(function() {
   var url = 'pop_recipient.php';
-
+  $('#left_text').show();
   $('#popup_box iframe').attr('src', url);
   $('body').addClass('modal-open');
   $('#popup_box').show();
 });
-function selected_recipient(result) {
 
+// 사업자 정보등록
+$('#btn_ent').click(function() {
+  $('body').addClass('modal-open');
+  $('#popup_box2').show();
+});
+
+// 날인정보 입력
+$('#btn_sign').click(function() {
+  //$('body').addClass('modal-open');
+  $('#popup_box2_1').show();
+});
+
+// 구매계약 대리인 정보 입력
+function btn_contract_click(){
+	if($("#contract_sign_type").is(":checked")){
+		$('body').addClass('modal-open');
+		$('#popup_box3').show();
+	}else{
+		alert("대리인 계약 시 체크 후 대리인 정보를 입력 하시기 바랍니다.");
+		$("#contract_sign_type").focus();
+	};
+
+}
+
+// 구매계약 대리인 정보 입력 확인
+function contract_info_chk(){
+	$("#contract_sign_relation").val($("#contract_sign_relation2").val());
+	$("#contract_sign_name").val($("#contract_sign_name2").val());
+	$("#contract_tel").val($("#contract_tel2").val());
+	$("#contract_addr").val($("#contract_addr2").val());
+	$("#applicantRelation2").val('4');
+	div_close('popup_box3');
+}
+
+// 특약 사항 정보 입력
+function btn_acc_click(){
+	if($("#acc_chk").is(":checked")){
+		$('body').addClass('modal-open');
+		$('#popup_box4').show();
+	}else{
+		alert("특약사항 입력 시 체크 후 특약사항을 입력 하시기 바랍니다.");
+		$("#acc_chk").focus();
+	};
+
+}
+
+// 구매계약 특약사항 입력
+function acc_info_chk(){
+	if(CKEDITOR.instances.entConAcc01_2.getData() == ""){
+		//alert("특약사항 정보를 입력해 주세요.");		
+		//CKEDITOR.instances.entConAcc01_2.focus();
+		//return false;
+	}
+	$("#entConAcc01").val(CKEDITOR.instances.entConAcc01_2.getData());
+	$("#save_conacc").val($("#entConAcc01_save2").val());
+	div_close('popup_box4');
+}
+
+// 장기요양 재가서비스 신청인 정보 입력
+function btn_ltm_click(){
+	if($("#ltm_chk").is(":checked")){
+		$('body').addClass('modal-open');
+		$('#popup_box5').show();
+	}else{
+		alert("장기요양재가서비스 신청 시 체크 후 신청인 정보를 입력 하시기 바랍니다.");
+		$("#ltm_chk").focus();
+	};
+
+}
+
+// 장기요양 재가서비스 신청인 정보 입력 확인
+function applicant_info_chk(){
+	if($("#contract_sign_type").is(":checked") && $("#applicantRelation2").val() == "0"){//대리인 체크에 장기요양 신청서 있을 경우
+		alert("수급인과의 관계를 본인을 제외하고 선택해 주세요.");
+		$("#applicantRelation2").val("4");
+		return false;
+	}
+
+	$("#applicantRelation").val($("#applicantRelation2").val());
+	$("#applicantNm").val($("#applicantNm2").val());
+	$("#applicantTel").val($("#applicantTel2").val());
+	$("#applicantBirth").val($("#applicantBirth2").val());
+	$("#applicantAddr").val($("#applicantAddr2").val());
+	$("#applicantDate").val($("#applicantDate2").val());
+	div_close('popup_box5');
+	//save_eform();
+}
+
+//돌아가기 클릭 시
+function info_close(div_name,div_id,chk_id){
+	<?php if(!$dc){?>
+	if(confirm(div_name+" 정보 입력을 완료 하지 않으면 입력 정보가 저장 되지 않습니다. 돌아가시겠습니까?")){
+		if(div_name == "대리인"){//대리인
+			$('#contract_sign_name2').val(""); $('#contract_tel2').val(""); $('#contract_addr2').val("");
+			$('#contract_sign_name').val(""); $('#contract_tel').val(""); $('#contract_addr').val("");
+			contract_info_chk()
+		}else if(div_name == "특약사항"){
+			CKEDITOR.instances.entConAcc01_2.setData("");$('#entConAcc01_save2').prop("checked", false);
+			acc_info_chk()
+		}else{//장기요양 신청인
+			$('#applicantRelation2').val("0");$('#applicantNm2').val(""); $('#applicantTel2').val(""); $('#applicantBirth2').val(""); $('#applicantAddr2').val(""); $('#applicantDate2').val("");
+			$('#applicantRelation').val("0");$('#applicantNm').val(""); $('#applicantTel').val(""); $('#applicantBirth').val(""); $('#applicantAddr').val(""); $('#applicantDate').val("");
+			applicant_info_chk();
+		}
+		if(chk_id){
+			$("#"+chk_id).prop("checked", false);
+		}
+		div_close(div_id);
+	}else{
+		return false;
+	}
+	<?php }else{?>
+		div_close(div_id);
+	<?php }?>
+}
+
+function div_close(div_id){
+	$('body').removeClass('modal-open');
+	$('#'+div_id).hide();
+}
+
+function selected_recipient(result) {
   $('body').removeClass('modal-open');
   $('#popup_box').hide();
+  $('#popup_box2').hide();
+  $('#popup_box2_1').hide();
+  $('#popup_box3').hide();
+  $('#popup_box4').hide();
+  $('#popup_box5').hide();
+  $('#popup_box6').hide();
+  $('#popup_box7').hide();
+  $('#popup_box8').hide();
+  $('#popup_box9').hide();
 
   result = result.split('|');
 
@@ -1372,10 +2156,35 @@ function selected_recipient(result) {
 $('#popup_box').click(function() {
   $('body').removeClass('modal-open');
   $('#popup_box').hide();
+  $('#popup_box2').hide();
+  $('#popup_box2_1').hide();
+  $('#popup_box3').hide();
+  $('#popup_box4').hide();
+  $('#popup_box5').hide();
+  $('#popup_box6').hide();
+  $('#popup_box7').hide();
+  $('#popup_box8').hide();
+  $('#popup_box9').hide();
 });
+
+$('.btn_close').click(function() {
+  $('body').removeClass('modal-open');
+  $('#popup_box').hide();
+  $('#popup_box2').hide();
+  $('#popup_box2_1').hide();
+  $('#popup_box3').hide();
+  $('#popup_box7').hide();
+  $('#popup_box8').hide();
+  $('#popup_box9').hide();
+});
+
+$('.btn_close2').click(function() {
+  $('#popup_box2_1').hide();
+});
+
 $('#btn_se_sch').click(function() {
   var url = 'pop.item.select.php?no_option=nonReimbursement';
-
+  $('#left_text').hide();
   $('#popup_box iframe').attr('src', url);
   $('body').addClass('modal-open');
   $('#popup_box').show();
@@ -1408,16 +2217,40 @@ $(document).on('click', '.it_qty button', function() {
   var mode = $(this).text();
   var this_qty;
   var $it_qty = $(this).closest('.it_qty').find('input[name="it_qty[]"]');
-
+  var gubun = $(this).closest('.it_qty').find('input[name="gubun"]').val();
+ 
   switch(mode) {
     case '증가':
+	  if(gubun == "대여"){
+		if(parseInt($("#rent_count").val())==5){
+			alert("대여 상품은 총 수량이 5개까지만 가능합니다.");
+			return false;
+		}else{
+			$("#rent_count").val(parseInt($("#rent_count").val())+1);
+		}
+	  }else{
+		if(parseInt($("#sale_count").val())==15){
+			alert("판매 상품은 총 수량이 15개까지만 가능합니다.");
+			return false;
+		}else{
+			$("#sale_count").val(parseInt($("#sale_count").val())+1);
+		}
+	  }
       this_qty = parseInt($it_qty.val().replace(/[^0-9]/, "")) + 1;
       $it_qty.val(this_qty);
+	  
       break;
     case '감소':
       this_qty = parseInt($it_qty.val().replace(/[^0-9]/, "")) - 1;
       if(this_qty < 1) this_qty = 1
       $it_qty.val(this_qty);
+	  if(this_qty > 1){ 
+		  if(gubun == "대여"){
+			$("#rent_count").val(parseInt($("#rent_count").val())-1);
+		  }else{
+			$("#sale_count").val(parseInt($("#sale_count").val())-1);
+		  }
+	  }
       break;
   }
   update_barcode_field();
@@ -1449,9 +2282,16 @@ $(document).on('change paste keyup', 'input[name="it_qty[]"]', function() {
 
 // 품목 삭제
 $(document).on('click', '.btn_del_item', function() {
+  var $it_qty = $(this).closest('li').find('input[name="it_qty[]"]');
+  var gubun = $(this).closest('li').find('input[name="gubun"]').val();
+  if(gubun == "대여"){
+	$("#rent_count").val(parseInt($("#rent_count").val())-parseInt($it_qty.val()));  
+  }else{
+	$("#sale_count").val(parseInt($("#sale_count").val())-parseInt($it_qty.val()));  
+  }
   $(this).closest('li').remove();
   check_no_item();
-  save_eform();
+  //save_eform();
 });
 
 // 상품검색 팝업
@@ -1471,7 +2311,7 @@ $('.btn_se_seal').click(function() {
   var $form = $(this).closest('form');
 
   $form.find('input[name="sealFile"]').remove();
-  $('<input type="file" name="sealFile" accept=".gif, .jpg, .png" style="width: 0; height: 0; overflow: hidden;">').appendTo($form).click();
+  $('<input type="file" name="sealFile" accept=".png,.gif,.jpg" style="width: 0; height: 0; overflow: hidden;">').appendTo($form).click();
 });
 $(document).on('change', 'input[name="sealFile"]', function(e) {
   var $form = $(this).closest('form');
@@ -1492,9 +2332,13 @@ $(document).on('change', 'input[name="sealFile"]', function(e) {
     data: formData,
     dataType: 'json'
   })
-  .done(function() {
+  .done(function(data) {
     alert('직인 이미지를 업로드했습니다.');
     $('.se_seal_wr').remove();
+	$("span").remove("#no_img");
+	$("#sealFile_img").attr("src","/data/file/member/stamp/"+data.sealFile).show();
+	$("#sealFile_chk").prop('checked', true);
+	$("span").remove("#red_text");
   })
   .fail(function($xhr) {
     var data = $xhr.responseJSON;
@@ -1523,13 +2367,16 @@ function check_pen_type() {
     $('#penExpiStDtm').prop('disabled', true);
     $('#penExpiEdDtm').prop('disabled', true);
     $('#penJumin').prop('disabled', true);
+	$('#penZip').prop('disabled', true);
+	$('#penAddr').prop('disabled', true);
+	$('#penAddrDtl').prop('disabled', true);
     toggle_pen_id_flexdatalist(true);
   } else {
     // 신규수급자
     $('.pen_id_flexdatalist').removeClass('active').attr('placeholder', '수급자명');;
     $('.col-pen-nm img').hide();
-    $("#btn_pen").hide();
-    $('.panel-body .form-group').show();
+    //$("#btn_pen").hide();
+    //$('.panel-body .form-group').show();
     $('#penLtmNum').val('').prop('disabled', false).prop('readonly', false);
     $('#penConNum').prop('disabled', false);
     $('#penRecGraCd').prop('disabled', false);
@@ -1538,6 +2385,9 @@ function check_pen_type() {
     $('#penExpiStDtm').prop('disabled', false);
     $('#penExpiEdDtm').prop('disabled', false);
     $('#penJumin').prop('disabled', false);
+	$('#penZip').prop('disabled', false);
+    $('#penAddr').prop('disabled', false);
+    $('#penAddrDtl').prop('disabled', false);
     toggle_pen_id_flexdatalist(false);
   }
 }
@@ -1675,7 +2525,7 @@ $('#penConNum').on('blur', function() {
   if (ms_pen_hp.length > 9) {
     check_pen_input(ms_pen_hp);
   }
-  save_eform(); /* 수급자 연락처 미입력으로 인한 사후 연락처입력 후 포커스 아웃 시 계약서 새로고침 */
+  //save_eform(); /* 수급자 연락처 미입력으로 인한 사후 연락처입력 후 포커스 아웃 시 계약서 새로고침 */
 });
 
 // 핸드폰 번호 입력 체크
@@ -1716,9 +2566,13 @@ $(document).on('input change keyup paste', '.panel .form-group input, .panel .fo
 
   <?php if($ms_id && !$ms) { ?>
     if(!first_completed && check_input_completed()) {
-      $('#btn_se_submit').addClass('active');
+	  $('.btn_se_submit').addClass('active');
+	  $('#btn_se_submit_new').attr('disabled', false);
+	  $('#btn_se_submit').attr('disabled', false);
       first_completed = true;
-      save_eform();
+      <?php if(!$dc){?>
+		save_eform();
+		<?php }?>
     }
   <?php } ?>
 });
@@ -1788,7 +2642,7 @@ check_no_item();
 // 처음 팝업
 $('.se_sch_pop').show();
 
-CKEDITOR.replace( 'entConAcc01', {
+CKEDITOR.replace( 'entConAcc01_2', {
   removePlugins: 'link'
 });
 
@@ -1962,7 +2816,7 @@ $('input[name="it_id[]"]').each(function() {
 
 $(function() {
   <?php if($dc_id == ""){?>
-  $('#se_body_wr').hide();
+  //$('#se_body_wr').hide();
   <?php }?>
   var dc_id = 'dc_id=<?=$dc_id?>';
   search(dc_id);
@@ -1974,7 +2828,7 @@ $(function() {
 
     $.ajax({
       method: 'GET',
-      url: '<?=G5_SHOP_URL?>/eform/ajax.eform.list.php?' + queryString,
+      url: '<?=G5_SHOP_URL?>/eform/ajax.eform.list_new.php?' + queryString,
       data: params,
       beforeSend: function() {
         $listWrap.html('<div style="text-align:center;"><img src="<?=G5_URL?>/img/loading-modal.gif"></div>');

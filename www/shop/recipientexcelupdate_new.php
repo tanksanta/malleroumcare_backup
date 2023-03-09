@@ -61,7 +61,7 @@ if($sheetData) {
 
       if($valid = valid_recipient_input($sendData, false, true)) {
           // 입력값 오류 발생
-          alert("({$i}행) {$sendData['penNm']} 수급자\\n오류 : ".$valid);
+          //alert("({$i}행) {$sendData['penNm']} 수급자\\n오류 : ".$valid);
           // echo "{$sendData['penNm']} 수급자\\n오류 : ".$valid;
       }
       $inputs[] = normalize_recipient_input($sendData);
@@ -94,6 +94,7 @@ if($sheetData) {
             array_push($exist_recipient, $input['penNm']);
         }
         else {
+            $input['penZip'] = NULL;
             $res = get_eroumcare(EROUMCARE_API_RECIPIENT_INSERT, $input);
             if($res['errorYN'] != 'N') {
                 echo "{$input['penNm']} 수급자를 업로드 하는 도중 오류가 발생했습니다.<br>";
