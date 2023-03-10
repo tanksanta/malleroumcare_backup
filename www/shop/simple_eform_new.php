@@ -352,11 +352,11 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 		<div class="form-group has-feedback">
 			<label class="col-sm-2 control-label" style="width:150px;"><b>서명확인방법</b></label>
 			<div class="col-sm-5">
-	            <label class="radio-inline">
-                  <input type="radio" name="penRecTypeCd_radio" class="penRecTypeCd_radio penRecTypeCd01" value="01" <?php if(!$dc || $dc['penRecTypeCd'] == '02') echo 'checked' ?>> 유선
+	            <label class="radio-inline" title="비대면은 모두싸인을 이용한 비대면 계약입니다.">
+                  <input type="radio" name="penRecTypeCd_radio" class="penRecTypeCd_radio penRecTypeCd01" value="01" <?php if(!$dc || $dc['penRecTypeCd'] == '02') echo 'checked' ?>> 비대면
                 </label>
 				<label class="radio-inline">
-                  <input type="radio" name="penRecTypeCd_radio" class="penRecTypeCd_radio penRecTypeCd02" value="02" <?php if( $dc && $dc['penRecTypeCd'] != '02') echo 'checked' ?>> 방문
+                  <input type="radio" name="penRecTypeCd_radio" class="penRecTypeCd_radio penRecTypeCd02" value="02" <?php if( $dc && $dc['penRecTypeCd'] != '02') echo 'checked' ?>> 대면
                 </label>
 			</div>		
 		</div>
@@ -377,7 +377,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
           </div>
           <div class="form-group">
             <label style="min-width:220px;">
-              <input type="checkbox" name="contract_sign_type" id="contract_sign_type" value="1" class="input-sm" style="width:20px;" <?php if($dc['contract_sign_type'] == 1) { ?>checked<?php }?> onClick="if(this.checked == true){btn_contract_click();}">&nbsp;&nbsp;&nbsp;<strong>대리인 계약 시</strong>
+              <input type="checkbox" name="contract_sign_type" id="contract_sign_type" value="1" class="input-sm" style="width:20px;" <?php if($dc['contract_sign_type'] == 1) { ?>checked<?php }?> onClick="if(this.checked == true){btn_contract_click();}else{$('#applicantRelation2').val('0');}">&nbsp;&nbsp;&nbsp;<strong>대리인 계약 시</strong>
 			  <input type="hidden" name="contract_sign_relation" id="contract_sign_relation" value="<?=$dc['contract_sign_relation']?>" alt="수급인과의 관계">
 			  <input type="hidden" name="contract_sign_name" id="contract_sign_name" value="<?=$dc['contract_sign_name']?>" alt="대리인 성명">
 			  <input type="hidden" name="contract_tel" id="contract_tel" value="<?=$dc['contract_tel']?>" alt="대리인 전화번호">
@@ -1017,12 +1017,15 @@ function clearCanvas(){
 function applicantRelation_chg(chg_value){//장기용양 재가서비스 관계 선택 시 본인은 입력란 비활성화
 	if(chg_value == 4 && !$("#contract_sign_type").is(":checked")){
 		alert("대리인 정보 입력 후 선택 가능하십니다. 대리인 정보를 입력 해 주세요.");
-		$("#applicantRelation2").val("0");
+		//$("#applicantRelation2").val("0");
 		$('#applicantNm2').prop('disabled', true); 
 		$('#applicantTel2').prop('disabled', true);
 		$('#applicantBirth2').prop('disabled', true); 
 		$('#applicantAddr2').prop('disabled', true);
+		div_close('popup_box5');
+		btn_contract_click();
 		return false;
+
 	}
 	if(chg_value == 0 || chg_value == 4){
 		$('#applicantNm2').prop('disabled', true); 
@@ -1956,12 +1959,12 @@ function update_pen(obj) {
     $('#penExpiEdDtm').val(obj.penExpiEdDtm).data('orig', obj.penExpiEdDtm).change();
     $('#penJumin').val(obj.penJumin).data('orig', obj.penJumin).change();
     $('#penRecTypeCd').val(obj.penRecTypeCd).data('orig', obj.penRecTypeCd).change(); // 값을 들고오지 않음 -> ajax.get_pen_id.php 에서 추가
-    if(obj.penRecTypeCd == '01') {
-      $(":radio[name='penRecTypeCd_radio'][value='01']").attr('checked', true);
-	  $(":radio[name='penRecTypeCd_radio'][value='02']").attr('checked', false);
-    } else {
-	  $(":radio[name='penRecTypeCd_radio'][value='01']").attr('checked', false);
+    if(obj.penRecTypeCd == '02') {
+      $(":radio[name='penRecTypeCd_radio'][value='01']").attr('checked', false);
 	  $(":radio[name='penRecTypeCd_radio'][value='02']").attr('checked', true);
+    } else {
+	  $(":radio[name='penRecTypeCd_radio'][value='01']").attr('checked', true);
+	  $(":radio[name='penRecTypeCd_radio'][value='02']").attr('checked', false);
     }
     if(obj.penRecTypeTxt) $('#penRecTypeTxt').val(obj.penRecTypeTxt); // 값을 들고오지 않음 -> ajax.get_pen_id.php 에서 추가
   }
@@ -2006,6 +2009,7 @@ $('#btn_sign').click(function() {
 
 // 구매계약 대리인 정보 입력
 function btn_contract_click(){
+	$("#contract_sign_type").attr("checked",true);
 	if($("#contract_sign_type").is(":checked")){
 		$('body').addClass('modal-open');
 		$('#popup_box3').show();
@@ -2084,10 +2088,11 @@ function applicant_info_chk(){
 function info_close(div_name,div_id,chk_id){
 	<?php if(!$dc){?>
 	if(confirm(div_name+" 정보 입력을 완료 하지 않으면 입력 정보가 저장 되지 않습니다. 돌아가시겠습니까?")){
-		if(div_name == "대리인"){//대리인
+		if(div_name == "대리인"){//대리인			
 			$('#contract_sign_name2').val(""); $('#contract_tel2').val(""); $('#contract_addr2').val("");
 			$('#contract_sign_name').val(""); $('#contract_tel').val(""); $('#contract_addr').val("");
 			contract_info_chk()
+			$("#applicantRelation2").val("0");
 		}else if(div_name == "특약사항"){
 			CKEDITOR.instances.entConAcc01_2.setData("");$('#entConAcc01_save2').prop("checked", false);
 			acc_info_chk()

@@ -340,9 +340,9 @@ $(function() {
   	open_send_sign('<?=$dc_id?>');
   <?php } ?>
 <?php if($eform2) { ?>
-	if(confirm("서명 준비가 완료 되었습니다. 서명을 진행 하시겠습니까?")){
-		open_sign_stat('<?=$eform2['uuid']?>');
-	}
+	//if(confirm("서명 준비가 완료 되었습니다. 서명을 진행 하시겠습니까?")){
+	//	open_sign_stat('<?=$eform2['uuid']?>');
+	//}
   <?php } ?>
 });
 </script>

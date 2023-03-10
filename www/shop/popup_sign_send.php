@@ -162,25 +162,25 @@
 				<th>대상자</th>
 				<th>방식</th>
 				<th>상태</th>
-				<th>날짜</th>
+				<th style="width:151px;">날짜</th>
 			</tr>
 			<tr id="row1">
 				<td>수급자</td>
-				<td><span id="gubun1">-</span></td>
-				<td><span id="stat1">대상아님</span></td>
-				<td><span id="sign_date1">-</span></td>
+				<td align="center"><span id="gubun1">-</span></td>
+				<td align="center"><span id="stat1">대상아님</span></td>
+				<td align="center"><span id="sign_date1">-</span></td>
 			</tr>
 			<tr id="row2">
-				<td>대리인</td>
-				<td><span id="gubun2">-</span></td>
-				<td><span id="stat2">대상아님</span></td>
-				<td><span id="sign_date2">-</span></td>
+				<td align="center">대리인</td>
+				<td align="center"><span id="gubun2">-</span></td>
+				<td align="center"><span id="stat2">대상아님</span></td>
+				<td align="center"><span id="sign_date2">-</span></td>
 			</tr>
 			<tr id="row3">
 				<td>신청인</td>
-				<td><span id="gubun3">-</span></td>
-				<td><span id="stat3">대상아님</span></td>
-				<td><span id="sign_date3">-</span></td>
+				<td align="center"><span id="gubun3">-</span></td>
+				<td align="center"><span id="stat3">대상아님</span></td>
+				<td align="center"><span id="sign_date3">-</span></td>
 			</tr>			
 			</table>
 		</div>

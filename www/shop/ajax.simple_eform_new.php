@@ -55,7 +55,7 @@ if($_POST['ltm_chk'] == "1" && $applicantRelation != "0" && $applicantRelation !
 }
 $applicantDate			= $_POST['applicantDate']? clean_xss_tags($_POST['applicantDate']) :"";//신청인신청일
 $do_date				= $_POST['do_date']? clean_xss_tags($_POST['do_date']) :"";//계약서 계약일
-$dc_sign_send_datetime  = $_POST['dc_sign_send_datetime']? clean_xss_tags($_POST['dc_sign_send_datetime']) :"";//서명요청일
+$dc_sign_send_datetime  = $_POST['dc_sign_send_datetime']? clean_xss_tags($_POST['dc_sign_send_datetime']) :"0000-00-00 00:00:00";//서명요청일
 
 //$contract_tel			= $_POST['contract_tel']? clean_xss_tags($_POST['contract_tel']) :"";//대리인 전화
 //$contract_addr			= $_POST['contract_addr']? clean_xss_tags($_POST['contract_addr']) :"";//대리인 주소
@@ -94,6 +94,7 @@ if($contract_sign_type == 1){//대리인 사용
 	$contract_tel			= $_POST['contract_tel']? clean_xss_tags($_POST['contract_tel']) :"";//대리인 전화
 	$contract_addr			= $_POST['contract_addr']? clean_xss_tags($_POST['contract_addr']) :"";//대리인 주소
 }else{//수급자 본인
+	$contract_sign_type = "0";
 	$contract_sign_name = '';//대리인명
 	$contract_sign_relation = '0';//수급자와의 관계 0본인1가족2친족3기타
 	$contract_tel			= "";//대리인 전화
@@ -204,7 +205,7 @@ function calc_pen_price($penTypeCd, $price) {
             break;
     }
 
-    $pen_price = (int) floor(
+    $pen_price = (int) ceil(
         $price * $rate / (100 * 10)
     ) * 10;
 

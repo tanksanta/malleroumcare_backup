@@ -257,25 +257,25 @@ if($_REQUEST["signed"] == "ok"){?>
 		$url = $arrResponse["documents"][0]["file"]["downloadUrl"];
 		$participants_count = count($arrResponse["documents"][0]["participants"]);
 		$gubun1 = $gubun2 = $gubun3 = "-";
-		$sign_date1 = $sign_date2 = $sign_date3 = "0000-00-00 00:00:00";
+		$sign_date1 = $sign_date2 = $sign_date3 = "-";
 		$stat1 = $stat2 = $stat3 = "대상아님";
 		for($i=0;$i<$participants_count;$i++){
 			if($arrResponse["documents"][0]["participants"][$i]["name"] == "수급자"){
 				$gubun1 = ($arrResponse["documents"][0]["participants"][$i]["signingMethod"]["type"] == "SECURE_LINK")?"웹페이지":"카카오톡";			
-				$sign_date1 = ($arrResponse["documents"][0]["signings"][$i]["signedAt"] != "")? date("Y-m-d H:i:s",strtotime($arrResponse["documents"][0]["signings"][$i]["signedAt"])):"0000-00-00 00:00:00"; 
-				$stat1 = ($sign_date1 == "0000-00-00 00:00:00")?"진행중":"완료";
+				$sign_date1 = ($arrResponse["documents"][0]["signings"][$i]["signedAt"] != "")? date("Y-m-d H:i:s",strtotime($arrResponse["documents"][0]["signings"][$i]["signedAt"])):"-"; 
+				$stat1 = ($sign_date1 == "-")?"진행중":"완료";
 				$part_id1 = $arrResponse["documents"][0]["participants"][$i]["id"];
 			}
 			if($arrResponse["documents"][0]["participants"][$i]["name"] == "대리인"){
 				$gubun2 = ($arrResponse["documents"][0]["participants"][$i]["signingMethod"]["type"] == "SECURE_LINK")?"웹페이지":"카카오톡";			
-				$sign_date2 = ($arrResponse["documents"][0]["signings"][$i]["signedAt"] != "")? date("Y-m-d H:i:s",strtotime($arrResponse["documents"][0]["signings"][$i]["signedAt"])):"0000-00-00 00:00:00"; 
-				$stat2 = ($sign_date2 == "0000-00-00 00:00:00")?"진행중":"완료";
+				$sign_date2 = ($arrResponse["documents"][0]["signings"][$i]["signedAt"] != "")? date("Y-m-d H:i:s",strtotime($arrResponse["documents"][0]["signings"][$i]["signedAt"])):"-"; 
+				$stat2 = ($sign_date2 == "-")?"진행중":"완료";
 				$part_id2 = $arrResponse["documents"][0]["participants"][$i]["id"];
 			}
 			if($arrResponse["documents"][0]["participants"][$i]["name"] == "신청자"){
 				$gubun3 = ($arrResponse["documents"][0]["participants"][$i]["signingMethod"]["type"] == "SECURE_LINK")?"웹페이지":"카카오톡";			
-				$sign_date3 = ($arrResponse["documents"][0]["signings"][$i]["signedAt"] != "")? date("Y-m-d H:i:s",strtotime($arrResponse["documents"][0]["signings"][$i]["signedAt"])):"0000-00-00 00:00:00"; 
-				$stat3 = ($sign_date2 == "0000-00-00 00:00:00")?"진행중":"완료";
+				$sign_date3 = ($arrResponse["documents"][0]["signings"][$i]["signedAt"] != "")? date("Y-m-d H:i:s",strtotime($arrResponse["documents"][0]["signings"][$i]["signedAt"])):"-"; 
+				$stat3 = ($sign_date2 == "-")?"진행중":"완료";
 				$part_id3 = $arrResponse["documents"][0]["participants"][$i]["id"];
 			}
 		}
