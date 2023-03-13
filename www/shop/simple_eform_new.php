@@ -131,10 +131,10 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 			width:100%;
 			top:91%; left:0%;margin-left:0px;
 		}
-		.popup_box_con {
+		#popup_box_con33 {
 			position: relative;
 			width:412px;
-			margin-left:206px;
+			margin-left:-206px;
 			left: 50%;
 			top: 50%;
 		}
@@ -144,10 +144,10 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 			width:1000px;
 			top:80%; left:50%;margin-left:-500px;
 		}
-		.popup_box_con {
+		#popup_box_con33 {
 			position: relative;
-			width:412px;
-			margin-left:206px;
+			width:534px;
+			margin-left:-267px;
 			left: 50%;
 			top: 50%;
 		}
@@ -918,7 +918,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 </div>
 
 <div id="popup_box9" class="popup_box2">
-    <div id="" class="popup_box_con" style="height:750px;margin-top:-375px;">
+    <div id="popup_box_con33" class="popup_box_con" style="height:750px;margin-top:-375px;">
 		<div class="se_preview_wr" style="width:100% !important;height:650px !important;">
           <div class="se_preview_hd_wr">
             <div class="se_preview_hd">공급계약서 미리보기</div>
