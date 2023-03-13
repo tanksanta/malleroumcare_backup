@@ -257,7 +257,7 @@ if(!is_dir($log_dir)){//인증서 파일 생성할 폴더 확인
 
 $log_txt .= "--  ENC-Key: ".base64_encode($aesCipheredKey)."\r\n";
 
-$log_file = fopen($log_dir . 'log.txt', 'a');
+$log_file = fopen($log_dir . 'log'.date("Ymd").'.txt', 'a');
 fwrite($log_file, $log_txt . "\r\n\r\n");
 fclose($log_file);
 //=============================================
