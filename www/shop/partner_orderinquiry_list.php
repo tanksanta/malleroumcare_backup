@@ -848,8 +848,9 @@ a.btn_schedule {
                   <?=number_format($row['price'])?>원
                 </td>
                 <td class="td_operation">
-                  <a href="partner_orderinquiry_excel.php?od_id=<?=$row['od_id']?>" class="btn_instructor">작업지시서
-                    다운로드</a>
+                  <?php if($row['ct_is_direct_delivery'] == '2') { /*ct_is_direct_delivery 0:택배 1:배송위탁 2:설치위탁*/ ?>
+                    <a href="partner_orderinquiry_excel.php?od_id=<?=$row['od_id']?>" class="btn_instructor">설치ㆍ회수확인서</a>
+                  <?php } ?>
                   <!--                <a href="javascript:void(0);" class="btn_delivery_info --><?php //echo $row['total_cnt'] === $row['inserted_cnt'] ? 'disabled' : ''; ?>
                   <!--" data-id="-->
                   <?//=$row['od_id']?>

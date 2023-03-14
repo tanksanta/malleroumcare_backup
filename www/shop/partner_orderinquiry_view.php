@@ -92,7 +92,11 @@ $order_status = sql_fetch_array($order_status_res);
 $sql = "SELECT * FROM g5_shop_order_admin_log WHERE od_id = '{$od_id}' ORDER BY ol_no DESC";
 $result = sql_query($sql);
 $logs = array();
-while($row = sql_fetch_array($result)) { $logs[] = $row; } 
+while($row = sql_fetch_array($result)) { $logs[] = $row; }
+
+//설치배송확인
+$sql = "select count(ct_is_direct_delivery) as direct_delivery_cnt from g5_shop_cart where od_id = '{$od_id}' and ct_is_direct_delivery = '2';";
+$ct_is_direct_delivery = sql_fetch($sql);
 
 // 임시회원의경우 mb_entNm 대신 mb_name 출력
 if($od['mb_temp']) {
@@ -654,8 +658,8 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.magnific-popup.js"></script>',
     </div>
 
     <div class="right-wrap">
-      <div class="row no-gutter">
-        <a href="partner_orderinquiry_excel.php?od_id=<?=$od_id?>" class="instructor-btn">작업지시서 다운로드</a>
+      <div class="row no-gutter" <?php if($ct_is_direct_delivery['direct_delivery_cnt']==0){ echo 'style="display:none;"'; }?>>
+        <a href="partner_orderinquiry_excel.php?od_id=<?=$od_id?>" class="instructor-btn">설치ㆍ회수확인서 다운로드</a>
       </div>
       <div class="delivery-status-title row no-gutter title justify-space-between">
         <div>담당자</div>
