@@ -561,13 +561,16 @@ input[type="number"]::-webkit-inner-spin-button {
 
         var penNm = '';
         var penNm_list = [];
-        for(var i = 0; i < recipient_list.length; i++)
+        var penNum_list = [];
+        for(var i = 0; i < recipient_list.length; i++) {
           penNm_list[i] = recipient_list[i]['recipient_name'];
-        
-        if(penNm_list.indexOf(name) > -1){
+          penNum_list[i] = recipient_list[i]['recipient_num'];
+        }
+
+        if(penNm_list.indexOf(name) > -1 && penNum_list.indexOf(num) > -1){
             var search_result = [];
             for(var i = 0; i < recipient_list.length; i++){
-              if(name == recipient_list[i]['recipient_name']){
+              if(name == recipient_list[i]['recipient_name'] && num == recipient_list[i]['recipient_num']){
                 search_result[0] = recipient_list[i];
                 break;
               }
