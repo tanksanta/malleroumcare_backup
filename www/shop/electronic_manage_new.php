@@ -335,7 +335,7 @@ $(function() {
   });
 
   <?php if($eform) { ?>
-  if(confirm('계약서가 생성되었습니다.\n지금 바로 <?=$eform['penNm']?> 서명을 진헹하시겠습니까?'))
+  if(confirm('계약서가 생성되었습니다.\n지금 바로 <?=$eform['penNm']?> 서명을 진행하시겠습니까?'))
     //window.location.href = '/shop/eform/signEform.php?dc_id=<?=$dc_id?>';
   	open_send_sign('<?=$dc_id?>');
   <?php } ?>

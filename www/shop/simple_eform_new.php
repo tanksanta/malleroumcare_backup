@@ -131,7 +131,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 			width:100%;
 			top:91%; left:0%;margin-left:0px;
 		}
-		#popup_box_con33 {
+		#popup_box_con3333 {
 			position: relative;
 			width:412px;
 			margin-left:-206px;
@@ -144,7 +144,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 			width:1000px;
 			top:80%; left:50%;margin-left:-500px;
 		}
-		#popup_box_con33 {
+		#popup_box_con3333 {
 			position: relative;
 			width:534px;
 			margin-left:-267px;
@@ -352,12 +352,13 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 		<div class="form-group has-feedback">
 			<label class="col-sm-2 control-label" style="width:150px;"><b>서명확인방법</b></label>
 			<div class="col-sm-5">
-	            <label class="radio-inline" title="비대면은 모두싸인을 이용한 비대면 계약입니다.">
-                  <input type="radio" name="penRecTypeCd_radio" class="penRecTypeCd_radio penRecTypeCd01" value="01" <?php if(!$dc || $dc['penRecTypeCd'] == '02') echo 'checked' ?>> 비대면
+	            <label class="radio-inline">
+                  <input type="radio" name="penRecTypeCd_radio" class="penRecTypeCd_radio penRecTypeCd02" value="02" <?php if( !$dc || $dc['penRecTypeCd'] != '02') echo 'checked' ?>> 대면
                 </label>
-				<label class="radio-inline">
-                  <input type="radio" name="penRecTypeCd_radio" class="penRecTypeCd_radio penRecTypeCd02" value="02" <?php if( $dc && $dc['penRecTypeCd'] != '02') echo 'checked' ?>> 대면
+				<label class="radio-inline" title="비대면은 카카오톡을 이용한 원격 계약입니다.">
+                  <input type="radio" name="penRecTypeCd_radio" class="penRecTypeCd_radio penRecTypeCd01" value="01" <?php if($dc && $dc['penRecTypeCd'] == '02') echo 'checked' ?>> 비대면
                 </label>
+				&nbsp;&nbsp;<a href="https://eroumcare.com/bbs/board.php?bo_table=notice&wr_id=147" target="_blank"><img src="/img/ask_btn2.png" style="width:13px;border:0px;"></a>
 			</div>		
 		</div>
 		  <div class="form-group" style="border-top:1px solid #aaaaaa;">
@@ -917,8 +918,8 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 	
 </div>
 
-<div id="popup_box9" class="popup_box2">
-    <div id="popup_box_con33" class="popup_box_con" style="height:750px;margin-top:-375px;">
+<div id="popup_box99" class="popup_box2">
+    <div id="popup_box_con3333" class="popup_box_con" style="height:750px;margin-top:-375px;">
 		<div class="se_preview_wr" style="width:100% !important;height:650px !important;">
           <div class="se_preview_hd_wr">
             <div class="se_preview_hd">공급계약서 미리보기</div>
@@ -1290,6 +1291,7 @@ function select_item(obj, qty) {
   $('#popup_box7').hide();
   $('#popup_box8').hide();
   $('#popup_box9').hide();
+  $('#popup_box99').hide();
 
   var $li = $('<li class="list item" data-code="' + obj.it_id + '" data-uid="' + Date.now().toString(36) + Math.random().toString(36).substr(2) + '">')
     .append('<input type="hidden" name="it_id[]" value="' + obj.it_id + '">')
@@ -1959,12 +1961,12 @@ function update_pen(obj) {
     $('#penExpiEdDtm').val(obj.penExpiEdDtm).data('orig', obj.penExpiEdDtm).change();
     $('#penJumin').val(obj.penJumin).data('orig', obj.penJumin).change();
     $('#penRecTypeCd').val(obj.penRecTypeCd).data('orig', obj.penRecTypeCd).change(); // 값을 들고오지 않음 -> ajax.get_pen_id.php 에서 추가
-    if(obj.penRecTypeCd == '02') {
-      $(":radio[name='penRecTypeCd_radio'][value='01']").attr('checked', false);
-	  $(":radio[name='penRecTypeCd_radio'][value='02']").attr('checked', true);
+    if(obj.penRecTypeCd == '01') {
+		$(":radio[name='penRecTypeCd_radio'][value='01']").attr('checked', true);
+		$(":radio[name='penRecTypeCd_radio'][value='02']").attr('checked', false);
     } else {
-	  $(":radio[name='penRecTypeCd_radio'][value='01']").attr('checked', true);
-	  $(":radio[name='penRecTypeCd_radio'][value='02']").attr('checked', false);
+		$(":radio[name='penRecTypeCd_radio'][value='01']").attr('checked', false);
+		$(":radio[name='penRecTypeCd_radio'][value='02']").attr('checked', true);	  
     }
     if(obj.penRecTypeTxt) $('#penRecTypeTxt').val(obj.penRecTypeTxt); // 값을 들고오지 않음 -> ajax.get_pen_id.php 에서 추가
   }
@@ -1983,7 +1985,7 @@ function dc_view(){
 	save_eform();
 	var dc_id = $('input[name="dc_id"]').val();
 	if(dc_id != ""){
-		$('#popup_box9').show();
+		$('#popup_box99').show();
 	}
 }
 // 수급자 목록
@@ -2130,6 +2132,7 @@ function selected_recipient(result) {
   $('#popup_box7').hide();
   $('#popup_box8').hide();
   $('#popup_box9').hide();
+  $('#popup_box99').hide();
 
   result = result.split('|');
 
@@ -2170,6 +2173,7 @@ $('#popup_box').click(function() {
   $('#popup_box7').hide();
   $('#popup_box8').hide();
   $('#popup_box9').hide();
+  $('#popup_box99').hide();
 });
 
 $('.btn_close').click(function() {
@@ -2181,6 +2185,7 @@ $('.btn_close').click(function() {
   $('#popup_box7').hide();
   $('#popup_box8').hide();
   $('#popup_box9').hide();
+  $('#popup_box99').hide();
 });
 
 $('.btn_close2').click(function() {
@@ -2857,3 +2862,4 @@ $(function() {
 </script>
 
 <?php include_once("./_tail.php"); ?>
+
