@@ -257,25 +257,25 @@ if($_REQUEST["signed"] == "ok"){?>
 		$url = $arrResponse["documents"][0]["file"]["downloadUrl"];
 		$participants_count = count($arrResponse["documents"][0]["participants"]);
 		$gubun1 = $gubun2 = $gubun3 = "-";
-		$sign_date1 = $sign_date2 = $sign_date3 = "0000-00-00 00:00:00";
+		$sign_date1 = $sign_date2 = $sign_date3 = "-";
 		$stat1 = $stat2 = $stat3 = "대상아님";
 		for($i=0;$i<$participants_count;$i++){
 			if($arrResponse["documents"][0]["participants"][$i]["name"] == "수급자"){
 				$gubun1 = ($arrResponse["documents"][0]["participants"][$i]["signingMethod"]["type"] == "SECURE_LINK")?"웹페이지":"카카오톡";			
-				$sign_date1 = ($arrResponse["documents"][0]["signings"][$i]["signedAt"] != "")? date("Y-m-d H:i:s",strtotime($arrResponse["documents"][0]["signings"][$i]["signedAt"])):"0000-00-00 00:00:00"; 
-				$stat1 = ($sign_date1 == "0000-00-00 00:00:00")?"진행중":"완료";
+				$sign_date1 = ($arrResponse["documents"][0]["signings"][$i]["signedAt"] != "")? date("Y-m-d H:i:s",strtotime($arrResponse["documents"][0]["signings"][$i]["signedAt"])):"-"; 
+				$stat1 = ($sign_date1 == "-")?"진행중":"완료";
 				$part_id1 = $arrResponse["documents"][0]["participants"][$i]["id"];
 			}
 			if($arrResponse["documents"][0]["participants"][$i]["name"] == "대리인"){
 				$gubun2 = ($arrResponse["documents"][0]["participants"][$i]["signingMethod"]["type"] == "SECURE_LINK")?"웹페이지":"카카오톡";			
-				$sign_date2 = ($arrResponse["documents"][0]["signings"][$i]["signedAt"] != "")? date("Y-m-d H:i:s",strtotime($arrResponse["documents"][0]["signings"][$i]["signedAt"])):"0000-00-00 00:00:00"; 
-				$stat2 = ($sign_date2 == "0000-00-00 00:00:00")?"진행중":"완료";
+				$sign_date2 = ($arrResponse["documents"][0]["signings"][$i]["signedAt"] != "")? date("Y-m-d H:i:s",strtotime($arrResponse["documents"][0]["signings"][$i]["signedAt"])):"-"; 
+				$stat2 = ($sign_date2 == "-")?"진행중":"완료";
 				$part_id2 = $arrResponse["documents"][0]["participants"][$i]["id"];
 			}
 			if($arrResponse["documents"][0]["participants"][$i]["name"] == "신청자"){
 				$gubun3 = ($arrResponse["documents"][0]["participants"][$i]["signingMethod"]["type"] == "SECURE_LINK")?"웹페이지":"카카오톡";			
-				$sign_date3 = ($arrResponse["documents"][0]["signings"][$i]["signedAt"] != "")? date("Y-m-d H:i:s",strtotime($arrResponse["documents"][0]["signings"][$i]["signedAt"])):"0000-00-00 00:00:00"; 
-				$stat3 = ($sign_date2 == "0000-00-00 00:00:00")?"진행중":"완료";
+				$sign_date3 = ($arrResponse["documents"][0]["signings"][$i]["signedAt"] != "")? date("Y-m-d H:i:s",strtotime($arrResponse["documents"][0]["signings"][$i]["signedAt"])):"-"; 
+				$stat3 = ($sign_date2 == "-")?"진행중":"완료";
 				$part_id3 = $arrResponse["documents"][0]["participants"][$i]["id"];
 			}
 		}
@@ -375,17 +375,17 @@ if($_REQUEST["signed"] == "ok"){?>
 	$result = sql_query("SELECT " . $sql_select . $sql_from . $sql_join . $sql_where . " and HEX(E.dc_id) = '".$uuid."'");
 	$row=sql_fetch_array($result);
 	//excluded : 해당 서명자 제외 유무 표시 (false-제외안함,true-제외함)
-	//signingDuration : 서명 유효 기간 (20160 - 14일)유효기간 수정 기능 있음 
+	//signingDuration : 서명 유효 기간 (20160 - 14일)유효기간 수정 기능 있음, 최대 525600qns(365일) 
 	//role : 서명자 역할 지정 name : 서명자 이름
 	//requesterMessage : 서명자에게 보낼 메세지
 	//서명자가 여러명일 때 참여자 서명수단의 value 값이 다 달라야함
 	//requesterInputMappings 은 값이 있을때만 맞는 값만 전송해야함 없는 dataLabel 에 데이터를 전송 하면 에러남
 	//수급자 발송정보
-	$pen_sign_info = ($_POST["pen_sign"] == "1")? '{"excluded":false,"signingMethod":{"type":"'.$_POST["pen_send"].'","value":"'.$_POST["pen_send_tel"].'"},"signingDuration":20160,"locale":"ko","role":"수급자","name":"수급자","requesterMessage":"['.$row["entNm"].'] 에서 복지용구 공급계약을 요청하였습니다."}': '{"excluded":true,"signingMethod":{"type":"SECURE_LINK","value":"01010000000"},"signingDuration":20160,"locale":"ko","role":"수급자","name":"수급자"}' ;
+	$pen_sign_info = ($_POST["pen_sign"] == "1")? '{"excluded":false,"signingMethod":{"type":"'.$_POST["pen_send"].'","value":"'.$_POST["pen_send_tel"].'"},"signingDuration":525600,"locale":"ko","role":"수급자","name":"수급자","requesterMessage":"['.$row["entNm"].'] 에서 복지용구 공급계약을 요청하였습니다."}': '{"excluded":true,"signingMethod":{"type":"SECURE_LINK","value":"01010000000"},"signingDuration":525600,"locale":"ko","role":"수급자","name":"수급자"}' ;
 	//대리인 발송정보
-	$contract_sign_info = ($_POST["contract_sign"] == "1")? '{"excluded":false,"signingMethod":{"type":"'.$_POST["contract_send"].'","value":"'.$_POST["contract_send_tel"].'"},"signingDuration":20160,"locale":"ko","role":"대리인","name":"대리인","requesterMessage":"['.$row["entNm"].'] 에서 복지용구 공급계약을 요청하였습니다."}': '{"excluded":true,"signingMethod":{"type":"SECURE_LINK","value":"01020000000"},"signingDuration":20160,"locale":"ko","role":"대리인","name":"대리인"}' ;
+	$contract_sign_info = ($_POST["contract_sign"] == "1")? '{"excluded":false,"signingMethod":{"type":"'.$_POST["contract_send"].'","value":"'.$_POST["contract_send_tel"].'"},"signingDuration":525600,"locale":"ko","role":"대리인","name":"대리인","requesterMessage":"['.$row["entNm"].'] 에서 복지용구 공급계약을 요청하였습니다."}': '{"excluded":true,"signingMethod":{"type":"SECURE_LINK","value":"01020000000"},"signingDuration":525600,"locale":"ko","role":"대리인","name":"대리인"}' ;
 	//신청자 발송정보
-	$applicant_sign_info = ($_POST["applicant_sign"] == "1")? '{"excluded":false,"signingMethod":{"type":"'.$_POST["applicant_send"].'","value":"'.$_POST["applicant_send_tel"].'"},"signingDuration":20160,"locale":"ko","role":"신청자","name":"신청자","requesterMessage":"['.$row["entNm"].'] 에서 복지용구 공급계약을 요청하였습니다."}': '{"excluded":true,"signingMethod":{"type":"SECURE_LINK","value":"01030000000"},"signingDuration":20160,"locale":"ko","role":"신청자","name":"신청자"}' ;
+	$applicant_sign_info = ($_POST["applicant_sign"] == "1")? '{"excluded":false,"signingMethod":{"type":"'.$_POST["applicant_send"].'","value":"'.$_POST["applicant_send_tel"].'"},"signingDuration":525600,"locale":"ko","role":"신청자","name":"신청자","requesterMessage":"['.$row["entNm"].'] 에서 복지용구 공급계약을 요청하였습니다."}': '{"excluded":true,"signingMethod":{"type":"SECURE_LINK","value":"01030000000"},"signingDuration":525600,"locale":"ko","role":"신청자","name":"신청자"}' ;
 
 	$str = file_get_contents($_SERVER['DOCUMENT_ROOT'].$row["dc_signUrl"]);
 	$stamp = base64_encode($str);

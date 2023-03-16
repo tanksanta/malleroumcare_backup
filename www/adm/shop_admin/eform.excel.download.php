@@ -170,7 +170,7 @@ while ($row = sql_fetch_array($result)) {
 		$dc_status = "계약서삭제";
 		break;
 	}
-	$dc_sign_send_datetime = ($row["dc_sign_send_datetime"] == "")?"-":$row["dc_sign_send_datetime"];
+	$dc_sign_send_datetime = ($row["dc_sign_send_datetime"] == "" || $row["dc_sign_send_datetime"] == "0000-00-00 00:00:00")?"-":$row["dc_sign_send_datetime"];
 	$dc_sign_datetime = ($row["dc_sign_datetime"] == "0000-00-00 00:00:00")?"-":$row["dc_sign_datetime"];
   $data[] = [
     $num,

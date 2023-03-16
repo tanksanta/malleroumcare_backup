@@ -1,6 +1,15 @@
 <?php
 include_once('./_common.php');
 
+$param = "";
+if($_GET["dc_id"] != ""){
+	$param = "?dc_id=".$_GET["dc_id"];
+}elseif($_GET["penId"] != ""){
+	$param = "?penId=".$_GET["penId"];
+}
+Header("Location:electronic_manage_new.php".$param) ;
+exit;
+
 $dc_id = clean_xss_tags($_GET['dc_id']);
 if($dc_id) {
   $eform = sql_fetch("
@@ -132,7 +141,7 @@ $incompleted_eform_count = 0;
           <button type="button" class="btn_acc_cancel btn_basic">취소</button>
           <?php } ?>
         </div>
-		<a href="/shop/electronic_manage_new.php" class="btn eroumcare_btn2" target="_blank">전자문서관리 NEW</a>
+		<!--a href="/shop/electronic_manage_new.php" class="btn eroumcare_btn2" target="_blank">전자문서관리 NEW</a-->
       </div>
     </form>
     <form id="form_search" method="get">
