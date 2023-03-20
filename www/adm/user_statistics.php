@@ -523,7 +523,11 @@ else if ($type == 'recipient') {
         for ($ind = 0; $ind < count($arr_inquiry); $ind++) {
             $all_cnt = $all_cnt + $arr_inquiry[$ind]['cnt'];
 			$all_s_cnt = $all_s_cnt + $arr_inquiry[$ind]['s_cnt'];
-			$all_f_cnt = $all_f_cnt + $arr_inquiry[$ind]['f_cnt'];?>
+			$all_f_cnt = $all_f_cnt + $arr_inquiry[$ind]['f_cnt'];
+			$pen_name = mb_substr($arr_detail[$arr_inquiry[$ind]['ent_id']][0]['pen_nm'],0,1)."*".mb_substr($arr_detail[$arr_inquiry[$ind]['ent_id']][0]['pen_nm'],2,1) ;
+			$pen_id = substr($arr_detail[$arr_inquiry[$ind]['ent_id']][0]['pen_id'],0,2)."********";
+			
+			?>
             
 			
 			<?php if ($_GET['page'] == 'all') { ?>                
@@ -533,20 +537,22 @@ else if ($type == 'recipient') {
                 <td><?=$arr_inquiry[$ind]['cnt'];?></td>
 				<td><?=$arr_inquiry[$ind]['s_cnt'];?></td>
 				<td><?=$arr_inquiry[$ind]['f_cnt'];?></td>
-				<td><?php if($arr_inquiry[$ind]['f_cnt'] > 0){echo "[".$arr_detail[$arr_inquiry[$ind]['ent_id']][0]['occur_date']."] | ".$arr_detail[$arr_inquiry[$ind]['ent_id']][0]['pen_nm']."(".$arr_detail[$arr_inquiry[$ind]['ent_id']][0]['pen_id'].") | ".$arr_detail[$arr_inquiry[$ind]['ent_id']][0]['err_msg'];}?><?php if($arr_inquiry[$ind]['f_cnt'] > 1 && count($arr_detail[$arr_inquiry[$ind]['ent_id']]) > 0){?><input type="button" value="  외 <?=(count($arr_detail[$arr_inquiry[$ind]['ent_id']])-1)?>건 더보기  " data-prod-log-detail="<?=$ind+1?>" class="detail-toggler btn_submit" style="float:right;"><?php }?></td>
+				<td><?php if($arr_inquiry[$ind]['f_cnt'] > 0){echo "[".$arr_detail[$arr_inquiry[$ind]['ent_id']][0]['occur_date']."] | ".$pen_name."(".$pen_id.") | ".$arr_detail[$arr_inquiry[$ind]['ent_id']][0]['err_msg'];}?><?php if($arr_inquiry[$ind]['f_cnt'] > 1 && count($arr_detail[$arr_inquiry[$ind]['ent_id']]) > 0){?><input type="button" value="  외 <?=(count($arr_detail[$arr_inquiry[$ind]['ent_id']])-1)?>건 더보기  " data-prod-log-detail="<?=$ind+1?>" class="detail-toggler btn_submit" style="float:right;"><?php }?></td>
                 </tr>
 				<?php if($arr_inquiry[$ind]['f_cnt'] > 0){?>
 
 				<?php }
 			for($idx = 1; $idx < count($arr_detail[$arr_inquiry[$ind]['ent_id']]); $idx++) { 
-                    //if($arr_detail[$idx]['ent_nm'] != $arr_inquiry[$ind]['ent_nm'] || $arr_detail[$idx]['occur_date'] != $arr_inquiry[$ind]['occur_date']) continue;?>
+                    $pen_name2 = mb_substr($arr_detail[$arr_inquiry[$ind]['ent_id']][$idx]['pen_nm'],0,1)."*".mb_substr($arr_detail[$arr_inquiry[$ind]['ent_id']][$idx]['pen_nm'],2,1) ;
+					$pen_id2 = substr($arr_detail[$arr_inquiry[$ind]['ent_id']][$idx]['pen_id'],0,2)."********";
+					//if($arr_detail[$idx]['ent_nm'] != $arr_inquiry[$ind]['ent_nm'] || $arr_detail[$idx]['occur_date'] != $arr_inquiry[$ind]['occur_date']) continue;?>
                     <tr  bgcolor="#f1f1f1" style="display:none;" id="detail<?=$ind+1?>" class="log-detail<?=$ind+1?>">
                     <td></td>
 					<td></td>
                     <td></td>
 					<td></td>
 					<td></td>
-					<td><?="[".$arr_detail[$arr_inquiry[$ind]['ent_id']][$idx]['occur_date']."] | ".$arr_detail[$arr_inquiry[$ind]['ent_id']][$idx]['pen_nm']."(".$arr_detail[$arr_inquiry[$ind]['ent_id']][$idx]['pen_id'].") | ".$arr_detail[$arr_inquiry[$ind]['ent_id']][$idx]['err_msg'];?></td>
+					<td><?="[".$arr_detail[$arr_inquiry[$ind]['ent_id']][$idx]['occur_date']."] | ".$pen_name2."(".$pen_id2.") | ".$arr_detail[$arr_inquiry[$ind]['ent_id']][$idx]['err_msg'];?></td>
                     </tr>
             <?php }
 				 } else if ($_GET['page'] == 'ent') { ?>
@@ -563,7 +569,10 @@ else if ($type == 'recipient') {
                 $cnt_date++;
                 $cnt_date_detail = $cnt_date_detail + $arr_inquiry[$ind]['cnt'];
 				$s_cnt_date_detail = $s_cnt_date_detail + $arr_inquiry[$ind]['s_cnt'];
-				$f_cnt_date_detail = $f_cnt_date_detail + $arr_inquiry[$ind]['f_cnt'];?>
+				$f_cnt_date_detail = $f_cnt_date_detail + $arr_inquiry[$ind]['f_cnt'];
+				$pen_name3 = mb_substr($arr_inquiry[$ind]['pen_nm'],0,1)."*".mb_substr($arr_inquiry[$ind]['pen_nm'],2,1) ;
+				$pen_id3 = substr($arr_inquiry[$ind]['pen_id'],0,2)."********";
+				?>
                 <tr class="bg0 detail-toggler" id="detail<?=$ind+1?>" data-prod-log-detail="<?=$ind+1?>" style="cursor:pointer;<?php if($arr_inquiry[$ind]['f_cnt'] > 0){?>background:#f4eeee;<?php }?>">
                 <td><?=$ind+1;?></td>
                 <td><?=explode(' ', $arr_inquiry[$ind]['occur_date'])[0];?></td>
@@ -571,7 +580,7 @@ else if ($type == 'recipient') {
                 <td><?=$arr_inquiry[$ind]['cnt'];?></td>
 				<td><?=$arr_inquiry[$ind]['s_cnt'];?></td>
 				<td><?=$arr_inquiry[$ind]['f_cnt'];?></td>
-				<td><?php if($arr_inquiry[$ind]['f_cnt']>0){ echo "[".$arr_inquiry[$ind]['occur_date']."] | ".$arr_inquiry[$ind]['pen_nm']."(".$arr_inquiry[$ind]['pen_id'].") | ".$arr_inquiry[$ind]['err_msg'];}?></td>
+				<td><?php if($arr_inquiry[$ind]['f_cnt']>0){ echo "[".$arr_inquiry[$ind]['occur_date']."] | ".$pen_name3."(".$pen_id3.") | ".$arr_inquiry[$ind]['err_msg'];}?></td>
                 </tr>
                 <tr id="detail<?=$ind+1?>" class="log-detail<?=$ind+1?>"  style="display:none;"  bgcolor="#e9e9e9">
                 <td></td>
@@ -583,12 +592,14 @@ else if ($type == 'recipient') {
 				<td></td>
                 </tr>
                 <?php for($idx = 0; $idx < count($arr_detail); $idx++) { 
-                    if($arr_detail[$idx]['ent_nm'] != $arr_inquiry[$ind]['ent_nm'] || $arr_detail[$idx]['occur_date'] != $arr_inquiry[$ind]['occur_date']) continue;?>
+                    $pen_name4 = mb_substr($arr_detail[$idx]['pen_nm'],0,1)."*".mb_substr($arr_detail[$idx]['pen_nm'],2,1) ;
+					$pen_id4 = substr($arr_detail[$idx]['pen_id'],0,2)."********";
+					if($arr_detail[$idx]['ent_nm'] != $arr_inquiry[$ind]['ent_nm'] || $arr_detail[$idx]['occur_date'] != $arr_inquiry[$ind]['occur_date']) continue;?>
                     <tr id="detail<?=$ind+1?>" class="log-detail<?=$ind+1?>"  style="display:none;"  bgcolor="#f1f1f1">
                     <td></td>
 					<td><?=$arr_detail[$idx]['occur_date'];?></td>
                     <td><?=$arr_detail[$idx]['ent_nm'];?></td>
-                    <td><?=$arr_detail[$idx]['pen_nm'];?>(<?=$arr_detail[$idx]['pen_id'];?>)</td>
+                    <td><?=$pen_name4;?>(<?=$pen_id4;?>)</td>
 					<td></td>
 					<td></td>
 					<td></td>
