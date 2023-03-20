@@ -3886,3 +3886,40 @@ function Masking_Custom($str, $start, $len) {
   
   return $_result;
 }
+
+/*
+*
+* 작성자 : 황현지
+* 작성일자 : 2023-03-20
+* 마지막 수정자 : 황현지
+* 마지막 수정일자 : 2023-03-20
+* 설명 : 상품의 마감 태그 추가 확인용 sql 쿼리
+*
+*/
+function chk_itType_deadline(){
+  $append_col = [];
+  // 쇼핑몰 설정값 가져오기 전에 추가로 들어간 컬럼이 있는지 확인
+  $sql_check_de = "show columns from g5_shop_default where field in ('de_it_type11_name');";
+  $res_check_de = sql_query($sql_check_de);
+  $sql_check_it = "show columns from g5_shop_item where field in ('it_type11');";
+  $res_check_it = sql_query($sql_check_it);
+
+  if(sql_num_rows($res_check_de) == 0){
+    $append_col[] = "alter table g5_shop_default add column de_it_type11_color varchar(20) default '' after de_it_type10_color;";
+    $append_col[] = "alter table g5_shop_default add column de_it_type11_name varchar(20) default '' after de_it_type10_color;";
+    $append_col[] = "update g5_shop_default set de_it_type11_name = '마감', de_it_type11_color = '#FF5E00';";
+  }
+  if(sql_num_rows($res_check_it) == 0){
+    $append_col[] = "alter table g5_shop_item add column it_type11 tinyint(4) default 0 COMMENT '상품태그11(1선택,0미선택)' after it_type10;";
+    $append_col[] = "alter table g5_shop_item add column it_deadline time default '00:00' COMMENT '마감시간(상품태그11)' after it_type11;";
+  }
+
+  if(count($append_col)>0){
+    foreach($append_col as $value) {
+      sql_query($value);
+    }
+    return "success";
+  } else {
+    return "already exist.";
+  }
+}

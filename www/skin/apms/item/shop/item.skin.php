@@ -684,6 +684,7 @@ if ($it['ca_id']) {
           <?php if($it['it_type8']){ ?><p class="p_box" style="border:1px solid <?=$default['de_it_type8_color']?>; color:<?=$default['de_it_type8_color']?>;"><?=$default['de_it_type8_name']?></p><?php } ?>
           <?php if($it['it_type9']){ ?><p class="p_box" style="border:1px solid <?=$default['de_it_type9_color']?>; color:<?=$default['de_it_type9_color']?>;"><?=$default['de_it_type9_name']?></p><?php } ?>
           <?php if($it['it_type10'] || $is_soldout){ ?><p class="p_box" style="border:1px solid <?=$default['de_it_type10_color']?>; color:<?=$default['de_it_type10_color']?>;"><?=$default['de_it_type10_name']?></p><?php } ?>
+          <?php if($it['it_type11']){ ?><p class="p_box" style="border:1px solid <?=$default['de_it_type11_color']?>; color:<?=$default['de_it_type11_color']?>;"><?=substr($it['it_deadline'],0,5)." ".$default['de_it_type11_name']?></p><?php } ?>
           <?php if($it['it_10_subj'] == 'rental'){ ?><p class="p_box" style="border:1px solid red; background-color: red; color:white;"><a href="<?=$it['it_10']?>">렌탈</a></p><?php } ?>
         </div>
       </div>
