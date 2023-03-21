@@ -440,7 +440,7 @@ $flist = apms_form(1,0);
             <input type="checkbox" name="it_type5[<?php echo $i; ?>]" value="1" <?php echo ($row['it_type5'] ? "checked" : ""); ?> id="it_type5_<?php echo $i; ?>">
             <label for="it_type5_<?php echo $i; ?>"><span style="border:1px solid <?php echo $default['de_it_type5_color']; ?>;color:<?php echo $default['de_it_type5_color']; ?>"><?php echo $default['de_it_type5_name']; ?></span></label>
             <?php
-            for($x = 6; $x <= 10; $x++) {
+            for($x = 6; $x <= 11; $x++) {
               $cur_it_type = 'it_type' . $x;
               if($default['de_'. $cur_it_type .'_name']) {
             ?>
