@@ -306,14 +306,16 @@ $warehouse_list = get_warehouses();
             <input type="checkbox" name="it_type5" value="1" <?php echo ($it['it_type5'] ? "checked" : ""); ?> id="it_type5">
             <label for="it_type5"><span style="color:<?php echo $default['de_it_type5_color']; ?>"><?php echo $default['de_it_type5_name']; ?></span></label>
             <?php
-            for($x = 6; $x <= 10; $x ++) {
+            for($x = 6; $x <= 11; $x ++) {
               $cur_it_type = 'it_type' . $x;
               if($default['de_'. $cur_it_type .'_name']) {
             ?>
             &nbsp;
             <input type="checkbox" name="<?=$cur_it_type?>" value="1" <?php echo ($it[$cur_it_type] ? "checked" : ""); ?> id="<?=$cur_it_type?>">
             <label for="<?=$cur_it_type?>"><span style="color:<?php echo $default['de_' . $cur_it_type . '_color']; ?>"><?php echo $default['de_' . $cur_it_type . '_name']; ?></span></label>
-            <?php
+            <?php if($x == 11){ ?>
+                <input class="frm_input" size="5" type="time" name="it_deadline" value="<?php echo ($it['it_deadline'] ? : "00:00"); ?>" id="it_deadline" style="text-align: center; <?php echo ($it['it_type11'] ? 'background-color : white;':''); ?>" <?php echo ($it['it_type11'] ? '':'disabled'); ?>>
+            <?php }
               }
             }
             ?>
@@ -979,6 +981,17 @@ $warehouse_list = get_warehouses();
             price = Math.floor(price * 1.1);
 
             $('#it_price_dealer2').val(price);
+          });
+
+          // 상품태그 > 마감 선택
+          $(document).on("click", "input[name='it_type11']", function() {
+            if($(this).is(":checked")) {
+              $("input[name='it_deadline']").attr("disabled", false);
+              $("input[name='it_deadline']").css("background-color", "white");
+            } else {
+              $("input[name='it_deadline']").attr("disabled", true);
+              $("input[name='it_deadline']").css("background-color", "#f3f3f3");
+            }
           });
         });
         </script>

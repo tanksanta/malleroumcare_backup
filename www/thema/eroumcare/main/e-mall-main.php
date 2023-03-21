@@ -34,6 +34,9 @@ $result = sql_fetch("
     o.od_time >= DATE(NOW() - INTERVAL 3 MONTH)
 ");
 $latest_order_count = $result['cnt'] ?: 0;
+
+$type = chk_itType_deadline();
+echo "<script>console.log('updated default : ".$type."');</script>";
 ?>
 
 <link rel="stylesheet" href="<?php echo G5_URL; ?>/css/swiper.min.css">

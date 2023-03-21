@@ -64,7 +64,7 @@ else {
 
 // 상품태그
 $it_type_where = [];
-for($i = 1; $i <= 10; $i++) {
+for($i = 1; $i <= 11; $i++) {
   $it_type = 'it_type'.$i;
   if($_GET[$it_type]) {
     $it_type_where[] = " {$it_type} = 1 ";
@@ -195,7 +195,7 @@ $flist = apms_form(1,0);
         <span style="display:inline-block; border:1px solid <?=$default['de_it_type5_color']?>;color:<?=$default['de_it_type5_color']?>"><?=$default['de_it_type5_name']?></span>
       </label>
       <?php
-      for($i = 6; $i <= 10; $i++) {
+      for($i = 6; $i <= 11; $i++) {
         $cur_it_type = 'it_type' . $i;
         if($default['de_'. $cur_it_type .'_name']) {
       ?>
@@ -447,7 +447,9 @@ $flist = apms_form(1,0);
             <br/>
             <input type="checkbox" name="<?=$cur_it_type?>[<?php echo $i; ?>]" value="1" <?php echo ($row[$cur_it_type] ? "checked" : ""); ?> id="<?=$cur_it_type?>_<?php echo $i; ?>">
             <label for="<?=$cur_it_type?>_<?php echo $i; ?>"><span style="border:1px solid <?php echo $default['de_' . $cur_it_type . '_color']; ?>;color:<?php echo $default['de_' . $cur_it_type . '_color']; ?>"><?php echo $default['de_' . $cur_it_type . '_name']; ?></span></label>
-            <?php
+            <?php if($x == 11){ ?>
+                <input class="frm_input" size="5" type="time" name="it_deadline[<?php echo $i; ?>]" value="<?php echo ($row['it_deadline'] ? : "00:00"); ?>" id="it_deadline_<?php echo $i; ?>" style="text-align: center; <?php echo ($row['it_type11'] ? 'background-color : white;':''); ?>" <?php echo ($row['it_type11'] ? '':'disabled'); ?>>
+            <?php }
               }
             }
             ?>
@@ -887,6 +889,18 @@ $(function() {
     $('#page_rows, #orderby').change(function() {
         document.flist.submit();
     })
+
+  // 상품태그 > 마감 선택
+  $(document).on("click", "input[name^='it_type11']", function() {
+    var $it_deadline = $(this).parent().find("input[id^='it_deadline']");
+    if($(this).is(":checked")) {
+      $it_deadline.attr("disabled", false);
+      $it_deadline.css("background-color", "white");
+    } else {
+      $it_deadline.attr("disabled", true);
+      $it_deadline.css("background-color", "#f3f3f3");
+    }
+  });
 });
 
 function excelform(url)
