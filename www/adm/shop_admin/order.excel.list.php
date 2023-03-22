@@ -430,8 +430,8 @@
       $it['addr'],
       $od["od_b_tel"],
       $od["od_b_hp"],
-      $it["prodMemo"],
-      $od["od_memo"],
+      ' '.$it["prodMemo"],
+      ' '.$od["od_memo"],
       $report['ir_issue'], /* 22.11.15 : 서원 - 주문내역 다운로드용 엑셀 양식 수정 */
       $it['ct_id'],
       $ct_delivery_company,
