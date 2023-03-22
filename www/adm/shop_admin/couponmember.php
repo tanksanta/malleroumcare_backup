@@ -167,7 +167,7 @@ $(function() {
     e.preventDefault();
 
     get_members({
-      mb_name: $('#mb_name').val()
+      keyword: $('#mb_name').val()
     });
   });
 
