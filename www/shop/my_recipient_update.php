@@ -331,7 +331,7 @@ input[type="number"]::-webkit-inner-spin-button {
           <b>휴대폰</b>
         </label>
         <div class="col-sm-3">
-          <input type="text" name="penConNum" value="<?=$data["penConNum"]?>" class="form-control input-sm">
+          <input type="text" name="penConNum" value="<?=$data["penConNum"]?>" class="form-control input-sm" oninput="onlyNumber()">
         </div>
       </div>
       <div class="form-group has-feedback">
@@ -339,7 +339,7 @@ input[type="number"]::-webkit-inner-spin-button {
           <b>일반전화</b>
         </label>
         <div class="col-sm-3">
-          <input type="text" name="penConPnum" value="<?=$data["penConPnum"]?>" class="form-control input-sm">
+          <input type="text" name="penConPnum" value="<?=$data["penConPnum"]?>" class="form-control input-sm" oninput="onlyNumber()">
         </div>
       </div>
 
@@ -1066,6 +1066,11 @@ function zipPopupOpen(target) {
   }).embed(zipPopupDom);
 
   $("#zipAddrPopupWrap").show();
+}
+
+function onlyNumber(){
+	const reg = /\D/g;
+  event.target.value = event.target.value.replace(reg, "");
 }
 
 $(function() {

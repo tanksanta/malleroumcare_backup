@@ -363,7 +363,7 @@ input[type="number"]::-webkit-inner-spin-button {
           <b>휴대폰</b><strong id="asterisk">*</strong>
         </label>
         <div class="col-sm-3">
-          <input type="text" name="penConNum" value="<?=get_text($_GET['penConNum']) ?: ''?>" class="form-control input-sm">
+          <input type="text" name="penConNum" value="<?=get_text($_GET['penConNum']) ?: ''?>" class="form-control input-sm" oninput="onlyNumber()">
         </div>
       </div>
 
@@ -372,7 +372,7 @@ input[type="number"]::-webkit-inner-spin-button {
           <b>일반전화</b>
         </label>
         <div class="col-sm-3">
-          <input type="text" name="penConPnum" value="" class="form-control input-sm">
+          <input type="text" name="penConPnum" value="" class="form-control input-sm" oninput="onlyNumber()">
         </div>
       </div>
 
@@ -905,6 +905,10 @@ for(var i = 0; i < Object.keys(item_arr).length; i++){
   }
 }
 
+function onlyNumber(){
+	const reg = /\D/g;
+  event.target.value = event.target.value.replace(reg, "");
+}
 
 function recipientNumCheck(penLtmNum) {
   var checking = true;
