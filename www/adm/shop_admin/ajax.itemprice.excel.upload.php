@@ -45,21 +45,38 @@ for($idx = 2; $idx <= $num_cols; $idx++) {
     $it_id = trim($sheet->getCell("{$col}1")->getValue());
     $it_id = get_search_string($it_id);
     for($row = 5; $row <= $num_rows; $row++) {
-        $it_price = preg_replace('/[^0-9]/', '', $sheet->getCell("{$col}{$row}")->getValue());
-
-        // 가격이 없으면 continue
-        if(!$it_price)
-            continue;
 
         $mb_id = trim($sheet->getCell("A{$row}")->getValue());
         $mb_id = get_search_string($mb_id);
 
         // 담당 사업소가 아니면 continue
-        if(!in_array($mb_id, $ents))
+        if(!in_array($mb_id, $ents)){
             continue;
+        }
 
-        $sql = " select * from g5_shop_item_entprice where it_id = '{$it_id}' and mb_id = '{$mb_id}' ";
-        $result = sql_fetch($sql);
+        $it_price = preg_replace('/[^0-9]/', '', $sheet->getCell("{$col}{$row}")->getValue());
+
+        $result = sql_fetch(" select * from g5_shop_item_entprice where it_id = '{$it_id}' and mb_id = '{$mb_id}' ");
+
+        // 가격이 없으면 continue
+        if($result['mb_id'] && !$it_price) {
+            $sql = "
+                update
+                    g5_shop_item_entprice
+                set
+                    it_price = NULL,
+                    updated_by = '{$member['mb_id']}',
+                    updated_at = NOW()
+                WHERE
+                    it_id = '$it_id' and
+                    mb_id = '$mb_id'
+            ";
+
+            sql_query($sql);
+            continue;
+        }
+
+
 
         if($result['mb_id']) {
             $sql = "
