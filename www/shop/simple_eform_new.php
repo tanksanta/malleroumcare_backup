@@ -831,7 +831,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 
 		<div id="" style="float:left;width:100%;margin-left:15px;">			
 			<label style="width:363px;">
-			<textarea name="entConAcc01_2" id="entConAcc01_2"><?php if($dc) echo $dc['entConAcc01']; else echo nl2br($member['mb_entConAcc01']); ?></textarea>
+			<textarea name="entConAcc01_2" id="entConAcc01_2" style="width:363px;height:250px;"><?php if($dc) echo $dc['entConAcc01']; else echo nl2br($member['mb_entConAcc01']); ?></textarea>
 			</label>
 			  		
 		</div>
@@ -1267,8 +1267,8 @@ function select_item(obj, qty) {
 	$('#popup_box').hide();
 	return false;
   }
-  if(parseInt($("#sale_count").val())==15 && obj.gubun != '대여'){
-	alert("판매 상품은 총 수량이 15개까지만 가능합니다.");
+  if(parseInt($("#sale_count").val())==25 && obj.gubun != '대여'){
+	alert("판매 상품은 총 수량이 25개까지만 가능합니다.");
 	$('body').removeClass('modal-open');
 	$('#popup_box').hide();
 	return false;
@@ -1477,8 +1477,8 @@ function save_eform() {
   });
 
   // 특약사항 값 적용
-  var data = CKEDITOR.instances.entConAcc01_2.getData();
-  $('#entConAcc01_2').val(data);
+  //var data = CKEDITOR.instances.entConAcc01_2.getData();
+  //$('#entConAcc01_2').val(data);
 
   loading = true;
   var $form = $('#form_simple_eform');
@@ -2046,12 +2046,13 @@ function btn_acc_click(){
 
 // 구매계약 특약사항 입력
 function acc_info_chk(){
-	if(CKEDITOR.instances.entConAcc01_2.getData() == ""){
+	//if(CKEDITOR.instances.entConAcc01_2.getData() == ""){
 		//alert("특약사항 정보를 입력해 주세요.");		
 		//CKEDITOR.instances.entConAcc01_2.focus();
 		//return false;
-	}
-	$("#entConAcc01").val(CKEDITOR.instances.entConAcc01_2.getData());
+	//}
+	//$("#entConAcc01").val(CKEDITOR.instances.entConAcc01_2.getData());
+	$("#entConAcc01").val($('#entConAcc01_2').val());
 	$("#save_conacc").val($("#entConAcc01_save2").val());
 	div_close('popup_box4');
 }
@@ -2096,7 +2097,7 @@ function info_close(div_name,div_id,chk_id){
 			contract_info_chk()
 			$("#applicantRelation2").val("0");
 		}else if(div_name == "특약사항"){
-			CKEDITOR.instances.entConAcc01_2.setData("");$('#entConAcc01_save2').prop("checked", false);
+			//CKEDITOR.instances.entConAcc01_2.setData("");$('#entConAcc01_save2').prop("checked", false);
 			acc_info_chk()
 		}else{//장기요양 신청인
 			$('#applicantRelation2').val("0");$('#applicantNm2').val(""); $('#applicantTel2').val(""); $('#applicantBirth2').val(""); $('#applicantAddr2').val(""); $('#applicantDate2').val("");
@@ -2239,8 +2240,8 @@ $(document).on('click', '.it_qty button', function() {
 			$("#rent_count").val(parseInt($("#rent_count").val())+1);
 		}
 	  }else{
-		if(parseInt($("#sale_count").val())==15){
-			alert("판매 상품은 총 수량이 15개까지만 가능합니다.");
+		if(parseInt($("#sale_count").val())==25){
+			alert("판매 상품은 총 수량이 25개까지만 가능합니다.");
 			return false;
 		}else{
 			$("#sale_count").val(parseInt($("#sale_count").val())+1);
@@ -2652,9 +2653,9 @@ check_no_item();
 // 처음 팝업
 $('.se_sch_pop').show();
 
-CKEDITOR.replace( 'entConAcc01_2', {
-  removePlugins: 'link'
-});
+//CKEDITOR.replace( 'entConAcc01_2', {
+  //removePlugins: 'link'
+//});
 
 <?php
 if(!$dc) {

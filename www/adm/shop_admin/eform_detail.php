@@ -214,16 +214,6 @@ while($row=sql_fetch_array($result)){
 <?php
 
 if($dc_sign_send_datetime != "0000-00-00 00:00:00"){
-	/*
-	$response = $client->request('GET', 'https://api.modusign.co.kr/documents?offset=0&limit=1&metadatas=%7B%22dc_id%22%3A%22'.strtolower($uuid).'%22%7D', [
-	  'headers' => [
-		'accept' => 'application/json',
-		'authorization' => 'Basic '.$API_Key64,
-	  ],
-	]);
-
-	$arrResponse = json_decode($response->getBody(),true);
-;*/
 	$api_url = 'https://api.modusign.co.kr/documents?offset=0&limit=1&metadatas=%7B%22dc_id%22%3A%22'.strtolower($uuid).'%22%7D';
 	$type = "GET";
 	$data = "";
@@ -272,12 +262,14 @@ if($dc_sign_send_datetime != "0000-00-00 00:00:00"){
     </tr>
 <?php 
 $participants_count = count($arrResponse["documents"][0]["participants"]);
-
+for($j=0;$j<count($arrResponse["documents"][0]["signings"]);$j++ ){
+	$p_signedAts[$arrResponse["documents"][0]["signings"][$j]["participantId"]] = $arrResponse["documents"][0]["signings"][$j]["signedAt"];
+}
 
 for($i=0;$i<$participants_count;$i++){
 	if($arrResponse["documents"][0]["status"] != "ABORTED"){
-		$p_stataus = ($arrResponse["documents"][0]["signings"][$i]["signedAt"] != "")? "서명완료":"서명 대기중";
-		$p_signedAt = ($arrResponse["documents"][0]["signings"][$i]["signedAt"] != "")? date("Y-m-d H:i:s",strtotime($arrResponse["documents"][0]["signings"][$i]["signedAt"])):"-";
+		$p_stataus = ($p_signedAts[$arrResponse["documents"][0]["participants"][$i]["id"]] != "")? "서명완료":"서명 대기중";
+		$p_signedAt = ($p_signedAts[$arrResponse["documents"][0]["participants"][$i]["id"]] != "")? date("Y-m-d H:i:s",strtotime($p_signedAts[$arrResponse["documents"][0]["participants"][$i]["id"]])):"-";
 	}else{
 		$p_stataus = $status;
 		$p_signedAt = ($arrResponse["documents"][0]["abort"]["abortedAt"] != "")? date("Y-m-d H:i:s",strtotime($arrResponse["documents"][0]["abort"]["abortedAt"])):"-";

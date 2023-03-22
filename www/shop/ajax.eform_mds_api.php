@@ -4,12 +4,23 @@ include_once('./_common.php');
 $API_Key64 = base64_encode(G5_MDS_ID.":".G5_MDS_KEY); //API 접속 base64 인코딩 키
 //$client = new \GuzzleHttp\Client();
 
-$templateId1_1 = "932d23a0-a37a-11ed-aeef-1bb14ef4354c";//기본 템플릿 6p(15/5)
-$templateId1_2 = "ff3f3790-a38e-11ed-a8f1-9fe09be5e9a1";//기본 템플릿 6p(10/5)
-$templateId1_3 = "524b22a0-a38f-11ed-a8f1-9fe09be5e9a1";//기본 템플릿 6p(5/5)
-$templateId2_1 = "8176f0e0-a38f-11ed-a8f1-9fe09be5e9a1";//기본 템플릿 4p(15/5)
-$templateId2_2 = "bb70b510-a38f-11ed-a8f1-9fe09be5e9a1";//기본 템플릿 4p(10/5)
-$templateId2_3 = "eef248e0-a38f-11ed-9f87-3f9656f47c97";//기본 템플릿 4p(5/5)
+//$templateId1_1 = "932d23a0-a37a-11ed-aeef-1bb14ef4354c";//기본 템플릿 6p(15/5)
+//$templateId1_2 = "ff3f3790-a38e-11ed-a8f1-9fe09be5e9a1";//기본 템플릿 6p(10/5)
+//$templateId1_3 = "524b22a0-a38f-11ed-a8f1-9fe09be5e9a1";//기본 템플릿 6p(5/5)
+//$templateId2_1 = "8176f0e0-a38f-11ed-a8f1-9fe09be5e9a1";//기본 템플릿 4p(15/5)
+//$templateId2_2 = "bb70b510-a38f-11ed-a8f1-9fe09be5e9a1";//기본 템플릿 4p(10/5)
+//$templateId2_3 = "eef248e0-a38f-11ed-9f87-3f9656f47c97";//기본 템플릿 4p(5/5)
+
+$templateId1_1 = "8ec3dcb0-c782-11ed-8086-9f5a8668dca0";//기본 템플릿 6p(15/5)
+$templateId1_2 = "04923fc0-c7a8-11ed-98a6-0b5b5a81a3a0";//기본 템플릿 6p(10/5)
+$templateId1_3 = "b0c31270-c7ac-11ed-a47c-51e4709569d4";//기본 템플릿 6p(5/5)
+$templateId1_4 = "d434b2c0-c86c-11ed-b2d5-9f64a6f185b7";//기본 템플릿 6p(20/5)
+$templateId1_5 = "4c06e8d0-c855-11ed-9766-e9c41b39ad33";//기본 템플릿 6p(25/5)
+$templateId2_1 = "a7278fc0-c7b1-11ed-ae22-fbb372cc8ea8";//기본 템플릿 4p(15/5)
+$templateId2_2 = "acae5b40-c7b1-11ed-b371-c5dc2902ba05";//기본 템플릿 4p(10/5)
+$templateId2_3 = "b1e9c5e0-c7b1-11ed-98a6-0b5b5a81a3a0";//기본 템플릿 4p(5/5)
+$templateId2_4 = "ce7c38a0-c85b-11ed-a302-8d472f1336b8";//기본 템플릿 4p(20/5)
+$templateId2_5 = "18ced260-c85b-11ed-ae22-fbb372cc8ea8";//기본 템플릿 4p(25/5)
 
 //if($_POST["div"] == ""){
 //서명 WebHook 시작
@@ -231,7 +242,7 @@ header('Content-type: application/json');
 			$log_txt .= "-- 계약서 ".$dc_id2." 서명 취소";
 		}
 	
-		$log_file = fopen($log_dir . 'log.txt', 'a');
+		$log_file = fopen($log_dir . 'eform_Webhook_log_'.date("Ymd").'.txt', 'a');
 		fwrite($log_file, $log_txt . "\r\n\r\n");
 		fclose($log_file);
 	}
@@ -259,23 +270,27 @@ if($_REQUEST["signed"] == "ok"){?>
 		$gubun1 = $gubun2 = $gubun3 = "-";
 		$sign_date1 = $sign_date2 = $sign_date3 = "-";
 		$stat1 = $stat2 = $stat3 = "대상아님";
+		for($j=0;$j<count($arrResponse["documents"][0]["signings"]);$j++ ){
+			$p_signedAts[$arrResponse["documents"][0]["signings"][$j]["participantId"]] = $arrResponse["documents"][0]["signings"][$j]["signedAt"];
+		}
+		
 		for($i=0;$i<$participants_count;$i++){
 			if($arrResponse["documents"][0]["participants"][$i]["name"] == "수급자"){
 				$gubun1 = ($arrResponse["documents"][0]["participants"][$i]["signingMethod"]["type"] == "SECURE_LINK")?"웹페이지":"카카오톡";			
-				$sign_date1 = ($arrResponse["documents"][0]["signings"][$i]["signedAt"] != "")? date("Y-m-d H:i:s",strtotime($arrResponse["documents"][0]["signings"][$i]["signedAt"])):"-"; 
+				$sign_date1 = ($p_signedAts[$arrResponse["documents"][0]["participants"][$i]["id"]] != "")? date("Y-m-d H:i:s",strtotime($p_signedAts[$arrResponse["documents"][0]["participants"][$i]["id"]])):"-"; 
 				$stat1 = ($sign_date1 == "-")?"진행중":"완료";
 				$part_id1 = $arrResponse["documents"][0]["participants"][$i]["id"];
 			}
 			if($arrResponse["documents"][0]["participants"][$i]["name"] == "대리인"){
 				$gubun2 = ($arrResponse["documents"][0]["participants"][$i]["signingMethod"]["type"] == "SECURE_LINK")?"웹페이지":"카카오톡";			
-				$sign_date2 = ($arrResponse["documents"][0]["signings"][$i]["signedAt"] != "")? date("Y-m-d H:i:s",strtotime($arrResponse["documents"][0]["signings"][$i]["signedAt"])):"-"; 
+				$sign_date2 = ($p_signedAts[$arrResponse["documents"][0]["participants"][$i]["id"]] != "")? date("Y-m-d H:i:s",strtotime($p_signedAts[$arrResponse["documents"][0]["participants"][$i]["id"]])):"-"; 
 				$stat2 = ($sign_date2 == "-")?"진행중":"완료";
 				$part_id2 = $arrResponse["documents"][0]["participants"][$i]["id"];
 			}
 			if($arrResponse["documents"][0]["participants"][$i]["name"] == "신청자"){
 				$gubun3 = ($arrResponse["documents"][0]["participants"][$i]["signingMethod"]["type"] == "SECURE_LINK")?"웹페이지":"카카오톡";			
-				$sign_date3 = ($arrResponse["documents"][0]["signings"][$i]["signedAt"] != "")? date("Y-m-d H:i:s",strtotime($arrResponse["documents"][0]["signings"][$i]["signedAt"])):"-"; 
-				$stat3 = ($sign_date2 == "-")?"진행중":"완료";
+				$sign_date3 = ($p_signedAts[$arrResponse["documents"][0]["participants"][$i]["id"]] != "")? date("Y-m-d H:i:s",strtotime($p_signedAts[$arrResponse["documents"][0]["participants"][$i]["id"]])):"-"; 
+				$stat3 = ($sign_date3 == "-")?"진행중":"완료";
 				$part_id3 = $arrResponse["documents"][0]["participants"][$i]["id"];
 			}
 		}
@@ -480,7 +495,9 @@ if($_REQUEST["signed"] == "ok"){?>
 	$it_rent_price_pen_sum_1 = "";
 	$sd = "";
 	$sad = "";
-	$ent_ConAcc_1 = "";
+	$ent_ConAcc_1 = nl2br($row["entConAcc01"]);
+	$ent_ConAcc_1 = preg_replace('/\r\n|\r|\n/','',$ent_ConAcc_1);
+	$ent_ConAcc_1 = str_replace("<br />","\\n",$ent_ConAcc_1);
 	$count_total = 0;
 	$count_sale = 0;
 	$count_rant = 0;
@@ -607,8 +624,12 @@ if($_REQUEST["signed"] == "ok"){?>
 			$temp_doc_id = $templateId1_3;//6p(5/5)
 		}elseif($count_sale < 11){
 			$temp_doc_id = $templateId1_2;//6p(10/5)
-		}else{
+		}elseif($count_sale < 16){
 			$temp_doc_id = $templateId1_1;//6p(15/5)
+		}elseif($count_sale < 21){
+			$temp_doc_id = $templateId1_4;//6p(20/5)
+		}else{
+			$temp_doc_id = $templateId1_5;//6p(25/5)
 		}
 		$gicho_con = ',{"dataLabel":"app_name_1","value":"'.$app_name_1.'"}
 					,{"dataLabel":"app_relation_1","value":"'.$app_relation_1.'"}
@@ -644,8 +665,12 @@ if($_REQUEST["signed"] == "ok"){?>
 			$temp_doc_id = $templateId2_3;//4p(5/5)
 		}elseif($count_sale < 11){
 			$temp_doc_id = $templateId2_2;//4p(10/5)
-		}else{
+		}elseif($count_sale < 16){
 			$temp_doc_id = $templateId2_1;//4p(15/5)
+		}elseif($count_sale < 21){
+			$temp_doc_id = $templateId2_4;//4p(20/5)
+		}else{
+			$temp_doc_id = $templateId2_5;//4p(25/5)
 		}
 		$gicho_con = "";
 	}
@@ -689,7 +714,7 @@ if($_REQUEST["signed"] == "ok"){?>
 					'.$it_rent_price_pen_sum_1.'
 					'.$sd.'
 					'.$sad.'
-					,{"dataLabel":"ent_ConAcc_1","value":"'.$row["ent_ConAcc_1"].'"}
+					,{"dataLabel":"ent_ConAcc_1","value":"'.$ent_ConAcc_1.'"}
 					,{"dataLabel":"dc_date_1","value":"'.$dc_date_1.'"}
 					,{"dataLabel":"pen_name_2","value":"'.$pen_name_2.'"}
 					,{"dataLabel":"contract_name_2","value":"'.$contract_name_2.'"}
@@ -741,6 +766,19 @@ if($_REQUEST["signed"] == "ok"){?>
 				}
 				,"templateId":"'.$temp_doc_id.'"}';
 	$arrResponse = get_modusign($API_Key64,$api_url,$type,$data);//메타데이터 확인
+$log_dir = $_SERVER["DOCUMENT_ROOT"].'/data/log/';
+if(!is_dir($log_dir)){//인증서 파일 생성할 폴더 확인 
+	@umask(0);
+	@mkdir($log_dir,0777);
+	//@chmod($upload_dir, 0777);
+}
+$log_file = fopen($log_dir . 'eform_api_log_'.date("Ymd").'.txt', 'a');
+$log_txt = "====== 모두싸인 계약서 시작 [".$_SERVER["REMOTE_ADDR"]."] ============================================ \r\n";
+//$log_txt .= "[".date("Y-m-d H:i:s")."]"."\r\n".$data." \r\n";
+$log_txt .= stripslashes(json_encode($arrResponse, JSON_UNESCAPED_UNICODE))." \r\n";
+$log_txt .= "====== 모두싸인 계약서 끝 ============================================================= \r\n";
+fwrite($log_file, $log_txt . "\r\n");
+fclose($log_file);
 
 	$url = $arrResponse["file"]["downloadUrl"];
 	
