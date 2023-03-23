@@ -15,6 +15,10 @@ $search = isset($_GET['search']) ? get_search_string($_GET['search']) : '';
 $sel_field = isset($_GET['sel_field']) && in_array($_GET['sel_field'], array('penNm', 'it_name')) ? $_GET['sel_field'] : '';
 $sel_order = isset($_GET['sel_order']) && in_array($_GET['sel_order'], array('dc_datetime', 'penNm')) ? $_GET['sel_order'] : '';
 
+$od_type0 = isset($_GET['od_type0']) ? get_search_string($_GET['od_type0']) : '';
+$od_type1 = isset($_GET['od_type1']) ? get_search_string($_GET['od_type1']) : '';
+
+
 if($member['mb_type'] === 'normal') {
   $penId = get_session('ss_pen_id');
   $entId = get_session('ss_ent_id');
@@ -61,6 +65,11 @@ if($fr_date != "" || $to_date != ""){//날짜 검색 조건이 있을 경우
 	}
 	$qstr .= '&amp;fr_date='.$fr_date.'&amp;to_date='.$to_date;
 }
+
+// 주문건 확인 : 0 사업소주문 생성건 / 1:이로움ON주문 생성건
+if($dc_type0=="0") { $where[] = " E.dc_type = '0' ";}
+if($dc_type1=="1") { $where[] = " E.dc_type = '1' ";}
+
 
 // 수급자만 골라보기
 if($penId != '') {
@@ -294,29 +303,31 @@ for($i = 0; $row = sql_fetch_array($result); $i++) {
 </td>
 <td class="text_c">
   <?php
-  if($row['dc_status'] == '11'){//계약서생성
+  if(($row['dc_type']!='1')&&$row['dc_status'] == '11'){//계약서생성
 		echo '<a href="' . G5_SHOP_URL . '/simple_eform_new.php?dc_id=' . $row["uuid"] . '" class="btn_basic">계약서수정</a>';
 		echo '<br>';
 		echo '<a href="javascript:void(0);" class="btn_basic btn_del_eform" data-id="' . $row["uuid"] . '" >생성취소</a>';
-	}elseif($row['dc_status'] == '4'){//서명요청
+	}elseif(($row['dc_type']!='1')&&$row['dc_status'] == '4'){//서명요청
 		echo '<a href="javascript:void(0);" class="btn_basic " data-id="' . $row["uuid"] . '" onClick="sign_cancel(\''.$row["uuid"].'\')">서명요청취소</a>';
-	}elseif($row['dc_status'] == '5'){//서명거절
+	}elseif(($row['dc_type']!='1')&&$row['dc_status'] == '5'){//서명거절
 		echo '<a href="javascript:;" class="btn_basic" onclick="dc_reset(\'' . $row["uuid"] . '\')">계약서상태 초기화</a>';
 		echo '<br>';
 		echo '<a href="javascript:void(0);" class="btn_basic btn_del_eform" data-id="' . $row["uuid"] . '" >계약서삭제</a>';
-	}elseif($row['dc_status'] == '2' || $row['dc_status'] == '3'){
+	}elseif(($row['dc_type']!='1')&&($row['dc_status'] == '2' || $row['dc_status'] == '3')){
 		if($row['dc_sign_send_datetime'] != "0000-00-00 00:00:00" && $row['dc_sign_send_datetime'] != ""){//모두싸인 계약서
 			//echo '<a href="javascript:void(0);" class="btn_basic btn_del_eform" data-id="' . $row["uuid"] . '">서명회수</a><br>';
 			echo '<a href="javascript:void(0);" class="btn_basic " data-id="' . $row["uuid"] . '" onclick="resend_doc(\'' . $row["uuid"] . '\')">계약서 전송</a>';
 		}else{//일반 계약서
-			if ($row['dc_send_kakao'] == 1) {
-				echo '수급자 휴대폰으로<br>' . '<span style="color:#6e9254; font-weight: bold;">계약서 전송완료</span><br>';
-			  } else if ($row['dc_send_kakao'] == 2) {
-				echo '수급자 휴대폰으로<br>' . '<span style="color:#6e9254; font-weight: bold;">계약서 재 전송완료</span><br>';
-			  }
-			  if($row['dc_status'] != '11') {
-				echo '<a href="javascript:void(0);" class="btn_basic btn_resend_eform" data-id="' . $row["uuid"] . '" data-name="' . $row["penNm"] . '" data-hp="' . $row["penConNum"] . '" data-mail="' . $row["penMail"] . '">계약서 전송</a>';
-			  }
+      if( ($row['dc_type']!='1') ) {
+        if ($row['dc_send_kakao'] == 1) {
+          echo '수급자 휴대폰으로<br>' . '<span style="color:#6e9254; font-weight: bold;">계약서 전송완료</span><br>';
+          } else if ($row['dc_send_kakao'] == 2) {
+          echo '수급자 휴대폰으로<br>' . '<span style="color:#6e9254; font-weight: bold;">계약서 재 전송완료</span><br>';
+          }
+          if($row['dc_status'] != '11') {
+          echo '<a href="javascript:void(0);" class="btn_basic btn_resend_eform" data-id="' . $row["uuid"] . '" data-name="' . $row["penNm"] . '" data-hp="' . $row["penConNum"] . '" data-mail="' . $row["penMail"] . '">계약서 전송</a>';
+          }
+      }
 		}
 	}
 	echo "<br>";

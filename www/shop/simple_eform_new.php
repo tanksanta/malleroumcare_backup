@@ -1461,6 +1461,7 @@ function save_eform() {
     var it_barcode = [];
     $(this).find('.it_barcode').each(function() {
       it_barcode.push($(this).val());
+      alert($(this).val());
     });
 
     $(this).parent().find('input[name="it_barcode[]"]').val(it_barcode.join(String.fromCharCode(30)));
