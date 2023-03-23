@@ -54,11 +54,6 @@ if($_GET["e_date"]){
 	$sql_search .= " AND od_time <= '{$_GET["e_date"]} 23:59:59' ";
 }
 
-
-if($_GET["od_type0"]=="0") { $where[] = " od_type = '0' ";}
-if($_GET["od_type1"]=="1") { $where[] = " od_type = '1' ";}
-
-
 /*
 $search_od_status = "전체 상태";
 if($_GET["od_status"]){
@@ -278,7 +273,7 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
 	$list[$i]['od_total_price'] = $sum['price'] - $sum['discount'] + $row['od_send_cost'] + $row['od_send_cost2'];
 }
 
-$search_url = $_SERVER['SCRIPT_NAME'].'?'.$qstr."&amp;od_stock={$_GET["od_stock"]}&ct_release={$_GET["ct_release"]}&amp;od_status={$_GET["od_status"]}&amp;s_date={$_GET["s_date"]}&amp;e_date={$_GET["e_date"]}&amp;sel_field={$sel_field}&amp;search={$search}&amp;od_type0={$od_type0}&amp;od_type1={$od_type1}";
+$search_url = $_SERVER['SCRIPT_NAME'].'?'.$qstr."&amp;od_stock={$_GET["od_stock"]}&ct_release={$_GET["ct_release"]}&amp;od_status={$_GET["od_status"]}&amp;s_date={$_GET["s_date"]}&amp;e_date={$_GET["e_date"]}&amp;sel_field={$sel_field}&amp;search={$search}";
 $write_pages = G5_IS_MOBILE ? $config['cf_mobile_pages'] : $config['cf_write_pages'];
 $list_page = "{$search_url}&amp;ct_status={$_GET["ct_status"]}&amp;page=";
 

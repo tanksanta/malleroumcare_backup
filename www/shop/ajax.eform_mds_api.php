@@ -245,34 +245,6 @@ header('Content-type: application/json');
 		$log_file = fopen($log_dir . 'eform_Webhook_log_'.date("Ymd").'.txt', 'a');
 		fwrite($log_file, $log_txt . "\r\n\r\n");
 		fclose($log_file);
-
-
-		// = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- =
-		// 이로움ON(1.5)주문건에 대한 계약서 처리 시
-		// = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- =
-
-		// 전달할 데이터 정의
-		$_eroumON_data = array( 'type' => 'WebHook', 'dcid' => $dc_id2, 'event_type' => $arrResponse["event"]["type"] );
-
-		// URL과 데이터를 결합하여 전달할 URL 생성
-		$_url = G5_URL.'/shop/ajax.eroumon_eform_sign.php?' . http_build_query($_eroumON_data);
-
-		$oCurl = curl_init();
-		curl_setopt($oCurl, CURLOPT_URL, $_url);
-		curl_setopt($oCurl, CURLOPT_POST, FALSE);
-		curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, TRUE); //false
-		curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
-		curl_setopt($oCurl, CURLOPT_CONNECTTIMEOUT, 1); // curl이 첫 응답 시간에 대한 timeout
-		curl_setopt($oCurl, CURLOPT_TIMEOUT, 1); // curl 전체 실행 시간에 대한 timeout        
-		curl_setopt($oCurl, CURLOPT_NOSIGNAL, 1);
-		$re = curl_exec($oCurl);
-		curl_close($oCurl);	
-
-		// = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- =
-		// 이로움ON(1.5)에 주문정보를 전달하기 위한 부분 종료
-		// = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- =
-
-
 	}
 //서명 완료 WebHook 끝
 //}

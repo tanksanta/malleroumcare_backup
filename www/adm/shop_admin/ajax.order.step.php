@@ -535,62 +535,7 @@ if( $_POST['od_id'] && $_POST['step'] ) {
         echo "fail";
       }
     }
-
-    for( $i=0 ; $i<count($_OrderID) ; $i++ ) {
-      // = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- =
-      // 이로움ON(1.5)에 주문정보를 전달하기 위한 부분 시작 
-      // 23.03.20 : 서원 - API호출 방식 변경 / 외부연동시 DB 더블체크함으로 DB변경 전에 API호출되던 부분을 분리하여 SQL 처리 이후 호출로 변경 함.
-      //                    이에 따른 Loop추가 및 쿼리 추가.
-      // = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- =
-
-      // 22.09 : 서원 - 보유재고관리 오류 및 소스정리(카트 아이디에 해당하는 주문 정보 검색)
-      $result = sql_fetch(" SELECT a.*, b.mb_entId
-                            FROM `g5_shop_cart` a
-                            LEFT JOIN `g5_member` b ON a.mb_id = b.mb_id
-                            WHERE `ct_id` = '".$_OrderID[$i]."'
-      ");
-
-      if( in_array($_POST['step'], ['배송', '완료']) && ($result['ct_type']=="1") ) {
-
-        $_eroumON_ct = sql_fetch("  SELECT CT.ct_id, API.order_send_id
-                                    FROM g5_shop_cart CT
-                                    RIGHT JOIN g5_shop_cart_api API ON API.ct_sync_ctid = CT.ct_id
-                                    WHERE CT.ct_id = '{$result['ct_id']}'
-                                    ORDER BY CT.ct_id DESC
-        ");
-
-        if( $_eroumON_ct ) {
-          // 전달할 데이터 정의
-          $_eroumON_data = array(
-            'API_Div' => 'order_status',
-            'order_send_id' => $_eroumON_ct['order_send_id'],
-            'ct_id' => $_eroumON_ct['ct_id'] 
-          );
-
-          // URL과 데이터를 결합하여 전달할 URL 생성
-          $_url = G5_URL.'/api/v1_order_resend.php?' . http_build_query($_eroumON_data);
-
-          $oCurl = curl_init();
-          curl_setopt($oCurl, CURLOPT_URL, $_url);
-          curl_setopt($oCurl, CURLOPT_POST, FALSE);
-          curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, TRUE); //false
-          curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
-          curl_setopt($oCurl, CURLOPT_CONNECTTIMEOUT, 1); // curl이 첫 응답 시간에 대한 timeout
-          curl_setopt($oCurl, CURLOPT_TIMEOUT, 1); // curl 전체 실행 시간에 대한 timeout        
-          curl_setopt($oCurl, CURLOPT_NOSIGNAL, 1);
-          $re = curl_exec($oCurl);
-          curl_close($oCurl);
-        }
-      
-      }
-
-      // = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- =
-      // 이로움ON(1.5)에 주문정보를 전달하기 위한 부분 종료
-      // = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- =
-    }
-
   }
-
 } else {
   echo "fail.";
   exit;

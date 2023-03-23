@@ -34,7 +34,28 @@ if($_POST['ct_id'] && $_POST['step']) {
   $combine_orders = []; // 자동 합포적용
 
   for ($i = 0; $i < count($_POST['ct_id']); $i++) {
-    $sql_ct_s = "select a.*, b.mb_entId from `g5_shop_cart` a left join `g5_member` b on a.mb_id = b.mb_id where `ct_id` = '".$_POST['ct_id'][$i]."'";
+    $sql_ct_s = "select
+      a.od_id,
+      a.it_id,
+      a.it_name,
+      a.ct_option,
+      a.ct_status,
+      a.mb_id,
+      a.stoId,
+      b.mb_entId,
+      a.io_id,
+      a.io_type,
+      a.ct_price,
+      a.io_price,
+      a.ct_qty,
+      a.ct_discount,
+      a.prodSupYn,
+      a.ct_stock_qty,
+      a.ct_id,
+      a.ct_combine_ct_id,
+      a.ct_warehouse,
+      a.ct_is_direct_delivery
+    from `g5_shop_cart` a left join `g5_member` b on a.mb_id = b.mb_id where `ct_id` = '".$_POST['ct_id'][$i]."'";
     $result_ct_s = sql_fetch($sql_ct_s);
     $od_id = $result_ct_s['od_id'];
 
@@ -44,36 +65,17 @@ if($_POST['ct_id'] && $_POST['step']) {
     }
 
     if(in_array($result_ct_s['ct_status'], ['배송','완료'])) {
-
       if(!in_array($_POST['step'], ['출고준비', '완료', '취소', '주문무효'])) {
         echo("상품 상태값 제한적 변경 가능 안내.
 
           * 출고완료 => 출고준비, 배송완료, 취소, 주문무효
           * 배송완료 => 출고준비, 취소, 주문무효"); exit();
       }
-
     }
     else if(in_array($result_ct_s['ct_status'], ['취소', '주문무효'])) {
       echo('취소된 주문은 상태변경이 불가능합니다.'); exit();
     }
     
-    // 23.03.22 : 서원 - 수급자 주문상품의 경우 상태값 변경 불가.
-    if( ($result_ct_s['ct_type']=="1") ) {
-
-      if( in_array($_POST['step'], ['배송', '완료']) && ($result_ct_s['ct_barcode_insert'] != $result_ct_s['ct_qty']) ) { 
-        echo("이로움ON 주문의 경우
-          ※ 바코드 정보가 모두 입력되야 
-              [출고완료/배송완료] 처리 가능합니다."); exit();
-      }
-      
-      if(in_array($result_ct_s['ct_status'], ['배송','완료'])) {
-        if( !in_array($_POST['step'], ['배송', '완료']) ) {
-          echo("이로움ON 주문의 경우
-            ※ 출고완료/배송완료 이후 상태값 변경이 불가능 합니다."); exit();
-        }
-      }
-
-    }
 
   
     $content=$result_ct_s['it_name'];
@@ -213,7 +215,6 @@ if($_POST['ct_id'] && $_POST['step']) {
         $stoIdList[$temp_sto_id] = $result_ct_s['ct_id'];
       }
     }
-
   }
 
   // 취소 요청 체크
@@ -414,7 +415,6 @@ if($_POST['ct_id'] && $_POST['step']) {
       sql_query($sql);
     }
 
-
     /*
     if($_POST['sendcost'] != 0){
       $od_send_cost = get_sendcost_new($od_id, 1);
@@ -537,60 +537,6 @@ if($_POST['ct_id'] && $_POST['step']) {
       echo "fail";
     }
   }
-
-
-  for($i = 0; $i < count($_POST['ct_id']); $i++) {
-    // = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- =
-    // 이로움ON(1.5)에 주문정보를 전달하기 위한 부분 시작 
-    // 23.03.20 : 서원 - API호출 방식 변경 / 외부연동시 DB 더블체크함으로 DB변경 전에 API호출되던 부분을 분리하여 SQL 처리 이후 호출로 변경 함.
-    //                    이에 따른 Loop추가 및 쿼리 추가.
-    // = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- =
-    $result_ct_s = sql_fetch(" SELECT a.*, b.mb_entId 
-                  FROM `g5_shop_cart` a 
-                  LEFT JOIN `g5_member` b ON a.mb_id = b.mb_id 
-                  WHERE `ct_id` = '".$_POST['ct_id'][$i]."'
-    ");
-
-    if( in_array($_POST['step'], ['배송', '완료']) && ($result_ct_s['ct_type']=="1") ) {
-
-      $_eroumON_ct = sql_fetch("  SELECT CT.ct_id, API.order_send_id
-                                  FROM g5_shop_cart CT
-                                  RIGHT JOIN g5_shop_cart_api API ON API.ct_sync_ctid = CT.ct_id
-                                  WHERE CT.ct_id = '{$result_ct_s['ct_id']}'
-                                  ORDER BY CT.ct_id DESC 
-      ");
-      
-      if( $_eroumON_ct ) {
-        // 전달할 데이터 정의
-        $_eroumON_data = array(
-          'API_Div' => 'order_status',
-          'order_send_id' => $_eroumON_ct['order_send_id'],
-          'ct_id' => $_eroumON_ct['ct_id'] 
-        );
-
-        // URL과 데이터를 결합하여 전달할 URL 생성
-        $_url = G5_URL.'/api/v1_order_resend.php?' . http_build_query($_eroumON_data);
-
-        $oCurl = curl_init();
-        curl_setopt($oCurl, CURLOPT_URL, $_url);
-        curl_setopt($oCurl, CURLOPT_POST, FALSE);
-        curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, TRUE); //false
-        curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
-        curl_setopt($oCurl, CURLOPT_CONNECTTIMEOUT, 1); // curl이 첫 응답 시간에 대한 timeout
-        curl_setopt($oCurl, CURLOPT_TIMEOUT, 1); // curl 전체 실행 시간에 대한 timeout        
-        curl_setopt($oCurl, CURLOPT_NOSIGNAL, 1);
-        $re = curl_exec($oCurl);
-        curl_close($oCurl);
-      }
-    
-    }
-
-    // = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- =
-    // 이로움ON(1.5)에 주문정보를 전달하기 위한 부분 종료
-    // = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- = -- =  
-  }
-
-
 } else {
   echo "fail";
 }

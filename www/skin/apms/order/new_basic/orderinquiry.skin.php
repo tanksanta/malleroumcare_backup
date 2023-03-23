@@ -93,11 +93,6 @@ if($header_skin)
 
 #popupDeliveryTracking iframe { height: 500px; }
 #popupDeliveryTracking #popupDeliveryTrackingClose { position: relative; width: 500px; border: 0; background-color: #000; color:#fff; left: 50%; text-align:center; margin-left: -250px; display: block;  padding: 15px 0; top: -5px; }
-
-.list-checkbox { height: 40px; }
-.list-checkbox input[type=checkbox] { display:none; }
-.list-checkbox input[type=checkbox] + label { font-size: 20px; display: inline-block; cursor: pointer; line-height: 21px; padding-left: 27px; background: url('/adm/shop_admin/img/checkbox.png') left/21px no-repeat; margin-right:10px; height:21px; }
-.list-checkbox input[type=checkbox]:checked + label { background-image: url('/adm/shop_admin/img/checkbox_checked.png'); }
 </style>
 
 <!-- 210326 재고조회팝업 -->
@@ -231,27 +226,6 @@ $(function(){
         </div>
       </div>
       <div class="date-box" style="width: 100%;" method="get">
-        <div class="list-checkbox">  
-          <input type="checkbox" name="od_type0" id="od_type_0" value="0"<?=option_array_checked('0', $od_type0);?>/>&nbsp;<label for="od_type_0" style="vertical-align:-3px;">사업소주문</label>
-          <?php
-                // ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  
-                // 23.03.07 : 서원 - 이로움ON 에서 발생한 주문 정보에 대한 페이지 링크
-                //                    관리자 및 특정 사업소 아이디 하드 코딩으로 접근.
-                //                    추후 해당 부분 제거 필요 또는 특정 사업소 추가시 아이디 추가 필요.
-                // H/C 파일 - \www\thema\eroumcare\shop.head.php
-                //          - \www\skin\apms\order\new_basic\orderinquiry.skin.php
-                //          - \www\shop\electronic_manage_new.php
-                if( 
-                  ($member['mb_level'] >= 9 ) || ($member['mb_id'] == "ariamart") || ($member['mb_id'] == "hula1202")
-                ) {
-              // ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==
-          ?>
-          <input type="checkbox" name="od_type1" id="od_type_1" value="1"<?=option_array_checked('1', $od_type1);?>/>&nbsp;<label for="od_type_1" style="vertical-align:-3px;">수급자주문(이로움ON)</label>
-          <?php } ?>
-        </div>
-      </div>
-        
-        <div class="date-box" style="width: 100%;" method="get">
         <div class="list-date">
           <input type="text" name="s_date" value="<?=$_GET["s_date"]?>" id="date1" />
           ~
@@ -378,10 +352,6 @@ $(function(){
     $ct_sql_search = '';
     $ct_where = [];
     $ct_where[] = " od_id = '{$row["od_id"]}' ";
-
-    if( $od_type0=="0" ) $ct_where[] = " ct_type = '0' ";
-    if( $od_type1=="1" ) $ct_where[] = " ct_type = '1' ";
-
     // if ($ct_status) {
     //   if ( $ct_status === '주문무효') {
     //     $where[] = " a.ct_status IN ('주문무효', '취소') ";
@@ -685,10 +655,10 @@ $(function(){
               </div>
               <?php } ?>
 
-              <?php if( $item["ct_delivery_num"] != null ) { ?>
+              <?php if($row["ct_delivery_num"] != null) { ?>
                 <div style="margin-top: 6px;">
-                <?php if($delivery_company[$item["ct_delivery_company"]]){ ?>
-                  <a href="/#/" data-url="https://tracker.delivery/#/<?=$delivery_company[$item["ct_delivery_company"]]?>/<?=str_replace('-','',$item["ct_delivery_num"])?>" class="btn-01 btn-0 btn_delivery_tracking_y popupDeliveryTrackingBtn" style="font-size: 12px; color: #666" target="_blank">배송조회</a>
+                <?php if($delivery_company[$row["ct_delivery_company"]]){ ?>
+                  <a href="/#/" data-url="https://tracker.delivery/#/<?=$delivery_company[$row["ct_delivery_company"]]?>/<?=str_replace('-','',$row["ct_delivery_num"])?>" class="btn-01 btn-0 btn_delivery_tracking_y popupDeliveryTrackingBtn" style="font-size: 12px; color: #666" target="_blank">배송조회</a>
                 <?php } else {?>
                   <a href="/#/" class="btn-01 btn-0 btn_delivery_tracking_n" style="font-size: 12px; color: #666">배송조회</a>
                 <?php }?>

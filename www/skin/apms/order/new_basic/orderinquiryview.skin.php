@@ -87,7 +87,6 @@ if($od["od_penId"]) {
   # 200512 전자계약서
   $eform = [];
   $eform = sql_fetch("SELECT * FROM `eform_document` WHERE od_id = '{$od["od_id"]}'");
-
   if(!$eform['dc_id']) { // 전자계약서가 없을 경우
 
     $dcId = sql_fetch("SELECT REPLACE(UUID(),'-','') as uuid")["uuid"];
@@ -127,29 +126,26 @@ if($od["od_penId"]) {
       'penOrdId' => $od["ordId"]
     ));
 
-    if( $res["data"] && is_array($res["data"]) ) {
-      foreach($res["data"] as $it) {
-        $priceEnt = intval($it["prodPrice"]) - intval($it["penPrice"]);
-              
-        // 비급여 품목은 계약서에서 제외
-        if ($it['gubun'] != '02') {
-          sql_query("INSERT INTO `eform_document_item` SET
-            `dc_id` = UNHEX('$dcId'),
-            `gubun` = '{$it["gubun"]}',
-            `ca_name` = '{$it["itemNm"]}',
-            `it_name` = '{$it["prodNm"]}',
-            `it_code` = '{$it["prodPayCode"]}',
-            `it_barcode` = '{$it["prodBarNum"]}',
-            `it_qty` = '1',
-            `it_date` = '{$it["contractDate"]}',
-            `it_price` = '{$it["prodPrice"]}',
-            `it_price_pen` = '{$it["penPrice"]}',
-            `it_price_ent` = '$priceEnt'
-          ");
-        }
+    foreach($res["data"] as $it) {
+      $priceEnt = intval($it["prodPrice"]) - intval($it["penPrice"]);
+            
+      // 비급여 품목은 계약서에서 제외
+      if ($it['gubun'] != '02') {
+        sql_query("INSERT INTO `eform_document_item` SET
+          `dc_id` = UNHEX('$dcId'),
+          `gubun` = '{$it["gubun"]}',
+          `ca_name` = '{$it["itemNm"]}',
+          `it_name` = '{$it["prodNm"]}',
+          `it_code` = '{$it["prodPayCode"]}',
+          `it_barcode` = '{$it["prodBarNum"]}',
+          `it_qty` = '1',
+          `it_date` = '{$it["contractDate"]}',
+          `it_price` = '{$it["prodPrice"]}',
+          `it_price_pen` = '{$it["penPrice"]}',
+          `it_price_ent` = '$priceEnt'
+        ");
       }
     }
-
   }
 }
 
@@ -361,7 +357,7 @@ $(function() {
   </div>
 
   <section class="tab-wrap tab-2 on">
-    <?php if( ( $od["od_type"] != '1' ) && $od["od_penId"] ) { ?>
+    <?php if($od["od_penId"]) { ?>
     <div class="detail-price pc_none tablet_block">
       <h5>수급자 정보</h5>
       <div class="all-info all-info2">
@@ -655,12 +651,6 @@ $(function() {
               }
 
               if ($item[$i]['opt'][$k]['ct_status'] != '준비') {
-                $isReceiverEdit = false;
-              }
-
-              // 23.03.10 : 서원 - 주문건이 이로움1.0이 아닌경우 주문서 변경 불가!
-              //                     ct_type : 0-이로움1.0주문건 / 1-이로움ON(1.5)주문건
-              if ($item[$i]['opt'][$k]['ct_type'] != '0') {
                 $isReceiverEdit = false;
               }
 
@@ -1015,7 +1005,7 @@ $(function() {
       $sql_od ="select `od_hide_control` from `g5_shop_order` where `od_id` = '".$od['od_id']."'";
       $result_od = sql_fetch($sql_od);
       ?>
-      <?php if( (!$result_od['od_hide_control'])&&($result_od['od_type'] == '0') ) { ?>
+      <?php if(!$result_od['od_hide_control']) { ?>
       <div class="list-more">
         <p><a href="javascript:void(0)" onclick="hide_control('<?=$od["od_id"] ?>')">주문내역 숨김처리</a></p>
         <p>*해당 주문을 숨김처리하면 주문내역에 노출되지 않습니다.<br>*숨김처리는 주문취소가 되지 않습니다.</p>
@@ -1024,7 +1014,7 @@ $(function() {
     </div>
 
     <div class="detail-price">
-      <?php if( ( $od["od_type"] != '1' ) && $od["od_penId"]) { ?>
+      <?php if($od["od_penId"]) { ?>
       <h5 class="m_none tablet_none">수급자 정보</h5>
       <div class="all-info all-info2 m_none tablet_none">
         <ul>
@@ -1250,11 +1240,9 @@ $(function() {
             $to = "cancel";
           }
         ?>
-        <?php 
-          if($od["od_stock_insert_yn"] !== "Y"&&$flag&&!$cancel_request_row['od_id']) {
-            if($od["od_type"] == "0") { ?>          
-        <a href="#" id="cancel_btn" type="button" data-toggle="collapse" href="#sod_fin_cancelfrm" aria-expanded="false" aria-controls="sod_fin_cancelfrm"><?php echo $btn_name ?></a>
-            <?php } ?>
+        <?php if($od["od_stock_insert_yn"] !== "Y"&&$flag&&!$cancel_request_row['od_id']) {  ?>
+        <a href="#" id="cancel_btn" type="button" data-toggle="collapse" href="#sod_fin_cancelfrm" aria-expanded="false"
+          aria-controls="sod_fin_cancelfrm"><?php echo $btn_name ?></a>
         <div class="h15"></div>
         <div id="sod_fin_cancelfrm" class="collapse">
           <div class="well">

@@ -767,23 +767,6 @@ if($is_main && !$is_member) {
                   <i class="fa fa-angle-right" aria-hidden="true"></i>
                 </a>
               </li>
-
-              <?php
-                // ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  
-                // 23.03.07 : 서원 - 이로움ON 에서 발생한 주문 정보에 대한 페이지 링크
-                //                    관리자 및 특정 사업소 아이디 하드 코딩으로 접근.
-                //                    추후 해당 부분 제거 필요 또는 특정 사업소 추가시 아이디 추가 필요.
-                // H/C 파일 - \www\thema\eroumcare\shop.head.php
-                //          - \www\skin\apms\order\new_basic\orderinquiry.skin.php
-                //          - \www\shop\electronic_manage_new.php
-                if( 
-                    ($member['mb_level'] >= 9 ) || ($member['mb_id'] == "ariamart") || ($member['mb_id'] == "hula1202")
-                  ) {
-                // ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==
-              ?>
-              <li><a href="/shop/eroumon_order_list.php">수급자 주문관리<i class="fa fa-angle-right" aria-hidden="true"></i></a></li>
-              <?php } ?>
-
             </ul>
             <div class="div_title">운영관리</div>
             <ul>

@@ -61,10 +61,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
     border-radius: 3px;
     font-size: 14px;
 	}
-  .list-checkbox { text-align: left; }
-  .list-checkbox input[type=checkbox] { display:none; }
-  .list-checkbox input[type=checkbox] + label { font-size: 20px; display: inline-block; cursor: pointer; line-height: 21px; padding-left: 27px; background: url('/adm/shop_admin/img/checkbox.png') left/21px no-repeat; margin-right:10px; height:21px; }
-  .list-checkbox input[type=checkbox]:checked + label { background-image: url('/adm/shop_admin/img/checkbox_checked.png'); }
+	
 </style>
 <!-- 내용 -->
 <section class="wrap">
@@ -165,28 +162,6 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
       <?php if($member['mb_type'] !== 'normal') { ?>
 	  <div class="list_box" style="background:#f5f5f5;">
         <table cellspacing="30">
-        <tr style="border:1px solid #ddd;">
-        <td colspan="2">
-        <div class="list-checkbox">  
-          <input type="checkbox" name="dc_type0" id="dc_type_0" value="0"<?=option_array_checked('0', $dc_type0);?>/>&nbsp;<label for="dc_type_0" style="vertical-align:-3px;">사업소주문</label>
-          <?php
-              // ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  
-              // 23.03.07 : 서원 - 이로움ON 에서 발생한 주문 정보에 대한 페이지 링크
-              //                    관리자 및 특정 사업소 아이디 하드 코딩으로 접근.
-              //                    추후 해당 부분 제거 필요 또는 특정 사업소 추가시 아이디 추가 필요.
-              // H/C 파일 - \www\thema\eroumcare\shop.head.php
-              //          - \www\skin\apms\order\new_basic\orderinquiry.skin.php
-              //          - \www\shop\electronic_manage_new.php
-              if( 
-                ($member['mb_level'] >= 9 ) || ($member['mb_id'] == "ariamart") || ($member['mb_id'] == "hula1202")
-              ) {
-            // ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==
-          ?>
-          <input type="checkbox" name="dc_type1" id="dc_type_1" value="1"<?=option_array_checked('1', $dc_type1);?>/>&nbsp;<label for="dc_type_1" style="vertical-align:-3px;">수급자주문(이로움ON)</label>
-          <?php } ?>
-        </div>
-        </td>
-      </tr>
       <tr style="border:1px solid #ddd;">
         <th>검색조건</th>
         <td>
