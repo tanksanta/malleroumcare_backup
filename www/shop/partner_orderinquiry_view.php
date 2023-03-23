@@ -853,7 +853,7 @@ $(function() {
   $('#btn_delivery_info').click(function(e) {
     e.preventDefault();
     $("body").addClass('modal-open');
-    $("#popup_box > div").html('<iframe src="/adm/shop_admin/popup.prodBarNum.form.php?od_id=<?=$od_id?>">');
+    $("#popup_box > div").html('<iframe src="/adm/shop_admin/popup.prodBarNum.form.php?od_id=<?=$od_id?>&partner=1">');
     $("#popup_box iframe").load(function() {
       $("#popup_box").show();
     });
@@ -862,7 +862,7 @@ $(function() {
   $('#btn_delivery_info_mobile').click(function(e) {
     e.preventDefault();
     $("body").addClass('modal-open');
-    $("#popup_box > div").html('<iframe src="/adm/shop_admin/popup.prodBarNum.form.php?od_id=<?=$od_id?>">');
+    $("#popup_box > div").html('<iframe src="/adm/shop_admin/popup.prodBarNum.form.php?od_id=<?=$od_id?>&partner=1">');
     $("#popup_box iframe").load(function() {
       $("#popup_box").show();
     });
