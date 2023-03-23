@@ -552,6 +552,17 @@ a.btn_schedule {
     height: 44px;
     color: white;
 }
+
+.ui-datepicker-prev{
+	display:none;
+}
+.ui-datepicker-next{
+	display:none;
+}
+.ui-datepicker-current{
+	display:none;
+}
+
 </style>
 
 <script src="/js/detectmobilebrowser.js">
