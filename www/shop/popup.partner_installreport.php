@@ -532,6 +532,19 @@ while($ct = sql_fetch_array($result)) {
           </form>
         </td>
       </tr>
+	  <tr class="tr_head">
+        <th class="th_col">
+			<div class="section_head">이슈사항 작성</div>
+		</th>
+      </tr>
+	   <tr class="tr_content report-img-wrap">
+        <td colspan="1">
+          <form id="form_partner_installreport" class="form_file_photo">
+			<input type="hidden" name="od_id" value="<?=$od_id?>">
+			<textarea name="ir_issue" id="txt_issue" rows="7"><?=$report['ir_issue']?></textarea>
+		  </form>
+        </td>
+      </tr>
       <tr class="tr_content">
       </tr>
       <?php if($report['ir_cert_url']) { ?>
@@ -703,13 +716,6 @@ while($ct = sql_fetch_array($result)) {
       </tr>
     </tbody>
   </table>
-  <form id="form_partner_installreport">
-    <input type="hidden" name="od_id" value="<?=$od_id?>">
-    <div class="issue_wrap">
-      <div class="section_head">이슈사항 작성</div>
-      <textarea name="ir_issue" id="txt_issue" rows="7"><?=$report['ir_issue']?></textarea>
-    </div>
-  </form>
 
   <div id="popupFooterBtnWrap">
     <button type="button" class="savebtn" id="prodBarNumSaveBtn">저장</button>
