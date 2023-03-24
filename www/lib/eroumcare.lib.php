@@ -67,6 +67,10 @@ function get_modusign($API_Key64,$api_url,$type,$data=false) {
 	return $arrResponse;
 }
 
+function api_log_write($order_send_id,$mb_id, $type, $cont){
+	$sql = "insert g5_shop_api_log set order_send_id='$order_send_id',mb_id='$mb_id', log_type='$type', log_cont='$cont',log_time=now();";
+	sql_query($sql);
+}
 
 // 시스템DB dtm형식을 timestamp로 변환
 // ex) dtm: 20210411223341
