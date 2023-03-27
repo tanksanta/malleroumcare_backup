@@ -16,6 +16,14 @@ if($res['data']['entConfirmCd'] == '01' || $member['mb_level'] >= 5 ) {
 if(!$is_approved)
   json_response(400, '승인된 회원만 이용하실 수 있습니다.');
 
+$query = "SHOW COLUMNS FROM recipient_item_msg_log WHERE `Field` = 'agreement_datetime';";//개인정보제공동의확인시간
+$wzres = sql_fetch( $query );
+if(!$wzres['Field']) {
+    sql_query("ALTER TABLE `recipient_item_msg_log`
+	ADD `agreement_datetime` datetime NOT NULL COMMENT '동의확인시간' AFTER ml_sent_at", true);
+}
+
+
 $sql = "
   select
     count(*) as cnt
@@ -65,7 +73,8 @@ $sql = "
     recipient_item_msg_log
   SET
     ms_id = '{$ms_id}',
-    ml_sent_at = NOW()
+    ml_sent_at = NOW(),
+	agreement_datetime = NOW()
 ";
 sql_query($sql);
 

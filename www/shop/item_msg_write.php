@@ -94,8 +94,58 @@ function max_length_check(object){
     object.value = object.value.slice(0, object.maxLength);
   }
 }
-</script>
 
+function agreement_confirm(a){
+	if(a == "Y"){//동의 미처리
+		$("#agreement").val("ok");
+		$("#"+$("#send_type").val()).trigger("click");
+	}else{//동의 
+		$("#agreement").val("");
+	}
+	$('body').removeClass('modal-open');
+	$(".thkc_pop_confirm").hide();
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* reset */
+        * { margin: 0; padding: 0; box-sizing: border-box; } 
+ 
+
+        .thkc_pop_confirm { width: 100%; height: 100%; display: none; align-items: center; background: rgba(0, 0, 0, 0.5); position:fixed;top:0px;left:0px;z-index:9999999999999;} 
+
+        .thkc_wrapPopup { margin: 0 auto; width: 320px; background: #fff; color: #666;}  
+        .thkc_wrapPopup>p { padding: 10px 15px; display: flex; justify-content: flex-end;} 
+        .thkc_wrapPopup path.svgX {stroke:#000; stroke-opacity: .5;} 
+        .thkc_wrapPopup section p{padding: 10px 20px 50px 20px; text-align: center;}
+        .thkc_wrapPopup section p>span{color: #001E9A; text-decoration: underline;}
+        .thkc_wrapPopup section button{border:none !important; }      
+        
+        .thkc_wrapPopup .btnWrap { display: flex; flex-direction: row; align-content: flex-end; } 
+        .thkc_wrapPopup .btnWrap button {height: 50px; width: 50%; padding: 0px 10px; display: flex; justify-content: center; align-items: center; font-size: 14px; font-weight: bold; border: none;} 
+        .thkc_wrapPopup .btnWrap button.okType:hover, .btnWrap button.celType:hover { opacity:0.8; cursor: pointer;}
+        .thkc_wrapPopup .btnWrap button.okType { background: #001E9A; color: #fff; } 
+        .thkc_wrapPopup .btnWrap button.celType { background: #ddd; color: #444;} 
+    </style>
+ <div class="thkc_pop_confirm">
+        <div class="thkc_wrapPopup">          
+            <p>
+                <a href="#" onClick="agreement_confirm('N')">
+                    <svg width="12" height="11" fill="none"><path class="svgX"  d="m.646 10.646 10-10M1.354.646l10 10"/></svg>
+                </a>
+            </p>           
+            <section>                              
+                <p>복지용구 제안 수신인 (수급자 또는 수급자 보호자)에게 <span>제안서 전송을 위한 개인정보 수집·이용 안내 및 동의</span>를 받았음을<br>확인합니다.</p>                                    
+            </section>            
+            <div class="btnWrap">
+                <button class="celType" onClick="agreement_confirm('N')">돌아가기 (미확인)</button><button class="btn okType" onClick="agreement_confirm('Y')">전송하기 (확인)</button>
+				<input type="hidden" name="agreement" id="agreement" value="">
+				<input type="hidden" name="send_type" id="send_type" value="">
+            </div>
+        </div>
+    </div>
 <section class="wrap">
   <div class="sub_section_tit">간편 제안서 작성</div>
   <div class="inner">
@@ -723,26 +773,31 @@ function save_item_msg(no_items) {
 
     if(!ms_id)
       return alert('먼저 상품을 추가해주세요.');
-
-    sending = true;
-    var show_expected = ($('#show_expected_warehousing_date').is(':checked') ? 'Y' : 'N');
-    $form = $('#form_item_msg');
-    $.post('item_msg_send.php', {
-      mode: 'alim',
-      ms_id: ms_id,
-      show_expected: show_expected
-    }, 'json')
-    .done(function(result) {
-      alert('전송이 완료되었습니다.');
-      window.location.href = 'item_msg_write.php?w=u&ms_id=' + ms_id + '&show_expected=' + show_expected;
-    })
-    .fail(function($xhr) {
-      var data = $xhr.responseJSON;
-      alert(data && data.message);
-    })
-    .always(function() {
-      sending = false;
-    });
+	if($("#agreement").val() != "ok"){//미동의 시
+		$('body').addClass('modal-open');
+		$(".thkc_pop_confirm").css("display","flex");
+		$("#send_type").val("btn_im_send_alim");
+	}else{//동의 시
+		sending = true;
+		var show_expected = ($('#show_expected_warehousing_date').is(':checked') ? 'Y' : 'N');
+		$form = $('#form_item_msg');
+		$.post('item_msg_send.php', {
+		  mode: 'alim',
+		  ms_id: ms_id,
+		  show_expected: show_expected
+		}, 'json')
+		.done(function(result) {
+		  alert('전송이 완료되었습니다.');
+		  window.location.href = 'item_msg_write.php?w=u&ms_id=' + ms_id + '&show_expected=' + show_expected;
+		})
+		.fail(function($xhr) {
+		  var data = $xhr.responseJSON;
+		  alert(data && data.message);
+		})
+		.always(function() {
+		  sending = false;
+		});
+	}
   });
   $('#btn_im_send_sms').on('click', function() {
     if(sending)
@@ -752,26 +807,31 @@ function save_item_msg(no_items) {
 
     if(!ms_id)
       return alert('먼저 상품을 추가해주세요.');
-
-    sending = true;
-    var show_expected = ($('#show_expected_warehousing_date').is(':checked') ? 'Y' : 'N');
-    $form = $('#form_item_msg');
-    $.post('item_msg_send.php', {
-      mode: 'sms',
-      ms_id: ms_id,
-      show_expected: show_expected
-    }, 'json')
-    .done(function(result) {
-      alert('전송이 완료되었습니다.');
-      window.location.href = 'item_msg_write.php?w=u&ms_id=' + ms_id + '&show_expected=' + show_expected;
-    })
-    .fail(function($xhr) {
-      var data = $xhr.responseJSON;
-      alert(data && data.message);
-    })
-    .always(function() {
-      sending = false;
-    });
+	if($("#agreement").val() != "ok"){//미동의 시
+		$('body').addClass('modal-open');
+		$(".thkc_pop_confirm").css("display","flex");
+		$("#send_type").val("btn_im_send_sms");
+	}else{//동의 시
+		sending = true;
+		var show_expected = ($('#show_expected_warehousing_date').is(':checked') ? 'Y' : 'N');
+		$form = $('#form_item_msg');
+		$.post('item_msg_send.php', {
+		  mode: 'sms',
+		  ms_id: ms_id,
+		  show_expected: show_expected
+		}, 'json')
+		.done(function(result) {
+		  alert('전송이 완료되었습니다.');
+		  window.location.href = 'item_msg_write.php?w=u&ms_id=' + ms_id + '&show_expected=' + show_expected;
+		})
+		.fail(function($xhr) {
+		  var data = $xhr.responseJSON;
+		  alert(data && data.message);
+		})
+		.always(function() {
+		  sending = false;
+		});
+	}
   });
 
   // 품목찾기 팝업
