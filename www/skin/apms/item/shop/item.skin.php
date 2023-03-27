@@ -466,7 +466,7 @@ if ($it['ca_id']) {
               }
 
             }
-
+			$sc_price_info = $sc_price_info . "<br /><span style=\"font-size:11px; color:#7F7F7F;\">* 주문완료 후, 2~7일(주말, 공휴일 제외) 이내 배송<br>&nbsp;(제조사의 사정으로 출고가 지연될 경우 별도 안내)</span>";
 
 /*
               $sc_price_info = "";
@@ -923,6 +923,7 @@ if ($it['ca_id']) {
               }
 
             }
+			$sc_price_info = $sc_price_info . "<br /><span style=\"font-size:11px; color:#7F7F7F;\">* 주문완료 후, 2~7일(주말, 공휴일 제외) 이내 배송<br>&nbsp;(제조사의 사정으로 출고가 지연될 경우 별도 안내)</span>";
 
 /*
                 if ($it['it_sc_type'] == 1)
