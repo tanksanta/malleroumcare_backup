@@ -151,8 +151,9 @@ function agreement_confirm(a){
   <div class="inner">
 
     <form id="form_item_msg" action="item_msg_update.php" method="POST" class="form-horizontal" onsubmit="return false;">
-      <input type="hidden" name="w" value="<?=$w?>">
-      <input type="hidden" name="ms_id" value="<?=$ms_id?>">
+      <input type="hidden" name="w" id="w" value="<?=$w?>">
+      <input type="hidden" name="ms_id" id="ms_id" value="<?=$ms_id?>">
+	  <input type="hidden" name="ms_id2" id="ms_id2" value="<?=$ms_id?>">
       <div class="panel panel-default">
         <div class="panel-body">
           <div class="radio_wr" style="margin-top: -10px; margin-bottom: 10px; font-size: 14px;">
@@ -170,7 +171,7 @@ function agreement_confirm(a){
             <div class="col-sm-3 col-pen-nm" style="max-width: unset;">
               <img style="display: none;" src="<?php echo THEMA_URL; ?>/assets/img/icon_search.png" >
               <input type="hidden" name="ms_pen_id" id="ms_pen_id" value="<?=$ms['ms_pen_id'] ?: ''?>">
-              <input type="text" name="ms_pen_nm" id="ms_pen_nm" class="form-control input-sm pen_id_flexdatalist" value="<?=$ms['ms_pen_nm'] ?: ''?>" placeholder="수급자명">
+              <input type="text" name="ms_pen_nm" id="ms_pen_nm" class="form-control input-sm pen_id_flexdatalist" value="<?=$ms['ms_pen_nm'] ?: ''?>"  data-value="<?=$ms['ms_pen_nm'] ?: ''?>"  placeholder="수급자명"  onchange="pen_ch();">
               <span id="pen_id_flexdatalist_result" class="form_desc"></span>
             </div>
             <div class="col-sm-3 col-btn-pen">
@@ -191,7 +192,7 @@ function agreement_confirm(a){
                 </label>
               </div>
               <select id="sel_pen_pro" style="display: none;"></select>
-              <input type="text" maxlength="11" oninput="max_length_check(this)" name="ms_pen_hp" id="ms_pen_hp" class="form-control input-sm" value="<?=$ms['ms_pen_hp'] ?: ''?>" placeholder="휴대폰번호">
+              <input type="text" maxlength="11" oninput="max_length_check(this)" name="ms_pen_hp" id="ms_pen_hp" class="form-control input-sm" value="<?=$ms['ms_pen_hp'] ?: ''?>" placeholder="휴대폰번호" data-value="<?=$ms['ms_pen_hp'] ?: ''?>" onchange="phone_ch();">
               <span class="form_desc">* 입력된 휴대폰 번호로 메시지가 전송됩니다.</span>
             </div>
           </div>
@@ -402,6 +403,21 @@ $(function(){
   });
 });
 
+//휴대폰번호 변경 체크
+function phone_ch(){
+	if($("#ms_pen_hp").val() != $("#ms_pen_hp").data("value")){
+		save_item_msg();
+	}
+}
+
+//수급자정보 변경 체크
+function pen_ch(){
+	if($("#ms_pen_nm").val() != $("#ms_pen_nm").data("value")){
+		if($("#ms_pen_nm").val() != ""){
+			save_item_msg();
+		}
+	}
+}
 // 클립보드 복사
 function copy_to_clipboard(selector) {
   var url = $(selector).text();
@@ -463,7 +479,10 @@ var loading = false;
 function save_item_msg(no_items) {
   if(loading)
     return;
-
+  if($("#ms_id").val() == $("#ms_id2").val()){
+	$("#ms_id").val("");
+	$("#w").val("");
+  }
   var pen_type = $('input[name="pen_type"]:checked').val();
   var show_expected = ($('#show_expected_warehousing_date').is(':checked') ? 'Y' : 'N');
 
