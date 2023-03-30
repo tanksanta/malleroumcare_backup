@@ -78,7 +78,7 @@ $sql = "
 ";
 sql_query($sql);
 
-$msg_url = "eroumcare.com/shop/item_msg.php?url={$ms['ms_url']}&show_expected={$show_expected}";
+$msg_url = $_SERVER['HTTP_HOST']."/shop/item_msg.php?url={$ms['ms_url']}&show_expected={$show_expected}";
 
 $mode = $_POST['mode'];
 if($mode === 'alim') {

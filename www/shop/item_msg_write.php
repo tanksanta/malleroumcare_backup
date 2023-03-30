@@ -204,7 +204,7 @@ function agreement_confirm(a){
               <span id="ms_pen_url">
                 <?php
                 if($ms['ms_url']) {
-                  echo 'https://eroumcare.com/shop/item_msg.php?url='.$ms['ms_url'].'&show_expected='.$show_expected;
+                  echo "https://".$_SERVER['HTTP_HOST'].'/shop/item_msg.php?url='.$ms['ms_url'].'&show_expected='.$show_expected;
                 } else {
                   echo '상품이 추가되면 자동 생성됩니다.';
                 }
@@ -405,14 +405,14 @@ $(function(){
 
 //휴대폰번호 변경 체크
 function phone_ch(){
-	if($("#ms_pen_hp").val() != $("#ms_pen_hp").data("value")){
+	if($("#ms_pen_hp").val() != $("#ms_pen_hp").data("value") && $("#ms_id").val() != ""){
 		save_item_msg();
 	}
 }
 
 //수급자정보 변경 체크
 function pen_ch(){
-	if($("#ms_pen_nm").val() != $("#ms_pen_nm").data("value")){
+	if($("#ms_pen_nm").val() != $("#ms_pen_nm").data("value") && $("#ms_id").val() != ""){
 		if($("#ms_pen_nm").val() != ""){
 			save_item_msg();
 		}
@@ -479,7 +479,7 @@ var loading = false;
 function save_item_msg(no_items) {
   if(loading)
     return;
-  if($("#ms_id").val() == $("#ms_id2").val()){
+  if($("#ms_id").val() == $("#ms_id2").val() && $("#ms_id2").val() != ""){
 	$("#ms_id").val("");
 	$("#w").val("");
   }
@@ -504,7 +504,7 @@ function save_item_msg(no_items) {
     var ms_url = 'item_msg.php?preview=1&url=' + data.ms_url + '&show_expected=' + show_expected;
     $('input[name="w"]').val('u');
     $('input[name="ms_id"]').val(data.ms_id);
-    $('#ms_pen_url').text('https://eroumcare.com/shop/' + ms_url);
+    $('#ms_pen_url').text('https://<?=$_SERVER['HTTP_HOST']?>/shop/' + ms_url);
     $('.btn_im_copy').show();
     $('#im_preview').empty().append($('<iframe>').attr('src', ms_url).attr('frameborder', 0).attr('data-ms-url', data.ms_url));
     $('#im_body_wr').addClass('preview');
