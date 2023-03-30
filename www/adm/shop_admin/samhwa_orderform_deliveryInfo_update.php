@@ -67,7 +67,8 @@ try {
       $ct_direct_delivery_partner = '';
       $ct_direct_delivery_price = 0;
     }
-    $ct_warehouse = get_search_string($_POST["ct_warehouse_{$ct_id}"]);
+    //$ct_warehouse = get_search_string($_POST["ct_warehouse_{$ct_id}"]);
+	$ct_warehouse = $_POST["ct_warehouse_{$ct_id}"];
     
     
     if($ct_delivery_num||$ct_delivery_combine){
