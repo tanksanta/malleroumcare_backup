@@ -231,6 +231,25 @@ header('Content-type: application/json');
 				  ");
 				}
 			  }
+			 //서명완료 로그 =====================================================================================================================
+			 // 계약서 로그 작성
+			$ip = $_SERVER['REMOTE_ADDR'];
+			$browser = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
+			$timestamp = time();
+			$datetime = date('Y-m-d H:i:s', $timestamp);
+			$log = '전자계약서에 서명했습니다.';
+
+			sql_query("INSERT INTO `eform_document_log` SET
+			`dc_id` = UNHEX('$uuid'),
+			`dl_log` = '$log',
+			`dl_ip` = '$ip',
+			`dl_browser` = '$browser',
+			`dl_datetime` = '$datetime'
+			");
+			 //알림톡보내기 ======================================================================================================================
+			 $ent = sql_fetch(" SELECT * FROM g5_member WHERE mb_entId = '{$eform['entId']}' ");
+			 send_alim_talk('ENT_EFORM_'.$uuid, $ent['mb_hp'], 'ent_eform_result', "\"[이로움]\n\n{$eform['penNm']}님과 전자계약이 체결되었습니다.\"");
+			 //================================================================================================================================
 			//}
 		}elseif($arrResponse["event"]["type"] == "document_rejected"){//서명거절 document_rejected
 			$sql = "update `eform_document` set dc_sign_datetime=now(),dc_status='5' WHERE dc_id=UNHEX('".$dc_id2."')";
