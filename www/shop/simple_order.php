@@ -1163,6 +1163,9 @@ function select_item(obj, io_id, ct_qty) {
   if(obj.it_type10 == '1') {
     $it_tag.append('<span style="display:inline-block;margin-right:4px;border:1px solid <?=$default['de_it_type10_color']?>;color:<?=$default['de_it_type10_color']?>"><?=$default['de_it_type10_name']?></span>');
   }
+  if(obj.it_type11 == '1') {
+    $it_tag.append('<span style="display:inline-block;margin-right:4px;border:1px solid <?=$default['de_it_type11_color']?>;color:<?=$default['de_it_type11_color']?>"><?=$default['de_it_type11_name']?></span>');
+  }
 
   var $it_price = $('<p class="it_price">');
   $it_price.append('판매가 : ' + number_format(it_price));
@@ -1703,6 +1706,7 @@ $(function() {
         it_type8,
         it_type9,
         it_type10,
+        it_type11,
         it_expected_warehousing_date,
         it_buy_min_qty,
         it_buy_max_qty,
@@ -1781,6 +1785,7 @@ $(function() {
         it_type8,
         it_type9,
         it_type10,
+        it_type11,
         it_expected_warehousing_date,
         it_buy_min_qty,
         it_buy_max_qty,
