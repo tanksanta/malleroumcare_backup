@@ -698,7 +698,7 @@ $(function() {
                     </a>
                     <?php if( $item[$i]['opt'][$k]['ct_direct_delivery_date'] ) { ?>
                       <br>
-                      <span style="font-size:12px;"><?php echo '출고예정 : ' . date('n월j일', strtotime($item[$i]['opt'][$k]['ct_direct_delivery_date'])); ?></span>
+                      <span style="font-size:12px;"><?php echo $item[$i]['opt'][$k]['ct_is_direct_delivery'] == '1' ? '출고예정':'설치예정'; echo ' : ' . date('n월j일', strtotime($item[$i]['opt'][$k]['ct_direct_delivery_date'])); ?></span>
                     <?php } ?>
                   </div>
                   <?php if($item[$i]['opt'][$k]['ct_option'] != $item[$i]['it_name']) { ?>
