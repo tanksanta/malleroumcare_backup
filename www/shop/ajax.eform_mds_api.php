@@ -248,7 +248,7 @@ header('Content-type: application/json');
 			");
 			 //알림톡보내기 ======================================================================================================================
 			 $ent = sql_fetch(" SELECT * FROM g5_member WHERE mb_entId = '{$eform['entId']}' ");
-			 send_alim_talk('ENT_EFORM_'.$uuid, $ent['mb_hp'], 'ent_eform_result', "\"[이로움]\n\n{$eform['penNm']}님과 전자계약이 체결되었습니다.\"");
+			 send_alim_talk('ENT_EF_'.$uuid, $ent['mb_hp'], 'ent_eform_result', "\"[이로움]\n\n{$eform['penNm']}님과 전자계약이 체결되었습니다.\"");
 			 //================================================================================================================================
 			//}
 		}elseif($arrResponse["event"]["type"] == "document_rejected"){//서명거절 document_rejected
