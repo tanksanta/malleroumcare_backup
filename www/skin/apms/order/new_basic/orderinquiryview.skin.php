@@ -60,7 +60,7 @@ if($header_skin)
   $SKIN_URL = G5_SKIN_URL.'/apms/order/'.$skin_name;
 
 # 수급자 주문일 시
-if($od["od_penId"]) {
+if($od["od_penId"] && $od["od_type"] != "1") {
   $entData = sql_fetch("SELECT `mb_entId`, `mb_entNm`, `mb_email`, `mb_giup_boss_name`, `mb_giup_bnum`, `mb_entConAcc01`, `mb_entConAcc02` FROM `g5_member` WHERE mb_id = '{$od["mb_id"]}'");
   $res = get_eroumcare(EROUMCARE_API_RECIPIENT_SELECTLIST, array(
     'usrId' => $od["mb_id"],
@@ -698,7 +698,7 @@ $(function() {
                     </a>
                     <?php if( $item[$i]['opt'][$k]['ct_direct_delivery_date'] ) { ?>
                       <br>
-                      <span style="font-size:12px;"><?php echo '출고예정 : ' . date('n월j일', strtotime($item[$i]['opt'][$k]['ct_direct_delivery_date'])); ?></span>
+                      <span style="font-size:12px;"><?php echo $item[$i]['opt'][$k]['ct_is_direct_delivery'] == '1' ? '출고예정':'설치예정'; echo ' : ' . date('n월j일', strtotime($item[$i]['opt'][$k]['ct_direct_delivery_date'])); ?></span>
                     <?php } ?>
                   </div>
                   <?php if($item[$i]['opt'][$k]['ct_option'] != $item[$i]['it_name']) { ?>
@@ -1565,7 +1565,7 @@ $(function() {
       entId = '{$member['mb_entId']}'
   ");
 
-  if($eform_check['uuid']) {
+  if($eform_check['uuid'] && $od["od_type"] != "1") {
   ?>
   if (confirm('수급자 계약서를 작성하시겠습니까?')) {
     window.location.href = 'simple_eform.php?dc_id=<?=$eform_check['uuid']?>';

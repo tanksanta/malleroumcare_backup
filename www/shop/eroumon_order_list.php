@@ -251,7 +251,7 @@
                 </td>
                 <td>
                     <p><?=$row['od_penNm'];?></p>
-                    <p><?=$row['od_penLtmNum'];?></p>
+                    <p>L<?=$row['od_penLtmNum'];?></p>
                 </td>
                 <td>
                     <a href="./eroumon_order_view.php?order_send_id=<?=$row['order_send_id'];?>">

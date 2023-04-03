@@ -478,20 +478,21 @@
     
 
     <form name="ord_info" id="ord_info" method="POST" onsubmit="return;">
-
+		
         <div class="ord_info" style="padding:0 20px;">
             <li><strong>주문번호</strong> : <?=$_od['order_send_id']?></li>
             <li><strong>주문일</strong>  : <?=$_od['od_time']?></li>
             <li><strong>구매인</strong>  : <?=$_od['od_b_name']?> / <?=$_od['od_b_hp']?></li>
             <li><strong>주문상태</strong>  : <?=$_od['od_status']?></li>
             <li><strong>배송지</strong>  : 우)<?=$_od['od_b_zip1']?><?=$_od['od_b_zip2']?> / <?=$_od['od_b_addr1']?> <?=$_od['od_b_addr2']?> <?=$_od['od_b_addr3']?></li>
-            <li><strong>수령인</strong>  : <?=$_od['od_b_name2']?> / <?=$_od['od_b_tel']?></li>
+            <li><strong>배송메시지</strong>  : <?=$_od['od_memo']?></li>
+			<li><strong>수령인</strong>  : <?=$_od['od_b_name2']?> / <?=$_od['od_b_tel']?></li>
             <li>
                 <strong>수급자</strong>  : <?=$_od['od_penNm']?> / L<?=$_od['od_penLtmNum']?>
                 <?php if( $_setp != 10 ) { ?>
                 <input type="bottom" value="요양정보 간편조회" class="search_rep_info _bottom_radius" id="_submit" style="width:150px; height:35px; padding: 0px; background: #e5e5e5; border: 2px solid #333; text-align:center; color:#000; font-size:16px;"<?=( $_od['od_status'] != "승인대기" )?" disabled":""?>>
                 <?php if( $_od['od_status'] == "승인대기" ) { ?>
-                    <span id="pen_inquiry_txt"> &nbsp; ※ 주문 확인 전에, 반드시 요양정보조회를 해주시기 바랍니다.</span>
+                    <span id="pen_inquiry_txt"> &nbsp; ※ 주문 처리 전에, 반드시 요양정보조회를 해주시기 바랍니다.</span>
                 <?php } } ?>
             </li>
             
@@ -503,7 +504,6 @@
 
             <input type="hidden" name="penNm_parent" value="<?=$_od['od_penNm']?>">
             <input type="hidden" name="penLtmNum_parent" value="<?="L".$_od['od_penLtmNum']?>">
-            
             
 
         </div>
@@ -573,7 +573,7 @@
     
     <?php if( $_od['od_status'] == "승인대기" ) { ?>
         <div style="padding: 15px 0px 50px 0px; text-align:right;">
-            <input type="bottom" value="일괄반려" class="btn_submit _bottom_radius" id="reject_all" style="width:150px; height:30px; padding: 0px; background: #fff; text-align:center; color:#000; border: 1px solid #000;">
+            <input type="bottom" value="일괄반려 사유선택" class="btn_submit _bottom_radius" id="reject_all" style="width:150px; height:30px; padding: 0px; background: #fff; text-align:center; color:#000; border: 1px solid #000;">
         </div>
 
         <div style="padding: 50px 0px 15px 0px; text-align:center;">
@@ -1009,6 +1009,7 @@
 		            alert(result.message);
 		          } else {
 		            alert('완료되었습니다');
+					order_processing_able();
 		            window.location.reload(true);
 		          }
 		        })
@@ -1121,7 +1122,15 @@
     $('#cert_guide_popup_box').click(function() { $('body').removeClass('modal-open'); $('#cert_guide_popup_box').hide(); });
     $('#cert_ent_num_popup_box').click(function() { $('body').removeClass('modal-open'); $('#cert_ent_num_popup_box').hide(); });
 
-
+	function order_processing_able(){
+		if( $('#item_popup_box iframe').contents().find('.head').length) {
+                $('#_inquiry_ok').val("Y");
+                $('#pen_inquiry_txt').hide();
+                $('#order_processing_txt').show();
+				$('#order_processing').css('backgroundColor', '#333');
+				$('#order_processing').attr('disabled', false);
+        }
+	}
     $('.search_rep_info').click(function() {
         $('#loading').show();
         var penNm = $('#ord_info #_inquiry_penNm').val();
@@ -1140,18 +1149,12 @@
             $('body').addClass('modal-open');
             $('#item_popup_box').show();
             
-            if( $('#item_popup_box iframe').contents().find('.head').length ) {
-                $('#_inquiry_ok').val("Y");
-                $('#pen_inquiry_txt').hide();
-
-                $('#order_processing_txt').show();
-                $('#order_processing').css('backgroundColor', '#333');
-                $('#order_processing').attr('disabled', false);
-            }
+            
             
             <?php if( ($_pen["data"][0]["modifyDtm"])&&(mb_substr($_pen["data"][0]["modifyDtm"],0,8) != date("Ymd")) ) { ?>
             if(!$('#item_popup_box iframe').contents().find('#item_popup_button').length) {
-                $('#item_popup_box iframe').contents().find('.head').append(" <div id=\"item_popup_button\"><button type=\"button\" class=\"btn_so_sch\" id=\"btn_so_sch\" Onclick=\"parent.$('.btn_so_sch').trigger('click'); loading(); $('#item_popup_button').hide();\">요양정보 업데이트</button></div> ");
+                $('#item_popup_box iframe').contents().find('.head').append(" <div id=\"item_popup_button\"><span style='left:-50px;top:65px;color:red;position:relative;'>요양정보 업데이트를 해주셔야 주문처리가 가능합니다.</span><button type=\"button\" class=\"btn_so_sch\" id=\"btn_so_sch\" Onclick=\"parent.$('.btn_so_sch').trigger('click'); loading(); $('#item_popup_button').hide();\">요양정보 업데이트</button></div> ");
+				$('#item_popup_box iframe').contents().find('.head-title').append("<span class = 'rep_common'>"+penNm+"("+penLtmNum+")</span><span>님의 요양정보</span> ");
                 $('#item_popup_box iframe').contents().find('#btn_so_sch').css({ 'float': 'right', 'position': 'relative', 'display': 'inline-block', 'color': '#333', 'font-weight': 'normal', 'font-size': '14px', 'line-height': '20px', 'height': '60px', 'padding': '5px 36px', 'border-radius': '3px', 'vertical-align': 'middle', 'background-color': '#ee8102', 'color': '#fff', 'border': 'none', 'margin': '10px 0', 'cursor': 'pointer' });
             }
             <?php } ?>
