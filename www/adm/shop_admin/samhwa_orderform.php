@@ -1301,7 +1301,9 @@ var od_id = '<?php echo $od['od_id']; ?>';
             </select>
             <input type="button" value="변경하기" class="btn shbtn" id="change_cart_status">
           </div>
+          <?php if($od["od_type"]!="1") { ?>
           <button type="button" id="btn_order_edit">주문품목 변경</button>
+          <?php } ?>
           <!--                    <div class="change_discount2" >-->
           <!--                        <span>* 추가 배송비</span>-->
           <!--                        <input type="text" class="frm_input" name="od_send_cost2" id="od_send_cost2" value="--><?php //echo $od['od_send_cost2']; ?>
@@ -1355,10 +1357,12 @@ var od_id = '<?php echo $od['od_id']; ?>';
     <div class="header">
       <h2>배송정보</h2>
       <div class="right">
+        <?php if($od["od_type"]!="1") { ?>
         <input type="button" value="배송지 목록" class="btn shbtn" id="address_list">
         <input type="button" value="기본정보 반영" class="btn shbtn" id="reset_od_info">
         <input type="button" value="출고 리스트" class="btn shbtn" id="release_list"
           onclick="location.href='./samhwa_deliverylist.php';">
+        <?php } ?>
       </div>
     </div>
     <div class="delivery_info block-box">
@@ -1464,7 +1468,9 @@ var od_id = '<?php echo $od['od_id']; ?>';
         </div>
       </form>
     </div>
+    <?php if($od["od_type"]!="1") { ?>
     <button id="delivery_info_btn">주문정보 수정</button>
+    <?php } ?>
   </div>
   <?php if($reports) { ?>
   <div class="block">
