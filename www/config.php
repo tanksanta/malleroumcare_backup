@@ -182,7 +182,7 @@ if(strpos($_SERVER['HTTP_HOST'],".eroumcare")){
 if(strpos($_SERVER['HTTP_HOST'],".eroumcare")){
 	define('eroumon_login_url',   'http://192.168.0.229/partners/login');//dev,test,local 일때
 }else{
-	define('eroumon_login_url',   '');//상용서버일때
+	define('eroumon_login_url',   'https://eroum.co.kr');//상용서버일때
 }
 /*
 if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']=='on') {

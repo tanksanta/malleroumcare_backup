@@ -587,7 +587,7 @@ $log_txt .= $json_string."\r\n";
 				$returnArray["_array_item"][$i]["item_opt_id"] = $item_opt_id[$i] = base64_decode($post_data["_array_item"][$i]["item_opt_id"]);//상품 옵션 아이디
 				$returnArray["_array_item"][$i]["item_opt_nm"] = $item_opt_nm[$i] = base64_decode($post_data["_array_item"][$i]["item_opt_nm"]);//상품 옵션 명
 				//상품 정보 일치 시 정상 처리, 상품 조회 실패 시 $error_stat = true 처리
-				$sql_i = "select * from g5_shop_item where ProdPayCode='".$ProdPayCode[$i]."'";
+				$sql_i = "select * from g5_shop_item where ProdPayCode='".$ProdPayCode[$i]."' and it_use='1'";
 				$row_i = sql_fetch($sql_i);//상품 기본 정보
 				if($row_i["it_id"] == ""){//상품 조회 실패
 					$error_stat = true;

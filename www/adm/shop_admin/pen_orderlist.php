@@ -1,6 +1,113 @@
 <?php
 $sub_menu = '400490';
 include_once('./_common.php');
+$query = "SHOW tables LIKE 'g5_shop_order_api'";//api 오더 테이블 유무 확인
+$wzres = sql_num_rows( sql_query($query) );
+//$query = "SHOW tables LIKE 'g5_shop_cart_api'";//api 카트 테이블 유무 확인
+//$wzres = sql_fetch( $query );
+
+if($wzres < 1) {
+    sql_query("CREATE TABLE `g5_shop_order_api` (
+  `od_id` varchar(50) NOT NULL DEFAULT '0',
+  `order_send_id` varchar(50) NOT NULL DEFAULT '0' COMMENT '1.5주문ID',
+  `mb_id` varchar(255) NOT NULL DEFAULT '' COMMENT '/* 23.03.08 : 서원 - 코멘트추가 */ 사업소 아이디',
+  `od_name` varchar(20) NOT NULL DEFAULT '',
+  `relation_code` varchar(20) DEFAULT NULL,
+  `od_penId` varchar(20) DEFAULT NULL,
+  `od_penNm` varchar(20) NOT NULL,
+  `od_penRecGraNm` varchar(255) DEFAULT NULL,
+  `od_penTypeNm` varchar(20) DEFAULT NULL,
+  `od_penExpiDtm` varchar(255) DEFAULT NULL,
+  `od_penAppEdDtm` varchar(255) DEFAULT NULL,
+  `od_penGender` varchar(10) DEFAULT '' COMMENT '성별 구별 남자:남, 여자:여',
+  `od_penConPnum` varchar(20) DEFAULT NULL,
+  `od_penConNum` varchar(20) DEFAULT NULL,
+  `od_penZip1` char(3) DEFAULT NULL COMMENT '수급자 우편번호1',
+  `od_penZip2` char(3) DEFAULT NULL COMMENT '수급자 우편번호2',
+  `od_penAddr` varchar(100) DEFAULT NULL COMMENT '수급자 주소',
+  `od_penAddr2` varchar(100) DEFAULT NULL COMMENT '수급자 주소 상세',
+  `od_penLtmNum` varchar(100) NOT NULL,
+  `od_zip1` char(3) DEFAULT NULL COMMENT '신청자 우편번호',
+  `od_zip2` char(3) DEFAULT NULL COMMENT '신청자 우편번호2',
+  `od_addr` varchar(100) DEFAULT NULL COMMENT '신청자 주소',
+  `od_addr2` varchar(100) DEFAULT NULL COMMENT '신청자 주소 상세',
+  `od_birth` varchar(20) DEFAULT NULL COMMENT '신청자 생년월일',
+  `od_b_id` varchar(50) NOT NULL DEFAULT '',
+  `od_b_name` varchar(20) NOT NULL DEFAULT '' COMMENT '/* 23.03.08 : 서원 - 코멘트추가 */ 구매자 이름',
+  `od_b_name2` varchar(20) NOT NULL DEFAULT '' COMMENT '/* 23.03.08 : 서원 - 코멘트추가 */ 수령인 이름',
+  `od_b_tel` varchar(20) NOT NULL DEFAULT '' COMMENT '/* 23.03.08 : 서원 - 코멘트추가 */ 수령인 연락처',
+  `od_b_hp` varchar(20) NOT NULL DEFAULT '' COMMENT '/* 23.03.08 : 서원 - 코멘트추가 */ 구매자 연락처',
+  `od_b_zip1` char(3) NOT NULL DEFAULT '',
+  `od_b_zip2` char(3) NOT NULL DEFAULT '',
+  `od_b_addr1` varchar(100) NOT NULL DEFAULT '',
+  `od_b_addr2` varchar(100) NOT NULL DEFAULT '',
+  `od_b_addr3` varchar(255) NOT NULL DEFAULT '',
+  `od_memo` text NOT NULL,
+  `od_cart_count` int(11) NOT NULL DEFAULT 0,
+  `od_status` varchar(255) NOT NULL DEFAULT '',
+  `od_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `od_cancel_reason` varchar(30) DEFAULT NULL COMMENT '취소신청사유',
+  `od_cancel_time` datetime DEFAULT NULL COMMENT '취소신청시간',
+  `od_sync_odid` varchar(50) DEFAULT NULL COMMENT '/* 23.03.08 : 서원 - 추가 */ g5_shop_order 테이블의 연결 od_id 값',
+  KEY `index2` (`mb_id`),
+  KEY `order_send_id` (`order_send_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8", true);
+}
+
+//$query = "SHOW tables LIKE 'g5_shop_cart_api'";
+
+//$result = mysql_fetch_row(mysql_query($query));
+
+$query = "SHOW tables LIKE 'g5_shop_cart_api'";//api 카트 테이블 유무 확인
+$wzres = sql_num_rows( sql_query($query) );
+if($wzres < 1) {
+	sql_query("
+CREATE TABLE `g5_shop_cart_api` (
+  `ct_id` int(11) NOT NULL AUTO_INCREMENT,
+  `od_id` varchar(50) NOT NULL DEFAULT '0',
+  `order_send_id` varchar(50) NOT NULL DEFAULT '0' COMMENT '1.5주문ID',
+  `order_send_id2` varchar(50) NOT NULL DEFAULT '0' COMMENT '1.5주문상세ID',
+  `mb_id` varchar(255) NOT NULL DEFAULT '',
+  `it_id` varchar(20) NOT NULL DEFAULT '',
+  `ProdPayCode` varchar(20) NOT NULL DEFAULT '',
+  `it_name` varchar(255) NOT NULL DEFAULT '',
+  `ct_status` enum('','승인','반려') DEFAULT '' COMMENT '/* 23.03.08 : 서원 - 변경 */ 1.0과 1.5사이에 발생한 상품 이벤트 처리결과 ( '''', ''승인'',''반려'' ) 3가지 항목만 입력가능',
+  `ct_qty` int(11) NOT NULL DEFAULT 0,
+  `ct_stock_qty` int(11) DEFAULT 0,
+  `ct_barcode` text NOT NULL DEFAULT '',
+  `ct_notax` tinyint(4) NOT NULL DEFAULT 0,
+  `io_id` varchar(255) NOT NULL DEFAULT '',
+  `io_type` tinyint(4) NOT NULL DEFAULT 0,
+  `ct_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `ct_memo` text NOT NULL DEFAULT '' COMMENT '/* 23.03.08 : 서원 - 코멘트추가 */ 상품에 대한 반려 사유 저장 항목',
+  `ordLendStrDtm` datetime DEFAULT NULL COMMENT '대여시작일',
+  `ordLendEndDtm` datetime DEFAULT NULL COMMENT '대여종료일',
+  `ct_delivery_yn` varchar(1) NOT NULL DEFAULT 'N',
+  `ct_delivery_company` longtext DEFAULT NULL,
+  `ct_delivery_num` longtext DEFAULT NULL,
+  `ct_delivery_cnt` int(11) NOT NULL DEFAULT 1,
+  `ct_sync_ctid` int(11) DEFAULT NULL COMMENT '/* 23.03.08 : 서원 - 추가 */ g5_shop_cart테이블의 ct_id 연결 값',
+  PRIMARY KEY (`ct_id`),
+  KEY `it_id` (`it_id`,`order_send_id`,`order_send_id2`,`ct_status`,`ct_sync_ctid`,`mb_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=461178 DEFAULT CHARSET=utf8
+");
+}
+
+$query = "SHOW tables LIKE 'g5_shop_api_log'";//api 로그 테이블 유무 확인
+$wzres = sql_num_rows( sql_query($query) );
+if($wzres < 1) {
+	sql_query("CREATE TABLE `g5_shop_api_log` (
+  `log_id` INT(11) NOT NULL AUTO_INCREMENT,
+  `order_send_id` VARCHAR(50) NOT NULL DEFAULT 0 COMMENT '1.5주문ID',
+  `mb_id` VARCHAR(50) NOT NULL DEFAULT 0 COMMENT '사업소ID',
+  `log_type` TINYINT(5) NOT NULL DEFAULT 0 COMMENT '로그구분 1:수신,2:송신,3:로그',
+  `log_cont` VARCHAR(255) NULL DEFAULT ''  COMMENT '로그 내용',
+  `log_time` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '로그 기록 시간' ,
+  PRIMARY KEY (`log_id`),
+  KEY `order_send_id` (`order_send_id`),
+  KEY `mb_id` (`mb_id`)
+) ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8");
+}
 
 auth_check($auth[$sub_menu], "r");
 add_javascript('<script src="'.G5_JS_URL.'/jquery.fileDownload.js"></script>', 0);
