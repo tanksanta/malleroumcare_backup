@@ -168,6 +168,22 @@ define('G5_INSTAGRAM_TOKEN', 'IGQVJXQU4xdFVsand1d1g1UGo4OUU3MWw3Q1NGdUh1ZA29LSlN
 define('G5_MDS_KEY',   'NzI2YjU2MzktYzBjZS00OGVlLWIyMzktZTRhMjIwNzg1YWVj');
 define('G5_MDS_ID',   'platform@thkc.co.kr');
 
+//이로움 1.5 API 연동 key
+define('eroumAPI_Key',   'f9793511dea35edee3181513b640a928644025a66e5bccdac8836cfadb875856');
+
+//이로움 1.5 API 연동 url
+if(strpos($_SERVER['HTTP_HOST'],".eroumcare")){
+	define('eroumAPI_url',   'https://eroum.icubesystems.co.kr/eroumcareApi/bplcRecv/callback.json');//dev,test,local 일때
+}else{
+	define('eroumAPI_url',   'https://eroum.co.kr/eroumcareApi/bplcRecv/callback.json');//상용서버일때
+}
+
+//이로움 1.5 sso 연동 url
+if(strpos($_SERVER['HTTP_HOST'],".eroumcare")){
+	define('eroumon_login_url',   'http://192.168.0.229/partners/login');//dev,test,local 일때
+}else{
+	define('eroumon_login_url',   'https://eroum.co.kr');//상용서버일때
+}
 /*
 if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']=='on') {
     $g5_path['url'] = str_replace('http://', 'https://', $g5_path['url']);
