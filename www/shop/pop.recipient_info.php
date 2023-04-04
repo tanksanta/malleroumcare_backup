@@ -694,15 +694,25 @@ if($member["cert_data_ref"] != ""){
                                 }
 
                                 if(hist_ctr_arr != []){
+									var check_hist = false;
                                     for(var ind = 0; ind < hist_ctr_arr.length; ind++){
-                                        if(hist_ctr_arr[ind]['ITEM_NM'].replace(' ', '') != sale_y[i]['WIM_ITM_CD'].replace(' ', '')) continue;
-                                        row += `<tr id="${'gumae'+index}" class="${'contract-gumae'+index}" style="display:none;">
-                                                    <td colspan="1" style="border-top-style: none; border-bottom-style: none;"></td>
-                                                    <td colspan="5">${hist_ctr_arr[ind]['PROD_NM']}</td>
-                                                    <td colspan="3">${hist_ctr_arr[ind]['ORD_DTM']}</td>
-                                                    <td colspan="1">${makeComma(hist_ctr_arr[ind]['TOTAL_PRICE'])}</td>
-                                                </tr>`;
-                                        add_contract_list.push(hist_ctr_arr[ind]);
+                                        for(var ind2 = 0; ind2 < contract_list.length; ind2++){
+											if(contract_list[ind2]['MGDS_NM'] == hist_ctr_arr[ind]['PROD_NM'] && contract_list[ind2]['POF_FR_DT'].split('~')[0] == hist_ctr_arr[ind]['ORD_DTM'] && makeComma(contract_list[ind2]['TOT_AMT']) == makeComma(hist_ctr_arr[ind]['TOTAL_PRICE'])){
+											check_hist = true;
+											}
+										}
+
+										if(check_hist == false){
+											if(hist_ctr_arr[ind]['ITEM_NM'].replace(' ', '') != sale_y[i]['WIM_ITM_CD'].replace(' ', '')) continue;
+											row += `<tr id="${'gumae'+index}" class="${'contract-gumae'+index}" style="display:none;">
+														<td colspan="1" style="border-top-style: none; border-bottom-style: none;"></td>
+														<td colspan="5">${hist_ctr_arr[ind]['PROD_NM']}</td>
+														<td colspan="3">${hist_ctr_arr[ind]['ORD_DTM']}</td>
+														<td colspan="1">${makeComma(hist_ctr_arr[ind]['TOTAL_PRICE'])}</td>
+													</tr>`;
+											add_contract_list.push(hist_ctr_arr[ind]);
+										}
+
                                     }  
                                 }
                             } else {
@@ -1067,14 +1077,23 @@ if($member["cert_data_ref"] != ""){
 
                             if(hist_ctr_arr != []){
                                 for(var ind = 0; ind < hist_ctr_arr.length; ind++){
-                                    if(hist_ctr_arr[ind]['ITEM_NM'].replace(' ', '') != item_nm.substr(0,item_nm.length-2)) continue;
-                                    row += `<tr id="${'gumae'+sale_index}" class="${'contract-gumae'+sale_index}" style="display:none;">
-                                                <td colspan="1" style="border-top-style: none; border-bottom-style: none;"></td>
-                                                <td colspan="5">${hist_ctr_arr[ind]['PROD_NM']}</td>
-                                                <td colspan="3">${hist_ctr_arr[ind]['ORD_DTM']}</td>
-                                                <td colspan="1">${makeComma(hist_ctr_arr[ind]['TOTAL_PRICE'])}</td>
-                                            </tr>`;
-                                    add_ct_list.push(hist_ctr_arr[ind]);
+                                    var check_hist = false;
+									for(var ind2 = 0; ind2 < ct_list.length; ind2++){
+										if(ct_list[ind2]['PROD_NM'] == hist_ctr_arr[ind]['PROD_NM'] && ct_list[ind2]['ORD_DTM'] == hist_ctr_arr[ind]['ORD_DTM'] && makeComma(ct_list[ind2]['TOTAL_PRICE']) == makeComma(hist_ctr_arr[ind]['TOTAL_PRICE'])){
+											check_hist = true;
+										}
+									}
+
+									if(check_hist == false){
+										if(hist_ctr_arr[ind]['ITEM_NM'].replace(' ', '') != item_nm.substr(0,item_nm.length-2)) continue;
+										row += `<tr id="${'gumae'+sale_index}" class="${'contract-gumae'+sale_index}" style="display:none;">
+													<td colspan="1" style="border-top-style: none; border-bottom-style: none;"></td>
+													<td colspan="5">${hist_ctr_arr[ind]['PROD_NM']}</td>
+													<td colspan="3">${hist_ctr_arr[ind]['ORD_DTM']}</td>
+													<td colspan="1">${makeComma(hist_ctr_arr[ind]['TOTAL_PRICE'])}</td>
+												</tr>`;
+										add_ct_list.push(hist_ctr_arr[ind]);
+									}
                                 }  
                             }
                         }
@@ -1245,14 +1264,23 @@ if($member["cert_data_ref"] != ""){
 
                                 if(hist_ctr_arr != []){
                                     for(var ind = 0; ind < hist_ctr_arr.length; ind++){
-                                        if(hist_ctr_arr[ind]['ITEM_NM'].replace(' ', '') != sale_y[i]['WIM_ITM_CD'].replace(' ', '')) continue;
-                                        row += `<tr id="${'gumae'+index}" class="${'contract-gumae'+index}" style="display:none;">
-                                                    <td colspan="1" style="border-top-style: none; border-bottom-style: none;"></td>
-                                                    <td colspan="5">${hist_ctr_arr[ind]['PROD_NM']}</td>
-                                                    <td colspan="3">${hist_ctr_arr[ind]['ORD_DTM']}</td>
-                                                    <td colspan="1">${makeComma(hist_ctr_arr[ind]['TOTAL_PRICE'])}</td>
-                                                </tr>`;
-                                        add_contract_list.push(hist_ctr_arr[ind]);
+                                        var check_hist = false;
+										for(var ind2 = 0; ind2 < contract_list.length; ind2++){
+											if(contract_list[ind2]['MGDS_NM'] == hist_ctr_arr[ind]['PROD_NM'] && contract_list[ind2]['POF_FR_DT'].split('~')[0] == hist_ctr_arr[ind]['ORD_DTM'] && makeComma(contract_list[ind2]['TOT_AMT']) == makeComma(hist_ctr_arr[ind]['TOTAL_PRICE'])){
+												check_hist = true;
+											}
+										}
+
+										if(check_hist == false){
+											if(hist_ctr_arr[ind]['ITEM_NM'].replace(' ', '') != sale_y[i]['WIM_ITM_CD'].replace(' ', '')) continue;
+											row += `<tr id="${'gumae'+index}" class="${'contract-gumae'+index}" style="display:none;">
+														<td colspan="1" style="border-top-style: none; border-bottom-style: none;"></td>
+														<td colspan="5">${hist_ctr_arr[ind]['PROD_NM']}</td>
+														<td colspan="3">${hist_ctr_arr[ind]['ORD_DTM']}</td>
+														<td colspan="1">${makeComma(hist_ctr_arr[ind]['TOTAL_PRICE'])}</td>
+													</tr>`;
+											add_contract_list.push(hist_ctr_arr[ind]);
+										}
                                     }  
                                 }
                             } else {
