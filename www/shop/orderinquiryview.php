@@ -89,7 +89,7 @@ for($i=0; $row=sql_fetch_array($result); $i++) {
   $item[$i] = $row;
   $item[$i]["thumbnail"] = $row["it_img1"];
 
-  $sql = " select ct_id, mb_id, it_name, ct_option, ct_qty, ct_stock_qty, ct_price, ct_point, ct_status, io_type, io_price, pt_msg1, pt_msg2, pt_msg3, ct_uid, ct_discount, ct_delivery_num, ct_delivery_company, ct_is_direct_delivery, ct_direct_delivery_date
+  $sql = " select ct_id, mb_id, it_name, ct_option, ct_qty, ct_stock_qty, ct_price, ct_point, ct_status, io_type, io_price, pt_msg1, pt_msg2, pt_msg3, ct_uid, ct_discount, ct_delivery_num, ct_delivery_company, ct_is_direct_delivery, ct_direct_delivery_date,ct_type
         , ( SELECT prodSupYn FROM g5_shop_item WHERE it_id = MT.it_id ) AS prodSupYn
         , ( SELECT it_taxInfo FROM g5_shop_item WHERE it_id = MT.it_id ) AS it_taxInfo
         from {$g5['g5_shop_cart_table']} MT
