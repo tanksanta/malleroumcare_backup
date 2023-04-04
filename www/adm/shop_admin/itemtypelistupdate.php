@@ -20,7 +20,8 @@ for ($i=0; $i<count($_POST['it_id']); $i++)
                    it_type7 = '".sql_real_escape_string($_POST['it_type7'][$i])."',
                    it_type8 = '".sql_real_escape_string($_POST['it_type8'][$i])."',
                    it_type9 = '".sql_real_escape_string($_POST['it_type9'][$i])."',
-                   it_type10 = '".sql_real_escape_string($_POST['it_type10'][$i])."'
+                   it_type10 = '".sql_real_escape_string($_POST['it_type10'][$i])."',
+                   it_type11 = '".sql_real_escape_string($_POST['it_type11'][$i])."'
              where it_id = '".sql_real_escape_string($_POST['it_id'][$i])."' ";
     sql_query($sql);
 }

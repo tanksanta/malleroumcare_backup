@@ -15,7 +15,7 @@ $attrs = [
     'it_sale_cnt', 'it_sale_cnt_02', 'it_sale_cnt_03', 'it_sale_cnt_04', 'it_sale_cnt_05',
     'it_sale_percent', 'it_sale_percent_02', 'it_sale_percent_03', 'it_sale_percent_04', 'it_sale_percent_05',
     'it_sale_percent_great', 'it_sale_percent_great_02', 'it_sale_percent_great_03', 'it_sale_percent_great_04', 'it_sale_percent_great_05',
-    'it_type1', 'it_type2', 'it_type3', 'it_type4', 'it_type5', 'it_type6', 'it_type7', 'it_type8', 'it_type9', 'it_type10',
+    'it_type1', 'it_type2', 'it_type3', 'it_type4', 'it_type5', 'it_type6', 'it_type7', 'it_type8', 'it_type9', 'it_type10', 'it_type11',
     'it_expected_warehousing_date'
 ];
 

@@ -151,59 +151,111 @@ include_once($skin_path.'/search.skin.form.php');
   else if($gubun == '02') $gubun_text = '비급여';
 	?>
 		<li class="<?=$list[$i]["it_id"]?>" data-ca="<?=substr($list[$i]["ca_id"], 0, 2)?>">
-			<a href="<?=$list[$i]["href"]?>">
-			<?php if($list[$i]["prodSupYn"] == "N"){ ?>
-				<p class="sup">비유통 상품</p>
-			<?php } ?>
-				<div class="img_wrap">
-					<p class="img">
-					<?php if($img["src"]){ ?>
-						<img src="<?=$img["src"]?>" alt="<?=$list[$i]["it_name"]?>_상품이미지">
-					<?php } ?>
-					</p>
-					<?php if($list[$i]["it_expected_warehousing_date"] !== ""){ ?>
-						<div class="item-expected-warehousing-date"><?php echo $list[$i]["it_expected_warehousing_date"];?></div> 
-					<?php } ?>
-					<?php if($list[$i]["it_expected_warehousing_date"] == "" && $soldout_ck){ ?>
-						<div class="item-expected-warehousing-date">재고 소진으로 판매 종료</div> 
-					<?php } ?>
-				</div>
-				<p class="name">
-          <?=$list[$i]["it_name"]?> <?="({$gubun_text})"?></p>
-			<?php if($list[$i]["it_model"]){ ?>
-				<p class="info"><?=$list[$i]["it_model"]?></p>
-			<?php } ?>
-
-
-            <?php if($_COOKIE["viewType"] !== "basic" && !in_array($member['mb_type'], ['partner', 'normal'])){ ?>
-                <p class="discount">
-                    <?=number_format($list[$i]["it_cust_price"])?>원
-                </p>
+			<a class="it_link" href="<?=$list[$i]["href"]?>">
+        <?php if($list[$i]["prodSupYn"] == "N") { ?>
+          <p class="sup">비유통 상품</p>
+        <?php } ?>
+        <div class="img_wrap">
+          <p class="img">
+            <?php if($img["src"]){ ?>
+            <img src="<?=$img["src"]?>" alt="<?=$list[$i]["it_name"]?>_상품이미지">
             <?php } ?>
-            <p class="price">
-                    <?php
-                    if($member["mb_id"]){
-                        if($_COOKIE["viewType"] == "basic" || in_array($member['mb_type'], ['partner', 'normal'])){
-                            echo number_format($list[$i]["it_cust_price"])."원";
-                        }else{
-							if($list[$i]["entprice"]) {
-								echo number_format($list[$i]["entprice"]).'원';
-							} else if($member["mb_level"] == "3") { 
-                                //사업소 가격
-                                echo number_format($list[$i]["it_price"])."원";
-                            } else if($member["mb_level"] == "4") { 
-                                //우수 사업소 가격
-                                echo ($list[$i]["it_price_dealer2"]) ? number_format($list[$i]["it_price_dealer2"])."원" : number_format($list[$i]["it_price"])."원";
-                            } else { 
-                                echo number_format($list[$i]["it_price"])."원";
-                            } 
-                        }
-                    }else{
-                        echo number_format($list[$i]["it_cust_price"]).'원';
-                    }
-                ?>
-            </p>
-			</a>
+          </p>
+          <?php if(json_decode($list[$i]["it_img_3d"], true)) { ?>
+          <div class="img_3d">
+            <img src="<?=G5_IMG_URL?>/item3dviewVisual.jpg">
+          </div>
+          <?php } ?>
+          <?php if($member["mb_id"]) { /* ?>
+          <button class="btn_wishlist <?=($wishlist[$list[$i]['it_id']] ? 'active' : '')?>" data-id="<?=$list[$i]['it_id']?>"><i class="fa fa-star" aria-hidden="true"></i></button>
+          <?php */ } ?>
+          <?php if($list[$i]["it_expected_warehousing_date"] !== "") { ?>
+          <div class="item-expected-warehousing-date"><?php echo $list[$i]["it_expected_warehousing_date"];?></div>
+          <?php } ?>
+		  <?php if($list[$i]["it_expected_warehousing_date"] == "" && $soldout_ck){ ?>
+					<div class="item-expected-warehousing-date">재고 소진으로 판매 종료</div>
+			<?php } ?>
+        </div>
+        <p class="name"><?=$list[$i]["it_name"]?></p>
+        <?php if($list[$i]["it_model"]) { ?>
+        <p class="info"><?=$list[$i]["it_model"]?></p>
+        <?php } ?>
+        <ul class="detailInfo">
+          <?php if(trim($list[$i]["prodSym"])) { ?>
+          <li>
+            <span class="infoLabel">
+              <span>·</span>
+              <span>재질</span>
+            </span>
+            <span class="info">: <?=$list[$i]["prodSym"]?></span>
+          </li>
+          <?php } ?>
+          <?php if(trim($list[$i]["prodSizeDetail"])) { ?>
+          <li>
+            <span class="infoLabel">
+              <span>·</span>
+              <span>사이즈 </span>
+            </span>
+            <span class="info">: <?=$list[$i]["prodSizeDetail"]?></span>
+          </li>
+          <?php } ?>
+          <?php if(trim($list[$i]["prodWeig"])) { ?>
+          <li>
+            <span class="infoLabel">
+              <span>·</span>
+              <span>중량</span>
+            </span>
+            <span class="info">: <?=$list[$i]["prodWeig"]?></span>
+          </li>
+          <?php } ?>
+        </ul>
+        <?php
+        if ($_COOKIE["viewType"] !== "basic" && !in_array($member['mb_type'], ['partner', 'normal'])) {
+        ?>
+          <p class="discount">
+            <?php if (substr($list[$i]["ca_id"],0,2) != '70') { // 비급여인 경우 급여가 숨김 ?>
+            <?=number_format($list[$i]["it_cust_price"])?>원 <span class="txt_color_green">급여가</span>
+            <?php } ?>
+          </p>
+        <?php } ?>
+        <p class="price">
+        <?php
+        if ($member["mb_id"]) {
+          if ($_COOKIE["viewType"] == "basic" || in_array($member['mb_type'], ['partner', 'normal'])) {
+            if(substr($list[$i]["ca_id"],0,2) == '70')
+                echo number_format($list[$i]["it_cust_price"])."원";
+            else
+                echo number_format($list[$i]["it_cust_price"])."원 <span class='txt_color_green'>급여가</span>";
+          } else {
+            if ($list[$i]["entprice"]) {
+              echo number_format($list[$i]["entprice"])."원";
+              if (!is_benefit_item($list[$i])) {
+                  echo "<span class='txt_color_orange'>판매가</span>";
+              }
+            } else if ($member["mb_level"] == "3") {
+              //사업소 가격
+              echo number_format($list[$i]["it_price"])."원";
+              if (!is_benefit_item($list[$i])) {
+                  echo "<span class='txt_color_orange'>판매가</span>";
+              }
+            } else if ($member["mb_level"] == "4") {
+              //우수 사업소 가격
+              echo ($list[$i]["it_price_dealer2"]) ? number_format($list[$i]["it_price_dealer2"])."원" : number_format($list[$i]["it_price"])."원 (사업소 판매가)";
+            } else {
+              echo number_format($list[$i]["it_price"])."원";
+              if (!is_benefit_item($list[$i])) {
+                echo "<span class='txt_color_orange'>판매가</span>";
+              }
+            }
+          }
+        } else {
+          echo number_format($list[$i]["it_cust_price"]).'원';
+          if (!is_benefit_item($list[$i])) {
+            echo "<span class='txt_color_orange'>판매가</span>";
+          }
+        }
+        ?>
+        </p>
 			<div class="it_type_box">
         <?php if($list[$i]['it_type1']){ ?><p class="p_box" style="border:1px solid <?=$default['de_it_type1_color']?>; color:<?=$default['de_it_type1_color']?>;"><?=$default['de_it_type1_name']?></p><?php } ?>
         <?php if($list[$i]['it_type2']){ ?><p class="p_box" style="border:1px solid <?=$default['de_it_type2_color']?>; color:<?=$default['de_it_type2_color']?>;"><?=$default['de_it_type2_name']?></p><?php } ?>
@@ -215,7 +267,24 @@ include_once($skin_path.'/search.skin.form.php');
         <?php if($list[$i]['it_type8']){ ?><p class="p_box" style="border:1px solid <?=$default['de_it_type8_color']?>; color:<?=$default['de_it_type8_color']?>;"><?=$default['de_it_type8_name']?></p><?php } ?>
         <?php if($list[$i]['it_type9']){ ?><p class="p_box" style="border:1px solid <?=$default['de_it_type9_color']?>; color:<?=$default['de_it_type9_color']?>;"><?=$default['de_it_type9_name']?></p><?php } ?>
         <?php if($list[$i]['it_type10'] || $soldout_ck){ ?><p class="p_box" style="border:1px solid <?=$default['de_it_type10_color']?>; color:<?=$default['de_it_type10_color']?>;"><?=$default['de_it_type10_name']?></p><?php } ?>
+        <?php if($list[$i]['it_type11']){ ?><p class="p_box" style="border:1px solid <?=$default['de_it_type11_color']?>; color:<?=$default['de_it_type11_color']?>;"><?=substr($list[$i]['it_deadline'],0,5)." ".$default['de_it_type11_name']?></p><?php } ?>
 			</div>
+        <?php
+        $tag_list = apms_get_text($list[$i]['pt_tag']);
+        if($tag_list) {
+        ?>
+        <p class="tag">
+          <?php
+          $tag = explode(",", $tag_list);
+          foreach($tag as $val) {
+            echo '<span class="hash-tag">#'.$val.'</span>';
+          }
+          ?>
+        </p>
+        <?php
+        }
+        ?>
+      </a>
 		</li>
 	<?php } ?>
 	</ul>

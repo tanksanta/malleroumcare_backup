@@ -2724,6 +2724,7 @@ if($ms_id) {
           it_type8,
           it_type9,
           it_type10,
+          it_type11,
           it_expected_warehousing_date
         FROM
           {$g5['g5_shop_item_table']} a
@@ -2799,6 +2800,7 @@ if($_POST['penId_r']){
         it_type8,
         it_type9,
         it_type10,
+        it_type11,
         it_expected_warehousing_date
       FROM
         {$g5['g5_shop_item_table']} a

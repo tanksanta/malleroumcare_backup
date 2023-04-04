@@ -75,6 +75,7 @@ $sql  = " select it_id,
                  it_type8,
                  it_type9,
                  it_type10,
+                 it_type11,
 				 ca_id,
 				 pt_it,
 				 pt_id

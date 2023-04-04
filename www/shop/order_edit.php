@@ -68,6 +68,7 @@ while($ct = sql_fetch_array($result)) {
             it_type8,
             it_type9,
             it_type10,
+            it_type11,
             it_expected_warehousing_date,
             it_buy_min_qty,
             it_buy_max_qty,
