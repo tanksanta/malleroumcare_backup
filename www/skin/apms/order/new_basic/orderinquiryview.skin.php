@@ -1015,7 +1015,7 @@ $(function() {
       $sql_od ="select `od_hide_control` from `g5_shop_order` where `od_id` = '".$od['od_id']."'";
       $result_od = sql_fetch($sql_od);
       ?>
-      <?php if( (!$result_od['od_hide_control'])&&($result_od['od_type'] == '0') ) { ?>
+      <?php if( (!$result_od['od_hide_control']) && ($od['od_type'] == '0') ) { ?>
       <div class="list-more">
         <p><a href="javascript:void(0)" onclick="hide_control('<?=$od["od_id"] ?>')">주문내역 숨김처리</a></p>
         <p>*해당 주문을 숨김처리하면 주문내역에 노출되지 않습니다.<br>*숨김처리는 주문취소가 되지 않습니다.</p>
