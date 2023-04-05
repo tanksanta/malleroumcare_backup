@@ -39,6 +39,7 @@ $cart_result = sql_query("
   WHERE
     od_id = '{$od_id}' and
     ct_direct_delivery_partner = '{$member['mb_id']}' and
+    ct_is_direct_delivery = '2' and
     ct_status IN('준비', '출고준비', '배송', '완료')
   ORDER BY
     ct_id ASC
