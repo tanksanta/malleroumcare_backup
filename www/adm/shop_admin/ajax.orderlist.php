@@ -58,7 +58,7 @@ if ($search_add != "") {
   $search_add = trim($search_add);
   if ($sel_field_add != "" && $sel_field_add != "od_all" && $sel_field_add != "barcode") {
     $where[] = "$sel_field_add like '%$search_add%'";
-  }elseif($sel_field_add = "barcode"){
+  }elseif($sel_field_add == "barcode"){
 	$sql_barcode_search ="select `stoId` from `g5_barcode_log` where `barcode` = '".$search_add."'";
       $result_barcode_search = sql_query($sql_barcode_search);
       $or = "";
@@ -78,7 +78,7 @@ if ($search_add_add != "") {//사용유무 불확실
   $search_add_add = trim($search_add_add);
   if ($sel_field_add_add != "" && $sel_field_add_add != "od_all" && $sel_field_add_add != "barcode") {
     $where[] = "$sel_field_add_add like '%$search_add_add%'";
-  }elseif($sel_field_add_add = "barcode"){
+  }elseif($sel_field_add_add == "barcode"){
 	$sql_barcode_search ="select `stoId` from `g5_barcode_log` where `barcode` = '".$search_add_add."'";
       $result_barcode_search = sql_query($sql_barcode_search);
       $or = "";
