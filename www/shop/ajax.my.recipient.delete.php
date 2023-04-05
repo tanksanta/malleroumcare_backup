@@ -23,7 +23,8 @@ if(!$data){
   json_response(500, '존재하지 않는 데이터입니다');
 }
 
-
+// g5_shop_cart의 ordLendEndDtm가 업데이트 되지 않아 대여일을 확인하기 어려워 eform_document_item의 it_date를 사용
+/*
 $sql = "SELECT count(c.ct_id) as cnt FROM g5_shop_cart as c 
 INNER JOIN g5_shop_order as o ON c.od_id = o.od_id
 WHERE 
@@ -31,6 +32,9 @@ WHERE
   AND (c.ct_pen_id = '{$id}' OR o.od_penId = '{$id}') 
   AND c.ordLendEndDtm > now()
 ";
+*/
+$sql = "select count(*) as cnt from eform_document ed left join eform_document_item edi on ed.dc_id = edi.dc_id
+        where ed.penId = '{$id}' and edi.gubun = '01' and SUBSTRING_INDEX(it_date, '-', -3) > now();";
 
 $count = sql_fetch($sql);
 
