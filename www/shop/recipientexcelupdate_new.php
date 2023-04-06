@@ -38,6 +38,20 @@ if($sheetData) {
       $sendData['penAddrDtl'] = addslashes($sheetData[$i]['I']);//상세주소
 
       $sendData['penProRel'] = addslashes($sheetData[$i]['J']); // 보호자 관계
+	  switch($sendData['penProRel']){
+		case "처": $sendData['penProRel'] = "00"; break; 
+		case "남편": $sendData['penProRel'] = "01"; break;
+		case "자": $sendData['penProRel'] = "02"; break;
+		case "자부": $sendData['penProRel'] = "03"; break;
+		case "사위": $sendData['penProRel'] = "04"; break;
+		case "형제": $sendData['penProRel'] = "05"; break;
+		case "자매": $sendData['penProRel'] = "06"; break;
+		case "손": $sendData['penProRel'] = "07"; break;
+		case "배우자 형제자매": $sendData['penProRel'] = "08"; break;
+		case "외손": $sendData['penProRel'] = "09"; break;
+		case "부모": $sendData['penProRel'] = "10"; break;
+		default : $sendData['penProRel'] = "00"; break;
+	  }
       $sendData['penProNm'] = addslashes($sheetData[$i]['K']);//보호자명
       $sendData['penProBirth'] = addslashes(parse_birth($sheetData[$i]['L']));//생년월일
       $sendData['penProEmail'] = addslashes($sheetData[$i]['M']);//이메일
