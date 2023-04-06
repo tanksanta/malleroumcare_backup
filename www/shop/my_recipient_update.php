@@ -1234,16 +1234,25 @@ $(function() {
 
       pros.push(pro_data);
     });
-
+	var pentype = $(".register-form input[name='SbaCd']").val();
+    var penTypeCd = ''; //코드 일반15:00/감경9:01/감경6:02/의료6:03/기초0:04;
+    if(pentype.substr(0, 2) == '일반' || pentype.substr(0, 2) == '의료' || pentype.substr(0, 2) == '기초'){ //일반의료기초
+      var percnt = pentype.substr(0, 2) == '일반'? ' 15%' : pentype.substr(0, 2) == '의료'? ' 6%' : ' 0%';
+      penTypeCd = pentype.substr(0, 2) == '일반'? '00' : pentype.substr(0, 2) == '의료'? '03' : '04';
+    } else { //감경
+      penTypeCd = pentype.substr(3, 1) == '6'? '02' : '01';
+    }
+	var recgrd = $(".register-form input[name='penRecGraCd']").val().replace(/[^0-9]/g, '') == '' ? '0' : $(".register-form input[name='penRecGraCd']").val().replace(/[^0-9]/g, '');
+    var penRecGraCd = '0'+recgrd;
     var sendData = {
       penId : "<?=$data["penId"]?>",
       penNm : $(".register-form input[name='penNm']").val(),
       penLtmNum : "L" + $(".register-form input[name='penLtmNum']").val(),
-      penRecGraCd : "<?=$data["penRecGraCd"]?>",
+      penRecGraCd : penRecGraCd,
       penGender : $(".register-form input[name='penGender']:checked").val(),
       penBirth : penBirth,
       penJumin : penJumin,
-      penTypeCd : "<?=$data["penTypeCd"]?>",
+      penTypeCd : penTypeCd,
       penConNum : $(".register-form input[name='penConNum']").val(),
       penConPnum : $(".register-form input[name='penConPnum']").val(),
       penExpiStDtm : $(".register-form input[name='penExpiStDtm']").val(),

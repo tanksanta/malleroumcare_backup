@@ -32,7 +32,10 @@ if($sheetData) {
       $penGender = addslashes($sheetData[$i]['D']);
       $sendData['penGender'] = $penGender == '1' ? '남' : ($penGender == '2' ? '여' : ''); //남 여
       $sendData['penConNum'] = addslashes($sheetData[$i]['E']); // 휴대번호
-      $sendData['penConPnum'] = addslashes($sheetData[$i]['F']); // 일반번호
+      if(substr($sendData['penConNum'],0,2) != "01"){
+		alert("({$i}행) {$sendData['penNm']} 수급자\\n오류 : 휴대폰번호를 확인해주세요.");
+	  }
+	  $sendData['penConPnum'] = addslashes($sheetData[$i]['F']); // 일반번호
       $sendData['penZip'] = addslashes($sheetData[$i]['G']); // 우편번호
       $sendData['penAddr'] = addslashes($sheetData[$i]['H']);//주소
       $sendData['penAddrDtl'] = addslashes($sheetData[$i]['I']);//상세주소
@@ -75,7 +78,7 @@ if($sheetData) {
 
       if($valid = valid_recipient_input($sendData, false, true)) {
           // 입력값 오류 발생
-          //alert("({$i}행) {$sendData['penNm']} 수급자\\n오류 : ".$valid);
+          alert("({$i}행) {$sendData['penNm']} 수급자\\n오류 : ".$valid);
           // echo "{$sendData['penNm']} 수급자\\n오류 : ".$valid;
       }
       $inputs[] = normalize_recipient_input($sendData);
@@ -108,7 +111,6 @@ if($sheetData) {
             array_push($exist_recipient, $input['penNm']);
         }
         else {
-            $input['penZip'] = NULL;
             $res = get_eroumcare(EROUMCARE_API_RECIPIENT_INSERT, $input);
             if($res['errorYN'] != 'N') {
                 echo "{$input['penNm']} 수급자를 업로드 하는 도중 오류가 발생했습니다.<br>";
