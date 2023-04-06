@@ -150,6 +150,7 @@ include_once("./_common.php");
 	curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);//ssl 접근시 필요
 	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);//ssl 접근시 필요
 	curl_setopt($ch, CURLOPT_POSTFIELDS, $postdata);
+	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 2); // 최초 연결 시도 2초 이내 불가시 연결 취소
     curl_setopt($ch, CURLOPT_HTTPHEADER, array(
       'eroumAPI_Key:'.$apiKey,
 	  'eroum_api_key: '.$apiKey,
@@ -200,7 +201,7 @@ include_once("./_common.php");
 	echo "<pre>";
     print_r($rs);
 
-	
+if(strpos($_SERVER['HTTP_HOST'],"dev.eroumcare")){	
 //======================= 내부 테스트용 ===============================================================
 	$url2 = "http://192.168.0.229//eroumcareApi/bplcRecv/callback.json";
 	$ch = curl_init(); // 리소스 초기화
@@ -211,6 +212,7 @@ include_once("./_common.php");
 	curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);//ssl 접근시 필요
 	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);//ssl 접근시 필요
 	curl_setopt($ch, CURLOPT_POSTFIELDS, $postdata);
+	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 2); // 최초 연결 시도 2초 이내 불가시 연결 취소
     curl_setopt($ch, CURLOPT_HTTPHEADER, array(
       'eroumAPI_Key:'.$apiKey,
 	  'eroum_api_key: '.$apiKey,
@@ -224,4 +226,5 @@ include_once("./_common.php");
 	//header('Content-type: application/json');
 	//echo json_encode($rows);
 //======================= 내부 테스트용 ===============================================================
+}
 ?>
