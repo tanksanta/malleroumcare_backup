@@ -218,8 +218,13 @@ if (!is_dir($_dir_path)) { mkdir($_dir_path, 0777, true); }
 // 22.12.28 : 서원 - 확장자 엑셀파일 체크
 $file_ext = pathinfo($_FILES['excelfile']['name']);
 if( $file_ext['extension'] != "xlsx" ) { alert_close('엑셀 파일만 업로드 가능 합니다.\n확장자 xlsx만 가능 합니다.'); }
-else if( $_FILES['excelfile']['type'] != "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ) { alert_close('엑셀 파일만 업로드 가능 합니다.\n업로드 파일의 형식을 확인하여주시기 바랍니다.'); }
+else if( $_FILES['excelfile']['type'] != "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ) { // 23.04.05:서원 - MS 오피스 엑셀 파일 체크 부분
+  
+  if( $_FILES['excelfile']['type'] != "application/haansoftxlsx" ) { // 23.04.05:서원 - 한컴 오피스 엑셀 파일 체크 부분
+    alert_close($_FILES['excelfile']['type'].'엑셀 파일만 업로드 가능 합니다.\n업로드 파일의 형식을 확인하여주시기 바랍니다.');
+  }
 
+}
 
 // 파일명 저장
 $_fileName = $_FILES['excelfile']['name'];
