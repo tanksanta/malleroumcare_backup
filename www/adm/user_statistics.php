@@ -302,7 +302,7 @@ else if ($type == 'inquire_data') {
         $where_sql = ' WHERE DATE(occur_date) BETWEEN "'.date("Y-m-d", $startTime).'" AND "'.date("Y-m-d", $endTime).'"';
         $group_order_sql = ' group by ent_id order by ent_nm;';
         $result = sql_query($sql.$where_sql.$group_order_sql);
-        $list_head = ['No', '사업소명', '조회 횟수','성공 횟수','실패 횟수','비고'];
+        $list_head = ['No', '사업소명','사업소ID', '조회 횟수','성공 횟수','실패 횟수','비고'];
 		
 		$sql_detail = "select ent_id, ent_nm, pen_nm,pen_id, occur_date,resultMsg,err_msg from rep_inquiry_log";
         $where_sql .= " and resultMsg='fail'";
@@ -317,7 +317,7 @@ else if ($type == 'inquire_data') {
         $where_sql = ' WHERE DATE(occur_date) BETWEEN "'.date("Y-m-d", $startTime).'" AND "'.date("Y-m-d", $endTime).'"';
         $group_order_sql = ' group by pen_id order by ent_nm, pen_nm;';
         $result = sql_query($sql.$where_sql.$group_order_sql);
-        $list_head = ['No', '사업소명', '수급자 id', '수급자명', '조회 횟수'];
+        $list_head = ['No', '사업소명','사업소ID', '수급자 id', '수급자명', '조회 횟수'];
     } else {
         // 일자별 집계        
         // $sql = 'select ent_id, ent_nm, pen_id, pen_nm, occur_date, count(*) as cnt from rep_inquiry_log';
@@ -327,7 +327,7 @@ else if ($type == 'inquire_data') {
         $group_order_sql = ' group by occur_date, ent_nm order by occur_date, ent_nm;';
         $result = sql_query($sql.$where_sql.$group_order_sql);
         // $list_head = ['No', '조회 일자', '사업소명', '수급자명', '조회 횟수'];
-        $list_head = ['No', '조회 일자', '사업소명', '조회 횟수','성공 횟수','실패 횟수','비고'];
+        $list_head = ['No', '조회 일자', '사업소명','사업소ID', '조회 횟수','성공 횟수','실패 횟수','비고'];
         
         $sql_detail = 'select ent_id, ent_nm, pen_nm,pen_id, occur_date,resultMsg,err_msg from rep_inquiry_log';
         $result_detail = sql_query($sql_detail.$where_sql);
@@ -418,20 +418,22 @@ else if ($type == 'recipient') {
 				<colgroup>
 				  <col width="5%"/>
 				  <col width="15%"/>
-				  <col width="8%"/>
-				  <col width="8%"/>
-				  <col width="8%"/>
-				  <col width="56%"/>
-				</colgroup>
-			<?php }elseif($_GET['page'] != 'ent'){?>
-				<colgroup>
-				  <col width="5%"/>
 				  <col width="10%"/>
-				  <col width="15%"/>
 				  <col width="8%"/>
 				  <col width="8%"/>
 				  <col width="8%"/>
 				  <col width="46%"/>
+				</colgroup>
+			<?php }elseif($_GET['page'] != 'ent'){?>
+				<colgroup>
+				  <col width="5%"/>
+				  <col width="8%"/>
+				  <col width="18%"/>
+				  <col width="9%"/>
+				  <col width="8%"/>
+				  <col width="8%"/>
+				  <col width="8%"/>
+				  <col width="36%"/>
 				</colgroup>
 
 			<?php }
@@ -534,6 +536,7 @@ else if ($type == 'recipient') {
 				<tr class="bg0">
                 <td><?=$ind+1;?></td>
                 <td><?=$arr_inquiry[$ind]['ent_nm'];?></td>
+				<td><?=$arr_inquiry[$ind]['ent_id'];?></td>
                 <td><?=$arr_inquiry[$ind]['cnt'];?></td>
 				<td><?=$arr_inquiry[$ind]['s_cnt'];?></td>
 				<td><?=$arr_inquiry[$ind]['f_cnt'];?></td>
@@ -552,6 +555,7 @@ else if ($type == 'recipient') {
                     <td></td>
 					<td></td>
 					<td></td>
+					<td></td>
 					<td><?="[".$arr_detail[$arr_inquiry[$ind]['ent_id']][$idx]['occur_date']."] | ".$pen_name2."(".$pen_id2.") | ".$arr_detail[$arr_inquiry[$ind]['ent_id']][$idx]['err_msg'];?></td>
                     </tr>
             <?php }
@@ -559,6 +563,7 @@ else if ($type == 'recipient') {
                 <tr class="bg0">
                 <td><?=$ind+1;?></td>
                 <td><?=$arr_inquiry[$ind]['ent_nm'];?></td>
+				<td><?=$arr_inquiry[$ind]['ent_id'];?></td>
                 <td><?=$arr_inquiry[$ind]['pen_id'];?></td>
                 <td><?=$arr_inquiry[$ind]['pen_nm'];?></td>
                 <td><?=$arr_inquiry[$ind]['cnt'];?></td>
@@ -577,6 +582,7 @@ else if ($type == 'recipient') {
                 <td><?=$ind+1;?></td>
                 <td><?=explode(' ', $arr_inquiry[$ind]['occur_date'])[0];?></td>
                 <td><?=$arr_inquiry[$ind]['ent_nm'];?></td>
+				<td><?=$arr_inquiry[$ind]['ent_id'];?></td>
                 <td><?=$arr_inquiry[$ind]['cnt'];?></td>
 				<td><?=$arr_inquiry[$ind]['s_cnt'];?></td>
 				<td><?=$arr_inquiry[$ind]['f_cnt'];?></td>
@@ -587,6 +593,7 @@ else if ($type == 'recipient') {
 				<td>조회 시간</td>
                 <td>사업소명</td>
 				<td>수급자명</td>
+				<td></td>
 				<td></td>
 				<td></td>
 				<td></td>
@@ -603,6 +610,7 @@ else if ($type == 'recipient') {
 					<td></td>
 					<td></td>
 					<td></td>
+					<td></td>
                     </tr>
             <?php }
                 // (일자별로 모았을때 해당일의 마지막 아이템)이거나 (리스트 전체의 가장 마지막 아이템)이면 집계한 값을 출력한다.
@@ -611,6 +619,7 @@ else if ($type == 'recipient') {
                         <td></td>
                         <td><?=explode(' ', $arr_inquiry[$ind]['occur_date'])[0];?></td>
                         <td><?=$cnt_date;?>개 사업소</td>
+						<td></td>
                         <td><?=$cnt_date_detail;?></td>
 						<td><?=$s_cnt_date_detail;?></td>
 						<td><?=$f_cnt_date_detail;?></td>
@@ -621,7 +630,7 @@ else if ($type == 'recipient') {
         <?php } 
         if($page == '') {?>
             <tr class="bg0" id="stat">
-                <td colspan="3">누적</td>
+                <td colspan="4">누적</td>
                 <td><?=$all_cnt;?></td>
 				<?php if($type == 'inquire_data'){?>
 				<td><?=$all_s_cnt;?></td>
@@ -633,6 +642,7 @@ else if ($type == 'recipient') {
             <tr class="bg0" id="stat">
                 <td>누계</td>
                 <td><?=count($arr_inquiry);?>개 사업소</td>
+				<td></td>
                 <td><?=$all_cnt;?></td>
 				<?php if($type == 'inquire_data'){?>
 				<td><?=$all_s_cnt;?></td>
