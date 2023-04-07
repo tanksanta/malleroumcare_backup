@@ -114,6 +114,7 @@ if ($search != '' && $sel_field != '') {
 }
 // select 배열 처리
 $select[] = "E.*";
+$select[] = "(SELECT mb_id FROM `g5_member` WHERE mb_entId=E.entId) AS mb_id";
 $sql_select = "HEX(E.dc_id) as uuid, ".implode(', ', $select);
 
 // where 배열 처리
@@ -255,6 +256,7 @@ $qstr1 = $qstr.'&amp;page_rows='.$page_rows;
     <tr>
         <th scope="col">No.</th>
         <th scope="col">사업소명</th>
+		<th scope="col">사업소ID</th>
         <th scope="col">수급자명</th>
 		<th scope="col">수급자번호</th>
         <th scope="col">인정등급</th>
@@ -292,6 +294,7 @@ $qstr1 = $qstr.'&amp;page_rows='.$page_rows;
     <tr class="<?php echo $bg; ?>">
         <td align="center" onClick="go_detail('<?=$row["uuid"]?>')"><?=$num; ?></td>
         <td align="center"><a href="javascript:get_mb_id('<?=$row["entId"]?>');"><?=$row["entNm"]; ?></a></td>
+		<td align="center"><a href="javascript:get_mb_id('<?=$row["entId"]?>');"><?=$row["mb_id"]; ?></a></td>
 		<td align="center" onClick="go_detail('<?=$row["uuid"]?>')"><?=(mb_substr($row["penNm"],0,1)."*".mb_substr($row["penNm"],-1)); ?></td>
 		<td align="center" onClick="go_detail('<?=$row["uuid"]?>')"><?=(substr($row["penLtmNum"],0,4)."****".substr($row["penLtmNum"],7,4)); ?></td>
    		<td align="center" onClick="go_detail('<?=$row["uuid"]?>')"><?=$row["penRecGraNm"]; ?></td>
