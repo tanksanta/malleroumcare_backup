@@ -461,8 +461,8 @@
         $od["od_name"],
         $it['sale_manager'],
         $it['addr'],
-        $od["od_b_tel"],
-        $od["od_b_hp"],
+        preg_replace("/[^0-9\-]*/s", "",$od["od_b_tel"]),//숫자,- 제외한 나머지 제거
+        preg_replace("/[^0-9\-]*/s", "",$od["od_b_hp"]),//숫자,- 제외한 나머지 제거
         ' '.$it["prodMemo"],
         ' '.$od["od_memo"],
         $it['ct_id'],
