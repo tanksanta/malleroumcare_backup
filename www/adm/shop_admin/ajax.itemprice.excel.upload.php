@@ -30,6 +30,8 @@ $file = $_FILES['datafile']['tmp_name'];
 if(!$file)
   json_response(400, '파일을 선택해주세요.');
 
+$st_time = date("Y-m-d H:i:s");
+
 include_once(G5_LIB_PATH."/PHPExcel.php");
 $reader = PHPExcel_IOFactory::createReader('Excel2007');
 $excel = $reader->load($file);
@@ -110,5 +112,7 @@ for($idx = 2; $idx <= $num_cols; $idx++) {
         }
     }
 }
+$sql = "INSERT INTO g5_shop_item_entprice_log set mb_id='{$member['mb_id']}',mb_name='{$member['mb_name']}',up_start_time='$st_time',up_end_time=now()";
+sql_query($sql);
 
 json_response(200, 'OK');

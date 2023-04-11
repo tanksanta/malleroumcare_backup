@@ -1,11 +1,32 @@
 <?php
 $sub_menu = '400300';
 include_once('./_common.php');
+//테이블생성
+$query = "SHOW tables LIKE 'g5_shop_item_entprice_log'";//업로드로그 테이블 확인 
+$wzres = sql_num_rows( sql_query($query) );
+
+if($wzres < 1) {
+	sql_query("CREATE TABLE `g5_shop_item_entprice_log` (
+	  `idx` int(11) NOT NULL AUTO_INCREMENT,
+	  `mb_id` varchar(50) NOT NULL DEFAULT '' COMMENT '업로드멤버ID',
+	  `mb_name` varchar(100) DEFAULT '' COMMENT '업로드멤버이름',
+	  `up_start_time` datetime DEFAULT NULL COMMENT '업로드시작시간',
+	  `up_end_time` datetime DEFAULT NULL COMMENT '업로드종료시간',
+	  PRIMARY KEY (`idx`),
+	  KEY `member_id` (`mb_id`)
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8
+	");
+}
+
 
 auth_check($auth[$sub_menu], "w");
 
 $g5['title'] = '상품가격관리';
 include_once (G5_ADMIN_PATH.'/admin.head.php');
+
+
+$sql = "SELECT * FROM `g5_shop_item_entprice_log` ORDER BY up_end_time DESC LIMIT 0,1";
+$row22 = sql_fetch($sql);
 
 $ent_sql = '';
 $item_sql = '';
@@ -109,7 +130,10 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
 
     </form>
     <div class="right">
-        <button id="exceldownload">엑셀다운로드</button>
+        <?php if($row22["mb_id"] != ""){?>
+		<div style="color:red; font-weight:bold;float:left;margin-top:6px;margin-right:20px">마지막 업로드 완료 : <?=$row22["up_end_time"]?> / <?=$row22["mb_name"]?> (<?=$row22["mb_id"]?>)</div>
+		<?php }?>
+		<button id="exceldownload">엑셀다운로드</button>
         <button id="excelupload">엑셀업로드</button>
     </div>
 </div>
