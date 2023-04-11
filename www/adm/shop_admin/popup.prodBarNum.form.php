@@ -467,7 +467,7 @@ if($od["od_b_tel"]) {
               <input type="text" class="all frm_input" placeholder="일괄 등록수식 입력">
               <button type="button" class="barNumCustomSubmitBtn">등록</button>
               <img src="<?php echo G5_IMG_URL?>/ask_btn.png" alt="" class="barNumGuideOpenBtn" onclick="showPopup(true)">
-              <button type="button" class="btn_del" id="btn_delete" data-id="ck_<?php echo $options[$k]['ct_id']; ?>">선택 삭제</button>
+              <button type="button" class="btn_del" data-id="ck_<?php echo $options[$k]['ct_id']; ?>">선택 삭제</button>
               </div>
             <?php } ?>
             <ul class="inputbox">
@@ -1179,10 +1179,6 @@ if($od["od_b_tel"]) {
 
     $(".barNumGuideBox .closeBtn").click(function(){
       $(this).closest(".barNumGuideBox").hide();
-    });
-
-    $(".barNumGuideOpenBtn").click(function(){
-      $(this).next().toggle();
     });
 
     /* 210317 */
