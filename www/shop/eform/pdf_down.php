@@ -52,7 +52,7 @@ foreach($options as $key => $val) {
 }
 
 $G5_URL = G5_URL;
-exec("wkhtmltopdf{$args} \"{$G5_URL}/shop/eform/renderEform.php?dc_id={$uuid}&entId={$eform['entId']}&download=1\" \"{$pdfdir}\"");
+exec("wkhtmltopdf{$args} \"{$G5_URL}/shop/eform/renderEform_new.php?dc_id={$uuid}&entId={$eform['entId']}&download=1\" \"{$pdfdir}\"");
 
 header('Content-Type: text/html; charset=UTF-8');
 
