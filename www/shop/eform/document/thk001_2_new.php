@@ -100,7 +100,7 @@
           <td class="center"><?=$eform['entCeoNm']?></td>
           <td class="seal-form center" data-id="seal_001_1" style="font-size: 14px">(서명)<?php if($preview || $download) {?>
 	<div style="position:absolute; top:-5px; right:45px;z-index:-1;">
-		<img src="/data/file/member/stamp/<?=$member["sealFile"]; ?>" style="border:0px; width:60px;">
+		<img src="<?=$eform["dc_signUrl"]; ?>" style="border:0px; width:60px;">
 	</div>
 	<?php }?></td>
         </tr>
