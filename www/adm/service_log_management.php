@@ -33,11 +33,11 @@ $page = $_GET['page']==null ?0 :$_GET['page'];
 
 $all_cnt = 0;
 
-$service_type = [ 'login' => [['로그ID'=>10,'회원ID'=>15,'회원명'=>60,'접속일자'=>15],['regdt'=>'로그인 일자']]
-              ,'order' => [['주문ID'=>10,'회원ID'=>15,'회원명'=>50,'관리자주문여부'=>10,'주문생성일자'=>15],['od_time'=>'주문서생성일']]
-              ,'eform' => [['계약서ID'=>22,'회원ID'=>15,'회원명'=>33,'계약서생성일'=>15,'계약서서명일'=>15],['dc_datetime'=>'계약서생성일','dc_sign_datetime'=>'계약서서명일']]
-              ,'item_msg' => [['제안서ID'=>10,'회원ID'=>15,'회원명'=>45,'계약서생성일'=>15,'계약서서명일'=>15],['ms_created_at'=>'제안서생성일','ml_sent_at'=>'제안서발송일']]
-              ,'check_itcare' => [['조회ID'=>10,'회원ID'=>15,'회원명'=>45,'조회번호'=>15,'조회일자'=>15],['occur_date'=>'조회요청일']] ];
+$service_type = [ 'login' => [['로그ID'=>10,'회원ID'=>15,'사업소코드'=>10,'회원명'=>50,'접속일자'=>15],['regdt'=>'로그인 일자']]
+              ,'order' => [['주문ID'=>10,'회원ID'=>15,'사업소코드'=>10,'회원명'=>40,'관리자주문여부'=>10,'주문생성일자'=>15],['od_time'=>'주문서생성일']]
+              ,'eform' => [['계약서ID'=>22,'회원ID'=>15,'사업소코드'=>10,'회원명'=>23,'계약서생성일'=>15,'계약서서명일'=>15],['dc_datetime'=>'계약서생성일','dc_sign_datetime'=>'계약서서명일']]
+              ,'item_msg' => [['제안서ID'=>10,'회원ID'=>15,'사업소코드'=>10,'회원명'=>35,'계약서생성일'=>15,'계약서서명일'=>15],['ms_created_at'=>'제안서생성일','ml_sent_at'=>'제안서발송일']]
+              ,'check_itcare' => [['조회ID'=>10,'회원ID'=>15,'사업소코드'=>10,'회원명'=>35,'조회번호'=>15,'조회일자'=>15],['occur_date'=>'조회요청일']] ];
 $type_data = $service_type[$type];
 
 if ($_GET['sel_date']) {
@@ -57,6 +57,7 @@ if ($type == 'login') {
     $sql_search = "select 
             A.id as '로그ID',
             A.mb_id as '회원ID',
+            IFNULL(NULLIF(B.mb_thezone,''), REPLACE(B.mb_giup_bnum,'-','')) as '사업소코드',
             B.mb_name as '회원이름',
             A.regdt as '로그인일자' ";
 
@@ -74,6 +75,7 @@ else if ($type == 'order') {
     $sql_search = "select
             A.od_id '주문서ID',
             A.mb_id as '회원ID',
+            IFNULL(NULLIF(B.mb_thezone,''), REPLACE(B.mb_giup_bnum,'-','')) as '사업소코드',
             B.mb_name as '회원이름',
             case when A.od_sales_manager='1202' then 'N' else 'Y' end as '관리자주문여부',
             A.od_time as '생성일자' ";
@@ -92,6 +94,7 @@ else if ($type == 'eform') {
     $sql_search = "select
               HEX(A.dc_id) as '계약서ID',
               B.mb_id as '회원ID',
+              IFNULL(NULLIF(B.mb_thezone,''), REPLACE(B.mb_giup_bnum,'-','')) as '사업소코드',
               B.mb_name as '회원이름',
               A.dc_datetime as '계약서생성일',
               A.dc_sign_datetime as '계약서서명일' ";
@@ -120,11 +123,12 @@ else if ($type == 'item_msg') {
     $sql_count = "select count(*) as cnt ";
 
     $sql_search = "select 
-                   A.ms_id as '제안서ID',
-                   A.mb_id as '회원ID',
-                   B.mb_name as '회원이름',
-                   A.ms_created_at as '생성일자',
-                   C.ml_sent_at as '발송일자' ";
+              A.ms_id as '제안서ID',
+              A.mb_id as '회원ID',
+              IFNULL(NULLIF(B.mb_thezone,''), REPLACE(B.mb_giup_bnum,'-','')) as '사업소코드',
+              B.mb_name as '회원이름',
+              A.ms_created_at as '생성일자',
+              C.ml_sent_at as '발송일자' ";
 
     if($sel_date == 'ms_created_at'){
        $sql_common = "from recipient_item_msg A
@@ -150,6 +154,7 @@ else if ($type == 'check_itcare') {
     $sql_search = "select 
             A.log_id as '조회ID',
             A.ent_id as '회원ID',
+            IFNULL(NULLIF(B.mb_thezone,''), REPLACE(B.mb_giup_bnum,'-','')) as '사업소코드',
             B.mb_name as '회원명',
             A.pen_id as '조회번호',
             A.occur_date as '조회일자' ";
@@ -335,7 +340,7 @@ while ($row = sql_fetch_array($results_all)) {
 
 
 <div style="width: 100%; margin: 20px 0; padding: 0 20px;">
-  <a name="download_excel" id="download_excel" style="position: relative; float: right; width: 10%; padding: 10px 15px; background: #6e9254; color:#fff; text-align: center; border:1px solid #e3e3e3;">엑셀 다운로드</a>
+  <a name="download_excel" id="download_excel" style="position: relative; float: right; width: 10%; padding: 10px 15px; background: #6e9254; color:#fff; text-align: center; border:1px solid #e3e3e3; cursor:pointer">엑셀 다운로드</a>
 </div>
 </div>
 
