@@ -1297,7 +1297,7 @@ if( function_exists('pg_setting_check') ){
                 <br/>
                 <label>
                   <input type="radio" name="de_barcode_approve_type" value="no_auto" <?php echo $default['de_barcode_approve_type'] == 'no_auto' ? 'checked' : '' ?> >
-                  모든 상품 관리자 승인 후 출고 가능
+                  미등록 PAD 바코드 스캔 / 입력 제한 (관리자 제외)
                 </label>
             </td>
         </tr>
