@@ -215,9 +215,9 @@ $qstr = ("list_num={$list_num}&amp;od_status={$od_status}&amp;od_admin_yn={$od_a
                     sum(Ct_qty) as '개수',
                     count(CASE when ct_status = '완료' then 1 end ) as '완료수',
                     count(CASE when ct_status = '배송' then 1 end )as '배송수',
-                    count(CASE when ct_status = '준비' then 1 end ) as '준비수'
+                    count(CASE when ct_status in ('준비','출고준비') then 1 end ) as '준비수'
                 FROM g5_shop_cart
-                WHERE ct_status in('준비','배송','완료')
+                WHERE ct_status in('출고준비','준비','배송','완료')
                 GROUP by od_id 
             )
             B on A.od_id=B.od_id
