@@ -40,10 +40,17 @@ foreach( $barcodeArr as $key => $val ) {
       'status' => $bc_row['bc_status']
     );
   } else {
-    $data['barcodeArr'][$key] = array(
-      'index' => $val['index'], 
-      'status' => '미보유재고'
-    );
+
+		// 23.04.11 : 서원 - 바코드 미등록시 출고 제한을 위한 코드 삽입. 
+		if( $default['de_barcode_approve_type'] == "part_auto" || $default['de_barcode_approve_type'] == "full_auto" ) {
+			$data['barcodeArr'][$key] = array( 
+        'index' => $val['index'], 
+        'status' => '미보유재고'
+      );
+		} else {
+			json_response(400, "재고로 등록되지 않은 바코드 입니다.\n입력된 바코드는 초기화 됩니다.");
+		}
+
   }
 }
 
