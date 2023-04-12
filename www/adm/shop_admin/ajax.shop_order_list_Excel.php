@@ -47,7 +47,10 @@ function column_char($i) { return chr( 65 + $i ); }
     }
 
 
+    $fr_date  = isset($param['fr_date']) ? trim($param['fr_date']):"";
     if(!$fr_date){ $fr_date = date("Y-m-d", strtotime(date("Y", time() )."-".date("m", time() )."-".date("d", time() )." -".date("w", time() )." day"));  }
+
+    $to_date  = isset($param['to_date']) ? trim($param['to_date']):"";
     if(!$to_date){ $to_date = date("Y-m-d", strtotime($fr_date." +6 day")); }
 
     $sql_common = (" 
@@ -86,6 +89,7 @@ function column_char($i) { return chr( 65 + $i ); }
                     count(CASE when ct_status in ('준비','출고준비') then 1 end ) as '준비수'
                 FROM g5_shop_cart
                 WHERE ct_status in('출고준비','준비','배송','완료')
+                AND ( ct_time between '$fr_date 00:00:00' and '$to_date 23:59:59' )
                 GROUP by od_id 
             )
             B on A.od_id=B.od_id
@@ -101,17 +105,21 @@ function column_char($i) { return chr( 65 + $i ); }
     }
 
 
+    $od_admin_yn  = isset($param['od_admin_yn']) ? trim($param['od_admin_yn']):"";
     if($od_admin_yn=="Y"){ $where[] = "`관리자` = '관리자' "; }
     else if($od_admin_yn=="N"){ $where[] = "`관리자` IS NULL "; } 
     else{ }
 
 
+    $od_status  = isset($param['od_status']) ? trim($param['od_status']):"";
     if( $od_status =="receipt" ) { $where[] = "`상태` = '주문접수' "; }
     else if( $od_status =="progress" ) { $where[] = "`상태` = '배송진행' "; }
     else if( $od_status =="completed" ) { $where[] = "`상태` = '배송완료' "; }
     else if( $od_status =="cancel" ) { $where[] = "`상태` = '주문취소' "; }
     else { }
 
+
+    $mb_name  = isset($param['mb_name']) ? trim($param['mb_name']):"";
     if($mb_name){
         $where[] = "`사업소명` LIKE '%" . $mb_name . "%' ";
     }
