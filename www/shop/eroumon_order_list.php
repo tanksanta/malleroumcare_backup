@@ -154,7 +154,7 @@
 
     <section class="wrap">
         <div class="sub_section_tit">수급자 주문관리</div>
-        <button type="button" class="" id="view_link" Onclick="window.open('https://eroum.co.kr/partners/login','_blank'); ">이로움ON 맴버스<br />바로가기</button>
+        <button type="button" class="" id="view_link" Onclick="window.open('https://eroum.co.kr/members/login','_blank'); ">이로움ON 맴버스<br />바로가기</button>
     </section>
 
 
