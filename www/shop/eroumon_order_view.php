@@ -437,7 +437,7 @@
 
     <section class="wrap">
         <div class="sub_section_tit">수급자 주문상세</div>
-        <button type="button" class="" id="view_link" Onclick="window.open('https://eroum.co.kr/partners/login','_blank'); ">이로움ON 맴버스<br />바로가기</button>
+        <button type="button" class="" id="view_link" Onclick="window.open('https://eroum.co.kr/members/login','_blank'); ">이로움ON 맴버스<br />바로가기</button>
         <button type="button" class="" id="view_list" Onclick="location.href = '/shop/eroumon_order_list.php'; ">목록</button>
     </section>
 
