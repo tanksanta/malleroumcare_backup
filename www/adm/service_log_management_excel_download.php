@@ -46,7 +46,7 @@ else if ($type == 'order') {
             A.mb_id as '회원ID',
             IFNULL(NULLIF(B.mb_thezone,''), REPLACE(B.mb_giup_bnum,'-','')) as '사업소코드',
             B.mb_name as '회원명',
-            case when A.od_sales_manager='1202' then 'N' else 'Y' end as '관리자주문여부',
+            case when A.od_add_admin='1' then 'N' else 'Y' end as '관리자주문여부',
             A.od_time as '생성일자' ";
 
     $sql_common = "from g5_shop_order A
