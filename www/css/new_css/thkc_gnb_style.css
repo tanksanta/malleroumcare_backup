@@ -1,0 +1,534 @@
+/* 
+ // 
+ //
+ //
+ //
+ //
+ //
+ //
+ //
+ //
+ //
+*/
+/* // = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
+/* // //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// */
+/* // = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
+/* // * */
+/* // * */
+/* // * (주)티에이치케이컴퍼 & 이로움 - [ THKcompany & E-Roum ] */
+/* // * */
+/* // * Program Name : EROUMCARE Platform! = Renewal Ver:1.0 */
+/* // * Homepage : https://eroumcare.com , Tel : 02-830-1301 , Fax : 02-830-1308 , Technical contact : dev@thkc.co.kr */
+/* // * Copyright (c) 2023 THKC Co,Ltd. All rights reserved. */
+/* // * */
+/* // * */
+/* // = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
+/* // //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// */
+/* // = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
+/* 
+ //
+ //
+ //
+ //
+ //
+ //
+ //
+ //
+ //
+ //
+*/
+
+
+/* ============================================================================ */
+/* CSS Document */
+
+@charset "utf-8";
+
+/* 최상단 띠 배너 */
+#topBannerWrap {
+    background: #001E9A;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    overflow: hidden;
+}
+
+#topBannerWrap .topBanner {
+    height: 48px;
+    text-align: center;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: calc(100%/3);
+    padding: 0 15px;
+    position: relative;
+}
+
+#topBannerWrap .topBanner div {
+    cursor: pointer;
+}
+
+#topBannerWrap .topBanner .f_topBanner {
+    color: #fff;
+    font-size: 14px;
+    font-weight: 100;
+    letter-spacing: -0.03em;
+}
+
+#topBannerWrap .topBanner_swiper_navi {
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    top: 40px;
+    width: 100%;
+    max-width: 1000px;
+}
+
+#topBannerWrap .topBanner_swiper_navi .swiper-button-next {
+    right: -30px;
+    background-image: url("/img/new_main_eroum/thkc_btn_arrow_prev.svg");
+    background-repeat: no-repeat;
+    background-size: auto;
+    background-position: center;
+    transform: translateY(-50%) rotate(180deg);
+    width: 30px;
+    height: 30px;
+}
+
+#topBannerWrap .topBanner_swiper_navi .swiper-button-prev {
+    left: -15px;
+    background-image: url("/img/new_main_eroum/thkc_btn_arrow_prev.svg");
+    background-repeat: no-repeat;
+    background-size: auto;
+    background-position: center;
+    transform: translateY(-50%) rotate(360deg);
+    width: 30px;
+    height: 30px;
+}
+
+
+/* 상단 라인 */
+#topLine {
+    height: 1px;
+    background: #E7E7E7;
+}
+
+/* GNB */
+nav.thkc_nav .logo {
+    padding: 0px 130px 10px 55px;
+}
+
+nav.thkc_nav {
+    display: flex;
+}
+
+/* 상단 메뉴 */
+nav.thkc_nav .menuWrap,
+nav.thkc_nav .menuWrap02 {
+    display: flex;
+}
+
+nav.thkc_nav .main_menu {
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+    gap: 40px;
+}
+
+nav.thkc_nav .line_gnb {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+}
+
+nav.thkc_nav .sub_menu {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+nav.thkc_nav .searchWrap {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+    gap: 20px;
+}
+
+/* search */
+nav.thkc_nav .thkc_search {
+    position: relative;
+}
+
+nav.thkc_nav .in_search {
+    width: 300px;
+    height: 45px;
+    background: #F5F5F5;
+    border-radius: 30px;
+    border: 0;
+    padding: 0px 25px;
+    font-size: 14px;
+}
+
+nav.thkc_nav .in_search:focus {
+    outline: none;
+}
+
+nav.thkc_nav input[type='text']::placeholder,
+textarea::placeholder {
+    color: #bbb;
+    font-size: 14px;
+}
+
+nav.thkc_nav .icon_serch {
+    position: absolute;
+    right: 20px;
+    top: 11px;
+}
+
+/* logout */
+nav.thkc_nav .logout {
+    font-size: 14px;
+}
+
+/* 상단 메인메뉴 바 active */
+nav.thkc_nav .main_menu li {
+    position: relative;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+nav.thkc_nav .main_menu li a {
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+nav.thkc_nav .main_menu li a.active {
+    font-weight: 500;
+}
+
+nav.thkc_nav .main_menu>li:after {
+    content: "";
+    display: block;
+    height: 4px;
+    width: 0%;
+    background: #001E9A;
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: all 0.5s;
+}
+
+nav.thkc_nav .main_menu li:active:after {
+    transition: all 0.5s;
+    width: 100%;
+    opacity: 1;
+}
+
+nav.thkc_nav .main_menu li:hover:after {
+    transition: all 0.5s;
+    width: 100%;
+    opacity: 1;
+}
+
+/* 상단 이벤트 메뉴 active */
+nav.thkc_nav .sub_menu li a {
+    padding: 5px 1px;
+    transition: all 0.5s;
+}
+
+nav.thkc_nav .sub_menu li a:hover {
+    border-bottom: 1px solid #bbb;
+}
+
+/* 토글버튼 */
+nav.thkc_nav .toggle {
+    position: absolute;
+    width: 25px;
+    height: 25px;
+    background: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    display: none;
+    cursor: pointer;
+}
+
+nav.thkc_nav .toggle div {
+    width: 20px;
+    height: 2px;
+    background: #000;
+    position: absolute;
+    border-radius: 2px;
+    transition: .3s;
+}
+
+nav.thkc_nav .toggle .bar1 {
+    transform: translateY(-6px);
+}
+
+nav.thkc_nav .toggle .bar3 {
+    transform: translateY(6px);
+}
+
+nav.thkc_nav .toggle.active .bar1 {
+    transform: translateY(0) rotate(315deg);
+}
+
+nav.thkc_nav .toggle.active .bar2 {
+    opacity: 0;
+}
+
+nav.thkc_nav .toggle.active .bar3 {
+    transform: translateY(0) rotate(-315deg);
+}
+
+
+
+/********** css responsive **********/
+@media (max-width: 1399px) {
+    nav.thkc_nav .logo {
+        padding: 0px 30px 20px 10px;
+    }
+
+    nav.thkc_nav .logo img {
+        height: 35px;
+    }
+
+    nav.thkc_nav .logout {
+        padding-right: 10px;
+    }
+
+    nav.thkc_nav .main_menu {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 1199px) {
+    #topBannerWrap .topBanner {
+        width: calc(100%/2);
+    }
+
+    nav.thkc_nav .logout {
+        display: none;
+    }
+
+    .thkc_container {
+        width: 100%;
+    }
+
+    .thkc_container {
+        padding: 0px 20px;
+    }
+
+    nav.thkc_nav {
+        position: relative;
+    }
+
+
+    nav.thkc_nav .logo img {
+        width: 100px;
+        height: 27px;
+    }
+
+    nav.thkc_nav .main_menu {
+        gap: 15px;
+    }
+
+    nav.thkc_nav .sub_menu {
+        gap: 15px;
+    }
+
+    nav.thkc_nav .searchWrap {
+        margin: auto;
+        width: calc(100%/3);
+    }
+
+    nav.thkc_nav .toggle {
+        display: flex;
+        position: absolute;
+        right: 0px;
+        top: 30px;
+        cursor: pointer;
+    }
+}
+
+@media (max-width: 991px) {
+
+    nav.thkc_nav {
+        position: relative;
+    }
+
+
+    nav.thkc_nav .sub_menu {
+        font-size: 13px;
+        gap: 8px
+    }
+
+    nav.thkc_nav .in_search {
+        width: 200px;
+    }
+
+    nav.thkc_nav .line_gnb {
+        padding: 10px;
+    }
+
+}
+
+
+@media (max-width: 800px) {
+    nav.thkc_nav .main_menu li {
+        padding: 4px 0;
+    }
+
+    nav.thkc_nav .main_menu>li:hover:after {
+        width: 90%;
+    }
+
+    nav.thkc_nav .main_menu li a.active:after {
+        width: 90%;
+    }
+
+    nav.thkc_nav .sub_menu {
+        display: none;
+    }
+
+    nav.thkc_nav .line_gnb {
+        display: none;
+    }
+
+    #topLine {
+        display: block;
+    }
+}
+
+@media (max-width: 767px) {
+    #topBannerWrap .topBanner {
+        width: 100%;
+    }
+
+    #topBannerWrap .topBanner .f_topBanner {
+        font-size: 12px;
+    }
+
+    #topBannerWrap .mySwiper_band {
+        width: 80%;
+    }
+
+    #topBannerWrap .topBanner_swiper_navi .swiper-button-next {
+        right: 15px;
+    }
+
+    #topBannerWrap .topBanner_swiper_navi .swiper-button-prev {
+        left: 15px;
+    }
+
+    nav.thkc_nav .logo img {
+        height: 25px;
+    }
+
+    nav.thkc_nav .logo {
+        padding: 10px 0px 20px 0px;
+    }
+
+    nav.thkc_nav {
+        display: block;
+        height: 132px;
+    }
+
+    nav.thkc_nav .menuWrap,
+    nav.thkc_nav .menuWrap02 {
+        display: block;
+        position: relative;
+        top: -20px
+    }
+
+    nav.thkc_nav .main_menu {
+        font-size: 14px;
+        font-weight: 500;
+        width: 100%;
+        gap: 2px;
+        position: absolute;
+        top: 40px;
+    }
+
+    nav.thkc_nav .main_menu li {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+
+    nav.thkc_nav .main_menu li a {
+        padding: 12px 7px 11px 0px;
+    }
+
+    nav.thkc_nav .sub_menu {
+        display: flex;
+        position: absolute;
+        top: -57px;
+        left: 130px;
+    }
+
+    nav.thkc_nav .line_gnb {
+        display: none;
+    }
+
+    nav.thkc_nav .searchWrap {
+        margin: auto;
+        width: 100%;
+        position: relative;
+    }
+
+    nav.thkc_nav .thkc_search {
+        width: 100%;
+        position: absolute;
+        top: -42px
+    }
+
+    nav.thkc_nav .in_search {
+        width: 100%;
+    }
+
+    nav.thkc_nav .toggle {
+        position: absolute;
+        right: 10px;
+        top: -40px;
+    }
+
+    #topLine_m {
+        width: 100%;
+        position: absolute;
+        top: 200px;
+        height: 1px;
+        background: #E7E7E7;
+    }
+
+    /* 파트너 */
+    #topLine_partner_m {
+        display: none;
+    }
+}
+
+@media (max-width: 430px) {}
+
+@media (max-width: 360px) {
+    nav.thkc_nav .sub_menu {
+        display: none;
+    }
+
+    nav.thkc_nav .main_menu {
+        font-size: 10px;
+    }
+
+    #topBannerWrap .topBanner .f_topBanner {
+        font-size: 9px;
+        padding: 0 10px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}

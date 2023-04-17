@@ -70,6 +70,18 @@ nhn.husky.SE2M_Configuration.SE2M_ColorPalette = {
 	bUseRecentColor : false
 };
 
+// 이미지 크기 변경 추가
+nhn.husky.SE2M_Configuration.QuickEditor = {
+	common : {
+		bUseConfig : false
+	},
+	Image : {
+		nImageMaxWidthSize : 9999,
+		nImageMaxHeightSize : 9999
+	}
+};
+
+
 nhn.husky.SE2B_Customize_ToolBar = jindo.$Class(/** @lends nhn.husky.SE2B_Customize_ToolBar */{
 	name : "SE2B_Customize_ToolBar",
 	/**

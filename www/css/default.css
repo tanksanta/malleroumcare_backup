@@ -33,9 +33,14 @@ a:hover, a:focus, a:active { text-decoration:none}
 
 
 @media only screen and (max-width:960px) {
-	.hd_pops{width:calc(100% - 20px);}
-	.hd_pops .hd_pops_con{width:100% !important;}
+	/* .hd_pops{width:calc(100% - 20px);} */
+	.hd_pops{ margin: 1%; }
+	.hd_pops .hd_pops_con{
+		width:100% !important;
+		height:100% !important;
+	}
 	.hd_pops .hd_pops_con a span{display:block;}
+	.hd_pops .hd_pops_con p { height: 0px; display: none; }
 }
 
 

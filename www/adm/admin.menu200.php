@@ -9,6 +9,7 @@ $menu['menu200'] = array (
     array('200820', '접속자로그삭제', G5_ADMIN_URL.'/visit_delete.php', 'mb_delete', 1),
     array('200200', '포인트관리', G5_ADMIN_URL.'/point_list.php', 'mb_point'),
     array('200900', '투표관리', G5_ADMIN_URL.'/poll_list.php', 'mb_poll'),
-    array('200830', '사용자 통계분석', G5_ADMIN_URL.'/user_statistics.php', 'mb_statistics')
+    array('200830', '사용자 통계분석', G5_ADMIN_URL.'/user_statistics.php', 'mb_statistics'),
+    array('200950', '추천상품', G5_ADMIN_URL.'/shop_admin/product_recommended.php', 'product_recommended')
 );
 ?>

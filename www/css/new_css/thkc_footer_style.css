@@ -1,0 +1,469 @@
+/* 
+ // 
+ //
+ //
+ //
+ //
+ //
+ //
+ //
+ //
+ //
+*/
+/* // = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
+/* // //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// */
+/* // = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
+/* // * */
+/* // * */
+/* // * (주)티에이치케이컴퍼 & 이로움 - [ THKcompany & E-Roum ] */
+/* // * */
+/* // * Program Name : EROUMCARE Platform! = Renewal Ver:1.0 */
+/* // * Homepage : https://eroumcare.com , Tel : 02-830-1301 , Fax : 02-830-1308 , Technical contact : dev@thkc.co.kr */
+/* // * Copyright (c) 2023 THKC Co,Ltd. All rights reserved. */
+/* // * */
+/* // * */
+/* // = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
+/* // //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// */
+/* // = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
+/* 
+ //
+ //
+ //
+ //
+ //
+ //
+ //
+ //
+ //
+ //
+*/
+
+
+/* ============================================================================ */
+/* CSS Document */
+
+@charset "utf-8";
+
+/* ## 하단 footer.thkc_footer 영역 ## */
+footer.thkc_footer .f_infoWrap {
+	padding: 30px 0px;
+}
+
+/* PC footer.thkc_footer 메뉴 바 */
+footer.thkc_footer .f_menuBgWrap {
+	background: #EFEFEF;
+}
+
+footer.thkc_footer .f_infoBgWrap {
+	background: #3F3A3A;
+}
+
+footer.thkc_footer .f_menuWrap {
+	display: flex;
+	justify-content: space-between;
+}
+
+/*PC footer.thkc_footer 로고 */
+footer.thkc_footer .f_logoWrap,
+.f_menu {
+	display: flex;
+	align-items: center;
+}
+
+footer.thkc_footer .f_logo {
+	padding: 25px 20px 25px 0px;
+}
+
+/*PC footer.thkc_footer 메뉴 */
+footer.thkc_footer .f_menu li {
+	font-size: 14px;
+	padding: 10px 15px 0px 15px;
+	display: flex;
+	align-items: center;
+}
+
+footer.thkc_footer .f_menu li a:hover {
+	text-decoration: underline;
+}
+
+/*PC footer.thkc_footer 패밀리 사이트 */
+footer.thkc_footer .f_Fsns {
+	display: flex;
+	align-items: center;
+}
+
+footer.thkc_footer .f_Fsns select,
+footer.thkc_footer .f_Fsns_d .m_f_Fsns .f_Fsns select {
+	font-size: 16px;
+	background: #FFFFFF;
+	border-radius: 30px;
+	padding: 10px 50px;
+	box-sizing: border-box;
+	background-image: url("/img/new_common/thkc_btn_arrow_down.svg");
+	background-repeat: no-repeat no-repeat;
+	background-position: calc(100% - 15px) center;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+}
+
+footer.thkc_footer .f_Fsns select:hover {
+	cursor: pointer;
+	box-shadow: 0 0 1px 2px rgba(0, 0, 0, 0.7);
+	box-shadow: 0 0 0 3px -moz-mac-focusring;
+	transition: 0.3s;
+}
+
+footer.thkc_footer .f_Fsns select option {
+	color: #666;
+	font-size: 16px;
+}
+
+footer.thkc_footer .f_Fsns select:focus {
+	box-shadow: 0 0 1px 2px rgba(255, 144, 21, 1);
+	box-shadow: 0 0 0 2px -moz-mac-focusring;
+	outline: none;
+}
+
+
+
+footer.thkc_footer .f_sns {
+	display: flex;
+	align-items: flex-end;
+	justify-content: space-between;
+	height: 50%;
+	gap: 7px;
+	padding: 0px 10px;
+}
+
+footer.thkc_footer .f_sns .btn_sns {
+	background: #999;
+	border-radius: 50px;
+	width: 35px;
+	height: 35px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+footer.thkc_footer .f_sns .btn_sns:hover {
+	filter: brightness(80%);
+	transition: 0.3s;
+}
+
+footer.thkc_footer .f_Fsns_d .m_f_Fsns {
+	display: none;
+}
+
+/* pc footer.thkc_footer 인포 */
+footer.thkc_footer .f_infoWrap {
+	color: #fff;
+	display: flex;
+	justify-content: space-between;
+}
+
+footer.thkc_footer .f_infoWrap .f_info ul li {
+	font-size: 12px;
+	line-height: 160%;
+	font-weight: 100;
+	padding: 5px 0;
+}
+
+footer.thkc_footer .f_infoWrap .f_info {
+	width: 34%;
+}
+
+footer.thkc_footer .f_infoWrap .f_cs {
+	width: 46%;
+	padding-left: 15%;
+}
+
+footer.thkc_footer .f_infoWrap .f_remoteWrap {
+	width: 19%;
+}
+
+footer.thkc_footer .f_info .bnt_license a {
+	color: #333;
+	font-weight: 400;
+	line-height: 20px;
+	background: #F0F0F0;
+	border-radius: 4px;
+	padding: 1px 5px;
+	margin-left: 10px;
+}
+
+footer.thkc_footer .f_info .bnt_license a:hover {
+	filter: brightness(80%);
+}
+
+footer.thkc_footer .f_info .f_br {
+	display: none;
+}
+
+/* pc footer.thkc_footer 고객센터 */
+footer.thkc_footer .f_cs ul li {
+	display: flex;
+	padding-bottom: 10px;
+	font-size: 14px;
+}
+
+footer.thkc_footer .f_cs h4 {
+	font-size: 18px;
+	font-weight: 500;
+	letter-spacing: -0.03em;
+}
+
+footer.thkc_footer .f_cs .phone {
+	padding: 0px 0px 10px 10px;
+	font-size: 35px;
+	font-weight: 700;
+	color: #FAC03D;
+}
+
+footer.thkc_footer .f_cs_title {
+	align-items: center;
+}
+
+footer.thkc_footer .f_cs_data {
+	padding-left: 10px;
+	font-size: 16px;
+	font-weight: 300;
+}
+
+footer.thkc_footer .f_cs_data a {
+	color: #fff;
+}
+
+footer.thkc_footer .f_cs_data a:hover {
+	text-decoration: underline;
+}
+
+/* pc footer.thkc_footer 원격지원 */
+footer.thkc_footer .f_remote {
+	display: flex;
+	gap: 15px;
+	margin-bottom: 25px;
+}
+
+footer.thkc_footer .f_remote .rem_con {
+	font-size: 14px;
+	font-weight: 100;
+	padding-top: 5px;
+}
+
+footer.thkc_footer .btn_remote {
+	font-size: 16px;
+	color: #333;
+	background: #FFFFFF;
+	border-radius: 30px;
+	padding: 10px 30px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+footer.thkc_footer .btn_remote:hover {
+	cursor: pointer;
+	filter: brightness(80%);
+	transition: 0.3s;
+}
+
+/* pc(랜딩/로그인) footer.thkc_footer 인포 */
+footer.thkc_footer .f_info_landing {
+	padding: 30px 0px;
+}
+
+footer.thkc_footer .f_info_landing .f_info {
+	width: 100%;
+	display: flex;
+	color: #fff;
+}
+
+footer.thkc_footer .f_info_landing .f_info ul {
+	width: 50%;
+	font-size: 12px;
+	font-weight: 100;
+	padding: 5px 0;
+}
+
+footer.thkc_footer .f_info_landing .f_info ul:last-child {
+	text-align: right;
+}
+
+
+
+/********** css responsive **********/
+@media (max-width: 1399px) {
+
+	footer.thkc_footer .f_infoWrap,
+	footer.thkc_footer .f_info_landing {
+		padding: 10px 20px;
+	}
+}
+
+@media (max-width: 1199px) {
+	footer.thkc_footer .f_infoWrap .f_info {
+		width: 50%;
+	}
+
+	footer.thkc_footer .f_infoWrap .f_cs {
+		width: 30%;
+		padding-left: 2%;
+	}
+
+	footer.thkc_footer .f_infoWrap .f_remoteWrap {
+		width: 20%;
+	}
+
+	footer.thkc_footer .f_cs ul li {
+		padding-bottom: 10px;
+		font-size: 12px;
+	}
+
+	footer.thkc_footer .f_cs h4 {
+		font-size: 16px;
+	}
+
+	footer.thkc_footer .f_cs .phone {
+		font-size: 25px;
+	}
+
+	footer.thkc_footer .f_cs_data {
+		font-size: 14px;
+	}
+
+	footer.thkc_footer .f_remote {
+		display: flex;
+		gap: 15px;
+		margin-bottom: 25px;
+	}
+
+	footer.thkc_footer .f_remote .rem_con {
+		font-size: 12px;
+	}
+
+	footer.thkc_footer .btn_remote {
+		padding: 5px 20px;
+		font-size: 14px;
+	}
+}
+
+@media (max-width: 991px) {
+	footer.thkc_footer .f_infoWrap .f_info {
+		width: 60%;
+	}
+
+	footer.thkc_footer .f_infoWrap .f_cs {
+		width: 40%;
+		padding-left: 5%;
+	}
+
+	footer.thkc_footer .f_remoteWrap {
+		display: none;
+	}
+
+	footer.thkc_footer .f_info .f_br {
+		display: block;
+	}
+
+	footer.thkc_footer .f_info .bnt_license a {
+		margin-left: 0px;
+		transition: 0.3s;
+	}
+}
+
+@media (max-width: 767px) {
+	footer.thkc_footer .f_logo {
+		display: none;
+	}
+
+	footer.thkc_footer .f_menuWrap {
+		display: flex;
+		align-items: center;
+		flex-direction: column;
+		padding: 10px 0px;
+	}
+
+	footer.thkc_footer .f_menuWrap .f_Fsns,
+	.f_cs,
+	.f_remoteWrap {
+		display: none;
+	}
+
+	footer.thkc_footer .f_Fsns_d .m_f_Fsns {
+		display: block;
+	}
+
+	footer.thkc_footer .f_Fsns_d .m_f_Fsns .f_Fsns {
+		display: flex;
+		justify-content: space-between;
+		padding: 10px 0;
+	}
+
+	footer.thkc_footer .f_Fsns_d .m_f_Fsns .f_Fsns select {
+		color: #333;
+		font-size: 14px;
+	}
+
+	footer.thkc_footer .f_site {
+		padding: 7px 70px;
+	}
+
+	footer.thkc_footer .f_infoWrap {
+		flex-direction: column;
+	}
+
+	footer.thkc_footer .f_infoWrap .f_info {
+		width: 100%;
+	}
+
+	footer.thkc_footer .f_infoWrap .f_info ul li {
+		font-size: 10px;
+		letter-spacing: 0em;
+	}
+
+	footer.thkc_footer .f_infoWrap .f_info {
+		padding: 20px 0;
+	}
+
+	/* 랜딩, 로그인 footer 영역 */
+	footer.thkc_footer .f_info_landing .f_info {
+		display: block;
+	}
+
+	footer.thkc_footer .f_info_landing .f_info ul {
+		width: 100%;
+		font-size: 12px;
+		letter-spacing: -0.03em;
+	}
+
+	footer.thkc_footer .f_info_landing .f_info ul:last-child {
+		text-align: left;
+	}
+}
+
+
+@media (max-width: 430px) {
+	nav.thkc_nav .thkc_search{
+		top:-35px;
+	}
+	nav.thkc_nav .in_search{
+		height: 40px;
+	}
+	nav.thkc_nav .icon_serch{
+		top:7px
+	}
+}
+
+@media (max-width: 360px) {}
+
+@media (max-width: 280px) {
+	footer.thkc_footer .f_menu li{
+		font-size: 12px;
+	}
+
+	footer.thkc_footer .f_Fsns select, footer.thkc_footer .f_Fsns_d .m_f_Fsns .f_Fsns select{
+		padding: 7px 30px;
+	}
+	footer.thkc_footer .f_Fsns{align-items: flex-start;}
+}

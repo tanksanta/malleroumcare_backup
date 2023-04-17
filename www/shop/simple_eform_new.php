@@ -358,7 +358,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 				<label class="radio-inline" title="비대면은 카카오톡을 이용한 원격 계약입니다.">
                   <input type="radio" name="penRecTypeCd_radio" class="penRecTypeCd_radio penRecTypeCd01" value="01" <?php if($dc && $dc['penRecTypeCd'] == '02') echo 'checked' ?>> 비대면
                 </label>
-				&nbsp;&nbsp;<a href="https://eroumcare.com/bbs/board.php?bo_table=notice&wr_id=147" target="_blank"><img src="/img/ask_btn2.png" style="width:13px;border:0px;"></a>
+				&nbsp;&nbsp;<a href="<?=G5_BBS_URL;?>/board.php?bo_table=notice&wr_id=147" target="_blank"><img src="/img/ask_btn2.png" style="width:13px;border:0px;"></a>
 			</div>		
 		</div>
 		  <div class="form-group" style="border-top:1px solid #aaaaaa;">

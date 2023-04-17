@@ -1,0 +1,251 @@
+/* 
+ // 
+ //
+ //
+ //
+ //
+ //
+ //
+ //
+ //
+ //
+*/
+/* // = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
+/* // //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// */
+/* // = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
+/* // * */
+/* // * */
+/* // * (주)티에이치케이컴퍼 & 이로움 - [ THKcompany & E-Roum ] */
+/* // * */
+/* // * Program Name : EROUMCARE Platform! = Renewal Ver:1.0 */
+/* // * Homepage : https://eroumcare.com , Tel : 02-830-1301 , Fax : 02-830-1308 , Technical contact : dev@thkc.co.kr */
+/* // * Copyright (c) 2023 THKC Co,Ltd. All rights reserved. */
+/* // * */
+/* // * */
+/* // = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
+/* // //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// //// */
+/* // = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
+/* 
+ //
+ //
+ //
+ //
+ //
+ //
+ //
+ //
+ //
+ //
+*/
+
+
+/* ============================================================================ */
+/* CSS Document */
+
+@charset "utf-8";
+* {margin: 0;padding: 0;box-sizing: border-box;font-family: 'Noto Sans KR', sans-serif; } 
+
+li {list-style: none; } 
+
+a:link,
+a:visited {text-decoration: none;color: #333; } 
+
+.clearfix:after {content: "";clear: both;display: block; } 
+
+a,
+button {-webkit-tap-highlight-color: rgba(0, 0, 0, 0)}
+
+
+
+/* img { display: block; } 엘리먼트 스타일 적용시 기존 상세페이지 문제로 주석 처리 : 23.04.06-서원 */
+html,
+body {font-family: 'Noto Sans KR', sans-serif;color: #333;-webkit-tap-highlight-color: rgba(0, 0, 0, 0)}
+
+/* select { appearance: none; -webkit-appearance: none; /* 사파리, 크롬 하위버전용 */
+/* -moz-appearance: none; /* 사파리, 크롬 하위버전용 */
+/* } 
+
+ /* select::-ms-expand { display: none; } 엘리먼트 스타일 적용시 기존 상세페이지 문제로 주석 처리 : 23.04.06-서원 */
+/* 익스플로러용 */
+
+.stop-scroll {height: 100%;overflow: hidden; } 
+
+/* body 스크롤 방지용 */
+.thkc_container {width: 1400px;margin: 0 auto; } 
+
+.thkc_container_02 {width: 1318px;margin: 0 auto; } 
+
+.thkc_container_03 {width: 400px;margin: 0 auto; } 
+
+/* iframe */
+.item-explan{position: relative; width: 100%;}
+iframe {	width: 100%;	}
+
+/********** HTML/CSS **********/
+/* 상단 메뉴 Wrap */
+#thkc_headerWrap {width: 100%; } 
+
+/* main 전체 Wrap 1400px */
+#thkc_mainWrap {display: flex; } 
+
+/* 메인 컨텐츠 Wrap */
+#thkc_conWrap {width: 1060px; } 
+
+#thkc_conWrap .at-container {padding: 16px 0 0 0;margin: 0; } 
+
+#thkc_conWrap .at-container .at-content {padding: 0;margin: 0; } 
+
+#thkc_conWrap .at-container .at-content section {padding: 20px 0 0 0;margin: 0; } 
+
+/* 사이드 메뉴 Wrap */
+#thkc_asideWrap {width: 302px;border-right: 1px solid #EFEFEF; } 
+
+/* gap */
+#thkc_gap {width: 38px !important}
+
+/* footer Wrap */
+#thkc_footerWrap {height: 100px;background: #000}
+
+/* common */
+.f_col {color: #ffffff}
+
+.f_col3 {color: #333333}
+
+.f_color01 {color: #FF9015; } 
+
+.f_s14 {font-size: 14px; } 
+
+.f_s16 {font-size: 16px; } 
+
+.f_s25 {font-size: 25px; } 
+
+.f_bold {font-weight: 500; } 
+
+.f_bold100 {font-weight: 100; } 
+
+.f_bold400 {font-weight: 400; } 
+
+.f_bold700 {font-weight: 700; } 
+
+.f_bold100 {font-weight: 100; } 
+
+.thkc_bg01 {background: #FF9015; } 
+
+.thkc_bg02 {background: #F3E9E4; } 
+
+
+/* 모바일 토글 메뉴 영역 */
+.asideClone,
+.overlay {display: none; } 
+
+/* 팝업오버뷰 */
+.thkc_popOverlay {display: block; } 
+
+.thkc_popUpWrap {justify-content: center;align-items: center;position: fixed;display: none;top: 50%;left: 50%;transform: translate(-50%, -50%);background: #fff;border-radius: 20px;width: 600px;padding: 30px 20px;z-index: 1001; } 
+
+.thkc_popWrap {position: relative; } 
+
+.thkc_popOverlay {position: fixed;width: 100%;height: 100%;left: 0;top: 0;border: 0;background: rgb(0, 0, 0);opacity: 0.5;z-index: 1000; } 
+
+.thkc_popWrap .thkc_close {display: flex;justify-content: flex-end;position: absolute;top: -10px;right: 5px;cursor: pointer; } 
+
+.thkc_popWrap .thkc_close i {font-size: 25px;color: #333; } 
+
+/* 오른쪽 카달로그 배너 */
+#bannerRight {position: fixed;top: 370px;left: 50%;transform: translateX(-50%);margin-left: 755px;z-index: 100; } 
+
+#bannerRight .banner_catalogWrap,
+.banner_catalogWrap div,
+.banner_eroum,
+.banner_del {display: flex;justify-content: center;align-items: center;cursor: pointer;margin-bottom: 15px; } 
+
+#bannerRight .banner_catalogWrap {width: 70px;height: 200px;background: #FFFFFF;border: 1px solid #D5D3D1;box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);border-radius: 10px;justify-content: space-around;flex-direction: column;font-size: 12px;line-height: 15px; } 
+
+#bannerRight .banner_catalogWrap div {flex-direction: column;align-items: center;padding-bottom: 10px;cursor: pointer; } 
+
+#bannerRight .banner_catalogWrap div img {padding: 5px; } 
+
+#bannerRight .banner_catalogWrap .c_apply {padding: 15px 0px 20px 0px;border-bottom: 1px dashed #D5D3D1; } 
+
+/* 오른쪽 이로움 톡톡 배너 */
+#bannerRight .banner_eroum {border-radius: 50px;background: #FF9016;width: 70px;height: 70px; } 
+
+/* 이로움 톡톡 삭제 */
+#bannerRight .banner_del {width: 70px;height: 10px; } 
+
+.m_banner_eroum {display: none; } 
+
+/* Top버튼 */
+#thkc_pageTop {width: 100%; } 
+
+#thkc_pageTop .btn_top {z-index: 10;display: none;width: 50px;height: 50px;border-radius: 50px;background: rgba(255, 255, 255, 0.5);box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);display: flex;justify-content: center;align-items: center;position: fixed;right: 10px;bottom: 10px;cursor: pointer; } 
+
+#thkc_pageTop .btn_top img {height: 20px; } 
+
+
+/********** css responsive **********/
+@media (max-width: 1399px) {
+.thkc_container,
+.thkc_container_02 {width: 100%; } 
+
+#thkc_conWrap {width: 900px; } 
+
+.thkc_container {padding: 0px 20px; } 
+
+.thkc_asideWrap {padding-right: 20px; } 
+ }
+
+@media (max-width: 1199px) {#thkc_conWrap {width: 1060px; } 
+
+/* 모바일 토글 메뉴 영역 */
+_body {overflow-y: hidden; } 
+
+#thkc_asideWrap {display: none; } 
+
+.asideClone,
+.overlay {display: block; } 
+
+.overlay {display: none;position: fixed;width: 100%;height: 100%;left: 0;top: 0;border: 0;background: rgb(0, 0, 0);opacity: 0.5;z-index: 1000; } 
+
+.asideClone {overflow-y: overlay;position: fixed;width: 330px;height: 100%;padding-left: 30px;top: 0px;right: -150%;background: white;transition: 0.3s;z-index: 10000;box-shadow: -4px 0px -4px rgba(0, 0, 0, 0.25); } 
+
+/* 오른쪽 카달로그 배너 */
+#bannerRight {_display: none;overflow-y: auto;position: fixed;top: 370px;right: 60px;transform: translateX(100%);margin: 0px 10px 0px 0px; } 
+ }
+
+@media (max-width: 991px) {
+	#thkc_gap {display: none;}
+	#thkc_conWrap {width: 100%; } 
+ }
+
+@media (max-width: 767px) {.thkc_container {width: 100%; } 
+
+/* 오른쪽 카달로그 배너 */
+#bannerRight .banner_catalogWrap,
+.banner_del {display: none; } 
+
+#bannerRight .banner_eroum {display: none; } 
+
+/* 복제 오른쪽 이로움 톡톡 배너 */
+.m_banner_eroum {z-index: 10;display: none;width: 52px;height: 52px;border-radius: 50px;background: #FF9016;box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);display: flex;justify-content: center;align-items: center;position: fixed;right: 10px;bottom: 70px;padding: 12px 0px 0px 0px;cursor: pointer; } 
+
+.m_banner_eroum img {width: 45px;height: 45px; } 
+
+/* 팝업뷰 */
+.thkc_popUpWrap {width: 85%;padding: 20px; } 
+
+.thkc_popWrap .thkc_close {top: 5px;right: 5px; } 
+
+input::placeholder,
+select::placeholder,
+textarea::placeholder {font-size: 12px !important; }
+
+
+ }
+
+
+
+
+@media (max-width: 430px) { } 
+
+@media (max-width: 360px) { } 

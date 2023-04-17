@@ -60,7 +60,7 @@ if ( THEMA_KEY == 'partner' && !$member['mb_id'] ) {
   $is_orderable = false;
 }
 
-include_once(THEMA_PATH.'/side/list-cate-side.php');
+//include_once(THEMA_PATH.'/side/list-cate-side.php');
 
 # 210131 재고수량 조회
 $sendData = [];

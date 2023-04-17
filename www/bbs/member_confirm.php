@@ -18,6 +18,11 @@ if( function_exists('social_member_comfirm_redirect') && (! $url || $url === 're
     social_member_comfirm_redirect();
 }
 
+
+// 23.04.10 : 서원 - 회원 정보 수정 페이지 변경으로 인한 해당 페이지 경로 하드코딩.
+$url = "member_info_newform.php";
+
+
 // Page ID
 $pid = 'confirm';
 $at = apms_page_thema($pid);

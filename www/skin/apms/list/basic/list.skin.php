@@ -63,7 +63,7 @@ $list_cnt = count($list);
 
 include_once($list_skin_path.'/category.skin.php');
 
-include_once(THEMA_PATH.'/side/list-cate-side.php');
+//include_once(THEMA_PATH.'/side/list-cate-side.php');
 
 # 210606 위시리스트
 $wishlist = [];
@@ -415,7 +415,7 @@ function apms_wishlist(it_id, $this) {
       return false;
     });
 
-  <?php if($member["mb_id"] && $_COOKIE["viewType"] != "basic" && $_COOKIE['SHOW_MY_STOCK'] !== 'OFF'){ ?>
+  <?php if($member["mb_id"] && $_COOKIE["viewType"] != "basic" && $_COOKIE['SHOW_MY_STOCK'] != 'OFF'){ ?>
     var sendData = <?=json_encode($sendData, JSON_UNESCAPED_UNICODE)?>;
 
     $.ajax({

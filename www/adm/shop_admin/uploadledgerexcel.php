@@ -2,7 +2,7 @@
 $sub_menu = '400300';
 include_once('../common.php');
 ?>
-<link rel="stylesheet" href="https://eroumcare.com/skin/admin/new/css/admin.css">
+<link rel="stylesheet" href="<?=G5_URL?>/skin/admin/new/css/admin.css">
 
 <style>
 	.excelBtn { background-color: #333; color: #FFF; font-weight: bold; padding: 5px 15px; display: inline-block; }
