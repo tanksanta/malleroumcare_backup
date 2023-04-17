@@ -198,7 +198,7 @@ if($w == '' && ($_POST['cp_sms_send'] || $_POST['cp_email_send'] || $_POST['cp_a
 	
 	// alim_talk
     if($_POST['cp_alimtalk_send'] && $arr_send_list[$i]['mb_hp']) {
-      $text = ($_POST['cp_type'] == "1")?$_POST['cp_price']."% (최대 ".number_format($_POST['cp_maximum'])."원)".number_format($_POST['cp_price'])."원";
+      $text = ($_POST['cp_type'] == "1")?$_POST['cp_price']."% (최대 ".number_format($_POST['cp_maximum'])."원)":number_format($_POST['cp_price'])."원";
 	  $alimtalk_contents = "[이로움]\n".get_text($arr_send_list[$i]['mb_name'])."님, 쿠폰이 발급되어 안내드립니다.\n■ 쿠폰명 : ".$cp_subject."\n■ 쿠폰금액 : ".$text."\n■ 유효기간 : ".date("Y-m-d",strtotime($cp_end." -1 days"))." 23시 59분까지\n\n* 이 메시지는 고객님의 동의에 의해 지급된 쿠폰 안내 메시지입니다." ;
 	  send_alim_talk('COUPONADD_'.str_replace("-","",$cp_id).'_'.str_replace("-","",$arr_send_list[$i]['mb_hp']), $arr_send_list[$i]['mb_hp'], 'ent_coupon_add', $alimtalk_contents, array(
     'button' => [
