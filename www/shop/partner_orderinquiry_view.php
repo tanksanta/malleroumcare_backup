@@ -199,7 +199,9 @@ add_javascript('<script src="'.G5_JS_URL.'/jquery.magnific-popup.js"></script>',
       <!--?php if($order_status['od_status'] == '완료' || $order_status['od_status'] == '작성') { ? -->
 	  <?php 
 		 $show_install_btn = false;
+     $ct_direct_delivery_arr = [];
 		 foreach($carts as $cart){
+       $ct_direct_delivery_arr[$cart['ct_id']] = $cart['ct_is_direct_delivery'];
 			 if (($cart['ct_status'] == '배송' || $cart['ct_status'] == '완료') && $cart['ct_direct_delivery'] == "설치") $show_install_btn = true;
 		 }
 		 if ($show_install_btn == true) {
@@ -938,17 +940,27 @@ $(function() {
 	if($('.sel_manager').val() === '') {
       alert("먼저 담당자를 지정해주세요.");
 	  return false;
-    } 
-    const send_data = {};
+    }
+
     const obj = $(this).serializeArray();
-    send_data['od_id'] = obj[0].value;
-    send_data['ct_id'] = obj[1].value;
-    send_data['delivery_date'] = obj[2].value;
-    send_data['delivery_datetime'] = obj[3].value + ":00";
-    send_data['partner_manager_mb_id'] = $('.sel_manager').val();
-    send_data['delivery_property'] = obj[4].value;
+    var direct_ct = <?= json_encode($ct_direct_delivery_arr)?>;
+    const ct_id_arr = [];
+
+    for(var key in obj) {
+      if(obj[key]['name'] == "ct_id[]") { ct_id_arr.push(obj[key]['value']); }
+    }
+
+    obj[obj.length]={'name':'ct_id','value':ct_id_arr};
+    obj[obj.length]={'name':'update_type','value':'view_date'};
+    obj[obj.length]={'name':'partner_manager_mb_id','value':$('.sel_manager').val()};
+    obj[obj.length]={'name':'loading_manager','value':true};
+    for (var key in direct_ct) {
+        obj[obj.length]={'name':'ct_is_direct_delivery_'+key,'value':direct_ct[key]};
+    }
+
+
     const send_data2 = $(this).serialize();
-    $.post('schedule/ajax.schedule.php', send_data, 'json').done(function() {
+    $.post('schedule/ajax.schedule.php', obj, 'json').done(function() {
       $.post('ajax.partner_deliverydate.php', send_data2, 'json')
         .done(function() {
           alert('변경이 완료되었습니다.');
@@ -994,22 +1006,32 @@ $(function() {
     var manager = $(this).val();
     var manager_name = $(this).find('option:selected').text();
 
-    const send_data = {};
     const obj = $("#form_delivery_date").serializeArray();
-    send_data['od_id'] = obj[0].value;
-    send_data['ct_id'] = obj[1].value;
-    send_data['delivery_date'] = obj[2].value;
-    send_data['partner_manager_mb_id'] = manager;
-    loading_manager = true;
+    var direct_ct = <?= json_encode($ct_direct_delivery_arr)?>;
+    const ct_id_arr = [];
+    var is_dir_date = false;
 
-    if (send_data['delivery_date']) {
-      $.post('schedule/ajax.schedule.php', send_data, 'json').done(function() {
+    for(var key in obj) {
+      if(obj[key]['name'] == "ct_id[]") { ct_id_arr.push(obj[key]['value']); }
+      if(obj[key]['name'].substr(0,23) == "ct_direct_delivery_date" && obj[key]['value'] == '') { is_dir_date = false; }
+    }
+    obj[obj.length]={'name':'ct_id','value':ct_id_arr};
+    obj[obj.length]={'name':'update_type','value':'view_manager'};
+    obj[obj.length]={'name':'partner_manager_mb_id','value':$('.sel_manager').val()};
+    obj[obj.length]={'name':'loading_manager','value':true};
+    for (var key in direct_ct) {
+        if(direct_ct[key] == 2) is_dir_date = true;
+        obj[obj.length]={'name':'ct_is_direct_delivery_'+key,'value':direct_ct[key]};
+    }
+
+    if (is_dir_date) { // 일정없이 담당자만 변경
+      $.post('schedule/ajax.schedule.php', obj, 'json').done(function() {
         $.post('ajax.partner_manager.php', {
             od_id: od_id,
             manager: manager
           }, 'json')
           .done(function() {
-            alert(manager_name + ' 담당자로 변경되었습니다.');
+            alert(manager_name.replaceAll(' ','').replace('\n',' ') + ' 담당자로 변경되었습니다.');
           })
           .fail(function($xhr) {
             var data = $xhr.responseJSON;

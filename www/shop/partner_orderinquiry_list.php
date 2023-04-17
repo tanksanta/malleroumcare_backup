@@ -1047,25 +1047,29 @@ $(function() {
       send_data['ct_direct_delivery_time_' + ct_id] = $(this).find(
         'select[name="ct_direct_delivery_time"]').val();
 
-      const send_data2 = {};
-      send_data2['od_id'] = od_id;
-      send_data2['ct_id'] = ct_id;
-      send_data2['delivery_date'] = $(this).find(
-        'input[name="ct_direct_delivery_date"]').val();
-      send_data2['delivery_datetime'] = $(this).find(
-        'select[name="ct_direct_delivery_time"]').val() + ":00";
-      send_data2['partner_manager_mb_id'] = manager;
+      var send_data2 = [];
+      send_data2[0]={'name':'od_id','value':od_id};
+      send_data2[send_data2.length]={'name':'ct_id','value':[ct_id]};
+      send_data2[send_data2.length]={'name':'partner_manager_mb_id','value':manager};
+      send_data2[send_data2.length]={'name':'ct_direct_delivery_date_'+ct_id,'value':$(this).find(
+        'input[name="ct_direct_delivery_date"]').val()};
+      send_data2[send_data2.length]={'name':'ct_direct_delivery_time_'+ct_id,'value':$(this).find(
+        'select[name="ct_direct_delivery_time"]').val()};
+      send_data2[send_data2.length]={'name':'update_type','value':'list_date'};
+
+      const delivery = $(this).parent().parent().parent().parent().parent().find('.td_delivery_info').find('p')[1];
+      var delivery_type = $(delivery).text().split("]")[0].split("[")[1];
+      if(delivery_type == "설치") send_data2[send_data2.length]={'name':'ct_is_direct_delivery_'+ ct_id,'value':'2'};
+      else if(delivery_type == "배송") send_data2[send_data2.length]={'name':'ct_is_direct_delivery_'+ ct_id,'value':'1'};
+
       $.post('schedule/ajax.schedule.php', send_data2, 'json').done(function() {
-		console.log("step1 ");
 	//STR 2023.01.10 jake
         $.post('ajax.partner_deliverydate.php', send_data, 'json')
           .done(function() {
-		console.log("step2 ");
             alert('변경이 완료되었습니다.');
             window.location.reload();
           })
           .fail(function($xhr) {
-		console.log("step3 ");
             var data = $xhr.responseJSON;
             alert(data && data.message);
           });
@@ -1074,19 +1078,16 @@ $(function() {
       }).fail(function($xhr) {
 	//STR 2023.01.10 jake
 		if ( od_type == '2'){
-		console.log("step4 ");
         	var data = $xhr.responseJSON;
             alert(data && data.message);
 		} else {
 
         $.post('ajax.partner_deliverydate.php', send_data, 'json')
           .done(function() {
-		console.log("step5 ");
             alert('변경이 완료되었습니다.');
             window.location.reload();
           })
           .fail(function($xhr) {
-		console.log("step6 ");
             var data = $xhr.responseJSON;
             alert(data && data.message);
           });
@@ -1304,7 +1305,13 @@ $(function() {
     var manager = $(this).val();
     var manager_name = $(this).find('option:selected').text();
 
-    const send_data2 = {};
+    var is_set_date = false;
+    var send_data2 = [];
+    send_data2[0]={'name':'od_id','value':od_id};
+    send_data2[send_data2.length]={'name':'partner_manager_mb_id','value':manager};
+    send_data2[send_data2.length]={'name':'update_type','value':'list_manager'};
+    send_data2[send_data2.length]={'name':'loading_manager','value':true};
+
     const delivery = $(this).parent().parent().find('.td_od_info').not(
       '.td_delivery_info').find('p');
     const ct_id = delivery.find("button").attr("data-ctid");
@@ -1313,15 +1320,12 @@ $(function() {
         const text = $(delivery[3]).text().trim().replace(/\n/g, "").replace(/  /g, "").replace(
           "출고예정 :", "").replace("변경", "").replace("설치예정 :","")
         if (text !== '') {
-          send_data2['delivery_date'] = text.split(" ")[0];
-          send_data2['delivery_datetime'] = text.split(" ")[1].replace("시", "") + ":00";
+          send_data2[send_data2.length]={'name':'ct_direct_delivery_date_'+ct_id,'value':text.split(" ")[0]};
+          send_data2[send_data2.length]={'name':'ct_direct_delivery_time_'+ct_id,'value':text.split(" ")[1].replace("시", "")};
+          is_set_date = true;
         }
       }
     //}
-    send_data2['ct_id'] = ct_id;
-    send_data2['od_id'] = od_id;
-    send_data2['partner_manager_mb_id'] = manager;
-	//send_data2['delivery_date'] = send_data2['delivery_date'] = text.split(" ")[0];
     loading_manager = true;
 
 	console.log("@__@"+od_type);

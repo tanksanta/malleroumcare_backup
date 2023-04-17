@@ -2897,7 +2897,7 @@ function get_partner_member_list_by_ent_mb_id_and_partner_mb_id($ent_md_id) {
 function exit_partner_install_schedule($od_id) {
   $sql = "SELECT id FROM partner_inst_sts WHERE od_id = $od_id;";
   $result = sql_query($sql);
-  $sql = "SELECT ct_id FROM g5_shop_cart WHERE od_id = $od_id AND (ct_status = '출고준비' OR ct_status = '완료');";
+  $sql = "SELECT ct_id FROM g5_shop_cart WHERE od_id = $od_id AND (ct_status = '출고준비' OR ct_status = '완료') AND ct_is_direct_delivery = '2';";
   $result_cart = sql_query($sql);
   return mysqli_num_rows($result) == mysqli_num_rows($result_cart) && mysqli_num_rows($result) > 0;
 }
@@ -2972,7 +2972,7 @@ function create_partner_install_schedule($od_id) {
   LEFT JOIN g5_shop_order AS od ON ct.od_id = od.od_id
   LEFT JOIN g5_member AS mb ON mb.mb_id = od.mb_id
   WHERE od.od_id = $od_id AND 
-  ct.ct_is_direct_delivery != 0 AND -- ct_is_direct_delivery(0:배송,1:직배송,2:설치)
+  ct.ct_is_direct_delivery = 2 AND -- ct_is_direct_delivery(0:배송,1:직배송,2:설치)
   (od.od_status != '주문무효' AND od.od_status != '취소') AND
   (ct.ct_status = '준비' OR ct.ct_status = '출고준비' OR ct.ct_status = '완료' OR ct.ct_status = '배송');";
   $cart_result = sql_query($sql);
@@ -3136,6 +3136,7 @@ function validate_schedule() {
     FROM `partner_inst_sts` AS `s` 
     LEFT JOIN `g5_shop_cart` AS `ct` ON ct.od_id = s.od_id 
     WHERE s.od_id = '".$item['od_id']."' 
+    AND ct.ct_is_direct_delivery = 2
     GROUP BY od_id;";
     $compare_a = sql_fetch($sql);
 
@@ -3144,6 +3145,7 @@ function validate_schedule() {
     group_concat(DISTINCT ct.ct_id ORDER BY ct.ct_id ASC) AS `ct_concat` 
     FROM `g5_shop_cart` AS ct
     WHERE ct.od_id = '".$item['od_id']."' 
+    AND ct.ct_is_direct_delivery = 2
     GROUP BY od_id;";
     $compare_b = sql_fetch($sql);
     if ($compare_a['ct_concat'] != $compare_b['ct_concat']) {

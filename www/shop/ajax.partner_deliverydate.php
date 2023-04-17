@@ -14,11 +14,14 @@ foreach($ct_id_arr as $ct_id) {
   $ct_id = get_search_string($ct_id);
   $ct_direct_delivery_date = get_search_string($_POST["ct_direct_delivery_date_{$ct_id}"]);
   $ct_direct_delivery_time = get_search_string($_POST["ct_direct_delivery_time_{$ct_id}"]);
+
+  if(!($ct_direct_delivery_date && $ct_direct_delivery_time)) continue;
+
   $ct_direct_delivery_date = date('Y-m-d H:i:s', strtotime($ct_direct_delivery_date.' '.$ct_direct_delivery_time.':00:00'));
 
   if(!$ct_id || !$ct_direct_delivery_time || !$ct_direct_delivery_date)
     json_response(400, '유효하지 않은 요청입니다.');
-  
+
   $cart = sql_fetch("
     SELECT * FROM {$g5['g5_shop_cart_table']}
     WHERE od_id = '{$od_id}' and ct_id = '{$ct_id}'
@@ -26,7 +29,7 @@ foreach($ct_id_arr as $ct_id) {
 
   if($cart['ct_direct_delivery_partner'] != $member['mb_id'])
     json_response(400, '해당 상품의 배송정보를 변경할 수 있는 권한이 없습니다.');
-  
+
   if($cart['ct_direct_delivery_date'] === $ct_direct_delivery_date)
     continue;
 
