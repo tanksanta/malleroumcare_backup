@@ -437,7 +437,7 @@
 
     <section class="wrap">
         <div class="sub_section_tit">수급자 주문상세</div>
-        <button type="button" class="" id="view_link" Onclick="window.open('https://eroum.co.kr/partners/login','_blank'); ">이로움ON 맴버스<br />바로가기</button>
+        <button type="button" class="" id="view_link" Onclick="window.open('https://eroum.co.kr/members/login','_blank'); ">이로움ON 맴버스<br />바로가기</button>
         <button type="button" class="" id="view_list" Onclick="location.href = '/shop/eroumon_order_list.php'; ">목록</button>
     </section>
 
@@ -528,8 +528,9 @@
                         <div style="float:left; padding:5px 20px 5px 25px;">
                             <img src="/data/item/<?=$row['it_img1'];?>" style="width:70px;">
                         </div>
-                        <div style="padding-top:25px;">
+                        <div style="padding-top:<?=($row['io_id'] != "")?"7":"18";?>px;">
                             <p><?=$row['it_name'];?></p>
+							<?=($row['io_id'] != "")?"<p>옵션 : ".$row['io_id']."</p>":"";?>
                             <p>수량 : <?=number_format($row['ct_qty']);?>개</p>
                         </div>
 

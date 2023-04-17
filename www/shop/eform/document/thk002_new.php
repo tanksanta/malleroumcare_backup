@@ -185,7 +185,7 @@
         <td style="border-left: 0;border-right: 0"><?=$eform['entCeoNm']?></td>
         <td class="seal-form" data-id="seal_002_1" style="border-left: 0;color: #999;font-size: 14px;text-align: right">( 서명 또는 인 )<?php if($preview || $download) {?>
 	<div style="position:absolute; top:0px; right:35px;z-index:-1;">
-		<img src="/data/file/member/stamp/<?=$member["sealFile"]; ?>" style="border:0px; width:60px;">
+		<img src="<?=$eform["dc_signUrl"]; ?>" style="border:0px; width:60px;">
 	</div>
 	<?php }?></td>
       </tr>

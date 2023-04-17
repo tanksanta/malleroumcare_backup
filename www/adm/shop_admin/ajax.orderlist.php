@@ -180,7 +180,7 @@ if (gettype($ct_delivery_saved) == 'string' && $ct_delivery_saved !== '') {
 if ( $od_sales_manager ) {
   $where_od_sales_manager = array();
   for($i=0;$i<count($od_sales_manager);$i++) {
-    $where_od_sales_manager[] = " mb_manager = '{$od_sales_manager[$i]}'";
+    $where_od_sales_manager[] = " od_sales_manager = '{$od_sales_manager[$i]}'";
   }
   if ( count($where_od_sales_manager) ) {
     $where[] = " ( " . implode(' OR ', $where_od_sales_manager) . " ) ";
@@ -608,9 +608,9 @@ foreach($orderlist as $order) {
     $mb_entNm = $order['od_name'];
   }
 
-  $sale_manager = $sales_manager_table[$order['mb_manager']];
+  $sale_manager = $sales_manager_table[$order['od_sales_manager']];
   if (!$sale_manager) {
-    $sale_manager = $sales_manager_table[$order['od_sales_manager']];
+    $sale_manager = $sales_manager_table[$order['mb_manager']];
   }
 
 

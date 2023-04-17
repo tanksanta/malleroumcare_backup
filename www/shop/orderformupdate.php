@@ -1012,7 +1012,8 @@ if ($member['mb_type'] == 'default') {
   $od_sales_manager = '1205';
 }
 if (is_dealer()) {
-  $od_sales_manager = '1202';
+  //$od_sales_manager = '1202';
+	$od_sales_manager = $member['mb_manager'];
 }
 if ($member['mb_type'] == 'partner') {
   $od_sales_manager = '1201';

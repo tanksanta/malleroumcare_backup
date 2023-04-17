@@ -132,6 +132,7 @@ $search_where = "계약상태-".$stat_text.",기간구분-".$od_release_text.",�
 
 // select 배열 처리
 $select[] = "E.*";
+$select[] = "(SELECT mb_id FROM `g5_member` WHERE mb_entId=E.entId) AS mb_id";
 $sql_select = "HEX(E.dc_id) as uuid, ".implode(', ', $select);
 
 // where 배열 처리
@@ -175,6 +176,7 @@ while ($row = sql_fetch_array($result)) {
   $data[] = [
     $num,
 	$row["entNm"],
+	$row["mb_id"],
 	mb_substr($row["penNm"],0,1)."*".mb_substr($row["penNm"],-1),  
 	substr($row["penLtmNum"],0,4)."***".substr($row["penLtmNum"],7,4),
     $row["penRecGraNm"],
@@ -190,14 +192,14 @@ while ($row = sql_fetch_array($result)) {
 }
 
 
-$title = ['No.','사업소명','수급자명','수급자번호','인정등급','본인부담금율','상품수량','총계약금액','생성일자','서명요청일자','서명완료일자','상태'];
+$title = ['No.','사업소명','사업소ID','수급자명','수급자번호','인정등급','본인부담금율','상품수량','총계약금액','생성일자','서명요청일자','서명완료일자','상태'];
 // 엑셀 라이브러리 설정
 include_once(G5_LIB_PATH."/PHPExcel.php");
 $reader = PHPExcel_IOFactory::createReader('Excel2007');
 $excel = new PHPExcel();
 $sheet = $excel->getActiveSheet();
 $excel->setActiveSheetIndex(0)->mergeCells('A1:L1');
-$excel->setActiveSheetIndex(0)->mergeCells('F3:L3');
+$excel->setActiveSheetIndex(0)->mergeCells('F3:M3');
 
 // 시트 네임
 $sheet->setTitle("간편계약서관리");
@@ -205,9 +207,9 @@ $sheet->setTitle("간편계약서관리");
 $last_row = count($data) + 1;
 if($last_row < 2) $last_row = 2;
 // 전체 테두리 지정
-$sheet -> getStyle(sprintf("A4:L%s", ($last_row+3))) -> getBorders() -> getAllBorders() -> setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+$sheet -> getStyle(sprintf("A4:M%s", ($last_row+3))) -> getBorders() -> getAllBorders() -> setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 // 전체 가운데 정렬
-$sheet -> getStyle(sprintf("A1:L%s", ($last_row+3))) -> getAlignment() -> setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+$sheet -> getStyle(sprintf("A1:M%s", ($last_row+3))) -> getAlignment() -> setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
 
 //A4 기준 틀고정
 $sheet->freezePane('A5');
@@ -215,10 +217,10 @@ $sheet->freezePane('A5');
 for($i = 2; $i <= $last_row; $i++) {
   $sheet->getRowDimension($i)->setRowHeight(-1);
 }
-$sheet->getStyle("A4:L4")->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setARGB('cccccc');
+$sheet->getStyle("A4:M4")->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setARGB('cccccc');
 $sheet->getStyle('A1')->getFont()->setSize(15);
 $sheet->getStyle('A1')->getFont()->setBold(true);
-$sheet->getStyle("A4:L4")->getFont()->setBold(true);
+$sheet->getStyle("A4:M4")->getFont()->setBold(true);
 $sheet->getStyle('A1')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
 $sheet->getStyle('A1')->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
 $excel->setActiveSheetIndex(0)->setCellValue('A1', "간편계약서관리"); 
@@ -232,16 +234,17 @@ $sheet->fromArray($data,NULL,'A5');
 //텍스트 크기에 맞춰 자동으로 크기를 조정한다.
 $sheet->getColumnDimension('A')->setWidth(10);
 $sheet->getColumnDimension('B')->setWidth(30);
-$sheet->getColumnDimension('C')->setWidth(10);
-$sheet->getColumnDimension('D')->setWidth(15);
-$sheet->getColumnDimension('E')->setWidth(10);
-$sheet->getColumnDimension('F')->setWidth(15);
-$sheet->getColumnDimension('G')->setWidth(10);
-$sheet->getColumnDimension('H')->setWidth(15);
-$sheet->getColumnDimension('I')->setWidth(20);
+$sheet->getColumnDimension('C')->setWidth(20);
+$sheet->getColumnDimension('D')->setWidth(10);
+$sheet->getColumnDimension('E')->setWidth(15);
+$sheet->getColumnDimension('F')->setWidth(10);
+$sheet->getColumnDimension('G')->setWidth(15);
+$sheet->getColumnDimension('H')->setWidth(10);
+$sheet->getColumnDimension('I')->setWidth(15);
 $sheet->getColumnDimension('J')->setWidth(20);
 $sheet->getColumnDimension('K')->setWidth(20);
-$sheet->getColumnDimension('L')->setWidth(15);
+$sheet->getColumnDimension('L')->setWidth(20);
+$sheet->getColumnDimension('M')->setWidth(15);
 
 
 header("Content-Type: application/octet-stream");

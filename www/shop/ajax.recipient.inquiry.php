@@ -149,8 +149,9 @@ $BusinessNumber = ($member["mb_level"]>8 || $member["mb_ent_num"] == "")?"326230
 $RecipientName= $rn; //'이간난'//$data['rn']
 $RecipientId= $id; //'1612104758';//$data['id'];
 
-$apiHost   = "https://api.tilko.net/";
-$apiKey    = "a55aaf2f84a0477da82bb4572f97babf"; 
+//$apiHost   = "https://api.tilko.net/";
+$apiHost   = "http://211.110.140.26/";
+$apiKey    = "a55aaf2f84a0477da82bb4572f97babf";
 
 
 // AES 암호화 함수

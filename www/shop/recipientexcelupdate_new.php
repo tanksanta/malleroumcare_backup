@@ -32,7 +32,10 @@ if($sheetData) {
       $penGender = addslashes($sheetData[$i]['D']);
       $sendData['penGender'] = $penGender == '1' ? '남' : ($penGender == '2' ? '여' : ''); //남 여
       $sendData['penConNum'] = addslashes($sheetData[$i]['E']); // 휴대번호
-      $sendData['penConPnum'] = addslashes($sheetData[$i]['F']); // 일반번호
+      if(substr($sendData['penConNum'],0,2) != "01"){
+		alert("({$i}행) {$sendData['penNm']} 수급자\\n오류 : 휴대폰번호를 확인해주세요.");
+	  }
+	  $sendData['penConPnum'] = addslashes($sheetData[$i]['F']); // 일반번호
       $sendData['penZip'] = addslashes($sheetData[$i]['G']); // 우편번호
       $sendData['penAddr'] = addslashes($sheetData[$i]['H']);//주소
       $sendData['penAddrDtl'] = addslashes($sheetData[$i]['I']);//상세주소

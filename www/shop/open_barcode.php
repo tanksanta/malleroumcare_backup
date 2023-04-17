@@ -93,7 +93,7 @@ $(function(){
   });
 
   $(document).on('touchstart, click', '#web-barcode-close', function(e) {
-    alert('바코드스캔을 종료합니다');
+    //alert('바코드스캔을 종료합니다');
     closeWebBarcode();
   });
 

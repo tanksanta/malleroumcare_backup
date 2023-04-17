@@ -104,7 +104,7 @@
     if ( $od_sales_manager ) {
       $where_od_sales_manager = array();
       for($i=0;$i<count($od_sales_manager);$i++) {
-        $where_od_sales_manager[] = " mb_manager = '{$od_sales_manager[$i]}'";
+        $where_od_sales_manager[] = " od_sales_manager = '{$od_sales_manager[$i]}'";
       }
       if ( count($where_od_sales_manager) ) {
         $where[] = " ( " . implode(' OR ', $where_od_sales_manager) . " ) ";
@@ -464,11 +464,15 @@
   
     //영업담당자
     // $od_sales_manager = get_member($od['od_sales_manager']);
-    $sql_manager = "SELECT `mb_manager` FROM `g5_member` WHERE `mb_id` ='".$od['mb_id']."'";
-    $result_manager = sql_fetch($sql_manager);
-    if (!$result_manager['mb_manager']) {
-      $result_manager['mb_manager'] = $od['od_sales_manager'];
-    }
+    if($od['od_sales_manager'] == "" || $od['od_sales_manager'] == "1202"){
+		$sql_manager = "SELECT `mb_manager` FROM `g5_member` WHERE `mb_id` ='".$od['mb_id']."'";
+		$result_manager = sql_fetch($sql_manager);
+		if (!$result_manager['mb_manager']) {
+		  $result_manager['mb_manager'] = $od['od_sales_manager'];
+		}
+	}else{
+		$result_manager['mb_manager'] = $od['od_sales_manager'];
+	}
     $od_sales_manager = get_member($result_manager['mb_manager']);
 
     $thezone_code = $it['io_thezone2'] ?: $it['io_thezone'] ?: $it['it_thezone2'];

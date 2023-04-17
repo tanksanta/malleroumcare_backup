@@ -803,8 +803,20 @@ if($od["od_b_tel"]) {
       .fail(function($xhr) {
         // msgResult = 'error'
         var data = $xhr.responseJSON;
-        console.warn(data && data.message);
-        // alert('바코드 재고 확인 도중 오류가 발생했습니다. 관리자에게 문의해주세요.');
+        console.log(data && data.message);
+        setTimeout(function() {
+
+          $('.folding_box.id_' + ct_id + ' li').each(function () {
+            if( $(this).find('.frm_input').prop("readonly") == false ) { 
+              $(this).find('.frm_input').val(""); 
+            }
+          });
+
+          alert(data && data.message);
+          return;
+          //alert('바코드 재고 확인 도중 오류가 발생했습니다. 관리자에게 문의해주세요.');
+
+        }, 500);
       })
     }
   }
