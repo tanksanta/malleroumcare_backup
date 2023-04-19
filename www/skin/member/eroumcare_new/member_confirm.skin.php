@@ -39,7 +39,7 @@ if($header_skin)
 					<div class="thkc_cont">
 						<div>
 							<label for="confirm_mb_password" class="thkc_blind">비밀번호</label>
-							<input class="thkc_input" id="confirm_mb_password" name="mb_password" placeholder="영문/숫자를 포함한 6자리 ~ 12자리 이하로 입력" value="" type="password" />
+							<input class="thkc_input" id="confirm_mb_password" name="mb_password" placeholder="" value="" type="password" />
 						</div>
 						<div class="error-txt error"></div>
 					</div>
