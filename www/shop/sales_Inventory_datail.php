@@ -477,7 +477,7 @@ $row = sql_fetch($sql);
                   <div class="sell_desc">
                     수급자 선택없이 판매완료 처리
                   </div>
-                  <form name="form_sell" class="form_sell" role="form">
+                  <form name="form_sell" id="form_sell<?=$i?>" class="form_sell" role="form" onSubmit="return sell_complete('<?=$i?>')">
                     <input type="hidden" name="stoId" value="<?=$list[$i]['stoId']?>">
                     <input type="hidden" name="prodBarNum" value="<?=$list[$i]['prodBarNum']?>">
                     <ul style="padding: 20px 0;">
@@ -1035,11 +1035,10 @@ function open_sell_popup(e, stoId, prodBarNum) {
   var $popup = $(e).parents('.list').find('.popup_sell').stop();
   $popup.show();
 }
-
+/*
 $(function() {
   $('.form_sell').on('submit', function(e) {
     e.preventDefault();
-
     var confirmed = $(this).find('input[name=chk_confirm]').prop('checked');
     if(!confirmed) {
       return alert('판매완료처리 안내사항을 확인해주세요.');
@@ -1051,7 +1050,20 @@ $(function() {
     sell_stoId(stoId, prodBarNum, penNm);
   });
 });
+*/
+function sell_complete(a){
+    var confirmed = $("#form_sell"+a).find('input[name=chk_confirm]').prop('checked');
+    if(!confirmed) {
+      alert('판매완료처리 안내사항을 확인해주세요.');
+	  return false;
+    }
+    var stoId = $("#form_sell"+a).find('input[name=stoId]').val();
+    var prodBarNum = $("#form_sell"+a).find('input[name=prodBarNum]').val();
+    var penNm = $("#form_sell"+a).find('input[name=penNm]').val();
 
+    sell_stoId(stoId, prodBarNum, penNm);
+	return false;
+}
 function sell_stoId(stoId, prodBarNum, penNm) {
   if(!confirm("판매완료처리 후 다시 재고등록으로 변경은 불가능합니다.\n완료처리하시겠습니까?"))
     return;
