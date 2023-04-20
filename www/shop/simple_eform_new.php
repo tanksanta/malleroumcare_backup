@@ -727,17 +727,17 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 			<b>직인 파일 업로드</b><br>
         <button type="button" class="btn_se_seal" id="btn_se_seal" style="margin-top:5px;font-size:13px;font-weight:bold;width:200px;">도장 입력하기</button>
         <br>
-		<p style="line-height:120%;margin-top:5px;">* 배경이 투명한 이미지를 등록하세요.<br>PNG파일만 가능 (3MB이하)</p>
+		<p style="line-height:120%;margin-top:5px;font-size:12px;">* 배경이 투명한 이미지를 등록하세요.<br>PNG파일만 가능 (3MB이하)</p>
 
 		<button type="button" class="btn_se_seal" style="font-size:12px;font-size:13px;font-weight:bold;width:200px;" id="btn_sign">싸인 입력</button>
 		<br>
-		<p style="line-height:120%;margin-top:5px;">* 도장(직인) 파일이 없다면 싸인(날인)을<br>제작하세요.</p>
+		<p style="line-height:120%;margin-top:5px;font-size:12px;">* 도장(직인) 파일이 없다면 싸인(날인)을<br>제작하세요.</p>
         </div>
 		<div id="" class="" style="float:right;width:38%;margin-right:15px">
 			<b>서명정보</b><br>
-			<div class="" style="position:relative;width:100%;height:149px;border:1px solid #aaa; background:#eeeeee;text-align:center;padding:5px;margin:auto;line-height:80px;">
-				<?php if($member["sealFile"]!=""){?><img id='sealFile_img' src="/data/file/member/stamp/<?=$member["sealFile"]; ?>" style="width:100%;"><?php }
-				else{echo "<img src='/img/seal_sample.png' id='sealFile_img' style='width:100%;'>";} ?>
+			<div class="" style="position:relative;width:100%;height:149px;border:1px solid #aaa; background:#eeeeee;text-align:center;padding:5px;line-height:80px;align-items: center;display: flex;">
+				<?php if($member["sealFile"]!=""){?><img id='sealFile_img' src="/data/file/member/stamp/<?=$member["sealFile"]; ?>" style="width:100%;margin: auto;display: block;"><?php }
+				else{echo "<img src='/img/seal_sample.png' id='sealFile_img' style='width:100%;margin: auto;display: block;'>";} ?>
 			</div>
 		</div>
       </form>
