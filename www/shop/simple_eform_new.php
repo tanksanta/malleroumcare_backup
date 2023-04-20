@@ -358,7 +358,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 				<label class="radio-inline" title="비대면은 카카오톡을 이용한 원격 계약입니다.">
                   <input type="radio" name="penRecTypeCd_radio" class="penRecTypeCd_radio penRecTypeCd01" value="01" <?php if($dc && $dc['penRecTypeCd'] == '02') echo 'checked' ?>> 비대면
                 </label>
-				&nbsp;&nbsp;<a href="https://eroumcare.com/bbs/board.php?bo_table=notice&wr_id=147" target="_blank"><img src="/img/ask_btn2.png" style="width:13px;border:0px;"></a>
+				&nbsp;&nbsp;<a href="<?=G5_BBS_URL;?>/board.php?bo_table=notice&wr_id=147" target="_blank"><img src="/img/ask_btn2.png" style="width:13px;border:0px;"></a>
 			</div>		
 		</div>
 		  <div class="form-group" style="border-top:1px solid #aaaaaa;">
@@ -393,7 +393,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
               <input type="checkbox" name="acc_chk" id="acc_chk" value="1" class="input-sm" style="width:20px;" <?php if($dc['entConAcc01'] != "") { ?>checked<?php }?> onClick="if(this.checked == true){btn_acc_click();}">&nbsp;&nbsp;&nbsp;<strong>특약사항 입력 시</strong>
             </label>
             <label style="float:right;">
-              <button type="button" id="btn_acc"  class="btn btn-black" onClick="btn_acc_click()"><b>특약사항 정보 입력</b></button>
+              <button type="button" id="btn_acc"  class="btn btn-black" onClick="btn_acc_click()"><b>특약사항 정보 입력</b>&nbsp;</button>
 			  <input type="hidden" name="entConAcc01" id="entConAcc01" value="<?=$dc['entConAcc01']?>" alt="특약사항 정보">
 			  <input type="hidden" name="save_conacc" id="save_conacc" value="" alt="특약사항 저장유무">
             </label>
@@ -723,32 +723,33 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
         </div>
 
 		<form action="ajax.member.seal_upload_new.php" method="POST" id="form_seal" onsubmit="return false;">
-		<div id="" style="float:left;width:55%;margin-left:15px;">
+		<div id="" style="float:left;width:52%;margin-left:15px;">
 			<b>직인 파일 업로드</b><br>
-        <button type="button" class="btn_se_seal" style="margin-top:10px;">직인 이미지 업로드</button>
+        <button type="button" class="btn_se_seal" id="btn_se_seal" style="margin-top:5px;font-size:13px;font-weight:bold;width:200px;">도장 입력하기</button>
         <br>
-		* 배경이 투명한 png 파일 업로드를 권장 합니다.<br>
-       
+		<p style="line-height:120%;margin-top:5px;">* 배경이 투명한 이미지를 등록하세요.<br>PNG파일만 가능 (3MB이하)</p>
+
+		<button type="button" class="btn_se_seal" style="font-size:12px;font-size:13px;font-weight:bold;width:200px;" id="btn_sign">싸인 입력</button>
+		<br>
+		<p style="line-height:120%;margin-top:5px;">* 도장(직인) 파일이 없다면 싸인(날인)을<br>제작하세요.</p>
         </div>
-		<div id="" class="" style="float:right;width:35%;margin-right:15px">
+		<div id="" class="" style="float:right;width:38%;margin-right:15px">
 			<b>서명정보</b><br>
-			<div class="" style="position:relative;width:100%;height:90px;border:1px solid #aaa; background:#eeeeee;text-align:center;padding:5px;margin-top:10px;line-height:80px;">
-				<?php if($member["sealFile"]!=""){?><img id='sealFile_img' src="/data/file/member/stamp/<?=$member["sealFile"]; ?>" style="max-width:100%;max-height:100%;"><?php }
-				else{echo "<span id='no_img'>이미지가 없습니다.</span><img src='' id='sealFile_img' style='max-width:100%;max-height:100%;display:none;'>";} ?>
+			<div class="" style="position:relative;width:100%;height:149px;border:1px solid #aaa; background:#eeeeee;text-align:center;padding:5px;margin:auto;line-height:80px;">
+				<?php if($member["sealFile"]!=""){?><img id='sealFile_img' src="/data/file/member/stamp/<?=$member["sealFile"]; ?>" style="width:100%;"><?php }
+				else{echo "<img src='/img/seal_sample.png' id='sealFile_img' style='width:100%;'>";} ?>
 			</div>
 		</div>
       </form>
-	  <div id="" style="float:left;width:100%;margin:15px;">
-		* 직인 파일이 없다면? <a href="javascript:;" id="btn_sign"><b>날인정보로 입력하기</b></a>
-      </div>
+
 	  <input type="hidden" name="link" value="simple_eform_test.php">
-	  <div id="" class="" style="float:left;width:100%;padding:0px 15px;">
+	  <div id="" class="" style="float:left;width:100%;padding:5px 15px;">
 		<b>사업자 계좌정보</b><br>
 		<label><input type="text" name="mb_account" id="mb_account" class="form-control input-sm" style="width:292px !important;" value="<?=$member["mb_account"]; ?>" placeholder="예) 신한 110-1234-123456 (홍길동)"></label> <label><button type="button" class="btn btn-black btn-sm" style="background:black" onClick="faccount_submit()">저장하기</button></label><br>
 		* 등록된 계좌번호는 급여비용명세서에서 사용 됩니다.
 	  </div>
-	  <div style="text-align:right;bottom:0px;float:left;width:100%;margin-top:10px;">
-			 <button type="button" class="btn btn-black btn-sm btn_close" style="margin-right:15px;">돌아가기</button>
+	  <div style="text-align:right;bottom:0px;float:left;width:100%;margin-top:10px;margin-left:-10px;">
+			 <button type="button" class="btn btn-black btn-sm btn_close" style="width:412px;font-weight:bold;height:35px;">돌아가기</button>
 		</div>
 	</div>
 	
@@ -831,7 +832,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 
 		<div id="" style="float:left;width:100%;margin-left:15px;">			
 			<label style="width:363px;">
-			<textarea name="entConAcc01_2" id="entConAcc01_2" style="width:363px;height:250px;"><?php if($dc) echo $dc['entConAcc01']; else echo nl2br($member['mb_entConAcc01']); ?></textarea>
+			<textarea name="entConAcc01_2" id="entConAcc01_2" style="width:363px;height:250px;"><?php if($dc) echo $dc['entConAcc01']; else echo $member['mb_entConAcc01']; ?></textarea>
 			</label>
 			  		
 		</div>
@@ -2319,13 +2320,28 @@ $(document).on('click', function(e) {
 
 // 직인 업로드
 var loading_seal = false;
-$('.btn_se_seal').click(function() {
+$('#btn_se_seal').click(function() {
   var $form = $(this).closest('form');
 
   $form.find('input[name="sealFile"]').remove();
-  $('<input type="file" name="sealFile" accept=".png,.gif,.jpg" style="width: 0; height: 0; overflow: hidden;">').appendTo($form).click();
+  $('<input type="file" name="sealFile" id="sealFile" accept=".png" style="width: 0; height: 0; overflow: hidden;">').appendTo($form).click();
 });
 $(document).on('change', 'input[name="sealFile"]', function(e) {
+	var MaxSize = 3;
+	var FileExt = "PNG";
+
+		if (this.value != "") {		
+			var extPlan = FileExt;
+			var checkSize = 1024 * 1024 * MaxSize;
+			
+			if (!checkFile($('input[name="sealFile"]'), extPlan) || !checkFileSize($('input[name="sealFile"]'), checkSize)) {
+
+				this.value = "";
+				return;				
+			}
+			
+		}
+  
   var $form = $(this).closest('form');
 
   if(loading_seal)
@@ -2360,7 +2376,66 @@ $(document).on('change', 'input[name="sealFile"]', function(e) {
     loading_seal = false;
   });
 });
+//업로드파일 확장자 체크
+function checkFile(obj, ext) {
 
+    var check = false;
+    var extName = obj.val().substring(obj.val().lastIndexOf(".") + 1).toUpperCase();
+    var str = ext.split(",");
+    
+    for ( var i = 0; i < str.length; i++ ) {
+    
+        if (extName == str[i].trim()) {
+        
+            check = true;
+            break;
+            
+        } else check = false;
+        
+    }
+    
+    if ( !check ) {
+    
+        alert(ext + " 파일만 업로드 가능합니다.");
+        
+    }
+    
+    return check;
+    
+}
+//업로드파일 용량 체크
+function checkFileSize(obj, size) {
+
+    var check = false;
+    var sizeinbytes = obj[0].files[0].size;
+    var fSExt = new Array('Bytes', 'KB', 'MB', 'GB');
+    var i = 0;
+    var checkSize = size;
+    
+    while (checkSize > 900) {
+    
+        checkSize /= 1024;
+        i++;
+        
+    }
+    
+    checkSize = (Math.round(checkSize * 100) / 100) + ' ' + fSExt[i];
+    var fSize = sizeinbytes;
+    
+    if (fSize > size) {
+    
+        alert("첨부파일은 " + checkSize + " 이하로 첨부 바랍니다.");
+        check = false;
+        
+    } else {
+    
+        check = true;
+        
+    }
+    
+    return check;
+    
+}
 // 신규수급자 or 기존수급자 선택
 function check_pen_type() {
   var pen_type = $('input[name="pen_type"]:checked').val();
