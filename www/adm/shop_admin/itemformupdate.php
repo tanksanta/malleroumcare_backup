@@ -965,11 +965,13 @@ if($option_count) {
   $comma = '';
   $sql = "
     INSERT INTO {$g5['g5_shop_item_option_table']}
-    ( `io_id`, `io_type`, `it_id`, `io_price`, `io_stock_qty`, `io_noti_qty`, `io_use`, `io_price_partner`, `io_price_dealer`, `io_price_dealer2`, `io_thezone`, `io_standard`, `io_use_short_barcode`, `io_stock_manage_min_qty`, `io_stock_manage_max_qty` )
+    ( `io_id`, `io_type`, `it_id`, `io_price`, `io_stock_qty`, `io_noti_qty`, `io_use`, `io_price_partner`, `io_price_dealer`, `io_price_dealer2`, `io_thezone`, `io_standard`, `io_use_short_barcode`, `io_stock_manage_min_qty`, `io_stock_manage_max_qty`,`io_sold_out` )
     VALUES
   ";
   for($i=0; $i<$option_count; $i++) {
-    $sql .= $comma . " ( '{$_POST['opt_id'][$i]}', '0', '$it_id', '{$_POST['opt_price'][$i]}', '{$_POST['opt_stock_qty'][$i]}', '{$_POST['opt_noti_qty'][$i]}', '{$_POST['opt_use'][$i]}', '{$_POST['opt_price_partner'][$i]}', '{$_POST['opt_price_dealer'][$i]}', '{$_POST['opt_price_dealer2'][$i]}', '{$_POST['opt_thezone'][$i]}', '{$_POST['opt_standard'][$i]}', '{$_POST['opt_use_short_barcode'][$i]}', '{$_POST['opt_stock_manage_min_qty'][$i]}', '{$_POST['opt_stock_manage_max_qty'][$i]}' )";
+	  $opt_sold_out = (in_array($_POST['opt_id'][$i],$_POST['opt_sold_out']))?"1" : "0";
+	  $opt_use_short_barcode = (in_array($_POST['opt_id'][$i],$_POST['opt_use_short_barcode']))?"1" : "0";
+    $sql .= $comma . " ( '{$_POST['opt_id'][$i]}', '0', '$it_id', '{$_POST['opt_price'][$i]}', '{$_POST['opt_stock_qty'][$i]}', '{$_POST['opt_noti_qty'][$i]}', '{$_POST['opt_use'][$i]}', '{$_POST['opt_price_partner'][$i]}', '{$_POST['opt_price_dealer'][$i]}', '{$_POST['opt_price_dealer2'][$i]}', '{$_POST['opt_thezone'][$i]}', '{$_POST['opt_standard'][$i]}', '{$opt_use_short_barcode}', '{$_POST['opt_stock_manage_min_qty'][$i]}', '{$_POST['opt_stock_manage_max_qty'][$i]}','{$opt_sold_out}' )";
     $comma = ' , ';
   }
 

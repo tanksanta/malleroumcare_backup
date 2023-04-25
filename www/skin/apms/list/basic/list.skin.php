@@ -134,7 +134,9 @@ while($wish_row = sql_fetch_array($wish_result)) {
   $wishlist[$wish_row['it_id']] = true;
 }
 ?>
-
+<style type="text/css">
+	.textFitted {line-height:13px;}
+</style>
 <div id="sort-wrapper">
   <div class="dropdown">
     <a id="sortLabel" data-target="#" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-block">
@@ -229,10 +231,10 @@ while($wish_row = sql_fetch_array($wish_result)) {
           <button class="btn_wishlist <?=($wishlist[$list[$i]['it_id']] ? 'active' : '')?>" data-id="<?=$list[$i]['it_id']?>"><i class="fa fa-star" aria-hidden="true"></i></button>
           <?php */ } ?>
           <?php if($list[$i]["it_expected_warehousing_date"] !== "") { ?>
-          <div class="item-expected-warehousing-date"><?php echo $list[$i]["it_expected_warehousing_date"];?></div>
+          <div class="item-expected-warehousing-date box" style="height:12%;width:99.4%;top:105.5%;position:absolute;"><?php echo $list[$i]["it_expected_warehousing_date"];?></div>
           <?php } ?>
 		  <?php if($list[$i]["it_expected_warehousing_date"] == "" && $soldout_ck){ ?>
-					<div class="item-expected-warehousing-date">재고 소진으로 판매 종료</div> 
+					<div class="item-expected-warehousing-date box" style="height:12%;width:99.4%;top:105.5%;position:absolute;">재고 소진으로 판매 종료</div> 
 			<?php } ?>
         </div>
         <p class="name"><?=$list[$i]["it_name"]?></p>
@@ -365,7 +367,12 @@ while($wish_row = sql_fetch_array($wish_result)) {
   </div>
   <div class="clearfix"></div>
 </div>
-
+<script src="/js/textFit.js"></script>
+<script>
+$(document).ready(function(){
+	textFit(document.getElementsByClassName('box'), {minFontSize:10, maxFontSize:12,alignHoriz: true, alignVert: true, multiLine: false, widthOnly: true});
+});
+</script>
 <script type="text/javascript">
 // Wishlist
 function apms_wishlist(it_id, $this) {
