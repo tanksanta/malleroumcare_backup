@@ -164,7 +164,7 @@ if($mb_id !== '전체회원') {
 }
 
 // 쿠폰생성알림 발송
-if($w == '' && ($_POST['cp_sms_send'] || $_POST['cp_email_send'])) {
+if($w == '' && ($_POST['cp_sms_send'] || $_POST['cp_email_send'] || $_POST['cp_alimtalk_send'])) {
   include_once(G5_LIB_PATH.'/mailer.lib.php');
 
   $sms_count = 0;
@@ -195,8 +195,24 @@ if($w == '' && ($_POST['cp_sms_send'] || $_POST['cp_email_send'])) {
   for($i=0; $i<$count; $i++) {
     if(!$arr_send_list[$i]['mb_id'])
       continue;
-
-    // SMS
+	
+	// alim_talk
+    if($_POST['cp_alimtalk_send'] && $arr_send_list[$i]['mb_hp']) {
+      $text = ($_POST['cp_type'] == "1")?$_POST['cp_price']."% (최대 ".number_format($_POST['cp_maximum'])."원)":number_format($_POST['cp_price'])."원";
+	  $alimtalk_contents = "[이로움]\n".get_text($arr_send_list[$i]['mb_name'])."님, 쿠폰이 발급되어 안내드립니다.\n■ 쿠폰명 : ".$cp_subject."\n■ 쿠폰금액 : ".$text."\n■ 유효기간 : ".date("Y-m-d",strtotime($cp_end." -1 days"))." 23시 59분까지\n\n* 이 메시지는 고객님의 동의에 의해 지급된 쿠폰 안내 메시지입니다." ;
+	  send_alim_talk('COUPONADD_'.str_replace("-","",$cp_id).'_'.str_replace("-","",$arr_send_list[$i]['mb_hp']), $arr_send_list[$i]['mb_hp'], 'ent_coupon_add', $alimtalk_contents, array(
+    'button' => [
+      array(
+        'name' => '쿠폰확인',
+        'type' => 'WL',
+        'url_mobile' => 'https://eroumcare.com/',
+		'url_pc' => 'https://eroumcare.com/'
+      )
+    ]
+  ));//내용은 템플릿과 동일 해야 함
+    }
+    
+	// SMS
     if($config['cf_sms_use'] == 'icode' && $_POST['cp_sms_send'] && $arr_send_list[$i]['mb_hp'] && $arr_send_list[$i]['mb_sms']) {
       $sms_contents = $cp_subject.' 쿠폰이 '.get_text($arr_send_list[$i]['mb_name']).'님께 발행됐습니다. 쿠폰만료 : '.$cp_end.' '.str_replace('http://', '', G5_URL);
 

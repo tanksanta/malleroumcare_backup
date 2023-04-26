@@ -166,6 +166,8 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
             <input type="checkbox" name="cp_sms_send" value="1" id="cp_sms_send" checked>
             <label for="cp_email_send">이메일발송</label>
             <input type="checkbox" name="cp_email_send" value="1" id="cp_email_send"  checked>
+			<label for="cp_alimtalk_send">알림톡발송</label>
+            <input type="checkbox" name="cp_alimtalk_send" value="1" id="cp_alimtalk_send"  checked>
         </td>
     </tr>
     <?php } ?>
