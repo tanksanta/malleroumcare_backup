@@ -969,8 +969,16 @@ if($option_count) {
     VALUES
   ";
   for($i=0; $i<$option_count; $i++) {
-	  $opt_sold_out = (in_array($_POST['opt_id'][$i],$_POST['opt_sold_out']))?"1" : "0";
-	  $opt_use_short_barcode = (in_array($_POST['opt_id'][$i],$_POST['opt_use_short_barcode']))?"1" : "0";
+	  if(count($_POST['opt_sold_out']) == 0){
+		$opt_sold_out = "0";
+	  }else{
+		$opt_sold_out = (in_array($_POST['opt_id'][$i],$_POST['opt_sold_out']))?"1" : "0";
+	  }
+	  if(count($_POST['opt_use_short_barcode']) == 0){
+		$opt_use_short_barcode = "0";
+	  }else{
+		$opt_use_short_barcode = (in_array($_POST['opt_id'][$i],$_POST['opt_use_short_barcode']))?"1" : "0";
+	  }
     $sql .= $comma . " ( '{$_POST['opt_id'][$i]}', '0', '$it_id', '{$_POST['opt_price'][$i]}', '{$_POST['opt_stock_qty'][$i]}', '{$_POST['opt_noti_qty'][$i]}', '{$_POST['opt_use'][$i]}', '{$_POST['opt_price_partner'][$i]}', '{$_POST['opt_price_dealer'][$i]}', '{$_POST['opt_price_dealer2'][$i]}', '{$_POST['opt_thezone'][$i]}', '{$_POST['opt_standard'][$i]}', '{$opt_use_short_barcode}', '{$_POST['opt_stock_manage_min_qty'][$i]}', '{$_POST['opt_stock_manage_max_qty'][$i]}','{$opt_sold_out}' )";
     $comma = ' , ';
   }
