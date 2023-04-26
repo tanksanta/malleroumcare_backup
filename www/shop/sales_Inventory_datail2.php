@@ -609,7 +609,7 @@ expired_rental_item_clean($_GET['prodId']);
                   <div class="sell_desc">
                     수급자 선택없이 대여완료 처리
                   </div>
-                  <form name="form_rent" class="form_rent" role="form">
+                  <form name="form_rent" id="form_rent<?=$i?>" class="form_rent" role="form" onSubmit="return rent_complete('<?=$i?>')">
                     <input type="hidden" name="stoId" value="<?=$list[$i]['stoId']?>">
                     <input type="hidden" name="prodBarNum" value="<?=$list[$i]['prodBarNum']?>">
                     <ul style="padding: 0 0 20px 0;">
@@ -623,18 +623,22 @@ expired_rental_item_clean($_GET['prodId']);
                       <li>
                         <b>대여시작일</b>
                         <div class="input-box">
-                          <input type="text" class="ipt_date" name="strDate">
+                          <input type="text" class="" name="strDate" id="strDate<?=$i?>" autocomplete='off'>
                           <button type="button" onclick="click_x(this)" ><img src="<?=G5_IMG_URL?>/icon_09.png" alt=""></button>
                         </div>
                       </li>
                       <li>
                         <b>대여종료일</b>
                         <div class="input-box">
-                          <input type="text" class="ipt_date" name="endDate">
+                          <input type="text" class="" name="endDate" id="endDate<?=$i?>" autocomplete='off'>
                           <button type="button" onclick="click_x(this)" ><img src="<?=G5_IMG_URL?>/icon_09.png" alt=""></button>
                         </div>
                       </li>
                     </ul>
+					<script>
+						$("#strDate<?=$i?>").datepicker({});
+                        $("#endDate<?=$i?>").datepicker({});   
+                    </script>
                     <label class="label_confirm">
                       <input type="checkbox" name="chk_confirm" class=".chk_confirm">
                       확인함
@@ -778,14 +782,14 @@ expired_rental_item_clean($_GET['prodId']);
                       <li>
                         <b>대여시작일</b>
                         <div class="input-box">
-                          <input type="text" value="<?=$ordLendStrDtm_date?>" dateonly<?=$list[$i]['stoId']?>_s id="strDtm_<?=$list[$i]['stoId']?>">
+                          <input type="text" value="<?=$ordLendStrDtm_date?>" dateonly<?=$list[$i]['stoId']?>_s id="strDtm_<?=$list[$i]['stoId']?>" autocomplete='off'>
                           <button type="button"><img src="<?=G5_IMG_URL?>/icon_09.png" alt=""></button>
                         </div>
                       </li>
                       <li>
                         <b>대여종료일</b>
                         <div class="input-box">
-                          <input type="text" value="<?=$ordLendEndDtm_date?>" dateonly<?=$list[$i]['stoId']?>_e id="endDtm_<?=$list[$i]['stoId']?>">
+                          <input type="text" value="<?=$ordLendEndDtm_date?>" dateonly<?=$list[$i]['stoId']?>_e id="endDtm_<?=$list[$i]['stoId']?>" autocomplete='off'>
                           <button type="button"><img src="<?=G5_IMG_URL?>/icon_09.png" alt=""></button>
                         </div>
                       </li>
@@ -811,7 +815,7 @@ expired_rental_item_clean($_GET['prodId']);
                 <div class="p-inner">
                   <h2>옵션변경</h2>
                   <button class="cls-btn p-cls-btn" onclick="close_popup(this)" type="button"><img src="<?=G5_IMG_URL?>/icon_08.png" alt=""></button>
-                  <form name="foption" class="form item-form form_change_option" role="form">
+                  <form name="foption" id="foption<?=$i?>" class="form item-form form_change_option" role="form">
                     <input type="hidden" name="stoId" value="<?=$list[$i]['stoId']?>">
                     <input type="hidden" name="prodBarNum" value="<?=$list[$i]['prodBarNum']?>">
                     <table class="table">
@@ -821,7 +825,7 @@ expired_rental_item_clean($_GET['prodId']);
                       ?>
                     </table>
                     <div class="popup-btn">
-                      <button type="submit">저장하기</button>
+                      <button type="button" onClick="foptions('<?=$i?>')">저장하기</button>
                       <button type="button" class="p-cls-btn" onclick="close_popup(this)">취소</button>
                     </div>
                   </form>
@@ -1203,10 +1207,44 @@ function selected_recipient(penId) {
   document.getElementById('penId_r').value = penId;
   document.getElementById('recipient_info').submit();
 }
+function rent_complete(a){
+	var confirmed = $("#form_rent"+a).find('input[name=chk_confirm]').prop('checked');
+    if(!confirmed) {
+      alert('대여완료처리 안내사항을 확인해주세요.');
+	  return false;
+    }
+    var stoId = $("#form_rent"+a).find('input[name=stoId]').val();
+    var prodBarNum = $("#form_rent"+a).find('input[name=prodBarNum]').val();
+    var penNm = $("#form_rent"+a).find('input[name=penNm]').val();
+    var strDate = $("#form_rent"+a).find('input[name=strDate]').val();
+    var endDate = $("#form_rent"+a).find('input[name=endDate]').val();
+
+    $.post('ajax.stock.rent.php', {
+      prodId: '<?=$it_id?>',
+      stoId: stoId,
+      prodBarNum: prodBarNum,
+      penNm: penNm,
+      strDate: strDate,
+      endDate: endDate
+    }, 'json')
+    .done(function(result) {
+      alert('완료되었습니다.');
+      window.location.reload();
+    })
+    .fail(function($xhr) {
+      var data = $xhr.responseJSON;
+      alert(data && data.message);
+	  return false;
+    });
+}
+function foptions(a){
+	change_option($("#foption"+a));
+	false;
+}
 $(function() {
   // 대여완료처리
-  $('.ipt_date').datepicker({});
-  $('.form_rent').on('submit', function(e) {
+  //$('.ipt_date').datepicker({});
+ /* $('.form_rent').on('submit', function(e) {
     e.preventDefault();
 
     var confirmed = $(this).find('input[name=chk_confirm]').prop('checked');
@@ -1241,7 +1279,7 @@ $(function() {
     e.preventDefault();
     change_option(this);
   });
-
+*/
   $('#chk_stock_all').change(function() {
     var checked = $(this).prop('checked');
     $('.chk_stock').prop('checked', checked);
