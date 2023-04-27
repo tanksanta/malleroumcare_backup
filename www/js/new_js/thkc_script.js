@@ -129,6 +129,7 @@ var swiper = new Swiper(".mySwiper_band", {
     nextEl: ".topBanner_swiper_navi .swiper-button-next",
     prevEl: ".topBanner_swiper_navi .swiper-button-prev",
   },
+  loop: true,
 });
 
 //Top버튼 올라가기
@@ -266,6 +267,7 @@ $(document).on('click', '.icon-eyes-on, .icon-eyes-off', function (e) {
 
 $("#bannerRight .banner_del").click(function () {
   $("#bannerRight").hide();
+  set_cookie("bannerRight", 1, 1, g5_cookie_domain);
 });
 
 function go_url(url){
@@ -274,3 +276,16 @@ function go_url(url){
 
 
 
+//Javascript
+//최초 로드 시 iframe 높이값 비율에 맞게 세팅
+var $videoIframe = $(".item-explan iframe").height();
+var responsiveHeight = $videoIframe * 0.6625;
+//$videoIframe.setAttribute('height', responsiveHeight);
+$(".item-explan iframe").height(responsiveHeight);
+
+//브라우저 리사이즈 시 iframe 높이값 비율에 맞게 세팅
+window.addEventListener('resize', function(){
+    responsiveHeight = $videoIframe * 0.5625;
+    //$videoIframe.setAttribute('height', responsiveHeight);
+    $(".item-explan iframe").height(responsiveHeight);
+});

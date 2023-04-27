@@ -43,6 +43,9 @@
 /* CSS Document */
 
 @charset "utf-8";
+footer.thkc_footer .f_menuWrap ul{
+	padding-left: 0rem !important;
+}
 
 /* ## 하단 footer.thkc_footer 영역 ## */
 footer.thkc_footer .f_infoWrap {
@@ -440,19 +443,13 @@ footer.thkc_footer .f_info_landing .f_info ul:last-child {
 	footer.thkc_footer .f_info_landing .f_info ul:last-child {
 		text-align: left;
 	}
+
+	
 }
 
 
-@media (max-width: 430px) {
-	nav.thkc_nav .thkc_search{
-		top:-35px;
-	}
-	nav.thkc_nav .in_search{
-		height: 40px;
-	}
-	nav.thkc_nav .icon_serch{
-		top:7px
-	}
+@media (max-width: 430px) {	
+	
 }
 
 @media (max-width: 360px) {}

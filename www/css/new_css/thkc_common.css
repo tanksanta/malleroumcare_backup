@@ -79,7 +79,8 @@ body {font-family: 'Noto Sans KR', sans-serif;color: #333;-webkit-tap-highlight-
 
 /* iframe */
 .item-explan{position: relative; width: 100%;}
-iframe {	width: 100%;	}
+iframe {width: 100%;}
+
 
 /********** HTML/CSS **********/
 /* 상단 메뉴 Wrap */
@@ -152,7 +153,8 @@ iframe {	width: 100%;	}
 .thkc_popWrap .thkc_close i {font-size: 25px;color: #333; } 
 
 /* 오른쪽 카달로그 배너 */
-#bannerRight {position: fixed;top: 370px;left: 50%;transform: translateX(-50%);margin-left: 755px;z-index: 100; } 
+/* #bannerRight {position: fixed;top: 370px;left: 50%;transform: translateX(-50%);margin-left: 755px;z-index: 100; }  */
+#bannerRight { _display: none; z-index: 600; overflow-y:auto; position: fixed; top:285px; right: 60px; transform: translateX(100%); margin: 0px 20px 0px 0px; }
 
 #bannerRight .banner_catalogWrap,
 .banner_catalogWrap div,
@@ -210,7 +212,7 @@ _body {overflow-y: hidden; }
 .asideClone {overflow-y: overlay;position: fixed;width: 330px;height: 100%;padding-left: 30px;top: 0px;right: -150%;background: white;transition: 0.3s;z-index: 10000;box-shadow: -4px 0px -4px rgba(0, 0, 0, 0.25); } 
 
 /* 오른쪽 카달로그 배너 */
-#bannerRight {_display: none;overflow-y: auto;position: fixed;top: 370px;right: 60px;transform: translateX(100%);margin: 0px 10px 0px 0px; } 
+#bannerRight {display: none;overflow-y: auto;position: fixed;top: 370px;right: 60px;transform: translateX(100%);margin: 0px 10px 0px 0px; } 
  }
 
 @media (max-width: 991px) {
@@ -218,7 +220,9 @@ _body {overflow-y: hidden; }
 	#thkc_conWrap {width: 100%; } 
  }
 
-@media (max-width: 767px) {.thkc_container {width: 100%; } 
+@media (max-width: 767px) {
+	#thkc_conWrap .at-container .at-content section {padding: 0 0 0 0;}
+	.thkc_container {width: 100%;} 
 
 /* 오른쪽 카달로그 배너 */
 #bannerRight .banner_catalogWrap,

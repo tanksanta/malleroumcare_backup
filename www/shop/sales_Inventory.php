@@ -54,7 +54,7 @@ if($is_demo) {
 $is_inquiry_sub = false;
 @include_once($order_skin_path.'/config.skin.php');
 
-$g5['title'] = '보유재고관리';
+$g5['title'] = '보유 급여상품 관리';
 
 if($is_inquiry_sub) {
 	include_once(G5_PATH.'/head.sub.php');
@@ -206,7 +206,7 @@ $total_block = ceil($total_page/$b_pageNum_listCnt);
 <link rel="stylesheet" href="<?=G5_CSS_URL ?>/stock_page.css">
     <title>판매재고목록</title>
     <section id="stock" class="wrap stock-list">
-        <div class="sub_section_tit">보유재고관리</div>
+        <div class="sub_section_tit">보유 급여상품 관리</div>
         <div class="r_btn_area">
             <a href="#" class="btn eroumcare_btn2" id="prod_control_list" onclick="popCtrlList()" title="제품관리대장">제품관리대장</a>
             <a href="#" class="btn eroumcare_btn2" id="excel_download" title="엑셀다운로드">엑셀다운로드</a>

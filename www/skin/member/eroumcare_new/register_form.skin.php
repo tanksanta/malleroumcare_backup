@@ -57,7 +57,7 @@ add_javascript(G5_POSTCODE_JS, 0);
                 <div class="thkc_cont">
                     <div>
                         <label for="reg_mb_id" class="thkc_blind">아이디</label>
-                        <input class="thkc_input autofill" id="reg_mb_id" name="mb_id" placeholder="3글자 이상 영문/숫자로만 입력" value="" type="text"  autocomplete="off" />
+                        <input class="thkc_input autofill" id="reg_mb_id" name="mb_id" placeholder="3글자 이상 영문/숫자로만 입력" value="" type="text"  autocomplete="false" />
                     </div>
                     <div class="error-txt errorID"></div>
                 </div>
@@ -68,7 +68,7 @@ add_javascript(G5_POSTCODE_JS, 0);
                 <div class="thkc_cont">
                     <div class="field show">
                         <label for="reg_mb_password" class="thkc_blind">비밀번호</label>
-                        <input class="thkc_input thkc_i autofill" id="reg_mb_password" name="mb_password" placeholder="영문/숫자를 포함한 6자리 ~ 12자리 이하로 입력" value="" type="password"  autocomplete="off" />
+                        <input class="thkc_input thkc_i autofill" id="reg_mb_password" name="mb_password" placeholder="영문/숫자를 포함한 6자리 ~ 12자리 이하로 입력" value="" type="password"  autocomplete="new-password" />
                         <i>
                             <img class="icon icon-eyes-on" src="<?=G5_IMG_URL?>/new_common/icon_input_eye.png">
                             <img class="icon icon-eyes-off" src="<?=G5_IMG_URL?>/new_common/icon_input_slash.png">
@@ -1121,7 +1121,7 @@ add_javascript(G5_POSTCODE_JS, 0);
 
             // 장기요양기관번호 입력 검증
             var _ck = $("#mb_ent_num_ck:checked").val();
-            if( (!$("input[name='mb_ent_num']").val() && ( _ck != "N" )) || ($("input[name='mb_ent_num']").val().length < 10) ) {                 
+            if( (!$("input[name='mb_ent_num']").val() && ( _ck != "N" )) && ($("input[name='mb_ent_num']").val().length < 10) ) {                 
                 error_MSG( 'errorBNUM', '장기요양기관번호를 입력하세요.', 'mb_ent_num' );
                 return false;
             }

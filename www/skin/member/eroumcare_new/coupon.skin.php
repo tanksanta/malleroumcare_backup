@@ -6,6 +6,10 @@ add_stylesheet('<link rel="stylesheet" href="'.$skin_url.'/style.css" media="scr
 
 ?>
 
+<style>
+	body { padding: 5px 20px; }
+</style>
+
 <div class="sub-title">
 	<h4>
 		<?php if($member['photo']) { ?>

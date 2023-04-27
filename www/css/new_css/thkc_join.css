@@ -44,6 +44,10 @@
 
 @charset "utf-8";
 
+body, h1, h2, h3, h4, h5, h6 {
+	font-family: 'Noto Sans KR', sans-serif;
+}
+
 /* autofill css 없애기 */
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
@@ -471,7 +475,7 @@ a.text_line:hover {
 }
 
 .thkc_loginWrap .field .inTitle {
-	font-size: 14px;
+	font-size: 1rem;
 	padding: 0px 0px 10px 5px;
 }
 
@@ -1318,7 +1322,7 @@ input.thkc_switch[type="checkbox"]:enabled:hover {
 	}
 
 	.thkc_loginWrap .field .inTitle {
-		font-size: 1.2rem;
+		font-size: 0.85rem;
 	}
 
 	/* 회원가입 seop01 */
@@ -1521,7 +1525,7 @@ input.thkc_switch[type="checkbox"]:enabled:hover {
 	}
 
 	.thkc_memberModifyWrap h3 {
-		margin: 120px 0 20px 0;
+		margin: 20px 0 20px 0;
 		font-size: 20px;
 	}
 

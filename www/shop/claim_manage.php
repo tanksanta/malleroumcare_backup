@@ -11,7 +11,7 @@ if ($t_claim['t_state'] == '0') {
   $open_tutorial_popup = true;
 }
 
-$g5['title'] = '청구관리';
+$g5['title'] = '청구 내역 관리';
 include_once('./_head.php');
 
 if(!$selected_month) $selected_month = date('Y-m-01');
@@ -340,7 +340,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
 include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 ?>
 <section class="wrap">
-  <div class="sub_section_tit">청구관리</div>
+  <div class="sub_section_tit">청구 내역 관리</div>
   <div class="inner">
     <form action="/shop/claim_manage.php" method="get">
       <div class="date_wrap">

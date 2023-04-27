@@ -314,7 +314,7 @@ $(function() {
 <link rel="stylesheet" href="<?=$SKIN_URL?>/css/product_order_210324.css?v=210913">
 <section id="pro-order2" class="wrap order-list">
   <h2 class="tti">
-    주문상세
+    주문/배송 상세
     <div class="list-more"><a href="./orderinquiry.php">목록</a></div>
   </h2>
   <div class="od_status">

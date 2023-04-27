@@ -43,6 +43,22 @@
 	/* CSS Document */
 
 	@charset "utf-8";
+	#thkc_landing .land_title_01,
+	#thkc_landing .land_title_02,
+	#thkc_landing .land_title_03,
+	#thkc_landing .land_title_04,
+	#thkc_landing section h1,
+	#thkc_landing section h2,
+	#thkc_landing section h3,
+	#thkc_landing section h4,
+	#thkc_landing section h5,
+	#thkc_landing section p,
+	#thkc_landing section
+	{
+		font-family: 'Noto Sans KR', sans-serif !important;
+
+	}
+
 
 	header .header_logo {
 		margin: 20px;
@@ -247,7 +263,7 @@
 	}
 
 	#thkc_landing section h4 {
-		font-size: 24px;
+		font-size: 26px;
 		letter-spacing: -0.03em;
 	}
 
@@ -257,10 +273,10 @@
 	}
 
 	#thkc_landing section p {
-		font-size: 16px;
+		font-size: 17px;
 		font-weight: 300;
 		line-height: 23px;
-		letter-spacing: -0.03em;
+		letter-spacing: -0.05em;
 	}
 
 	#thkc_landing section .land_pb {
@@ -270,7 +286,7 @@
 	.l_MainTitleB_02 {
 		font-size: 20px;
 		letter-spacing: -0.02em;
-		line-height: 130%;
+		line-height: 120%;
 	}
 
 
@@ -403,7 +419,7 @@
 		display: flex;
 		margin-bottom: 0px;
 		justify-content: center;
-		font-size: 16px;
+		font-size: 16px;		
 	}
 
 	section.thkc_land_section .cs_infoTitle {
@@ -424,6 +440,12 @@
 		box-shadow: var(--shadow-color1);
 		transform: scale(1.05) translate(5px, -10px);
 	}
+
+	section .cs_infoWrap ul{
+		padding-left: 0rem !important;
+	}
+
+	
 
 
 
@@ -481,7 +503,7 @@
 		}
 
 		#thkc_landing .land_title_01 {
-			font-size: 14px;
+			font-size: 20px;
 		}
 
 		#thkc_landing .land_title_02 {
@@ -498,7 +520,7 @@
 		}
 
 		#thkc_landing .land_btn {
-			font-size: 18px;
+			font-size: 20px;
 		}
 
 		#thkc_landing .land_bimg_p {
@@ -518,23 +540,19 @@
 			letter-spacing: -0.03em;
 			padding: 10px 0;
 		}
-
-		#thkc_landing section h4 {
-			font-size: 20px;
-			font-weight: 400;
-			letter-spacing: -0.03em;
-		}
+		
 
 		#thkc_landing section h5 {
 			font-size: 18px;
 			letter-spacing: -0.03em;
 		}
 
+		#thkc_landing section h4 {
+			font-size: 24px;			
+		}
+
 		#thkc_landing section p {
-			font-size: 14px;
-			font-weight: 300;
-			line-height: 20px;
-			letter-spacing: -0.03em;
+			font-size: 18px;			
 		}
 
 		#thkc_landing section .land_pb {
@@ -562,13 +580,22 @@
 			margin-left: auto;
 			margin-right: auto;
 		}
+		.l_MainTitleB_01 {		
+			letter-spacing: -0.1em;
+		}
 	}
 
 
 
 	@media (max-width: 430px) {
+		#thkc_landing .land_title_01 {
+			font-size: 16px;
+			line-height: 130%;
+			text-align: center;
+		}			
 		#thkc_landing .land_title_03 {
 			font-size: 18px;
+			letter-spacing: -0.09rem;
 		}
 
 		#thkc_landing .land_title_04 {
@@ -578,12 +605,7 @@
 		#thkc_landing .l_title_do01 {
 			font-size: 20px;
 			letter-spacing: -0.05em;
-		}
-
-		.l_MainTitleB_01 {
-			font-size: 26px;
-			letter-spacing: -0.05em;
-		}
+		}			
 
 		.l_MainTitleB_02 {
 			font-size: 16px;
@@ -591,4 +613,47 @@
 			line-height: 120%;
 			color: #666;
 		}
+		#thkc_landing .land_btn{
+			font-size: 18px;
+			letter-spacing: -0.035em;		
+			padding: 10px 43px;
+		}
+
+		#thkc_landing section h1 {
+			font-size: 30px;			
+		}
+
+		#thkc_landing section .land_pb {
+			padding: 0px 5px;
+		}
+	}
+
+	@media (max-width: 320px) {
+		#thkc_landing section h1 {
+			font-size: 22px;			
+		}
+
+		#thkc_landing section h4 {
+			font-size: 20px;
+			letter-spacing: -0.05em;			
+		}
+		
+		#thkc_landing .land_btn{		
+			padding: 10px 35px;
+		}
+		
+	}
+
+	@media (max-width: 285px){
+		#thkc_landing .land_title_01 {
+			font-size: 12px;			
+		}
+
+		#thkc_landing .land_btn{
+			font-size: 14px;
+		}
+		#thkc_landing .land_title_03 {
+			font-size: 16px;	
+		}
+				
 	}

@@ -33,20 +33,24 @@
     $is_approved = false;
     if($member['mb_id']) { $is_approved = true; }
 
+
+    add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/bs3/css/bootstrap.min.css?ver='.APMS_SVER.'" type="text/css">',0);
+    add_stylesheet('<link rel="stylesheet" href="'.COLORSET_URL.'/colorset.css?ver='.APMS_SVER.'" type="text/css">',0);
+    
 ?>
 
     <!-- style -->
-    <link rel="stylesheet" href="<?=G5_CSS_URL;?>/new_css/thkc_common.css?ver=<?=time();?>">
-    <link rel="stylesheet" href="<?=G5_CSS_URL;?>/new_css/thkc_gnb_style.css?ver=<?=time();?>">
-    <link rel="stylesheet" href="<?=G5_CSS_URL;?>/new_css/thkc_lnb_style.css?ver=<?=time();?>">
+    <link rel="stylesheet" href="<?=G5_CSS_URL;?>/new_css/thkc_common.css?ver=<?=APMS_SVER;?>">
+    <link rel="stylesheet" href="<?=G5_CSS_URL;?>/new_css/thkc_gnb_style.css?ver=<?=APMS_SVER;?>">
+    <link rel="stylesheet" href="<?=G5_CSS_URL;?>/new_css/thkc_lnb_style.css?ver=<?=APMS_SVER;?>">
 
     <?php if($member['mb_type'] != "partner" ) { ?>
-    <link rel="stylesheet" href="<?=G5_CSS_URL;?>/new_css/thkc_main_eroum.css?ver=<?=time();?>">
+    <link rel="stylesheet" href="<?=G5_CSS_URL;?>/new_css/thkc_main_eroum.css?ver=<?=APMS_SVER;?>">
     <?php } else { ?>
-    <link rel="stylesheet" href="<?=G5_CSS_URL;?>/new_css/thkc_main_partner.css?ver=<?=time();?>">
+    <link rel="stylesheet" href="<?=G5_CSS_URL;?>/new_css/thkc_main_partner.css?ver=<?=APMS_SVER;?>">
     <?php } ?>
 
-    <link rel="stylesheet" href="<?=G5_CSS_URL;?>/new_css/thkc_footer_style.css?ver=<?=time();?>">
+    <link rel="stylesheet" href="<?=G5_CSS_URL;?>/new_css/thkc_footer_style.css?ver=<?=APMS_SVER;?>">
 
 
     <!-- google font -->
@@ -138,7 +142,7 @@
                     <div class="thkc_search">
                         <form name="Qsearch" id="Qsearch" method="get" onKeypress="javascript:if(event.keyCode==13) {search_submit('Qsearch',$('#Qsearch .search_url').val());}">
                               <input type="hidden" class="search_url" name="url" value="<?=((IS_YC)?($at_href['isearch']):($at_href['search']));?>"> 
-                              <input type="text" class="in_search ipt_search" name="stx" value="<?php echo get_text($stx); ?>" placeholder="품목명/급여코드 검색" onKeypress="javascript:if(event.keyCode==13) {search_submit('Qsearch',$('#Qsearch .search_url').val());}">
+                              <input type="text" class="in_search ipt_search" name="stx" value="<?php echo get_text($stx); ?>" placeholder="상품을 검색하세요" onKeypress="javascript:if(event.keyCode==13) {search_submit('Qsearch',$('#Qsearch .search_url').val());}">
                               <div class="icon_serch"><a href="#"><img src="<?=G5_IMG_URL;?>/new_common/thkc_btn_search.svg" alt="검색" onclick="search_submit('Qsearch',$('#Qsearch .search_url').val());"></a></div>
                         </form>
                     </div>

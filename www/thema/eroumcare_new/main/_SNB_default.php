@@ -148,7 +148,7 @@
                         <p class="memTitle"><!-- 회원이름 -->
                             <?=$member["mb_name"]?><span class="dir"> 님</span>
                             <?php if($member['admin'] || $is_samhwa_admin) { ?>
-                            <span class="admin">( <a href="<?php echo G5_ADMIN_URL;?>">관리메뉴</a> )</span>
+                            <span class="admin">( <a href="<?php echo G5_ADMIN_URL;?>/shop_admin/samhwa_orderlist.php">관리메뉴</a> )</span>
                             <?php } ?>
                         </p>
                         <p class="member_modi">
@@ -304,13 +304,15 @@
                     <div class="noticeWrap">
                         <h3 class="mgTitle y_bar_02">공지사항
                             <a href="<?=G5_BBS_URL;?>/board.php?bo_table=notice">
-                                <div class="more_01"><img src="<?=G5_IMG_URL;?>/new_common/thkc_btn_more_01.svg" alt=""></div>
+                                <div class="more_01"><span class="b_more f_bold700" onclick="location.href='<?=G5_BBS_URL;?>/board.php?bo_table=notice'">+</span></div>
+                                
                             </a>
+                            
                         </h3>
                     </div>
                     <hr>
                     <div class="notice_menu">
-                        <?=latest('new_notice_left', 'notice', 5, 22);?>
+                        <?=latest('new_notice_left', 'notice', 5, 20);?>
                     </div>
 
 

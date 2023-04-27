@@ -113,12 +113,12 @@
                                         <img id='sealFile_img' src="<?=G5_DATA_URL?>/file/member/stamp/<?=$member["sealFile"]; ?>" style="max-width:100%;max-height:100%;">
                                     <?php } else { ?>
                                         <span id='no_img'>등록 된 이미지가 없습니다.</span>
-                                        <img src='' id='sealFile_img' style='max-width:100%;max-height:100%;display:none;'>";} ?>
+                                        <img src='' id='sealFile_img' style='max-width:100%;max-height:100%;display:none;'>
                                     <?php } ?>
 
                                     </div>
                                 </div>
-                                <div class="thkc_cont_txt">*파일유형은 pdf, png, jpg, gif 용량은 10Mbyte 이하만 등록가능합니다.</div>
+                                <div class="thkc_cont_txt">*파일유형은 png, jpg, gif 용량은 3Mbyte 이하만 등록가능합니다.</div>
                                 <div class="error-txt error"></div>
 
                             </div>
@@ -211,7 +211,7 @@
                 var $form = $(this).closest('form');
 
                 $form.find('input[name="sealFile"]').remove();
-                    $('<input type="file" name="sealFile" accept=".pdf, .png, .gif, .jpg" style="width: 0; height: 0; overflow: hidden;">').appendTo($form).click();
+                    $('<input type="file" name="sealFile" accept=".png, .gif, .jpg" style="width: 0; height: 0; overflow: hidden;">').appendTo($form).click();
                 });
 
                 $(document).on('change', 'input[name="sealFile"]', function(e) {

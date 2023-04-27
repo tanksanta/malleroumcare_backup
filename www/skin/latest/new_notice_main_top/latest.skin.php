@@ -41,7 +41,7 @@ jQuery(function($) {
             
             ticker();
 
-        }, 12000);
+        }, 3500);
     };
 
 

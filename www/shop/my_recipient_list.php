@@ -610,7 +610,7 @@ function form_check(act) {
       신규 수급자(<?=get_text($links[0]['rl_pen_name'])?>) 추천되었습니다.
     </div>
     <?php } ?>
-    수급자관리
+    수급자 관리
     <div class="page_rows">
         <!-- <select name="orderby" id="orderby">
             <option value="it_id" <?php echo $orderby == 'it_id' || !$orderby ? 'selected' : ''; ?>>최근등록순 정렬</option>
@@ -1084,7 +1084,7 @@ function form_check(act) {
   if($links) {
   ?>
   <div class="titleWrap" style="margin-bottom:10px;">
-    대기중인 수급자관리
+    대기중인 수급자 관리
   </div>
   <div class="list_box pc">
     <div class="table_box">  

@@ -37,16 +37,16 @@
     // ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==
 
     // 최근 주문내역 건수
-        // 전체 주문 건수   cnt_Total = 0 ;       
-        // 출고 완료 건수   cnt_Shipped = 0 ;      
-        // 배송 완료 건수   cnt_Delivered = 0 ;    
-        // 설치 일정 건수   cnt_Install = 0 ;  
+        // 상품준비 건수   cnt_productpreparation = 0 ;       
+        // 출고준비 건수   cnt_Preparingshipment = 0 ;      
+        // 출고완료 건수   cnt_Shipmentcompleted = 0 ;    
+        // 설치일정 건수   cnt_Installationschedule = 0 ;  
     $_OrderCnt = sql_fetch("   SELECT
 
-                                    COUNT(ct_id) as cnt_Total,
-                                    COUNT(CASE WHEN c.ct_status='출고준비' THEN 1 END) AS cnt_Shipped,
-                                    COUNT(CASE WHEN c.ct_status='완료' THEN 1 END) AS cnt_Delivered,
-                                    COUNT(CASE WHEN c.ct_status NOT IN ('완료') AND c.ct_is_direct_delivery='2' THEN 1 END) AS cnt_Install
+                                    COUNT(CASE WHEN c.ct_status='준비' THEN 1 END) AS cnt_productpreparation,
+                                    COUNT(CASE WHEN c.ct_status='출고준비' THEN 1 END) AS cnt_Preparingshipment,
+                                    COUNT(CASE WHEN c.ct_status='배송' THEN 1 END) AS cnt_Shipmentcompleted,
+                                    COUNT(CASE WHEN c.ct_status NOT IN ('완료') AND c.ct_is_direct_delivery='2' THEN 1 END) AS cnt_Installationschedule
     
                                 FROM
                                     g5_shop_cart c
@@ -59,7 +59,7 @@
                                     AND c.ct_status IN ('준비', '출고준비', '배송', '완료')
                                     AND o.od_del_yn = 'N'
                                     -- AND o.od_time >= DATE(NOW() - INTERVAL 12 MONTH)
-                                    AND o.od_time BETWEEN '" . date('Y-m-') . "01' AND '" . date('Y-m-d') . "'
+                                    -- AND o.od_time BETWEEN '" . date('Y-m-') . "01' AND '" . date('Y-m-d') . "'
                         ");
 
 
@@ -92,20 +92,35 @@
     // ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==
 ?>
 
-
             <section class="thkc_section">
 
                 <!-- 01.대시보드 -->
                 <div class="dash_bWrap">
                     <ul class="dashList">
-                        <li class="dashTitle">주문 현황 (당월) <img src="<?=G5_IMG_URL;?>/new_common/thkc_ico_arrow_next.svg" alt="아이콘"></li>
-                        <li class="dash_sTitle">주문 건수 &nbsp;<span class="d_n"><a href="<?=G5_URL;?>/shop/orderinquiry.php"><?=number_format($_OrderCnt['cnt_Total']);?></a></span>&nbsp;<span class="d_unit">건</span></li>
+                        <li class="dashTitle">주문 현황<img src="<?=G5_IMG_URL;?>/new_common/thkc_ico_arrow_next.svg" alt="아이콘"></li>
+                        <li class="dash_sTitle">
+                            상품준비 &nbsp;
+                            <span class="d_n"><a href="<?=G5_URL;?>/shop/orderinquiry.php?ct_status=준비"><?=number_format($_OrderCnt['cnt_productpreparation']);?></a></span>&nbsp;
+                            <span class="d_unit">건</span>
+                        </li>
                         <li class="dash_line"><img src="<?=G5_IMG_URL;?>/new_common/thkc_line_gnb.svg" alt="아이콘"></li>
-                        <li class="dash_sTitle">출고 완료 &nbsp;<span class="d_n"><a href="<?=G5_URL;?>/shop/orderinquiry.php?s_date=<?=date('Y-m-')?>01&e_date=<?=date('Y-m-d')?>&ct_status=배송"><?=number_format($_OrderCnt['cnt_Shipped']);?></a></span>&nbsp;<span class="d_unit">건</span></li>
+                        <li class="dash_sTitle">
+                            출고준비 &nbsp;
+                            <span class="d_n"><a href="<?=G5_URL;?>/shop/orderinquiry.php?ct_status=출고준비"><?=number_format($_OrderCnt['cnt_Preparingshipment']);?></a></span>&nbsp;
+                            <span class="d_unit">건</span>
+                        </li>
                         <li class="dash_line"><img src="<?=G5_IMG_URL;?>/new_common/thkc_line_gnb.svg" alt="아이콘"></li>
-                        <li class="dash_sTitle">배송 완료 &nbsp;<span class="d_n"><a href="<?=G5_URL;?>/shop/orderinquiry.php?s_date=<?=date('Y-m-')?>01&e_date=<?=date('Y-m-d')?>&ct_status=완료"><?=number_format($_OrderCnt['cnt_Delivered']);?></a></span>&nbsp;<span class="d_unit">건</span></li>
+                        <li class="dash_sTitle">
+                            출고완료 &nbsp;
+                            <span class="d_n"><a href="<?=G5_URL;?>/shop/orderinquiry.php?ct_status=배송"><?=number_format($_OrderCnt['cnt_Shipmentcompleted']);?></a></span>&nbsp;
+                            <span class="d_unit">건</span>
+                        </li>
                         <li class="dash_line"><img src="<?=G5_IMG_URL;?>/new_common/thkc_line_gnb.svg" alt="아이콘"></li>
-                        <li class="dash_sTitle">설치 일정 &nbsp;<span class="d_n"><a href="<?=G5_URL;?>/shop/schedule/index.php" onclick="return showSchdule(this.href);" target="_blank"><?=number_format($_OrderCnt['cnt_Install']);?></a></span>&nbsp;<span class="d_unit">건</span></li>
+                        <li class="dash_sTitle">
+                            설치일정 &nbsp;
+                            <span class="d_n"><a href="<?=G5_URL;?>/shop/schedule/index.php" onclick="return showSchdule(this.href);" target="_blank"><?=number_format($_OrderCnt['cnt_Installationschedule']);?></a></span>&nbsp;
+                            <span class="d_unit">건</span>
+                        </li>
                     </ul>
                 </div>
 
@@ -113,7 +128,7 @@
                 <!-- 02.공지사항 -->
                 <div class="top_noticeWrap">
                     <ul class="top_notice">
-                        <?php echo latest("new_notice_main_top", 'notice', 5, 25); ?>
+                        <?php echo latest("new_notice_main_top", 'notice', 5, 100); ?>
                     </ul>
                 </div>
 
@@ -158,7 +173,7 @@
                     <div class="m_search">
                         <form name="Qmsearch" id="Qmsearch" method="get" onKeypress="javascript:if(event.keyCode==13) {search_submit('Qmsearch',$('#Qmsearch .search_url').val());}">
                             <input type="hidden" class="search_url" name="url" value="<?=((IS_YC)?($at_href['isearch']):($at_href['search']));?>"> 
-                            <input class="m_in_search ipt_search" type="text" name="stx" placeholder="품목명/급여코드 검색" onKeypress="javascript:if(event.keyCode==13) {search_submit('Qmsearch',$('#Qmsearch .search_url').val());}">
+                            <input class="m_in_search ipt_search" type="text" name="stx" placeholder="상품명 / 급여코드 / 상품설명 검색" onKeypress="javascript:if(event.keyCode==13) {search_submit('Qmsearch',$('#Qmsearch .search_url').val());}">
                             <div class="m_icon_serch">
                                 <a href="#"><img src="<?=G5_IMG_URL;?>/new_common/thkc_btn_search.svg" alt="검색" onclick="search_submit('Qmsearch',$('#Qmsearch .search_url').val());"></a>
                             </div>
@@ -166,7 +181,7 @@
                     </div>                        
 
                     <!-- 해시태그 시작 -->
-                    <?=popular('basic', 5, 7);  // ('스킨명', 태그개수, 태그 통계기간[day단위] ) ?>
+                    <?=popular('basic', 5, 1);  // ('스킨명', 태그개수, 태그 통계기간[day단위] ) ?>
                     <!-- 해시태그 종료 -->
 
                 </div>
@@ -253,7 +268,7 @@
                             mysqli_data_seek($_recommended, 0); 
                             if( $_recommended && ($_recommended->num_rows>0) && $_tmpRow && $_tmpRow['recommended_url'] ) {
                         ?>
-                        <div class="btn_pdMore" onclick="location.href='<?=$_tmpRow['recommended_url']?>'">전체보기</div>
+                        <div class="btn_pdMore" onclick="location.href='<?=$_tmpRow['recommended_url']?>'">상세보기</div>
                         <?php } ?>
                     </div>
                     <div class="pdBoxWrap">

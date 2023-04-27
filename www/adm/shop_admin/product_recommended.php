@@ -119,7 +119,7 @@
         <tr>
             <td style="width:160px; height: 45px; text-align:center;"><strong>추천상품1</strong></td>
             <td style="padding: 10px 25px;">
-                상품명 <input type="text" id="id_product1_nm" name="product1_nm" value="<?=$result_data['product1_nm'];?>" class="frm_input" size="30" maxlength="25" autocomplete="off" style="width:280px;">
+                상품명 <input type="text" id="id_product1_nm" name="product1_nm" value="<?=$result_data['product1_nm'];?>" class="frm_input" size="30" autocomplete="off" style="width:280px;">
                 &nbsp; &nbsp; 
                 상품코드 <input type="text" id="id_product1" name="product1" value="<?=$result_data['product1'];?>" class="frm_input" size="30" maxlength="25" autocomplete="off" style="width:150px;">
                 &nbsp; <input type="submit" value="상품 검색" class="btn_submit" id="" style="width:100px; height:30px;" OnClick="pop_itemList_Select('product1');">
@@ -128,7 +128,7 @@
         <tr>
             <td style="width:160px; height: 45px; text-align:center;"><strong>추천상품2</strong></td>
             <td style="padding: 10px 25px;">
-                상품명 <input type="text" id="id_product2_nm" name="product2_nm" value="<?=$result_data['product2_nm'];?>" class="frm_input" size="30" maxlength="25" autocomplete="off" style="width:280px;">
+                상품명 <input type="text" id="id_product2_nm" name="product2_nm" value="<?=$result_data['product2_nm'];?>" class="frm_input" size="30" autocomplete="off" style="width:280px;">
                 &nbsp; &nbsp; 
                 상품코드 <input type="text" id="id_product2" name="product2" value="<?=$result_data['product2'];?>" class="frm_input" size="30" maxlength="25" autocomplete="off" style="width:150px;">
                 &nbsp; <input type="submit" value="상품 검색" class="btn_submit" id="" style="width:100px; height:30px;" OnClick="pop_itemList_Select('product2');">
@@ -137,7 +137,7 @@
         <tr>
             <td style="width:160px; height: 45px; text-align:center;"><strong>추천상품3</strong></td>
             <td style="padding: 10px 25px;">
-                상품명 <input type="text" id="id_product3_nm" name="product3_nm" value="<?=$result_data['product3_nm'];?>" class="frm_input" size="30" maxlength="25" autocomplete="off" style="width:280px;">
+                상품명 <input type="text" id="id_product3_nm" name="product3_nm" value="<?=$result_data['product3_nm'];?>" class="frm_input" size="30" autocomplete="off" style="width:280px;">
                 &nbsp; &nbsp; 
                 상품코드 <input type="text" id="id_product3"  name="product3" value="<?=$result_data['product3'];?>" class="frm_input" size="30" maxlength="25" autocomplete="off" style="width:150px;">
                 &nbsp; <input type="submit" value="상품 검색" class="btn_submit" id="" style="width:100px; height:30px;" OnClick="pop_itemList_Select('product3');">
@@ -162,7 +162,7 @@
         <tr>
             <td style="width:160px; height: 45px; text-align:center;"><strong>링크 URL</strong></td>
             <td style="padding: 10px 25px;">
-                <input type="text" id="id_recommended_url"  name="recommended_url" value="<?=$result_data['recommended_url'];?>" class="frm_input" size="30" maxlength="25" autocomplete="off" style="width:550px;">
+                <input type="text" id="id_recommended_url"  name="recommended_url" value="<?=$result_data['recommended_url'];?>" class="frm_input" autocomplete="off" style="width:550px;">
                 &nbsp; <input type="submit" value="링크이동" class="btn_submit" id="" style="width:100px; height:30px;" onclick="linkURL_go($('#id_recommended_url').val());">
             </td>
         </tr>          

@@ -1313,6 +1313,7 @@ pre{white-space: pre-wrap;}
 }
 #fixed_recipient .info p {
 	margin:0;
+	font-size: 12px;
 }
 #fixed_recipient .cart {
 	float:right;
@@ -1321,6 +1322,7 @@ pre{white-space: pre-wrap;}
 	display:block;
 	padding:6px 9px;
 	text-align:center;
+	font-size: 12px;
 	line-height: 14px;
 }
 #fixed_recipient .close {

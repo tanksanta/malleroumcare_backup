@@ -34,7 +34,7 @@ $warehouse_list = get_warehouses();
 
 // 초기 3개월 범위 적용
 if (!$fr_date && !$to_date) {
-    $fr_date = date("Y-m-d", strtotime("-3 month"));
+    $fr_date = date("Y-m-d", strtotime("-60 day"));
     $to_date = date("Y-m-d");
 }
 

@@ -24,7 +24,7 @@ if($header_skin)
 		<!-- 비밀번호 내용 -->
 		<div class="thkc_joinWrap">
 			<!-- title 계정정보-->
-			<p>회원님의 정보보호를 위하여 비밀번호를 한 번 더 확인합니다.</p>
+			<p class="f_s16">회원님의 정보보호를 위하여 비밀번호를 한 번 더 확인합니다.</p>
 			<div class="joinTitle">
 				<div class="boxLeft"></div>
 			</div>
@@ -39,7 +39,7 @@ if($header_skin)
 					<div class="thkc_cont">
 						<div>
 							<label for="confirm_mb_password" class="thkc_blind">비밀번호</label>
-							<input class="thkc_input" id="confirm_mb_password" name="mb_password" placeholder="" value="" type="password" />
+							<input class="thkc_input" id="confirm_mb_password" name="mb_password" type="password" />
 						</div>
 						<div class="error-txt error"></div>
 					</div>
