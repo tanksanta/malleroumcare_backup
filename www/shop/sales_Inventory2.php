@@ -337,7 +337,38 @@ $total_block = ceil($total_page/$b_pageNum_listCnt);
     <iframe name="iframe" id="add_sales_inventory_popup_iframe" src="" scrolling="yes" frameborder="0" allowTransparency="false"></iframe>
 </div>
 
-<script> 
+<style>
+#popup_order_add {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  z-index: 999;
+  background-color: rgba(0, 0, 0, 0.6);
+  display:none;
+}
+#popup_order_add > div {
+  width: 30%;
+  max-width: 80%;
+  min-height: 400px;
+  height: 40%;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+#popup_order_add > div iframe {
+  width:100%;
+  height:100%;
+  border: 0;
+  background-color: #FFF;
+}
+</style>
+<div id="popup_order_add">
+  <div id="content">dd</div>
+</div>
+<script>
 $(document).ready(function() {
     // 상품 추가
     $('#add_sales_inventory_popup').click(function(e) {
