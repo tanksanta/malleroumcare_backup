@@ -1997,6 +1997,7 @@ $('#btn_pen').click(function() {
   $('#popup_box iframe').attr('src', url);
   $('body').addClass('modal-open');
   $('#popup_box').show();
+  $('.popup_box_bottom').show();
 });
 
 // 사업자 정보등록
@@ -2200,6 +2201,7 @@ $('#btn_se_sch').click(function() {
   $('#left_text').hide();
   $('#popup_box iframe').attr('src', url);
   $('body').addClass('modal-open');
+  $('.popup_box_bottom').hide();
   $('#popup_box').show();
 });
 
