@@ -35,12 +35,12 @@
 
     <div id="thkc_landing">
         <!-- login -->
-        <nav class="container-sm d-flex flex-column align-items-center pb-5  mb_70 pt-5">
-            <div class="land_title_01 pb-2">이로움 플랫폼을 만나면 <span class="f_bold">관리가 쉬워진다!</span></div>
+        <nav class="container-sm d-flex flex-column align-items-center pb-5 mb_70 pt-3 pt-md-5">
+            <div class="land_title_01 pb-1 pb-md-2">이로움 플랫폼을 만나면 <span class="f_bold">관리가 쉬워진다!</span></div>
             <h1 class="land_title_02">장기요양기관 <br class="thkc_land_br">
                 <spna class="f_bold700">통합관리 플랫폼</spna>
             </h1>
-            <div class="d-flex justify-content-center gap-3">
+            <div class="d-flex justify-content-center gap-2 gap-sm-3">
                 <a href="<?=G5_URL;?>/bbs/login.php" class="text-white">
                     <div class="land_btn thkc_bg01"> 로그인</div>
                 </a>
@@ -80,12 +80,12 @@
                 <h5 class="land_title_04 f_bold100">업계 최초, 국내 유일한 플랫폼은 이유가 있습니다.</h5>
             </div>
 
-            <div class="row row-cols-1 row-cols-md-3 g-5 py-5 px-3">
+            <div class="row row-cols-1 row-cols-md-3 g-4 py-5 px-3">
                 <div class="col" data-aos="flip-left" data-aos-easing="ease-out-cubic" data-aos-duration="2000">
                     <div class="card thkc_card01">
                         <img src="<?=G5_IMG_URL;?>/new_landing/thkc_banner_be01.svg" class="card-img-top img-fluid p-3 p-lg-4"
                             alt="card-grid-image">
-                        <div class="card-body px-5 px-md-4">
+                        <div class="card-body px-3 px-md-4">
                             <h4 class="card-title fw-normal "><span class="fw-bold">통합관리</span> 서비스 제공</h4>
                             <p class="card-text pb-4 land_pb">전국 1,100개 사업소가 사용하는 복지용구 전문 플랫폼입니다.</p>
                         </div>
@@ -95,7 +95,7 @@
                     <div class="card thkc_card01">
                         <img src="<?=G5_IMG_URL;?>/new_landing/thkc_banner_be02.svg" class="card-img-top img-fluid p-3 p-lg-4"
                             alt="card-grid-image">
-                        <div class="card-body px-5 px-md-4">
+                        <div class="card-body px-3 px-md-4">
                             <h4 class="card-title">최다 <span class="fw-bold">복지용구</span> 보유</h4>
                             <p class="card-text pb-4 land_pb">774개 복지용품을 보유하고 있어 한번에 주문이 가능합니다.</p>
                         </div>
@@ -105,7 +105,7 @@
                     <div class="card thkc_card01">
                         <img src="<?=G5_IMG_URL;?>/new_landing/thkc_banner_be03.svg" class="card-img-top img-fluid p-3 p-lg-4"
                             alt="card-grid-image">
-                        <div class="card-body px-5 px-md-4">
+                        <div class="card-body px-3 px-md-1">
                             <h4 class="card-title">다양한 <span class="fw-bold">마케팅 활동</span></h4>
                             <p class="card-text pb-4 land_pb">이로움 가입 회원들에게 이벤트 및 프로모션 활동을 통해 다양한 혜택을 무료로 제공하고 있습니다.</p>
                         </div>
@@ -122,7 +122,7 @@
                         <!-- 4개 카드 -->
                         <div class="row row-cols-1 row-cols-md-2 g-4 m-1 m-md-0">
                             <div class="col">
-                                <div class="card card_become" data-aos="fade-up-right">
+                                <div class="card card_become" data-aos="flip-left" data-aos-easing="ease-out-cubic" data-aos-duration="2000">
                                     <div class="card-body">
                                         <h4 class="card-title">간편<span class="fw-bold">조회</span></h4>
                                         <p class="card-text text-lineH">번거로운 수급자 조회를 빠르고 편하게 바꿨습니다.</p>
@@ -134,7 +134,7 @@
                                 </div>
                             </div>
                             <div class="col">
-                                <div class="card card_become" data-aos="fade-up-left">
+                                <div class="card card_become" data-aos="flip-left" data-aos-easing="ease-out-cubic" data-aos-duration="2000">
                                     <div class="card-body">
                                         <h4 class="card-title">간편<span class="fw-bold">제안</span></h4>
                                         <p class="card-text text-lineH">수급자별 맞춤 상품을 쉽고 편하게 전달할 수 있습니다.</p>
@@ -146,7 +146,7 @@
                                 </div>
                             </div>
                             <div class="col">
-                                <div class="card card_become" data-aos="fade-down-right">
+                                <div class="card card_become" data-aos="flip-left" data-aos-easing="ease-out-cubic" data-aos-duration="2000">
                                     <div class="card-body">
                                         <h4 class="card-title">간편<span class="fw-bold">주문</span></h4>
                                         <p class="card-text text-lineH">자동 바코드 기능으로 쉽게 주문하실 수 있습니다.</p>
@@ -158,7 +158,7 @@
                                 </div>
                             </div>
                             <div class="col">
-                                <div class="card card_become" data-aos="fade-down-left">
+                                <div class="card card_become" data-aos="flip-left" data-aos-easing="ease-out-cubic" data-aos-duration="2000">
                                     <div class="card-body">
                                         <h4 class="card-title">간편<span class="fw-bold">계약</span></h4>
                                         <p class="card-text text-lineH">건강보험공단 양식으로 전자계약이 가능합니다.</p>

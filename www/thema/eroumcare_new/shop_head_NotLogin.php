@@ -56,5 +56,5 @@
 
     <!-- logo header -->
     <header class="container-sm d-flex justify-content-center">
-        <h1 class="p-5 mb-3 header_logo"><a href="<?=G5_URL;?>"><img src="<?=G5_IMG_URL;?>/new_common/thkc_logo_gnb.svg" alt=""></a></h1>
+        <h1 class="p-3 mb-2 header_logo"><a href="<?=G5_URL;?>"><img src="<?=G5_IMG_URL;?>/new_common/thkc_logo_gnb.svg" alt=""></a></h1>
     </header>
