@@ -420,7 +420,7 @@ function formcheck(f) {
     if(!result) {
         return false;
     }
-
+    /*
     if(min_qty > 0 && sum_qty < min_qty) {
         alert("선택옵션 개수 총합 "+number_format(String(min_qty))+"개 이상 주문해 주십시오.");
         return false;
@@ -430,7 +430,7 @@ function formcheck(f) {
         alert("선택옵션 개수 총합 "+number_format(String(max_qty))+"개 이하로 주문해 주십시오.");
         return false;
     }
-
+    */
     for(var i = 0; i < $('.barcode_input').length; i++) {
         if (!$($('.barcode_input')[i]).val()) {
             alert('바코드를 모두 입력해주세요.');

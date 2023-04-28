@@ -183,16 +183,22 @@ $(function() {
 
         switch(mode) {
             case "증가":
+                var link = document.location.href;
+                var page = link.split("?")[0].split("shop/")[1];
+                if(page == "pop.stock.item.add.option.php") buy_inc_qty = 1;
+
                 this_qty = parseInt($el_qty.val().replace(/[^0-9]/, "")) + buy_inc_qty;
 
-                if(this_qty > stock) {
-                    alert("재고수량 보다 많은 수량을 구매할 수 없습니다.") ;
-                    this_qty = stock;
-                }
+                if(page != "pop.stock.item.add.option.php") {
+                    if (this_qty > stock) {
+                        alert("재고수량 보다 많은 수량을 구매할 수 없습니다.");
+                        this_qty = stock;
+                    }
 
-                if(this_qty > max_qty) {
-                    alert("최대 구매수량은 "+number_format(String(max_qty))+" 입니다.");
-                    this_qty = max_qty;
+                    if (this_qty > max_qty) {
+                        alert("최대 구매수량은 " + number_format(String(max_qty)) + " 입니다.");
+                        this_qty = max_qty;
+                    }
                 }
 
                 $el_qty.val(this_qty);
@@ -201,11 +207,22 @@ $(function() {
                 break;
 
             case "감소":
+                var link = document.location.href;
+                var page = link.split("?")[0].split("shop/")[1];
+                if(page == "pop.stock.item.add.option.php") buy_inc_qty = 1;
+
                 this_qty = parseInt($el_qty.val().replace(/[^0-9]/, '')) - buy_inc_qty;
 
-                if (this_qty < min_qty) {
-                  alert('최소 구매수량은 ' + number_format(String(min_qty)) + ' 입니다.');
-                  this_qty = min_qty;
+                if(page != "pop.stock.item.add.option.php") {
+                    if (this_qty < min_qty) {
+                        alert('최소 구매수량은 ' + number_format(String(min_qty)) + ' 입니다.');
+                        this_qty = min_qty;
+                    }
+                } else {
+                    if(this_qty == 0) {
+                        alert('상품은 1개 이상 추가할 수 있습니다.');
+                        this_qty = 1;
+                    }
                 }
 
                 $el_qty.val(this_qty);
