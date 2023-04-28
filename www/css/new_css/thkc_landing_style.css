@@ -163,9 +163,11 @@
 	.l_MainTitle02 {
 		text-align: center;
 		margin-top: 12px;
-		font-size: 14px;
+		font-size: 14px !important;
 		color: #666;
 	}
+
+	
 
 	.l_MainTitle_01 {
 		position: absolute;
@@ -278,6 +280,7 @@
 		line-height: 23px;
 		letter-spacing: -0.05em;
 	}
+
 
 	#thkc_landing section .land_pb {
 		padding: 0px 30px;

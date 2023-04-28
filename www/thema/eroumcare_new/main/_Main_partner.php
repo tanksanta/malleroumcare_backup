@@ -183,7 +183,7 @@
                     <div class="board_titleWrap">
                         <div class="board_title">
                             <span class="e_Title">공지사항</span>
-                            <span class="b_more f_bold700" onclick="location.href='<?=G5_BBS_URL?>/board.php?bo_table=notice'">+</span>
+                            <span class="b_more f_bold700" onclick="location.href='<?=G5_BBS_URL;?>/board.php?bo_table=notice'">+</span>
                         </div>
                         <hr class="board_bar">
                         <div class="noti_conWrap">
@@ -223,8 +223,8 @@
                     <!-- 11.고객센터 정보 (모바일에서만)-->
                     <div class="cs_infoWrap">
                         <div class="cs_phone">
-                            <img src="img/new_common/thkc_logo_mark.svg" alt="logo">
-                            <span class="f_s14 f_bold100">이로움 고객센터</span>
+                            <!-- <img src="img/new_common/thkc_logo_mark.svg" alt="logo"> -->
+                            <span class="f_s16">이로움 고객센터</span>
                             <span class="phone">1533-5088</span>
                         </div>
                         <div class="f_s14">

@@ -57,6 +57,13 @@ input:-webkit-autofill:active {
 	-webkit-text-fill-color: #333 !important;
 }
 
+.thkc_tabJoin .thkc_tabUl li>h4,
+.thkc_joinWrap .thkc_JoinConent h5,
+.thkc_joinWrap .thkc_titleTop,
+.thkc_findMeWrap .thkc_titleTop {
+	font-family: 'Noto Sans KR', sans-serif !important;
+}
+
 
 a.text_under {
 	text-decoration-line: underline;
@@ -178,7 +185,6 @@ a.text_line:hover {
 	z-index: 2;
 	position: absolute;
 	bottom: 10px;
-	background: pink;
 }
 
 .thkc_JoinConent .field {
@@ -377,7 +383,7 @@ a.text_line:hover {
 	justify-content: center;
 	align-items: center;
 	margin-bottom: 100px;
-	padding-top: 40px;
+	padding-top: 40px;	
 }
 
 .thkc_loginWrap section .imgView img {
@@ -387,7 +393,7 @@ a.text_line:hover {
 .thkc_loginWrap section .lineWrap {
 	width: 100px;
 	height: 500px;
-	border-right: 1px solid #E7E7E7;
+	border-right: 1px solid #E7E7E7;	
 }
 
 .thkc_loginWrap .login_contWrap {
@@ -1296,7 +1302,7 @@ input.thkc_switch[type="checkbox"]:enabled:hover {
 	}
 
 	.thkc_loginWrap section {
-		padding-top: 0px;
+		padding-top: 0px;		
 	}
 
 	.thkc_loginWrap section .login_contWrap {
@@ -1591,6 +1597,17 @@ input.thkc_switch[type="checkbox"]:enabled:hover {
 	.thkc_joinWrap {
 		margin-top: 0px;		
 	}
+	.thkc_loginWrap .field .inp-field {		
+		font-size: 14px;		
+	}
 }
 
-@media (max-width: 360px) {}
+@media (max-width: 360px) {
+	.thkc_loginWrap section {	
+		padding: 0px 10px;		
+	}
+	
+	.thkc_loginWrap .field .inp-field{
+		width: 100px;
+	}
+}

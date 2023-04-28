@@ -37,16 +37,17 @@
     // ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==
 
     // 최근 주문내역 건수
-        // 상품준비 건수   cnt_productpreparation = 0 ;       
-        // 출고준비 건수   cnt_Preparingshipment = 0 ;      
-        // 출고완료 건수   cnt_Shipmentcompleted = 0 ;    
-        // 설치일정 건수   cnt_Installationschedule = 0 ;  
+        // 상품준비 건수   cnt_productpreparation = 0 ;
+        // 출고준비 건수   cnt_Preparingshipment = 0 ;
+        // 출고완료 건수   cnt_Shipmentcompleted = 0 ;
+        // 설치일정 건수   cnt_Installationschedule = 0 ;
     $_OrderCnt = sql_fetch("   SELECT
 
                                     COUNT(CASE WHEN c.ct_status='준비' THEN 1 END) AS cnt_productpreparation,
                                     COUNT(CASE WHEN c.ct_status='출고준비' THEN 1 END) AS cnt_Preparingshipment,
                                     COUNT(CASE WHEN c.ct_status='배송' THEN 1 END) AS cnt_Shipmentcompleted,
-                                    COUNT(CASE WHEN c.ct_status NOT IN ('완료') AND c.ct_is_direct_delivery='2' THEN 1 END) AS cnt_Installationschedule
+                                    -- COUNT(CASE WHEN c.ct_status NOT IN ('완료') AND c.ct_is_direct_delivery='2' THEN 1 END) AS cnt_Installationschedule
+                                    ( SELECT COUNT(ct_id) FROM g5_shop_cart WHERE ct_status NOT IN ('완료') AND c.ct_is_direct_delivery='2' AND ct_time BETWEEN '" . date('Y-m-') . "01' AND '" . date('Y-m-d') . "') AS cnt_Installationschedule
     
                                 FROM
                                     g5_shop_cart c
@@ -60,6 +61,8 @@
                                     AND o.od_del_yn = 'N'
                                     -- AND o.od_time >= DATE(NOW() - INTERVAL 12 MONTH)
                                     -- AND o.od_time BETWEEN '" . date('Y-m-') . "01' AND '" . date('Y-m-d') . "'
+                                    -- 주석: 기존 월단위 또는 기간별 검색조건에서 마케팅 요청으로 'g5_shop_cart'테이블과 'g5_shop_order'테이블을 전체 풀 검색으로 변경.
+                                    --        기간 검색이 빠짐으로 인한 메인페이지 접속시 속도 저하 발생 예상됨.
                         ");
 
 
@@ -181,7 +184,7 @@
                     </div>                        
 
                     <!-- 해시태그 시작 -->
-                    <?=popular('basic', 5, 1);  // ('스킨명', 태그개수, 태그 통계기간[day단위] ) ?>
+                    <?=popular('basic', 5, 7);  // ('스킨명', 태그개수, 태그 통계기간[day단위] ) ?>
                     <!-- 해시태그 종료 -->
 
                 </div>
@@ -450,7 +453,7 @@
                             <img src="<?=G5_IMG_URL;?>/new_common/thkc_logo_mark.svg" alt="logo">
             <span class="phone">1533-5088</span>
                         </div>
-                        <div class="f_s12">
+                        <div class="">
                             <ul class="cs_m_info">
                                 <li class="cs_infoTitle">운영시간</li>
                                 <li>[평일] 08:30~17:30 (점심시간 12시~13시) /<br> [주말/공휴일] 휴무</li>
