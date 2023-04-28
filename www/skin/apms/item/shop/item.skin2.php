@@ -9,7 +9,7 @@
 }
 </style>
 	<div style="width:500px; margin:50px auto;">
-			<form name="fitem" method="post" action="<?php echo $action_url; ?>" class="form item-form" role="form" onsubmit="return fitem_submit(this);">
+			<form name="fitem" method="post" action="./cartupdate.php" class="form item-form" role="form" onsubmit="return fitem_submit(this);">
 			<input type="hidden" name="it_id[]" value="<?php echo $it_id; ?>">
 			<input type="hidden" name="it_msg1[]" value="<?php echo $it['pt_msg1']; ?>">
 			<input type="hidden" name="it_msg2[]" value="<?php echo $it['pt_msg2']; ?>">
@@ -115,7 +115,7 @@ $(function() {
 // 바로구매, 장바구니 폼 전송
 function fitem_submit(f) {
 
-	f.action = "<?php echo $action_url; ?>";
+	f.action = "./cartupdate.php";
 	f.target = "";
 
 

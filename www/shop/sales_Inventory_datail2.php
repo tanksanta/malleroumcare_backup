@@ -221,7 +221,7 @@ expired_rental_item_clean($_GET['prodId']);
     </div>
     <div class="popup01 popup2" id="popup01">
       <div class="p-inner">
-        <h2>상품 옵션 설정</h2>
+        <h2>상품 수량 및 옵션 설정</h2>
         <button class="cls-btn p-cls-btn" type="button"><img src="<?=G5_IMG_URL?>/icon_08.png" alt="" onclick="popup01_hide()"></button>
         <?php include_once($item_skin_file);?>
       </div>
@@ -1473,7 +1473,11 @@ function close_popup(e){
 
 //신규재고 등록
 function popup01_show(){
+	<?php if($it['prodSupYn'] == "N"){?>
+		alert("비유통 상품은 신규상품주문이 제한되어 있습니다.");
+	<?php }else{?>
   document.getElementById('popup01').style.display = 'block';
+	<?php }?>
 };
 function popup01_hide(){
   document.getElementById('popup01').style.display = 'none'
