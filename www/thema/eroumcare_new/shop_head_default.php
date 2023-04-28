@@ -118,16 +118,15 @@
                         </div>
                     </div>
                 </div>
-                <div class="menuWrap menu_b">
-                    <div class="line_gnb">
-                        <img src="<?=G5_IMG_URL;?>/new_common/thkc_line_gnb.svg" alt="로고">
-                    </div>
-
+                <div class="menuWrap menu_b">                 
                     <?php
                         // 23.03.06 : 서원 - 맴버 타입이 파트너일 경우 해당 메뉴는 나타내지 않는다.
                         if( $member['mb_type'] != "partner" ) {
                     ?>
                     <!-- 상단 이벤트 메뉴 -->
+                    <div class="line_gnb">
+                        <img src="<?=G5_IMG_URL;?>/new_common/thkc_line_gnb.svg" alt="로고">
+                    </div>
                     <ul class="sub_menu f_col3 f_s14">
                         <li><a href="<?=G5_BBS_URL;?>/board.php?bo_table=event">이벤트</a></li>
                         <li><a href="<?=G5_BBS_URL;?>/board.php?bo_table=sample">샘플신청</a></li>

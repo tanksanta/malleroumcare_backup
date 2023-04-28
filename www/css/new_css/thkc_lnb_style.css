@@ -209,7 +209,7 @@ aside.thkc_aside .m_iconWarp img {
 aside.thkc_aside hr {
 	border: 0.5px solid #E9E9E9;
 	border-bottom: 0px;
-	margin: 0px;
+	margin: -3px;
 }
 
 aside.thkc_aside .btn_mypage {
@@ -319,6 +319,7 @@ aside.thkc_aside .mgeWrap .mgTitle {
 	font-weight: 500;
 	line-height: 40px;
 	text-align: center;
+	font-family: 'Noto Sans KR', sans-serif !important;
 }
 
 aside.thkc_aside .mgeWrap .y_bar::after {
@@ -613,6 +614,7 @@ aside.thkc_aside .fastTabe table {
 
 aside.thkc_aside .fastTabe table tr td {
 	display: flex;
+	cursor: pointer;
 }
 
 aside.thkc_aside .fastTabe table tr td img {

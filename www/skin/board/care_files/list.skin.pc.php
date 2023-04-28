@@ -34,7 +34,7 @@ $list_cnt = count($list);
 			<th scope="col">포토</th>
 		<?php } ?>
 		<?php if($is_category) { ?>
-			<th scope="col">분류</th>
+			<th scope="col" style="width:180px;">분류</th>
 		<?php } ?>
 		<th scope="col">제목</th>
 		<th scope="col" style="width:120px;"><?php echo subject_sort_link('wr_datetime', $qstr2, 1) ?>날짜</a></th>
@@ -84,7 +84,7 @@ $list_cnt = count($list);
 				<input type="checkbox" name="chk_wr_id[]" value="<?php echo $list[$i]['wr_id'] ?>" id="chk_wr_id_<?php echo $i ?>">
 			</td>
 		<?php } ?>
-		<td class="text-center font-11">
+		<td class="text-center font-14">
 			<?php echo $num;?>
 		</td>
 		<?php if ($boset['img']) { 
@@ -103,7 +103,7 @@ $list_cnt = count($list);
 		<?php } ?>
 		<?php if ($is_category) { ?>
 			<td class="text-center">
-				<a href="<?php echo $list[$i]['ca_name_href'] ?>"><span class="text-muted font-11"><?php echo $list[$i]['ca_name'] ?></span></a>
+				<a href="<?php echo $list[$i]['ca_name_href'] ?>"><span class="text-muted font-14"><?php echo $list[$i]['ca_name'] ?></span></a>
 			</td>
 		<?php } ?>
 		<td class="list-subject<?php echo $subject_css;?>">
@@ -116,13 +116,13 @@ $list_cnt = count($list);
 				<?php } ?>
 			</a>
 		</td>
-		<td class="text-center en font-11"><?php echo apms_date($list[$i]['date'], 'orangered', 'H:i', 'm.d', 'Y.m.d'); ?></td>
-		<td class="text-center en font-11"><?php echo $list[$i]['wr_hit'] ?></td>
+		<td class="text-center en font-14"><?php echo apms_date($list[$i]['date'], 'orangered', 'H:i', 'm.d', 'Y.m.d'); ?></td>
+		<td class="text-center en font-14"><?php echo $list[$i]['wr_hit'] ?></td>
 		<?php if ($is_good) { ?>
-			<td class="text-center en font-11"><?php echo $list[$i]['wr_good'] ?></td>
+			<td class="text-center en font-14"><?php echo $list[$i]['wr_good'] ?></td>
 		<?php } ?>
 		<?php if ($is_nogood) { ?>
-			<td class="text-center en font-11"><?php echo $list[$i]['wr_nogood'] ?></td>
+			<td class="text-center en font-14"><?php echo $list[$i]['wr_nogood'] ?></td>
 		<?php } ?>
 	</tr>
 	<?php } ?>

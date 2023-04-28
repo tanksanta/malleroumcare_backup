@@ -36,7 +36,7 @@
 
     // preg_match() 함수를 이용해 모바일 기기로 접속하였는지 확인
     if (preg_match($mobile_agent, $_SERVER['HTTP_USER_AGENT'])) {
-        $_isMobile = true;
+        //$_isMobile = true;
     }
 
 
@@ -304,8 +304,7 @@
                     <div class="noticeWrap">
                         <h3 class="mgTitle y_bar_02">공지사항
                             <a href="<?=G5_BBS_URL;?>/board.php?bo_table=notice">
-                                <div class="more_01"><span class="b_more f_bold700" onclick="location.href='<?=G5_BBS_URL;?>/board.php?bo_table=notice'">+</span></div>
-                                
+                                <div class="more_01"><span class="b_more f_bold700" onclick="location.href='<?=G5_BBS_URL;?>/board.php?bo_table=notice'">+</span></div>                                
                             </a>
                             
                         </h3>
