@@ -206,7 +206,7 @@
                             <li class="g_Box"><img src="<?=G5_IMG_URL;?>/new_main_eroum/thkc_img_guide_02.png" alt="가이드"></li>
                             <li class="guideTitle">의료기상 가이드 <img src="<?=G5_IMG_URL;?>/new_common/thkc_btn_download.svg" alt=""></li>
                         </ul>
-                        <ul class="g_BoxWrap" onclick="window.open('<?=G5_DATA_URL;?>/THKC(eroumcare)_가이드_재가센터.pdf');">
+                        <ul class="g_BoxWrap" onclick="window.open('<?=G5_DATA_URL;?>/file/THKC(eroumcare)_가이드_재가센터.pdf');">
                             <li class="g_Box"><img src="<?=G5_IMG_URL;?>/new_main_eroum/thkc_img_guide_03.png" alt="가이드"></li>
                             <li class="guideTitle">재가센터 가이드 <img src="<?=G5_IMG_URL;?>/new_common/thkc_btn_download.svg" alt=""></li>
                         </ul>
@@ -234,7 +234,7 @@
                                     </ul>
                                 </div>
                                 <div class="swiper-slide">
-                                    <ul class="g_BoxWrap" onclick="window.open('<?=G5_DATA_URL;?>/THKC(eroumcare)_가이드_재가센터.pdf');">
+                                    <ul class="g_BoxWrap" onclick="window.open('<?=G5_DATA_URL;?>/file/THKC(eroumcare)_가이드_재가센터.pdf');">
                                         <li class="g_Box">
                                             <img src="<?=G5_IMG_URL;?>/new_main_eroum/thkc_img_guide_03.png" alt="">
                                         </li>
