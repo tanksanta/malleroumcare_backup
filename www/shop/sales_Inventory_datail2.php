@@ -91,7 +91,7 @@ if ($is_admin || $is_author || $is_purchaser) {
       alert('판매가능한 상품이 아닙니다.');
     }
   }else{
-    // if (!($it['ca_use'] && $it['it_use'])) {
+    // if (!($it['ca_use'] && $it['it_use'])) { // 230503 판매 불가 제품이더라고 재고 상세 페이지는 확인 할 수 있도록 변경
     if (!$it['ca_use']) {
       alert('판매가능한 상품이 아닙니다.');
     }
@@ -117,7 +117,7 @@ if ( THEMA_KEY == 'partner') {
     $is_orderable = false;
   }
 } else {
-  // if(!$it['it_use'] || $it['it_tel_inq'] || $is_soldout) {
+  // if(!$it['it_use'] || $it['it_tel_inq'] || $is_soldout) { // 230503 판매 불가 제품이더라고 재고 상세 페이지는 확인 할 수 있도록 변경
   if($it['it_tel_inq'] || $is_soldout) {
     $is_orderable = false;
   }
