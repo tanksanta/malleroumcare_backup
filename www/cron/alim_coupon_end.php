@@ -45,15 +45,15 @@ $sql = "SELECT a.*
 ,b.mb_id AS mb_id2 
 FROM `g5_shop_coupon` a
 LEFT JOIN `g5_shop_coupon_member` b ON a.cp_no = b.cp_no
-WHERE a.cp_end = DATE_FORMAT(DATE_ADD(NOW(), INTERVAL 7 DAY),'%Y-%m-%d') 
+WHERE a.cp_end = DATE_FORMAT(DATE_ADD(NOW(), INTERVAL 6 DAY),'%Y-%m-%d') 
 AND b.mb_id NOT IN (SELECT mb_id FROM `g5_shop_coupon_log` WHERE cp_id = a.cp_id)";//마감 7일전 사용안한 쿠폰 조회
 $result = sql_query($sql);
 
 while($cp = sql_fetch_array($result)) {
     $mb = get_member($cp['mb_id2']);
 	if($mb["mb_hp"] !=""){
-		$alimtalk_contents = "[이로움]\n".get_text($mb['mb_name'])."님, 보유한 쿠폰이 소멸 예정되어 안내드립니다.\n■ 쿠폰명 : ".$cp["cp_subject"]."\n■ 유효기간 : ".date("Y-m-d",strtotime($cp['cp_end']." -1 days"))." 23시 59분까지\n\n상기 쿠폰은 유효기간 내 미 사용 시 소멸됩니다.\n\n* 이 메시지는 고객님의 동의에 의해 지급된 쿠폰의 소멸 안내 메시지입니다.";
-		$result = send_alim_talk('COUPONDEL_'.str_replace("-","",$cp['cp_id']).'_'.str_replace("-","",$mb["mb_hp"]), $mb["mb_hp"], 'ent_coupon_delete', $alimtalk_contents, array(
+		$alimtalk_contents = "[이로움]\n".get_text($mb['mb_name'])."님, 보유한 쿠폰이 소멸 예정되어 안내드립니다.\n■ 쿠폰명 : ".$cp["cp_subject"]."\n■ 유효기간 : ".$cp['cp_end']." 23시 59분까지\n\n상기 쿠폰은 유효기간 내 미 사용 시 소멸됩니다.\n\n* 이 메시지는 고객님의 동의에 의해 지급된 쿠폰의 소멸 안내 메시지입니다.";
+		$result2 = send_alim_talk('COUPONDEL_'.str_replace("-","",$cp['cp_id']).'_'.str_replace("-","",$mb["mb_hp"]), $mb["mb_hp"], 'ent_coupon_delete', $alimtalk_contents, array(
     'button' => [
       array(
         'name' => '쿠폰확인',
@@ -63,7 +63,7 @@ while($cp = sql_fetch_array($result)) {
       )
     ]
   ));//내용은 템플릿과 동일 해야 함
-		$log_txt_con = "[".date("Y-m-d H:i:s")."] 비즈톡 발송 결과 : (".$mb['mb_name'].")".stripslashes(json_encode($result, JSON_UNESCAPED_UNICODE))." \r\n";
+		$log_txt_con = "[".date("Y-m-d H:i:s")."] 비즈톡 발송 결과 : (".$mb['mb_name'].")".stripslashes(json_encode($result2, JSON_UNESCAPED_UNICODE))." \r\n";
 	}else{
 		$log_txt_con = "[".date("Y-m-d H:i:s")."] 비즈톡 발송 결과 : ".$mb['mb_name']."님의 휴대폰 정보가 없습니다. \r\n";
 	}
