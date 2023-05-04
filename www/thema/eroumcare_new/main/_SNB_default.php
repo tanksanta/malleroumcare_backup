@@ -36,7 +36,7 @@
 
     // preg_match() 함수를 이용해 모바일 기기로 접속하였는지 확인
     if (preg_match($mobile_agent, $_SERVER['HTTP_USER_AGENT'])) {
-        //$_isMobile = true;
+        $_isMobile = true;
     }
 
 
