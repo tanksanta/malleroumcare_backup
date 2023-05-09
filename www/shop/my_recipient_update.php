@@ -1547,6 +1547,14 @@ $(function() {
                   var data = $xhr.responseJSON;
                   alert("로그 저장에 실패했습니다!");
               });
+			  $.post('./ajax.my.recipient.hist.php', {
+					  data: data['data'],
+					  status: false
+					}, 'json')
+					.fail(function($xhr) {
+					  var data = $xhr.responseJSON;
+					  alert("계약정보 업데이트에 실패했습니다!");
+					});
       
               btn_update.disabled = false;
           },
