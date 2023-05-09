@@ -12,7 +12,7 @@ $ca_list  = '<option value="">선택</option>'.PHP_EOL;
 $sql = " select * from {$g5['g5_shop_category_table']} ";
 // if ($is_admin != 'super')
 //     $sql .= " where ca_mb_id = '{$member['mb_id']}' ";
-$sql .= " order by ca_order, ca_id ";
+$sql .= " order by ca_id, ca_order ";
 $result = sql_query($sql);
 for ($i=0; $row=sql_fetch_array($result); $i++)
 {
@@ -215,7 +215,7 @@ $flist = apms_form(1,0);
   <select name="sca" id="sca">
     <option value="">전체분류</option>
     <?php
-    $sql1 = " select ca_id, ca_name, as_line from {$g5['g5_shop_category_table']} order by ca_order, ca_id ";
+    $sql1 = " select ca_id, ca_name, as_line from {$g5['g5_shop_category_table']} order by ca_id, ca_order ";
     $result1 = sql_query($sql1);
     for ($i=0; $row1=sql_fetch_array($result1); $i++) {
       $len = strlen($row1['ca_id']) / 2 - 1;
