@@ -215,9 +215,10 @@ $qstr = ("list_num={$list_num}&amp;od_status={$od_status}&amp;od_admin_yn={$od_a
                     sum(Ct_qty) as '개수',
                     count(CASE when ct_status = '완료' then 1 end ) as '완료수',
                     count(CASE when ct_status = '배송' then 1 end )as '배송수',
-                    count(CASE when ct_status = '준비' then 1 end ) as '준비수'
+                    count(CASE when ct_status in ('준비','출고준비') then 1 end ) as '준비수'
                 FROM g5_shop_cart
-                WHERE ct_status in('준비','배송','완료')
+                WHERE ct_status in('출고준비','준비','배송','완료')
+                AND ( ct_time between '$fr_date 00:00:00' and '$to_date 23:59:59' )
                 GROUP by od_id 
             )
             B on A.od_id=B.od_id
@@ -394,9 +395,21 @@ echo $pagelist;
     });
 
     
+    const getDateDiff = (d1, d2) => {
+        const date1 = new Date(d1);
+        const date2 = new Date(d2);
+        const diffDate = date1.getTime() - date2.getTime();
+        return Math.abs(diffDate / (1000 * 60 * 60 * 24)); // 밀리세컨 * 초 * 분 * 시 = 일
+    }
 
-    function shop_order_list_submit_function(f)
-    {
+
+    function shop_order_list_submit_function(f) {
+        
+        if( $("#fr_date").val() && $("#to_date").val() ) {
+            var _day = getDateDiff( $("#fr_date").val() , $("#to_date").val() );
+            if( _day >= 92 ) { alert("주문서리스트는 3개월 이상의 기간 검색은 불가능 합니다."); return false; }
+        }
+
         return true;
     }
 
