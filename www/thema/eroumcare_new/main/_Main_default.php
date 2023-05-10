@@ -382,14 +382,14 @@
                                     </div>
                                 </div>
                                 <div class="swiper-slide">
-                                    <div class="svBox svBg02" onclick="location.href='/bbs/board.php?bo_table=rental'">
+                                    <div class="svBox svBg02" onclick="location.href='/bbs/board.php?bo_table=care_files'">
                                         <h3>사업소 운영 자료실</h3>
                                         <div class="sv_img"><img src="<?=G5_IMG_URL;?>/new_main_eroum/thkc_img_service_02.png" alt="레탈 프로그램"></div>
                                         <div class="sv_con">공단 평가 자료, 복지용구 컨텐츠 등 사업소 운영에 필요한 자료 모음집</div>
                                     </div>
                                 </div>
                                 <div class="swiper-slide">
-                                    <div class="svBox svBg03" onclick="location.href='/bbs/board.php?bo_table=sample'">
+                                    <div class="svBox svBg03" onclick="location.href='/bbs/board.php?bo_table=care_news'">
                                         <h3>복지용구 뉴스</h3>
                                         <div class="sv_img"><img src="<?=G5_IMG_URL;?>/new_main_eroum/thkc_img_service_03.png" alt="비급여 샘플 제공"></div>
                                         <div class="sv_con">공단 공지사항, 급여가 변동, 전국 수급자 추이, 복지용구 판매 데이터 등 유용한 업계 소식 제공</div>
