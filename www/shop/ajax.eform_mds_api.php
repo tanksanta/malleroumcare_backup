@@ -563,6 +563,7 @@ if($_REQUEST["signed"] == "ok"){?>
 	$ent_ConAcc_1 = nl2br($row["entConAcc01"]);
 	$ent_ConAcc_1 = preg_replace('/\r\n|\r|\n/','',$ent_ConAcc_1);
 	$ent_ConAcc_1 = str_replace("<br />","\\n",$ent_ConAcc_1);
+	$ent_ConAcc_1 = str_replace('"','\\"',$ent_ConAcc_1);
 	$count_total = 0;
 	$count_sale = 0;
 	$count_rant = 0;
