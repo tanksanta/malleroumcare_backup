@@ -30,8 +30,7 @@ header('Content-type: application/json');
 	$json_string = file_get_contents('php://input');
 
 	// Webhook 메시지 Json parse
-	$arrResponse = json_decode($json_string, true);
-
+	$arrResponse = json_decode($json_string, true);	
 	// 추가적인 Webhook 메시지 항목은 하단의 [Webhook 메시지 구성] 참조
 	if($arrResponse["event"]["type"] != ""){
 		/*$response = $client->request('GET', 'https://api.modusign.co.kr/documents/'.$arrResponse["document"]["id"], [
@@ -52,13 +51,13 @@ header('Content-type: application/json');
 		$log_txt .= '(' . date("Y-m-d H:i:s") . ')' .$arrResponse["event"]["type"]. "\r\n";
 		if($arrResponse["event"]["type"] == "document_all_signed"){// 서명완료
 			$sql = "update `eform_document` set dc_sign_datetime=now(),dc_status='3' WHERE dc_id=UNHEX('".$dc_id2."')";
-			$log_txt .= "-- 계약서 ".$dc_id2." 서명 완료\r\n".$sql;
+			$log_txt .= "-- 계약서 ".$dc_id2." 서명 완료\r\n";
 			sql_query($sql);
 			//if($is_simple_efrom) {
 			  $uuid = $dc_id2; 
 			  $dc_status = '3';
 			  $eform = sql_fetch("SELECT * FROM `eform_document` WHERE `dc_id` = UNHEX('$uuid')");
-			  
+			  $ent = sql_fetch(" SELECT * FROM g5_member WHERE mb_entId = '{$eform['entId']}' ");
 			  // 간편 계약서 작성 시 바코드 입력한 상품 '재고소진' 상태로 재고 등록
 			  $sql = "
 				SELECT
@@ -92,9 +91,19 @@ header('Content-type: application/json');
 				if(strlen($row['it_barcode']) == 12) { // 바코드 12자리 정상적으로 입력한 경우
 				  if($row['gubun'] == '00') {
 					// 판매
-
 					// 재고에 있는지 조회
-					$stock_result = get_stock($row['id'], $row['it_barcode']);
+					$stock_result="";
+					$result = api_post_call(EROUMCARE_API_STOCK_SELECT_DETAIL_LIST, array(
+						'entId' => $ent['mb_entId'],
+						'usrId' => $ent['mb_id'],
+						'prodId' => $row['id'],
+						'prodBarNum' => $row['it_barcode']
+					  ));
+
+
+					  if($result['errorYN'] == 'N' && $result['data']) {
+						$stock_result = $result['data'];
+					  }
 					if($stock_result) {
 					  // 재고에 있으면
 					  $stock = $stock_result[0];
@@ -116,7 +125,6 @@ header('Content-type: application/json');
 					}
 				  } else {
 					// 대여
-
 					$str_date = substr($row['it_date'], 0, 10);
 					$end_date = substr($row['it_date'], 11, 10);
 
@@ -127,7 +135,18 @@ header('Content-type: application/json');
 					);
 
 					// 재고에 있는지 조회
-					$stock_result = get_stock($row['id'], $row['it_barcode']);
+					$stock_result="";
+					$result = api_post_call(EROUMCARE_API_STOCK_SELECT_DETAIL_LIST, array(
+						'entId' => $ent['mb_entId'],
+						'usrId' => $ent['mb_id'],
+						'prodId' => $row['id'],
+						'prodBarNum' => $row['it_barcode']
+					  ));
+
+
+					  if($result['errorYN'] == 'N' && $result['data']) {
+						$stock_result = $result['data'];
+					  }
 					if($stock_result) {
 					  // 재고가 있으면
 					  $stock = $stock_result[0];
@@ -155,8 +174,8 @@ header('Content-type: application/json');
 			  // 재고 insert
 			  if($stock_insert) {
 				$insert_result = api_post_call(EROUMCARE_API_STOCK_INSERT, array(
-				  'usrId' => $member["mb_id"],
-				  'entId' => $member["mb_entId"],
+				  'usrId' => $ent["mb_id"],
+				  'entId' => $ent["mb_entId"],
 				  'prods' => $stock_insert
 				));
 
@@ -187,8 +206,8 @@ header('Content-type: application/json');
 			  // 재고 update
 			  if($stock_update) {
 				$update_result = api_post_call(EROUMCARE_API_STOCK_UPDATE, array(
-				  'usrId' => $member["mb_id"],
-				  'entId' => $member["mb_entId"],
+				  'usrId' => $ent["mb_id"],
+				  'entId' => $ent["mb_entId"],
 				  'prods' => $stock_update
 				));
 
@@ -247,7 +266,6 @@ header('Content-type: application/json');
 			`dl_datetime` = '$datetime'
 			");
 			 //알림톡보내기 ======================================================================================================================
-			 $ent = sql_fetch(" SELECT * FROM g5_member WHERE mb_entId = '{$eform['entId']}' ");
 			 send_alim_talk('ENT_EF_'.$uuid, $ent['mb_hp'], 'ent_eform_result', "\"[이로움]\n\n{$eform['penNm']}님과 전자계약이 체결되었습니다.\"");
 			 //================================================================================================================================
 			//}
@@ -320,23 +338,23 @@ if($_REQUEST["signed"] == "ok"){?>
 		for($j=0;$j<count($arrResponse["documents"][0]["signings"]);$j++ ){
 			$p_signedAts[$arrResponse["documents"][0]["signings"][$j]["participantId"]] = $arrResponse["documents"][0]["signings"][$j]["signedAt"];
 		}
-
+		
 		for($i=0;$i<$participants_count;$i++){
 			if($arrResponse["documents"][0]["participants"][$i]["name"] == "수급자"){
 				$gubun1 = ($arrResponse["documents"][0]["participants"][$i]["signingMethod"]["type"] == "SECURE_LINK")?"웹페이지":"카카오톡";			
-				$sign_date1 = ($p_signedAts[$arrResponse["documents"][0]["participants"][$i]["id"]] != "")? date("Y-m-d H:i:s",strtotime($p_signedAts[$arrResponse["documents"][0]["participants"][$i]["id"]])):"-";
+				$sign_date1 = ($p_signedAts[$arrResponse["documents"][0]["participants"][$i]["id"]] != "")? date("Y-m-d H:i:s",strtotime($p_signedAts[$arrResponse["documents"][0]["participants"][$i]["id"]])):"-"; 
 				$stat1 = ($sign_date1 == "-")?"진행중":"완료";
 				$part_id1 = $arrResponse["documents"][0]["participants"][$i]["id"];
 			}
 			if($arrResponse["documents"][0]["participants"][$i]["name"] == "대리인"){
 				$gubun2 = ($arrResponse["documents"][0]["participants"][$i]["signingMethod"]["type"] == "SECURE_LINK")?"웹페이지":"카카오톡";			
-				$sign_date2 = ($p_signedAts[$arrResponse["documents"][0]["participants"][$i]["id"]] != "")? date("Y-m-d H:i:s",strtotime($p_signedAts[$arrResponse["documents"][0]["participants"][$i]["id"]])):"-";
+				$sign_date2 = ($p_signedAts[$arrResponse["documents"][0]["participants"][$i]["id"]] != "")? date("Y-m-d H:i:s",strtotime($p_signedAts[$arrResponse["documents"][0]["participants"][$i]["id"]])):"-"; 
 				$stat2 = ($sign_date2 == "-")?"진행중":"완료";
 				$part_id2 = $arrResponse["documents"][0]["participants"][$i]["id"];
 			}
 			if($arrResponse["documents"][0]["participants"][$i]["name"] == "신청자"){
-				$gubun3 = ($arrResponse["documents"][0]["participants"][$i]["signingMethod"]["type"] == "SECURE_LINK")?"웹페이지":"카카오톡";
-				$sign_date3 = ($p_signedAts[$arrResponse["documents"][0]["participants"][$i]["id"]] != "")? date("Y-m-d H:i:s",strtotime($p_signedAts[$arrResponse["documents"][0]["participants"][$i]["id"]])):"-";
+				$gubun3 = ($arrResponse["documents"][0]["participants"][$i]["signingMethod"]["type"] == "SECURE_LINK")?"웹페이지":"카카오톡";			
+				$sign_date3 = ($p_signedAts[$arrResponse["documents"][0]["participants"][$i]["id"]] != "")? date("Y-m-d H:i:s",strtotime($p_signedAts[$arrResponse["documents"][0]["participants"][$i]["id"]])):"-"; 
 				$stat3 = ($sign_date3 == "-")?"진행중":"완료";
 				$part_id3 = $arrResponse["documents"][0]["participants"][$i]["id"];
 			}
@@ -545,6 +563,7 @@ if($_REQUEST["signed"] == "ok"){?>
 	$ent_ConAcc_1 = nl2br($row["entConAcc01"]);
 	$ent_ConAcc_1 = preg_replace('/\r\n|\r|\n/','',$ent_ConAcc_1);
 	$ent_ConAcc_1 = str_replace("<br />","\\n",$ent_ConAcc_1);
+	$ent_ConAcc_1 = str_replace('"','\\"',$ent_ConAcc_1);
 	$count_total = 0;
 	$count_sale = 0;
 	$count_rant = 0;
@@ -814,7 +833,7 @@ if($_REQUEST["signed"] == "ok"){?>
 				,"templateId":"'.$temp_doc_id.'"}';
 	$arrResponse = get_modusign($API_Key64,$api_url,$type,$data);//메타데이터 확인
 $log_dir = $_SERVER["DOCUMENT_ROOT"].'/data/log/';
-if(!is_dir($log_dir)){//인증서 파일 생성할 폴더 확인
+if(!is_dir($log_dir)){//인증서 파일 생성할 폴더 확인 
 	@umask(0);
 	@mkdir($log_dir,0777);
 	//@chmod($upload_dir, 0777);
