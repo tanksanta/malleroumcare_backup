@@ -2,7 +2,7 @@
 $menu['menu100'] = array (
     array('100000', '환경설정', G5_ADMIN_URL.'/config_form.php',   'config'),
     array('100100', '기본환경설정', G5_ADMIN_URL.'/config_form.php',   'cf_basic'),
-    array('100200', '관리권한설정', G5_ADMIN_URL.'/auth_list.php',     'cf_auth'),
+    array('100200', '관리권한설정', G5_ADMIN_URL.'/auth_list_new.php',     'cf_auth'),
     array('100280', '테마설정', G5_ADMIN_URL.'/theme.php',     'cf_theme', 1),
     array('100290', '메뉴설정', G5_ADMIN_URL.'/menu_list.php',     'cf_menu', 1),
     array('100300', '메일 테스트', G5_ADMIN_URL.'/sendmail_test.php', 'cf_mailtest'),
