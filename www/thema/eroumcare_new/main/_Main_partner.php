@@ -53,7 +53,7 @@
                                     COUNT(ct_id) as cnt_Total,
                                     COUNT(CASE WHEN c.ct_status='출고준비' THEN 1 END) AS cnt_Shipped,
                                     COUNT(CASE WHEN c.ct_status='완료' THEN 1 END) AS cnt_Delivered,
-                                    COUNT(CASE WHEN c.ct_status NOT IN ('완료') AND c.ct_is_direct_delivery='2' THEN 1 END) AS cnt_Install
+                                    COUNT(CASE WHEN c.ct_is_direct_delivery='2' THEN 1 END) AS cnt_Install
                                 FROM
                                     g5_shop_cart c
                                 LEFT JOIN

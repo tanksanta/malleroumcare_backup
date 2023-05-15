@@ -37,9 +37,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
 
     <!-- style -->
-    <link type="text/css" rel="stylesheet" href="<?=G5_CSS_URL;?>/new_css/thkc_common.css?ver=<?=time();?>">
-    <link type="text/css" rel="stylesheet" href="<?=G5_CSS_URL;?>/new_css/thkc_landing_style.css?ver=<?=time();?>">
-    <link type="text/css" rel="stylesheet" href="<?=G5_CSS_URL;?>/new_css/thkc_footer_style.css?ver=<?=time();?>">
+    <link type="text/css" rel="stylesheet" href="<?=G5_CSS_URL;?>/new_css/thkc_common.css?ver=<?=APMS_SVER;?>">
+    <link type="text/css" rel="stylesheet" href="<?=G5_CSS_URL;?>/new_css/thkc_landing_style.css?ver=<?=APMS_SVER;?>">
+    <link type="text/css" rel="stylesheet" href="<?=G5_CSS_URL;?>/new_css/thkc_footer_style.css?ver=<?=APMS_SVER;?>">
 
     <!-- google font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">

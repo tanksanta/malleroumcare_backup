@@ -47,7 +47,7 @@
                                     COUNT(CASE WHEN c.ct_status='출고준비' THEN 1 END) AS cnt_Preparingshipment,
                                     COUNT(CASE WHEN c.ct_status='배송' THEN 1 END) AS cnt_Shipmentcompleted,
                                     -- COUNT(CASE WHEN c.ct_status NOT IN ('완료') AND c.ct_is_direct_delivery='2' THEN 1 END) AS cnt_Installationschedule
-                                    ( SELECT COUNT(ct_id) FROM g5_shop_cart WHERE ct_status NOT IN ('완료') AND c.ct_is_direct_delivery='2' AND ct_time BETWEEN '" . date('Y-m-') . "01' AND '" . date('Y-m-d') . "') AS cnt_Installationschedule
+                                    ( SELECT COUNT(ct_id) FROM g5_shop_cart WHERE c.ct_is_direct_delivery='2' AND ct_time BETWEEN '" . date('Y-m-d') . "' AND '" . date('Y-m-t') . "') AS cnt_Installationschedule
     
                                 FROM
                                     g5_shop_cart c
@@ -60,7 +60,7 @@
                                     AND c.ct_status IN ('준비', '출고준비', '배송', '완료')
                                     AND o.od_del_yn = 'N'
                                     -- AND o.od_time >= DATE(NOW() - INTERVAL 12 MONTH)
-                                    -- AND o.od_time BETWEEN '" . date('Y-m-') . "01' AND '" . date('Y-m-d') . "'
+                                    -- AND o.od_time BETWEEN '" . date('Y-m-') . "01' AND '" . date('Y-m-t') . "'
                                     -- 주석: 기존 월단위 또는 기간별 검색조건에서 마케팅 요청으로 'g5_shop_cart'테이블과 'g5_shop_order'테이블을 전체 풀 검색으로 변경.
                                     --        기간 검색이 빠짐으로 인한 메인페이지 접속시 속도 저하 발생 예상됨.
                         ");

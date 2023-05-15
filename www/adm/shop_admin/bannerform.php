@@ -34,7 +34,7 @@ include_once (G5_ADMIN_PATH.'/admin.head.php');
 ?>
 <style>
     #bn_position, #bn_new_win {
-        font-size: 18px;        
+        font-size: 12px;        
         height: 32px;  
         width:200px;
     }
@@ -45,7 +45,7 @@ include_once (G5_ADMIN_PATH.'/admin.head.php');
         width: 25px; height: 25px;
     }
     .frm_input {
-        font-size: 18px;
+        font-size: 12px;
         height: 32px;  
     }  
 </style>
