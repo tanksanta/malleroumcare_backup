@@ -344,6 +344,10 @@ if(preg_match($mobile_agent, $_SERVER['HTTP_USER_AGENT'])){
 </div>
 
 <style>
+@media (max-width: 480px) {
+  .r_btn_area { display: block; margin-bottom: 30px; float: left!important; }
+}
+
 #popup_order_add {
   position: fixed;
   width: 100%;
