@@ -1,0 +1,148 @@
+#item_stock_barcode_list {
+  padding: 0 20px;
+  max-width: 1000px;
+}
+#item_stock_barcode_list .header .title {
+  font-size: 19px;
+  font-weight: bold;
+}
+#item_stock_barcode_list .header .header-row {
+  margin-top: 20px;
+}
+#item_stock_barcode_list .header .header-row .excel_down_btn {
+  height: 30px;
+  border-radius: 2px;
+  font-size: 13px;
+  background-color: #333;
+  color: #fff;
+  cursor: pointer;
+  padding: 0 15px;
+}
+#item_stock_barcode_list .header .search_wrap .search_text {
+  width: 250px;
+  height: 30px;
+  text-align: left;
+  border-radius: 2px;
+  border: 1px solid #e0e0e0;
+  font-size: 13px;
+  padding: 0 10px;
+}
+#item_stock_barcode_list .header .search_wrap .search_submit_btn {
+  margin-left: 10px;
+  height: 30px;
+  border-radius: 2px;
+  font-size: 13px;
+  background-color: #333;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 0 15px;
+}
+#item_stock_barcode_list .body .tab {
+  margin-top: 30px;
+  border-top: 1px solid #dfdfdf;
+  border-bottom: 1px solid #dfdfdf;
+}
+#item_stock_barcode_list .body .tab a {
+  text-align: center;
+  width: 100%;
+  border-right: 1px solid #dfdfdf;
+  padding: 10px 0;
+  font-size: 14px;
+  background: #f2f2f2;
+  color: #7f7f7f;
+}
+#item_stock_barcode_list .body .tab a:first-of-type {
+  border-left: 1px solid #dfdfdf;
+}
+#item_stock_barcode_list .body .tab a.active {
+  background: #fff;
+  color: #000;
+}
+#item_stock_barcode_list .body .tbl_wrap {
+  margin-top: 20px;
+  padding: 0;
+}
+#item_stock_barcode_list .body .tbl_wrap td {
+  text-align: center;
+  padding: 10px 0;
+}
+#item_stock_barcode_list .body .tbl_wrap .no {
+  width: 15%;
+}
+#item_stock_barcode_list .body .tbl_wrap .barcode {
+  width: 40%;
+}
+#item_stock_barcode_list .body .tbl_wrap .date {
+  width: 25%;
+}
+#item_stock_barcode_list .body .tbl_wrap .btns {
+  width: 20%;
+}
+#item_stock_barcode_list .body .tbl_wrap .btns button {
+  border: 1px solid #dfdfdf;
+}
+#item_stock_barcode_list #barcodeHistory {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+}
+#item_stock_barcode_list #barcodeHistory .mask {
+  background: rgba(0, 0, 0, 0.7);
+  width: 100%;
+  height: 100%;
+  position: absolute;
+}
+#item_stock_barcode_list #barcodeHistory .historyContent {
+  position: absolute;
+  width: 30%;
+  height: 50%;
+  top: 25%;
+  left: 35%;
+  background: #fff;
+  padding: 50px 20px 10px;
+}
+#item_stock_barcode_list #barcodeHistory .historyContent .header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 10px 20px;
+  border-bottom: 1px solid #d9d9d9;
+}
+#item_stock_barcode_list #barcodeHistory .historyContent .barcode {
+  font-size: 18px;
+  font-weight: bold;
+}
+#item_stock_barcode_list #barcodeHistory .historyContent .close {
+  font-size: 37px;
+  width: 33px;
+  height: 33px;
+  line-height: 33px;
+  background: none;
+  position: relative;
+  top: -3px;
+}
+#item_stock_barcode_list #barcodeHistory .historyContent .content {
+  margin-top: 5px;
+  height: 100%;
+  overflow-y: auto;
+}
+#item_stock_barcode_list #barcodeHistory .historyContent li {
+  border-bottom: 1px solid #d9d9d9;
+  padding: 10px 0;
+  font-size: 14px;
+}
+#item_stock_barcode_list #barcodeHistory .historyContent li .subtitle {
+  font-size: 13px;
+}
+#item_stock_barcode_list #barcodeHistory .historyContent li .title {
+  font-size: 17px;
+  padding: 0;
+}
+
+/*# sourceMappingURL=admin_new.css.map */

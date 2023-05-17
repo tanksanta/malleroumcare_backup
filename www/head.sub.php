@@ -91,6 +91,7 @@ if(!APMS_PRINT && !defined('G5_IS_ADMIN')) {
 
 ?>
 <title><?php echo $g5_head_title; ?></title>
+
 <?php
 if (defined('G5_IS_ADMIN')) {
 	if (!defined('ADMIN_SKIN_PATH')) {
@@ -99,8 +100,8 @@ if (defined('G5_IS_ADMIN')) {
 		define('ADMIN_SKIN_PATH', G5_SKIN_PATH.'/admin/'.$admin_skin);
 		define('ADMIN_SKIN_URL', G5_SKIN_URL.'/admin/'.$admin_skin);
 	}
-	echo '<link rel="stylesheet" href="'.ADMIN_SKIN_URL.'/css/admin.css">'.PHP_EOL;
-	echo '<link rel="stylesheet" href="'.G5_ADMIN_URL.'/css/samhwa_admin.css?v='. time() .'">'.PHP_EOL;
+	echo '<link rel="stylesheet" href="'.ADMIN_SKIN_URL.'/css/admin.css?ver='.APMS_SVER.'">'.PHP_EOL;
+	echo '<link rel="stylesheet" href="'.G5_ADMIN_URL.'/css/samhwa_admin.css?v='. APMS_SVER .'">'.PHP_EOL;
 } else {
     $shop_css = '';
     if (defined('_SHOP_')) $shop_css = '_shop';
@@ -111,10 +112,11 @@ if($xp['xp_icon'] == 'txt') {
 	echo '<link rel="stylesheet" href="'.G5_CSS_URL.'/level/'.$xp['xp_icon_css'].'.css?ver='.APMS_SVER.'">'.PHP_EOL;
 }
 if ( defined('THEMA_URL') ) {
-	echo '<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/samhwa.css?ver='.time().'">'.PHP_EOL;
+	echo '<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/samhwa.css?ver='.APMS_SVER.'">'.PHP_EOL;
 }
 ?>
-<link rel="stylesheet" href="<?php echo G5_CSS_URL ?>/flex.css">
+
+<link rel="stylesheet" href="<?php echo G5_CSS_URL ?>/flex.css?ver=<?=APMS_SVER;?>">
 <!--[if lte IE 8]>
 <script src="<?php echo G5_JS_URL ?>/html5.js"></script>
 <![endif]-->
@@ -139,17 +141,17 @@ var g5_purl = "<?php echo $seometa['url']; ?>";
 var thema_url = "<?php echo THEMA_URL; ?>";
 <?php } ?>
 </script>
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
-<!--<script src="<?php echo G5_JS_URL ?>/jquery-1.11.3.min.js"></script>-->
-<script src="<?php echo G5_JS_URL ?>/jquery-ui.min.js"></script>
-<script src="<?php echo G5_JS_URL ?>/jquery-migrate-1.2.1.min.js"></script>
-<script src="<?php echo APMS_LANG_URL ?>/lang.js?ver=<?php echo APMS_SVER; ?>"></script>
-<script src="<?php echo G5_JS_URL ?>/common.js?ver=<?php echo APMS_SVER; ?>5"></script>
-<script src="<?php echo G5_JS_URL ?>/wrest.js?ver=<?php echo APMS_SVER; ?>"></script>
-<script src="<?php echo G5_JS_URL ?>/placeholders.min.js"></script>
-<script src="<?php echo G5_JS_URL ?>/apms.js?ver=<?php echo APMS_SVER; ?>"></script>
-<link rel="stylesheet" href="<?php echo G5_JS_URL ?>/font-awesome/css/font-awesome.min.css">
-<script src="<?php echo G5_SKIN_URL;?>/admin/new/js/sticky.js"></script>
+<script src="<?=G5_JS_URL; ?>/jquery-ui.min.js?ver=<?=APMS_SVER; ?>"></script>
+<script src="<?=G5_JS_URL; ?>/jquery-migrate-1.2.1.min.js?ver=<?=APMS_SVER; ?>"></script>
+<script src="<?=APMS_LANG_URL; ?>/lang.js?ver=<?=APMS_SVER; ?>"></script>
+<script src="<?=G5_JS_URL; ?>/common.js?ver=<?=APMS_SVER; ?>"></script>
+<script src="<?=G5_JS_URL; ?>/wrest.js?ver=<?=APMS_SVER; ?>"></script>
+<script src="<?=G5_JS_URL; ?>/placeholders.min.js?ver=<?=APMS_SVER; ?>"></script>
+<script src="<?=G5_JS_URL; ?>/apms.js?ver=<?=APMS_SVER; ?>"></script>
+<link rel="stylesheet" href="<?=G5_JS_URL ?>/font-awesome/css/font-awesome.min.css?ver=<?=APMS_SVER; ?>">
+<script src="<?=G5_SKIN_URL;?>/admin/new/js/sticky.js?ver=<?=APMS_SVER; ?>"></script>
 
 <?php
 if ( defined('THEMA_PATH') ) {

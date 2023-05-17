@@ -88,6 +88,8 @@ for($i=0; $row=sql_fetch_array($result); $i++) {
 // 스킨설정
 $wset = (G5_IS_MOBILE) ? apms_skin_set('member_mobile') : apms_skin_set('member');
 
+add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/bs3/css/bootstrap.min.css?ver='.APMS_SVER.'" type="text/css">',0);
+
 include_once($skin_path.'/coupon.skin.php');
 
 if($is_coupon_sub) {

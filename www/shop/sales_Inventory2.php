@@ -54,7 +54,7 @@ if($is_demo) {
 $is_inquiry_sub = false;
 @include_once($order_skin_path.'/config.skin.php');
 
-$g5['title'] = '보유재고관리';
+$g5['title'] = '보유 급여상품 관리';
 
 if($is_inquiry_sub) {
 	include_once(G5_PATH.'/head.sub.php');
@@ -88,7 +88,7 @@ $res = api_post_call(EROUMCARE_API_STOCK_LIST, array(
     'gubun' => '01',
 ));
 //추가
-$sale_total_count2 = 0;
+$sale_total_count2 = 0; 
 $sale_total_count22 = 0;
 for($i=0; $i<count($res["data"]); $i++){
 	$sale_total_count2 = $sale_total_count2+$res["data"][$i]["quantity"];
@@ -126,12 +126,12 @@ if($_GET['searchtype']){
 			$result = sql_query($sql);
 			$count = sql_num_rows($result);
 			$row = sql_fetch($sql);
-			$prodId = ($row['prodId'] != "")? $row['prodId'] : $_GET["searchtypeText"];
+			$prodId = ($row['prodId'] != "")? $row['prodId'] : $_GET["searchtypeText"]; 
 			$sendData["prodId"] = $prodId;
 		}else{
 			$prodId = "";
 		}
-
+		
 		//추가끝
         //$sendData["prodId"] = ($_GET["searchtypeText"]) ? $_GET["searchtypeText"] : "";
     }
@@ -144,7 +144,7 @@ if($count>1){
 	//print_r($result);
 	while($rows = sql_fetch_array($result)){
 		//echo $rows['prodId'];
-		$prodId = ($rows['prodId'] != "")? $rows['prodId'] : $_GET["searchtypeText"];
+		$prodId = ($rows['prodId'] != "")? $rows['prodId'] : $_GET["searchtypeText"]; 
 		$sendData["prodId"] = $prodId;
 		$res = api_post_call(EROUMCARE_API_STOCK_LIST, $sendData);
 		if($res["data"]){
@@ -153,7 +153,7 @@ if($count>1){
 		$totalCnt += $res["total"];
 		//print_r($res["data"]);
 	}
-
+	
 }else{
 $res = api_post_call(EROUMCARE_API_STOCK_LIST, $sendData);
 
@@ -164,7 +164,7 @@ if($res["data"]){
  //print_r($list);
 
 # 페이징
-$totalCnt = $res["total"];
+$totalCnt = $res["total"];	
 }
 
 //추가끝
@@ -197,8 +197,9 @@ $total_block = ceil($total_page/$b_pageNum_listCnt);
 <link rel="stylesheet" href="<?=G5_CSS_URL ?>/stock_page.css">
     <title>판매재고목록</title>
     <section id="stock" class="wrap stock-list">
-        <div class="sub_section_tit">보유재고관리</div>
+        <div class="sub_section_tit">보유 급여상품 관리</div>
         <div class="r_btn_area">
+            <a href="#" class="btn eroumcare_btn2" id="prod_control_list" onclick="popCtrlList()" title="제품관리대장">제품관리대장</a>
             <a href="#" class="btn eroumcare_btn2" id="excel_download" title="엑셀다운로드">엑셀다운로드</a>
             <a href="#" class="btn eroumcare_btn2 add_sales_inventory" title="품목추가">품목추가</a>
         </div>
@@ -311,7 +312,7 @@ $total_block = ceil($total_page/$b_pageNum_listCnt);
                         <span class="price m_off"><?=number_format($it_cust_price);?>원</span><!--급여가-->
                     </li>
                     </a>
-                    <?php //추가
+                    <?php //추가 
 						}
 						//추가끝
 					} ?>
@@ -336,7 +337,38 @@ $total_block = ceil($total_page/$b_pageNum_listCnt);
     <iframe name="iframe" id="add_sales_inventory_popup_iframe" src="" scrolling="yes" frameborder="0" allowTransparency="false"></iframe>
 </div>
 
-<script> 
+<style>
+#popup_order_add {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  z-index: 999;
+  background-color: rgba(0, 0, 0, 0.6);
+  display:none;
+}
+#popup_order_add > div {
+  width: 30%;
+  max-width: 80%;
+  min-height: 400px;
+  height: 40%;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+#popup_order_add > div iframe {
+  width:100%;
+  height:100%;
+  border: 0;
+  background-color: #FFF;
+}
+</style>
+<div id="popup_order_add">
+  <div id="content">dd</div>
+</div>
+<script>
 $(document).ready(function() {
     // 상품 추가
     $('#add_sales_inventory_popup').click(function(e) {
@@ -368,6 +400,14 @@ function stockFormSubmit() {
     var form = document['stock_form'];
     form.action = "";
     form.submit();
+}
+function popCtrlList() {
+    $("#popup_order_add > div").html("<iframe src='./pop.control.list.php'></iframe>");
+    $("#popup_order_add iframe").load(function(){
+        $("#popup_order_add").show();
+        $('#hd').css('z-index', 3);
+        $('#popup_order_add iframe').contents().find('.mb_id_flexdatalist').focus();
+    });
 }
 </script>
 <?php

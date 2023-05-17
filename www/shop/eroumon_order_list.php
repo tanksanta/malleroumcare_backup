@@ -37,7 +37,7 @@
     @include_once(G5_LIB_PATH.'/apms.thema.lib.php');
     @include_once($order_skin_path.'/config.skin.php');
 
-    $g5['title'] = '수급자 주문관리';
+    $g5['title'] = '복지용구 신청관리';
 
     include_once('./_head.php');
 
@@ -153,7 +153,7 @@
 
 
     <section class="wrap">
-        <div class="sub_section_tit">수급자 주문관리</div>
+        <div class="sub_section_tit">복지용구 신청관리</div>
         <button type="button" class="" id="view_link" Onclick="window.open('https://eroum.co.kr/members/login','_blank'); ">이로움ON 맴버스<br />바로가기</button>
     </section>
 

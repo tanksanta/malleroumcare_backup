@@ -12,6 +12,9 @@ if($check_member['mb_type'] === 'manager') {
   $mb_id       = trim($_POST['mb_id']);
   $mb_password = trim($_POST['mb_password']);
 
+  // 23.04.04 : 서원 - 리뉴얼로 인한 'manager' 권한 로그인 일자 저장하기 위한 임시 저장용.
+  $tid        = trim($_POST['mb_id']);
+
   //계정정보 불러오기
   $mb = get_member($mb_id);
 
@@ -30,6 +33,9 @@ if($check_member['mb_type'] === 'manager') {
   if(!$mb['mb_id']) {
     alert('사업소 계정이 존재하지 않습니다.');
   }
+
+  // 23.04.04 : 서원 - 리뉴얼로 인한 'manager' 권한 로그인 일자 저장 요청.
+  sql_query(" update {$g5['member_table']} set mb_today_login = NOW() where mb_id = '{$tid}' ");
 
 } else if($_POST["mb_id"] != "admin" && $check_member['mb_type'] !== 'normal') {
 
@@ -340,7 +346,7 @@ if(defined('G5_USE_SHOP') && G5_USE_SHOP && function_exists('set_cart_id')){
 recipient_link_clean();
 
 // 로그인시 구매모드로 설정
-@setcookie('viewType', 'adm', time() + 86400 * 3650, "/");
+//@setcookie('viewType', 'adm', time() + 86400 * 3650, "/");
 
 // 통계등록
 insert_statistics("LOGIN", $member['mb_id'], $member['mb_level'], "로그인", $_SERVER['REMOTE_ADDR']);

@@ -121,6 +121,7 @@ include_once($skin_path.'/search.skin.form.php');
 		}
 		<?php } ?>
 	<?php } ?>
+	.textFitted {line-height:13px;}
 </style>
 
 <div class="productListWrap" style="margin-top: 30px;">
@@ -170,10 +171,10 @@ include_once($skin_path.'/search.skin.form.php');
           <button class="btn_wishlist <?=($wishlist[$list[$i]['it_id']] ? 'active' : '')?>" data-id="<?=$list[$i]['it_id']?>"><i class="fa fa-star" aria-hidden="true"></i></button>
           <?php */ } ?>
           <?php if($list[$i]["it_expected_warehousing_date"] !== "") { ?>
-          <div class="item-expected-warehousing-date"><?php echo $list[$i]["it_expected_warehousing_date"];?></div>
+          <div class="item-expected-warehousing-date box"  style="height:12%;width:99.4%;top:105.5%;position:absolute;"><?php echo $list[$i]["it_expected_warehousing_date"];?></div>
           <?php } ?>
 		  <?php if($list[$i]["it_expected_warehousing_date"] == "" && $soldout_ck){ ?>
-					<div class="item-expected-warehousing-date">재고 소진으로 판매 종료</div>
+					<div class="item-expected-warehousing-date box"  style="height:12%;width:99.4%;top:105.5%;position:absolute;">재고 소진으로 판매 종료</div>
 			<?php } ?>
         </div>
         <p class="name"><?=$list[$i]["it_name"]?></p>
@@ -293,7 +294,7 @@ include_once($skin_path.'/search.skin.form.php');
 <script type="text/javascript">
 	$(function(){
 
-	<?php if($member["mb_id"]){ ?>
+	<?php if($member["mb_id"] && $_COOKIE["viewType"] != "basic" && $_COOKIE['SHOW_MY_STOCK'] != 'OFF'){ ?>
 		var sendData = <?=json_encode($sendData, JSON_UNESCAPED_UNICODE)?>;
 
 		$.ajax({
@@ -316,9 +317,10 @@ include_once($skin_path.'/search.skin.form.php');
 
 	})
 </script>
-
+<script src="/js/textFit.js"></script>
 <script>
 $(document).ready(function(){
+	textFit(document.getElementsByClassName('box'), {minFontSize:1, maxFontSize: 12,alignHoriz: true, alignVert: true,multiLine: true});
 	$('.list-wrap').imagesLoaded(function(){
 		$('.list-wrap .item-content').matchHeight();
 	});

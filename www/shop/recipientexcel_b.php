@@ -2,7 +2,7 @@
 $sub_menu = '400300';
 include_once('../common.php');
 ?>
-<link rel="stylesheet" href="https://eroumcare.com/skin/admin/new/css/admin.css">
+<link rel="stylesheet" href="<?=G5_URL;?>/skin/admin/new/css/admin.css">
 <script src="<?php echo G5_JS_URL ?>/jquery-1.11.3.min.js"></script>
 
 <style>

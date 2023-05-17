@@ -55,12 +55,13 @@ if ($w=="")
                     bn_new_win    = '$bn_new_win',
                     bn_begin_time = '$bn_begin_time',
                     bn_end_time   = '$bn_end_time',
-                    bn_time       = '$now',
+                    bn_time       = NOW(),
                     bn_hit        = '0',
                     bn_order      = '$bn_order',
                     bn_title      = '$bn_title',
                     bn_content    = '$bn_content',
-                    bn_bgcolor    = '$bn_bgcolor' ";
+                    bn_bgcolor    = '$bn_bgcolor',
+                    bn_status     = '$bn_status' ";
     sql_query($sql);
 
     $bn_id = sql_insert_id();
@@ -79,7 +80,8 @@ else if ($w=="u")
                     bn_order      = '$bn_order',
                     bn_title      = '$bn_title',
                     bn_content    = '$bn_content',
-                    bn_bgcolor    = '$bn_bgcolor'
+                    bn_bgcolor    = '$bn_bgcolor',
+                    bn_status     = '$bn_status'
               where bn_id = '$bn_id' ";
     sql_query($sql);
 }

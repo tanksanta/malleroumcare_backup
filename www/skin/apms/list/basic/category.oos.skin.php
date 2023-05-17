@@ -117,6 +117,7 @@ $(function() {
       window.location.reload();
     } else {
       $.removeCookie('SHOW_MY_STOCK');
+      $.cookie('SHOW_MY_STOCK', 'ON', { expires: 365 });
       window.location.reload();
     }
   });

@@ -8,7 +8,7 @@ if(!$_FILES['sealFile']['tmp_name'])
     json_response(400, '직인 이미지 파일을 선택해주세요.');
 
 //서버 최대 용량 10Mb
-$max_file_size = 1024*1024*10;
+$max_file_size = 1024*1024*3;
 
 // 변수 정리
 $uploads_dir = G5_DATA_PATH.'/file/member/stamp';
@@ -34,7 +34,7 @@ if( $error != UPLOAD_ERR_OK ) {
     exit;
 }
 if($_FILES['sealFile']['size'] >= $max_file_size)
-    json_response(500, '10Mb 까지만 업로드 가능합니다.');
+    json_response(500, '3Mb 까지만 업로드 가능합니다.');
 // 확장자 확인
 if( in_array($ext, $disallowed_ext) )
     json_response(500, '허용되지 않는 확장자입니다');

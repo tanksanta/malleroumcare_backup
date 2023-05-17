@@ -49,7 +49,7 @@ include_once("./_common.php");
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://eroumcare.com/skin/admin/new/css/admin.css">
+    <link rel="stylesheet" href="<?=G5_URL?>/skin/admin/new/css/admin.css">
   
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
     <script src="<?=G5_JS_URL;?>/jquery.fileDownload.js"></script>

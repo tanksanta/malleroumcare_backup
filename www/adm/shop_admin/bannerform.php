@@ -32,6 +32,23 @@ if(!sql_query(" select bn_device from {$g5['g5_shop_banner_table']} limit 0, 1 "
 
 include_once (G5_ADMIN_PATH.'/admin.head.php');
 ?>
+<style>
+    #bn_position, #bn_new_win {
+        font-size: 12px;        
+        height: 32px;  
+        width:200px;
+    }
+    #bn_bimg_del {
+        width: 30px; height: 30px;
+    }
+    #bn_status, #bn_begin_chk, #bn_end_chk {        
+        width: 25px; height: 25px;
+    }
+    .frm_input {
+        font-size: 12px;
+        height: 32px;  
+    }  
+</style>
 
 <form name="fbanner" action="./bannerformupdate.php" method="post" enctype="multipart/form-data">
 <input type="hidden" name="w" value="<?php echo $w; ?>">
@@ -46,6 +63,38 @@ include_once (G5_ADMIN_PATH.'/admin.head.php');
     </colgroup>
     <tbody>
     <tr>
+        <th scope="row"><label for="bn_position">표시분류</label></th>
+        <td>
+            <?php echo help("사업소 : 쇼핑몰화면 사업소메인 배너에 출력합니다.\n파트너 : 쇼핑몰 파트너화면(index.php)에만 출력합니다."); ?>
+            <select name="bn_position" id="bn_position">
+                <option value="사업소" <?php echo get_selected($bn['bn_position'], '사업소'); ?>>사업소</option>
+                <option value="파트너" <?php echo get_selected($bn['bn_position'], '파트너'); ?>>파트너</option>
+        </select>
+        </td>
+    </tr>
+
+    <tr>
+        <th scope="row"><label for="bn_alt">배너 타이틀 </label></th>
+        <td>
+            <?php echo help("img 태그의 alt, title 에 해당되는 내용입니다.\n배너에 마우스를 오버하면 이미지의 설명이 나옵니다."); ?>
+            <input type="text" name="bn_alt" value="<?php echo get_text($bn['bn_alt']); ?>" id="bn_alt" class="frm_input" size="80">
+        </td>
+    </tr>
+
+    <tr>
+        <th scope="row"><label for="bn_url">링크</label></th>
+        <td>
+            <?php echo help("배너클릭시 이동하는 주소입니다."); ?>
+            
+            <input type="text" name="bn_url" size="80" value="<?php echo get_sanitize_input($bn['bn_url']); ?>" id="bn_url" class="frm_input">
+            <select name="bn_new_win" id="bn_new_win">
+                <option value="0" <?php echo get_selected($bn['bn_new_win'], 0); ?>>링크로 열기</option>
+                <option value="1" <?php echo get_selected($bn['bn_new_win'], 1); ?>>새창으로 열기</option>
+            </select>
+        </td>
+    </tr>
+
+    <tr>
         <th scope="row">이미지</th>
         <td>
             <input type="file" name="bn_bimg">
@@ -59,98 +108,33 @@ include_once (G5_ADMIN_PATH.'/admin.head.php');
                 else
                     $width = $size[0];
 
-                echo '<input type="checkbox" name="bn_bimg_del" value="1" id="bn_bimg_del"> <label for="bn_bimg_del">삭제</label>';
-                $bimg_str = '<img src="'.G5_DATA_URL.'/banner/'.$bn['bn_id'].'" width="'.$width.'">';
-            }
-            if ($bimg_str) {
-                echo '<div class="banner_or_img">';
-                echo $bimg_str;
-                echo '</div>';
+                $bimg_str = '<img src="'.G5_DATA_URL.'/banner/'.$bn['bn_id'].'" >';
             }
             ?>
         </td>
     </tr>
     <tr>
-        <th scope="row"><label for="bn_alt">이미지 설명</label></th>
+        <th scope="row">이미지 정보</th>
         <td>
-            <?php echo help("img 태그의 alt, title 에 해당되는 내용입니다.\n배너에 마우스를 오버하면 이미지의 설명이 나옵니다."); ?>
-            <input type="text" name="bn_alt" value="<?php echo get_text($bn['bn_alt']); ?>" id="bn_alt" class="frm_input" size="80">
-        </td>
-    </tr>
-    <tr>
-        <th scope="row"><label for="bn_url">링크</label></th>
-        <td>
-            <?php echo help("배너클릭시 이동하는 주소입니다."); ?>
-            <input type="text" name="bn_url" size="80" value="<?php echo get_sanitize_input($bn['bn_url']); ?>" id="bn_url" class="frm_input">
-        </td>
-    </tr>
-    <tr>
-        <th scope="row"><label for="bn_title">타이틀</label></th>
-        <td>
-            <?php echo help("이미지와 함께 나오는 타이틀입니다."); ?>
-            <input type="text" name="bn_title" size="80" value="<?php echo get_text($bn['bn_title']); ?>" id="bn_title" class="frm_input">
-        </td>
-    </tr>
-    <tr>
-        <th scope="row"><label for="bn_bgcolor">배경색</label></th>
-        <td>
-            <?php echo help("배경색이 지원되는 배너의 배경색입니다."); ?>
-            <input type="text" name="bn_bgcolor" size="80" value="<?php echo get_text($bn['bn_bgcolor']); ?>" id="bn_bgcolor" class="frm_input" placeholder="ex) #FFFFFF">
-        </td>
-    </tr>
-    <tr>
-        <th scope="row"><label for="bn_content">내용</label></th>
-        <td>
-            <?php echo help("이미지와 함께 나오는 내용입니다."); ?>
-            <!--<input type="text" name="bn_content" size="80" value="<?php echo get_text($bn['bn_content']); ?>" id="bn_content" class="frm_input">-->
-            <textarea name="bn_content" id="bn_content" class="frm_input"><?php echo get_text($bn['bn_content']); ?></textarea>
-        </td>
-    </tr>
-    <tr>
-        <th scope="row"><label for="bn_device">접속기기</label></th>
-        <td>
-            <?php echo help('배너를 표시할 접속기기를 선택합니다.'); ?>
-            <select name="bn_device" id="bn_device">
-                <option value="both"<?php echo get_selected($bn['bn_device'], 'both', true); ?>>PC와 모바일</option>
-                <option value="pc"<?php echo get_selected($bn['bn_device'], 'pc'); ?>>PC</option>
-                <option value="mobile"<?php echo get_selected($bn['bn_device'], 'mobile'); ?>>모바일</option>
-        </select>
-        </td>
-    </tr>
-    <tr>
-        <th scope="row"><label for="bn_position">출력위치</label></th>
-        <td>
-            <?php echo help("왼쪽 : 쇼핑몰화면 왼쪽에 출력합니다.\n메인 : 쇼핑몰 메인화면(index.php)에만 출력합니다."); ?>
-            <select name="bn_position" id="bn_position">
-                <option value="왼쪽" <?php echo get_selected($bn['bn_position'], '왼쪽'); ?>>왼쪽</option>
-                <option value="메인" <?php echo get_selected($bn['bn_position'], '메인'); ?>>메인</option>
-                <option value="상단배너" <?php echo get_selected($bn['bn_position'], '상단배너'); ?>>상단배너</option>
-                <option value="상단작은배너" <?php echo get_selected($bn['bn_position'], '상단작은배너'); ?>>상단작은배너</option>
-                <option value="메인대형배너" <?php echo get_selected($bn['bn_position'], '메인대형배너'); ?>>메인대형배너(메인)</option>
-                <option value="메인대형배너서브" <?php echo get_selected($bn['bn_position'], '메인대형배너서브'); ?>>메인대형배너(서브)</option>
-                <option value="섹션배너" <?php echo get_selected($bn['bn_position'], '섹션배너'); ?>>섹션배너</option>
-                <option value="MD추천상품배너" <?php echo get_selected($bn['bn_position'], 'MD추천상품배너'); ?>>MD추천상품배너</option>
-        </select>
-        </td>
-    </tr>
-    <tr>
-        <th scope="row"><label for="bn_border">테두리</label></th>
-        <td>
-             <?php echo help("배너이미지에 테두리를 넣을지를 설정합니다.", 50); ?>
-            <select name="bn_border" id="bn_border">
-                <option value="0" <?php echo get_selected($bn['bn_border'], 0); ?>>사용안함</option>
-                <option value="1" <?php echo get_selected($bn['bn_border'], 1); ?>>사용</option>
-            </select>
-        </td>
-    </tr>
-    <tr>
-        <th scope="row"><label for="bn_new_win">새창</label></th>
-        <td>
-            <?php echo help("배너클릭시 새창을 띄울지를 설정합니다.", 50); ?>
-            <select name="bn_new_win" id="bn_new_win">
-                <option value="0" <?php echo get_selected($bn['bn_new_win'], 0); ?>>사용안함</option>
-                <option value="1" <?php echo get_selected($bn['bn_new_win'], 1); ?>>사용</option>
-            </select>
+            <?php
+                if($size){
+                    echo("<div>");
+                    echo("너비 : " . $size[0] . "px &nbsp; &nbsp; | &nbsp; &nbsp; 높이 : " . $size[1] . "px  &nbsp; &nbsp; ");
+                    echo'<input type="checkbox" name="bn_bimg_del" value="1" id="bn_bimg_del"> <label for="bn_bimg_del">이미지 삭제</label>';
+                    echo("</div>");
+                }
+                if($bimg_str) {
+                    echo '<div class="banner_or_img" style="width:1060px; height:'.$size[1].'px; text-align:center; background-color: #f0f0f0; ">';
+                    echo $bimg_str;
+                    echo '</div>';
+                } else {
+                    echo("
+                        <div style='width:1060px; height:200px; text-align:center; background-color: #e6e6e6;padding: 90px 0px; font-size: 35px; color: #aeaeae; font-weight: bold;'>
+                            배너 등록 후 확인이 가능 합니다.
+                        </div>
+                    ");
+                }
+            ?>
         </td>
     </tr>
     <tr>
@@ -172,15 +156,26 @@ include_once (G5_ADMIN_PATH.'/admin.head.php');
         </td>
     </tr>
     <tr>
-        <th scope="row"><label for="bn_order">출력 순서</label></th>
+        <th scope="row"><label for="bn_end_time">사용여부</label></th>
         <td>
-           <?php echo help("배너를 출력할 때 순서를 정합니다. 숫자가 작을수록 먼저 출력됩니다."); ?>
-           <?php echo order_select("bn_order", $bn['bn_order']); ?>
+            <?php echo help("배너의 사용 여부를 결정 합니다."); ?>
+            <input type="radio" name="bn_status" value="Y" id="bn_status"<?php echo (($bn['bn_status']=="Y")?" checked":""); ?>> <label for="bn_status">사용</label>
+            &nbsp;  &nbsp;  &nbsp;  &nbsp; 
+            <input type="radio" name="bn_status" value="N" id="bn_status"<?php echo (($bn['bn_status']=="N")?" checked":""); ?>> <label for="bn_status">미사용</label>
         </td>
     </tr>
     </tbody>
     </table>
 </div>
+
+
+<input type="hidden" name="bn_order" value="<?php echo $bn['bn_order']; ?>">
+<input type="hidden" name="bn_title" value="<?php echo $bn['bn_title']; ?>">
+<input type="hidden" name="bn_border" value="<?php echo $bn['bn_border']; ?>">
+<input type="hidden" name="bn_content" value="<?php echo $bn['bn_content']; ?>">
+<input type="hidden" name="bn_bgcolor" value="<?php echo $bn['bn_bgcolor']; ?>">
+<input type="hidden" name="bn_device" value="<?php echo ($bn['bn_device'])?($bn['bn_device']):"both"; ?>">
+
 
 <div class="btn_fixed_top">
     <a href="./bannerlist.php" class="btn_02 btn">목록</a>

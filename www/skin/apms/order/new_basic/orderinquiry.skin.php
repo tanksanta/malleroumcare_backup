@@ -182,7 +182,7 @@ $(function(){
 </script>
 
 <section id="pro-order" class="wrap order-list">
-  <div class="sub_section_tit">주문내역</div>
+  <div class="sub_section_tit">주문/배송 관리</div>
   <div class="r_btn_area">
     <a href="javascript:void(0)" id="btn_hidden_order" class="btn eroumcare_btn2" title="숨김처리한 주문">숨김처리한 주문</a>
   </div>

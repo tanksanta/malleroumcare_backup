@@ -44,7 +44,7 @@ if ($t_document['t_state'] == '0') {
 if (!$is_member)
   goto_url(G5_BBS_URL.'/login.php?url='.urlencode(G5_SHOP_URL.'/electronic_manage_new.php'));
 
-$g5['title'] = '전자문서관리';
+$g5['title'] = '계약서 관리';
 include_once('./_head.php');
 
 // 미작성 내역 일단 숨기기
@@ -68,7 +68,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 </style>
 <!-- 내용 -->
 <section class="wrap">
-  <div class="sub_section_tit">전자문서관리</div>
+  <div class="sub_section_tit">계약서 관리</div>
   <div class="inner">
     <div class="list_box" style="display: none;">
       <div class="point_box">
