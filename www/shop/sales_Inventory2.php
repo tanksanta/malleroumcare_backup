@@ -192,14 +192,20 @@ if ($b_end_page > $total_page){
 }
 $total_block = ceil($total_page/$b_pageNum_listCnt);
 
-
+// 모바일과 pc 환경 구분
+$mobile_agent = "/(iPod|iPhone|Android|BlackBerry|SymbianOS|SCH-M\d+|Opera Mini|Windows CE|Nokia|SonyEricsson|webOS|PalmOS)/";
+if(preg_match($mobile_agent, $_SERVER['HTTP_USER_AGENT'])){
+	$mobile_yn = "Mobile";
+}else{
+	$mobile_yn = "Pc";
+}
 ?>
 <link rel="stylesheet" href="<?=G5_CSS_URL ?>/stock_page.css">
     <title>판매재고목록</title>
     <section id="stock" class="wrap stock-list">
         <div class="sub_section_tit">보유 급여상품 관리</div>
         <div class="r_btn_area">
-            <a href="#" class="btn eroumcare_btn2" id="prod_control_list" onclick="popCtrlList()" title="제품관리대장">제품관리대장</a>
+            <a href="#" class="btn eroumcare_btn2" id="prod_control_list" onclick="popCtrlList()" title="제품관리대장" <?php if($mobile_yn=="Mobile") echo 'style="display:none;"'; ?>>제품관리대장</a>
             <a href="#" class="btn eroumcare_btn2" id="excel_download" title="엑셀다운로드">엑셀다운로드</a>
             <a href="#" class="btn eroumcare_btn2 add_sales_inventory" title="품목추가">품목추가</a>
         </div>
@@ -349,10 +355,8 @@ $total_block = ceil($total_page/$b_pageNum_listCnt);
   display:none;
 }
 #popup_order_add > div {
-  width: 30%;
-  max-width: 80%;
-  min-height: 400px;
-  height: 40%;
+  width: 80%;
+  height: 70%;
   position: absolute;
   left: 50%;
   top: 50%;
@@ -409,6 +413,14 @@ function popCtrlList() {
         $('#popup_order_add iframe').contents().find('.mb_id_flexdatalist').focus();
     });
 }
+$(function() {
+    $(document).on( "click", "#popup_order_add", function(e){
+
+        $('#popup_order_add iframe').remove();
+        $("#popup_order_add").hide();
+        $('#hd').css('z-index', 10);
+    });
+});
 </script>
 <?php
 if($is_inquiry_sub) {

@@ -44,6 +44,7 @@ if($res["data"]){
         $item_detail_info[0]['modifyDtm'] = substr($item_detail['modifyDtm'], 0,4).'-'.substr($item_detail['modifyDtm'], 4,2).'-'.substr($item_detail['modifyDtm'], 6,2);
         $item_detail_info[0]['prodBarNum'] = $item_detail['prodBarNum'];
         $item_detail_info[0]['prodId'] = $item_detail['prodId'];
+        $item_detail_info[0]['prodPayCode'] = $item_detail['prodPayCode'];
         $item_detail_info[0]['prodNm'] = $item_detail['prodNm'];
         $item_detail_info[0]['stateCd'] = $item_detail['stateCd'];
         $item_detail_info[0]['stateNm'] = $item_detail['stateNm'];
@@ -72,6 +73,7 @@ if($res["data"]){
           $rental_log[$ind]['modifyDtm'] = $item_detail['modifyDtm'];
           $rental_log[$ind]['prodBarNum'] = $item_detail['prodBarNum'];
           $rental_log[$ind]['prodId'] = $item_detail['prodId'];
+          $rental_log[$ind]['prodPayCode'] = $item_detail['prodPayCode'];
           $rental_log[$ind]['prodNm'] = $item_detail['prodNm'];
           $rental_log[$ind]['stateCd'] = $item_detail['stateCd'];
           $rental_log[$ind]['stateNm'] = $item_detail['stateNm'];
@@ -102,6 +104,7 @@ if($res["data"]){
               $rental_log[$ind]['modifyDtm'] = $item_detail['modifyDtm'];
               $rental_log[$ind]['prodBarNum'] = $item_detail['prodBarNum'];
               $rental_log[$ind]['prodId'] = $item_detail['prodId'];
+              $rental_log[$ind]['prodPayCode'] = $item_detail['prodPayCode'];
               $rental_log[$ind]['prodNm'] = $item_detail['prodNm'];
               $rental_log[$ind]['stateCd'] = $item_detail['stateCd'];
               $rental_log[$ind]['stateNm'] = $item_detail['stateNm'];
@@ -124,6 +127,7 @@ if($res["data"]){
                 $rental_log[$ind+1]['modifyDtm'] = $item_detail['modifyDtm'];
                 $rental_log[$ind+1]['prodBarNum'] = $item_detail['prodBarNum'];
                 $rental_log[$ind+1]['prodId'] = $item_detail['prodId'];
+                $rental_log[$ind+1]['prodPayCode'] = $item_detail['prodPayCode'];
                 $rental_log[$ind+1]['prodNm'] = $item_detail['prodNm'];
                 $rental_log[$ind+1]['stateCd'] = $item_detail['stateCd'];
                 $rental_log[$ind+1]['stateNm'] = $item_detail['stateNm'];
