@@ -1093,7 +1093,7 @@ function get_item_options($it_id, $subject, $is_div='', $sb = '')
         // 옵션항목 배열에 저장
         for($i=0; $row=sql_fetch_array($result); $i++) {
             $opt_id = explode(chr(30), $row['io_id']);
-
+			
             for($k=0; $k<$subj_count; $k++) {
                 if(!is_array($options[$k]))
                     $options[$k] = array();
@@ -1173,8 +1173,13 @@ function get_item_options($it_id, $subject, $is_div='', $sb = '')
             else
                 $soldout = '';
 
+			if($row['io_sold_out'] == 1)
+                $soldout2 = '&nbsp;&nbsp;[일시품절]'; //[일시품절]
+            else
+                $soldout2 = '';
+
             // $select .= '<option value="'.$row['io_id'].','.$row['io_price'].','.$row['io_stock_qty'].'">'.$row['io_id'].$price.$soldout.'</option>'.PHP_EOL;
-            $select .= '<option value="'.$row['io_id'].','.$io_price.','.$row['io_stock_qty'].'">'.$row['io_id'].$price.$soldout.'</option>'.PHP_EOL;
+            $select .= '<option value="'.$row['io_id'].','.$io_price.','.$row['io_stock_qty'].'">'.$row['io_id'].$price.$soldout.$soldout2.'</option>'.PHP_EOL;
         }
         $select .= '</select>'.PHP_EOL;
 
@@ -1239,9 +1244,13 @@ function get_item_supply($it_id, $subject, $is_div='', $sb = '')
                 $soldout = '&nbsp;&nbsp;'.$aslang['io_soldout']; //품절
             else
                 $soldout = '';
+			if($row['io_sold_out'] == 1)
+				$soldout2 = '&nbsp;&nbsp;[일시품절]'; //[일시품절]
+			else
+				$soldout2 = '';
 
             //$options[$opt_id[0]][] = '<option value="'.$opt_id[1].','.$row['io_price'].','.$io_stock_qty.'">'.$opt_id[1].$price.$soldout.'</option>';
-            $options[$opt_id[0]][] = '<option value="'.$opt_id[1].','.$io_price.','.$io_stock_qty.'">'.$opt_id[1].$price.$soldout.'</option>';
+            $options[$opt_id[0]][] = '<option value="'.$opt_id[1].','.$io_price.','.$io_stock_qty.'">'.$opt_id[1].$price.$soldout.$soldout2.'</option>';
         }
     }
 

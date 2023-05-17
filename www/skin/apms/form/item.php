@@ -158,7 +158,7 @@ $warehouse_list = get_warehouses();
         <tr>
           <th scope="row"><label for="it_expected_warehousing_date">입고예정일 알림</label></th>
           <td>
-            <input type="text" name="it_expected_warehousing_date" value="<?php echo get_text(cut_str($it['it_expected_warehousing_date'], 250, "")); ?>" id="it_expected_warehousing_date" class="frm_input sl">
+            <input type="text" name="it_expected_warehousing_date" value="<?php echo get_text(cut_str($it['it_expected_warehousing_date'], 250, "")); ?>" maxlength="44" id="it_expected_warehousing_date" class="frm_input sl" placeholder="입고 예정일 알림(최대 44자)">
           </td>
         </tr>
         <tr>
@@ -897,13 +897,21 @@ $warehouse_list = get_warehouses();
           });
 
           // 바코드 8자리
-          $(document).on("click", "input[name='opt_use_short_barcode[]']", function() {
-            if($(this).is(":checked")) {
-              $(this).val(1);
-            } else {
-              $(this).val(0);
-            }
-          });
+          //$(document).on("click", "input[name='opt_use_short_barcode[]']", function() {
+          //  if($(this).is(":checked")) {
+          //    $(this).val(1);
+          //  } else {
+           //   $(this).val(0);
+           // }
+          //});
+		  // 일시품절
+          //$(document).on("click", "input[name='opt_sold_out[]']", function() {
+          //  if($(this).is(":checked")) {
+          //    $(this).val(1);
+          //  } else {
+          //    $(this).val(0);
+          //  }
+          //});
 
           // 일괄적용
                     $(document).on("click", "#opt_value_apply", function() {

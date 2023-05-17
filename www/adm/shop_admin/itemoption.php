@@ -1,6 +1,13 @@
 <?php
 include_once('./_common.php');
 
+$query = "SHOW COLUMNS FROM g5_shop_item_option WHERE `Field` = 'io_sold_out';";//일시품절 없을 시 추가
+$wzres = sql_fetch( $query );
+if(!$wzres['Field']) {
+    sql_query("ALTER TABLE `g5_shop_item_option`
+	ADD `io_sold_out` tinyint(1) NULL DEFAULT '0' COMMENT '일시품절 0:사용안함,1:사용함' AFTER io_stock_manage_max_qty", true);
+}
+
 $po_run = false;
 
 if($it['it_id']) {
@@ -69,6 +76,7 @@ if($po_run) {
         <th scope="col">품목코드</th>
         <th scope="col">규격</th>
         <th scope="col">바코드 8자리 사용(보장구)</th>
+		<th scope="col">일시품절사용</th>
     </tr>
     </thead>
     <tbody>
@@ -94,6 +102,7 @@ if($po_run) {
             $opt_use_short_barcode = $row['io_use_short_barcode'];
             $opt_stock_manage_min_qty = $row['io_stock_manage_min_qty'];
             $opt_stock_manage_max_qty = $row['io_stock_manage_max_qty'];
+			$opt_sold_out = $row['io_sold_out'];
     ?>
     <tr>
         <td class="td_chk">
@@ -142,7 +151,18 @@ if($po_run) {
             <input type="text" name="opt_standard[]" value="<?php echo $opt_standard; ?>" id="opt_standard_<?php echo $i; ?>" class="frm_input" size="5">
         </td>
         <td class="td_num_c3">
-            <input type="checkbox" name="opt_use_short_barcode[]" value="<?php echo $opt_use_short_barcode; ?>" id="opt_use_short_barcode_<?php echo $i; ?>" <?php echo ($opt_use_short_barcode) ? "checked" : ""; ?>>
+			<!--select name="opt_use_short_barcode[]" id="opt_use_short_barcode_<?php echo $i; ?>">
+                <option value="0" <?php echo get_selected('0', $opt_use_short_barcode); ?>>사용안함</option>
+				<option value="1" <?php echo get_selected('1', $opt_use_short_barcode); ?>>사용함</option>                
+            </select-->
+            <input type="checkbox" name="opt_use_short_barcode[]" value="<?php echo $opt_id; ?>" id="opt_use_short_barcode_<?php echo $i; ?>"  <?=($opt_use_short_barcode == "1") ? "checked" : ""; ?>>
+        </td>
+		<td class="td_num_c3">
+			<!--select name="opt_sold_out[]" id="opt_sold_out_<?php echo $i; ?>">
+                <option value="0" <?php echo get_selected('0', $opt_sold_out); ?>>사용안함</option>
+				<option value="1" <?php echo get_selected('1', $opt_sold_out); ?>>사용함</option>                
+            </select-->
+            <input type="checkbox" name="opt_sold_out[]" value="<?php echo $opt_id; ?>" id="opt_sold_out_<?php echo $i; ?>" <?=($opt_sold_out == "1") ? "checked" : ""; ?>>
         </td>
     </tr>
     <?php
@@ -174,6 +194,7 @@ if($po_run) {
                     $opt_price_dealer = 0;
                     $opt_price_dealer2 = 0;
                     $opt_use_short_barcode = 0;
+					$opt_sold_out = 0;
 
                     // 기존에 설정된 값이 있는지 체크
                     if($_POST['w'] == 'u') {
@@ -235,7 +256,18 @@ if($po_run) {
         </td>
         <td></td>
         <td class="td_num_c3">
-            <input type="checkbox" name="opt_use_short_barcode[]" value="<?php echo $opt_use_short_barcode; ?>" id="opt_use_short_barcode_<?php echo $i; ?>">
+            <!--select name="opt_use_short_barcode[]" id="opt_use_short_barcode_<?php echo $i; ?>">                
+                <option value="0" <?php echo get_selected('0', $opt_use_short_barcode); ?>>사용안함</option>
+				<option value="1" <?php echo get_selected('1', $opt_use_short_barcode); ?>>사용함</option>
+            </select-->
+			<input type="checkbox" name="opt_use_short_barcode[]" value="<?php echo $opt_id; ?>" id="opt_use_short_barcode_<?php echo $i; ?>" <?=($opt_use_short_barcode == "1") ? "checked" : ""; ?>>
+        </td>
+		<td class="td_num_c3">
+            <!--select name="opt_sold_out[]" id="opt_sold_out_<?php echo $i; ?>">
+                <option value="0" <?php echo get_selected('0', $opt_sold_out); ?>>사용안함</option>
+				<option value="1" <?php echo get_selected('1', $opt_sold_out); ?>>사용함</option>
+            </select-->
+			<input type="checkbox" name="opt_sold_out[]" value="<?php echo $opt_id; ?>" id="opt_sold_out<?php echo $i; ?>" <?=($opt_sold_out == "1") ? "checked" : ""; ?>>
         </td>
     </tr>
     <?php

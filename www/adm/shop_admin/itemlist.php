@@ -470,7 +470,7 @@ $flist = apms_form(1,0);
             <input type="text" name="it_model[<?php echo $i; ?>]" value="<?php echo htmlspecialchars2(cut_str($row['it_model'],250, "")); ?>" id="model_<?php echo $i; ?>" class="frm_input" size="30" placeholder="모델명" style="width:50%">
 
             <label for="expectedwarehousingdate_<?php echo $i; ?>" class="sound_only">입고 예정일 알림</label>
-            <input type="text" name="it_expected_warehousing_date[<?php echo $i; ?>]" value="<?php echo htmlspecialchars2(cut_str($row['it_expected_warehousing_date'],250, "")); ?>" id="expectedwarehousingdate_<?php echo $i; ?>" class="frm_input" size="30" placeholder="입고 예정일 알림" style="width:50%">
+            <input type="text" name="it_expected_warehousing_date[<?php echo $i; ?>]" value="<?php echo htmlspecialchars2(cut_str($row['it_expected_warehousing_date'],250, "")); ?>" id="expectedwarehousingdate_<?php echo $i; ?>" class="frm_input" size="30" placeholder="입고 예정일 알림(최대 44자)" maxlength="44" style="width:50%">
 
             <label for="name_<?php echo $i; ?>" class="sound_only">상품명</label>
             <input type="text" name="it_name[<?php echo $i; ?>]" value="<?php echo htmlspecialchars2(cut_str($row['it_name'],250, "")); ?>" id="name_<?php echo $i; ?>" required class="frm_input required" size="30">

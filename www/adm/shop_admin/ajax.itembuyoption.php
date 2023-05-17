@@ -59,7 +59,12 @@ for($i=0; $row=sql_fetch_array($result); $i++) {
         else
             $soldout = '';
 
-        $str .= PHP_EOL.'<option value="'.$val[$key].','.$row['io_price'].','.$io_stock_qty.','.$row['io_price_partner'].','.$row['io_price_dealer'].'">'.$val[$key].$price.$soldout.'</option>';
+		if($row['io_sold_out'] == 1)
+            $soldout2 = '&nbsp;&nbsp;[일시품절]'; //[일시품절]
+        else
+            $soldout2 = '';
+
+        $str .= PHP_EOL.'<option value="'.$val[$key].','.$row['io_price'].','.$io_stock_qty.','.$row['io_price_partner'].','.$row['io_price_dealer'].'">'.$val[$key].$price.$soldout.$soldout2.'</option>';
     }
 }
 

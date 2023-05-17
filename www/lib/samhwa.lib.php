@@ -567,6 +567,7 @@ function get_typereceipt_step($od_id) {
     }
 }
 
+
 function get_typereceipt_cate($od_id) {
     global $typereceipt_cates;
     
@@ -673,7 +674,7 @@ function get_purchase_step($od_status) {
 
   $k = -1;
 
- if($od_status == '관리자발주취소' || $od_status == '취소') $od_status = '발주취소';
+  if($od_status == '관리자발주취소' || $od_status == '취소') $od_status = '발주취소';
 
   for($i=0;$i<count($purchase_order_steps); $i++) {
     if ( $od_status == $purchase_order_steps[$i]['val'] ) {
@@ -1315,7 +1316,12 @@ function samhwa_get_item_options($it_id, $subject, $is_div='', $sb = '')
             else
                 $soldout = '';
 
-            $select .= '<option value="'.$row['io_id'].','.$row['io_price'].','.$row['io_stock_qty'].','.$row['io_price_partner'].','.$row['io_price_dealer'].'">'.$row['io_id'].$price.$soldout.'</option>'.PHP_EOL;
+			if($row['io_sold_out'] == 1)
+				$soldout2 = '&nbsp;&nbsp;[일시품절]'; //[일시품절]
+			else
+				$soldout2 = '';
+
+            $select .= '<option value="'.$row['io_id'].','.$row['io_price'].','.$row['io_stock_qty'].','.$row['io_price_partner'].','.$row['io_price_dealer'].'">'.$row['io_id'].$price.$soldout.$soldout2.'</option>'.PHP_EOL;
         }
         $select .= '</select>'.PHP_EOL;
 
@@ -1372,7 +1378,12 @@ function samhwa_get_item_supply($it_id, $subject, $is_div='', $sb = '')
             else
                 $soldout = '';
 
-            $options[$opt_id[0]][] = '<option value="'.$opt_id[1].','.$row['io_price'].','.$io_stock_qty.','.$row['io_price_partner'].','.$row['io_price_dealer'].'">'.$opt_id[1].$price.$soldout.'</option>';
+			if($row['io_sold_out'] == 1)
+				$soldout2 = '&nbsp;&nbsp;[일시품절]'; //[일시품절]
+			else
+				$soldout2 = '';
+
+            $options[$opt_id[0]][] = '<option value="'.$opt_id[1].','.$row['io_price'].','.$io_stock_qty.','.$row['io_price_partner'].','.$row['io_price_dealer'].'">'.$opt_id[1].$price.$soldout.$soldout2.'</option>';
         }
     }
 
