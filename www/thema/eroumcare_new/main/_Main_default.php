@@ -46,8 +46,14 @@
                                     COUNT(CASE WHEN c.ct_status='준비' THEN 1 END) AS cnt_productpreparation,
                                     COUNT(CASE WHEN c.ct_status='출고준비' THEN 1 END) AS cnt_Preparingshipment,
                                     COUNT(CASE WHEN c.ct_status='배송' THEN 1 END) AS cnt_Shipmentcompleted,
-                                    -- COUNT(CASE WHEN c.ct_status NOT IN ('완료') AND c.ct_is_direct_delivery='2' THEN 1 END) AS cnt_Installationschedule
-                                    ( SELECT COUNT(ct_id) FROM g5_shop_cart WHERE c.ct_is_direct_delivery='2' AND ct_time BETWEEN '" . date('Y-m-d') . "' AND '" . date('Y-m-t') . "') AS cnt_Installationschedule
+                                    (
+                                        SELECT COUNT(ct.ct_id) FROM `partner_inst_sts` AS s 
+                                        LEFT JOIN `g5_shop_cart` AS ct ON ct.ct_id = s.ct_id 
+                                        LEFT JOIN `g5_member` AS mb ON mb.mb_id = s.partner_mb_id 
+                                        WHERE od_mb_id = '" . $member['mb_id'] . "' AND delivery_date != '' AND delivery_datetime != '' AND (status = '준비' OR status = '완료' OR status = '배송')
+                                        AND (ct.ct_time BETWEEN '" . date('Y-m-d') . "' AND '" . date('Y-m-t') . "')
+                                    ) AS cnt_Installationschedule
+    
     
                                 FROM
                                     g5_shop_cart c
