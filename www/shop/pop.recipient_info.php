@@ -561,13 +561,13 @@ if($member["cert_data_ref"] != ""){
                         let penPayRate_api = rep_info_api['SBA_CD'].replace('(', ' ').replace(')', '');
                     } else {
                         let penPayRate_api = rep_info_api['REDUCE_NM'] == '일반' ? '일반 15%': rep_info_api['REDUCE_NM'] == '기초' ? '기초 0%'
-                                                                : rep_info_api['SBA_CD'];
+                                                                : rep_info_api['SBA_CD']=='일반'?'일반 15%':rep_info_api['SBA_CD'] == '기초' ? '기초 0%':rep_info_api['SBA_CD'];
                     }
                     
                     let penPayRate_api = '';
                     if(rep_info_api['REDUCE_NM'] != '감경'){ //REDUCE_NM가 대상자 구분, 감경은 SBA_CD를 이용하여 본인부담율을 가져오기
                         penPayRate_api = rep_info_api['REDUCE_NM'] == '일반' ? '일반 15%': rep_info_api['REDUCE_NM'] == '기초' ? '기초 0%'
-                                                                : rep_info_api['SBA_CD'];
+                                                                : rep_info_api['SBA_CD'] == '일반' ? '일반 15%': rep_info_api['SBA_CD'] == '기초' ? '기초 0%':rep_info_api['SBA_CD'];
                     } else {
                         penPayRate_api = rep_info_api['SBA_CD'].replace('(', ' ').replace(')', '');
                     }
@@ -1137,13 +1137,13 @@ if($member["cert_data_ref"] != ""){
                         let penPayRate_api = rep_info_api['SBA_CD'].replace('(', ' ').replace(')', '');
                     } else {
                         let penPayRate_api = rep_info_api['REDUCE_NM'] == '일반' ? '일반 15%': rep_info_api['REDUCE_NM'] == '기초' ? '기초 0%'
-                                                                : rep_info_api['SBA_CD'];
+                                                                : rep_info_api['SBA_CD'] == "일반"?'일반 15%': rep_info_api['SBA_CD'] == '기초' ? '기초 0%':rep_info_api['SBA_CD'];
                     }
                     
                     let penPayRate_api = '';
                     if(rep_info_api['REDUCE_NM'] != '감경'){ //REDUCE_NM가 대상자 구분, 감경은 SBA_CD를 이용하여 본인부담율을 가져오기
                         penPayRate_api = rep_info_api['REDUCE_NM'] == '일반' ? '일반 15%': rep_info_api['REDUCE_NM'] == '기초' ? '기초 0%'
-                                                                : rep_info_api['SBA_CD'];
+                                                                : rep_info_api['SBA_CD'] == "일반"?'일반 15%': rep_info_api['SBA_CD'] == '기초' ? '기초 0%':rep_info_api['SBA_CD'];
                     } else {
                         penPayRate_api = rep_info_api['SBA_CD'].replace('(', ' ').replace(')', '');
                     }
@@ -1352,7 +1352,9 @@ if($member["cert_data_ref"] != ""){
                     buildTable_api(contract_list);
                     buildTable_api(add_contract_list, 'add');
                     let penPayRate2 = rep_info_api['REDUCE_NM'] == '일반' ? '15%': rep_info_api['REDUCE_NM'] == '기초' ? '0%' : rep_info_api['REDUCE_NM'] == '의료급여' ? '6%'
-                                                              : (rep_info_api['SBA_CD'].split('(')[1].substr(0, rep_info_api['SBA_CD'].split('(')[1].length-1));
+                    :rep_info_api['SBA_CD'] == '일반' ? '15%': rep_info_api['SBA_CD'] == '기초' ? '0%' : rep_info_api['SBA_CD'] == '의료급여' ? '6%'
+					: (rep_info_api['SBA_CD'].split('(')[1].substr(0, rep_info_api['SBA_CD'].split('(')[1].length-1));
+					rep_info_api['REDUCE_NM'] = (rep_info_api['REDUCE_NM'] == null)?rep_info_api['SBA_CD']:rep_info_api['REDUCE_NM'];
 					$.post('ajax.macro_update.php', {
 						mb_id: '<?=$member['mb_id']?>',
 						recipient_name: penNm_parent,
