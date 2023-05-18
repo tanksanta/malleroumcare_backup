@@ -49,7 +49,7 @@ $qstr .= '&amp;od_release='.$od_release;
 
 if($fr_date != "" || $to_date != ""){//날짜 검색 조건이 있을 경우
 	if($od_release == 1){//서명요청일
-		$where_od = "dc_sign_request_datetime";
+		$where_od = "dc_sign_send_datetime";
 	}elseif($od_release == 2){//서명완료일
 		$where_od = "dc_sign_datetime";
 	}elseif($od_release == "" ||  $od_release == 0){//생성일
