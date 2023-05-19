@@ -159,7 +159,7 @@ if ($it['ca_id']) {
     </div>
     <?php } ?>
     <div class="samhwa-item-image">
-      <div class="item-image" <?php if($it["it_expected_warehousing_date"] !== ""){ ?>style="padding-bottom:9%;"<?php }?>>
+      <div class="item-image" <?php if($it["it_expected_warehousing_date"] !== ""){ ?>style="padding-bottom:12%;"<?php }?>>
         <?php if($it["prodSupYn"] == "N"){ ?>
         <b class="supInfo">비유통 상품</b>
         <?php } ?>
@@ -183,7 +183,7 @@ if ($it['ca_id']) {
         <?php if($wset['shadow']) echo apms_shadow($wset['shadow']); //그림자 ?>
 
         <?php if($it["it_expected_warehousing_date"] !== ""){ ?>
-        <div class="item-expected-warehousing-date box"  style="height:9%;width:100%;top:96%;position:absolute;padding:10px;"><?php echo $it["it_expected_warehousing_date"];?></div>
+        <div class="item-expected-warehousing-date box"  style="height:10%;width:100%;top:94%;position:absolute;padding:10px;"><?php echo $it["it_expected_warehousing_date"];?></div>
         <?php } ?>
       </div>
 	  
@@ -1803,7 +1803,14 @@ $(function() {
 <script src="/js/textFit.js"></script>
 <script>
 $(document).ready(function(){
-	textFit(document.getElementsByClassName('box'), {minFontSize:12, maxFontSize: 20,alignHoriz: true, alignVert: true, multiLine: true, widthOnly: true});
+
+	if(screen.width > 800){
+		textFit(document.getElementsByClassName('box'), {minFontSize:14, maxFontSize: 20,alignHoriz: true, alignVert: true, multiLine: true,widthOnly: true});
+	}else{
+		textFit(document.getElementsByClassName('box'), {minFontSize:16, maxFontSize:20,alignHoriz: true, alignVert: true, multiLine: true});
+		$(".box").css({"top":"94%"});
+
+	}
 });
 </script>
 <?php

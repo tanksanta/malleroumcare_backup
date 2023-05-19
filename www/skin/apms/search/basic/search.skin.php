@@ -278,7 +278,7 @@ include_once($skin_path.'/search.skin.form.php');
           <?php
           $tag = explode(",", $tag_list);
           foreach($tag as $val) {
-            echo '<span class="hash-tag">#'.$val.'</span>';
+            echo '<span class="hash-tag" style="display:none;">#'.$val.'</span>';
           }
           ?>
         </p>
@@ -320,7 +320,12 @@ include_once($skin_path.'/search.skin.form.php');
 <script src="/js/textFit.js"></script>
 <script>
 $(document).ready(function(){
-	textFit(document.getElementsByClassName('box'), {minFontSize:1, maxFontSize: 12,alignHoriz: true, alignVert: true,multiLine: true});
+	if(screen.width > 800){
+		textFit(document.getElementsByClassName('box'), {minFontSize:11, maxFontSize:17,alignHoriz: true, alignVert: true, multiLine: true});
+	}else{
+		textFit(document.getElementsByClassName('box'), {minFontSize:10, maxFontSize:14,alignHoriz: true, alignVert: true, multiLine: true});
+		$(".box").css({"height":"15%","top":"107.5%"});
+	}
 	$('.list-wrap').imagesLoaded(function(){
 		$('.list-wrap .item-content').matchHeight();
 	});
