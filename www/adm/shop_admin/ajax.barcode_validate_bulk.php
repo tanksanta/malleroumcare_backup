@@ -48,7 +48,7 @@ foreach( $barcodeArr as $key => $val ) {
         'status' => '미보유재고'
       );
 		} else {
-			json_response(400, "재고로 등록되지 않은 바코드 입니다.\n입력된 바코드는 초기화 됩니다.",$data);
+			json_response(400, "재고로 등록되지 않은 바코드 입니다.\n입력된 바코드는 초기화 됩니다.");
 		}
 
   }
