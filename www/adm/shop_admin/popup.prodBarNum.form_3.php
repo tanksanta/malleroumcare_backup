@@ -804,14 +804,58 @@ if($od["od_b_tel"]) {
         // msgResult = 'error'
         var data = $xhr.responseJSON;
         console.log(data && data.message);
+
+        var _arrayBarcode = [];
+        data.data.barcodeArr.forEach(function (_this) {
+          _arrayBarcode[_this.index] = _this.status;
+        });
+
+        console.log(_arrayBarcode);
         setTimeout(function() {
 
+          var target = $('.folding_box.id_' + ct_id + ' li');
+          var activeCount = 0;
+
+          var minValue = _arrayBarcode.length;
+          console.log(minValue);
+
+          $('.folding_box.id_' + ct_id + ' li').each(function () {
+            
+            if( minValue <= activeCount ) {
+
+              $(this).find('.fa-check').removeClass('active');
+              $(this).find('.barcode_icon.type5').removeClass('active');
+              $(this).find('.frm_input').val("");
+
+            } else if( _arrayBarcode[activeCount] && _arrayBarcode[activeCount] === "정상" ){
+
+              target.eq(activeCount).find('.frm_input').prop('readonly', true);
+              target.eq(activeCount).find('.frm_input').css({ "background-color": "#f1f1f1" });
+              
+            }
+
+            activeCount++;
+          });
+
+
+          /*
+          var target = $('.folding_box.id_' + ct_id + ' li');
+
+          data.data.barcodeArr.forEach(function (_this) {
+
+            if( _this.status === '미보유재고' ) {
+               target.eq(_this.index).find('.frm_input').val(""); 
+            }
+
+          });
+
+        
           $('.folding_box.id_' + ct_id + ' li').each(function () {
             if( $(this).find('.frm_input').prop("readonly") == false ) { 
               $(this).find('.frm_input').val(""); 
             }
           });
-
+          */
           alert(data && data.message);
           return;
           //alert('바코드 재고 확인 도중 오류가 발생했습니다. 관리자에게 문의해주세요.');
