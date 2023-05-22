@@ -804,19 +804,74 @@ if($od["od_b_tel"]) {
         // msgResult = 'error'
         var data = $xhr.responseJSON;
         console.log(data && data.message);
+
+        var _arrayBarcode = [];
+        data.data.barcodeArr.forEach(function (_this) {
+          _arrayBarcode[_this.index] = _this.status;
+        });
+
+        console.log(_arrayBarcode);
         setTimeout(function() {
 
+          var target = $('.folding_box.id_' + ct_id + ' li');
+          var activeCount = 0;
+
+          var minValue = _arrayBarcode.length-1;
+          console.log(minValue);
+
           $('.folding_box.id_' + ct_id + ' li').each(function () {
-            if( $(this).find('.frm_input').prop("readonly") == false ) { 
-              $(this).find('.frm_input').val(""); 
+            
+            if( _arrayBarcode[activeCount] && _arrayBarcode[activeCount] === "미등록재고" ) {
+
+              $(this).find('.frm_input').prop('readonly', false);
+              $(this).find('.frm_input').css({ "background-color": "#fff" });
+
+              $(this).find('.fa-check').removeClass('active');
+              $(this).find('.barcode_icon.type5').removeClass('active');
+              $(this).find('.frm_input').val("");
+
+            } else if( _arrayBarcode[activeCount] && _arrayBarcode[activeCount] === "정상" ){
+
+              $(this).find('.frm_input').prop('readonly', true);
+              $(this).find('.frm_input').css({ "background-color": "#f1f1f1" });
+              
             }
+            activeCount++;
+          });
+
+          // 23.05.22 : 서원 - 기존 입력 필드 바코드 전부 배열로 회수.
+          var _TmpBarcode = [];          
+          $('.folding_box.id_' + ct_id + ' li').each(function () {
+            if( $(this).find('.frm_input').val().length === 12 ) {
+              _TmpBarcode.push( $(this).find('.frm_input').val() );
+            }
+
+            $(this).find('.frm_input').prop('readonly', false);
+            $(this).find('.frm_input').css({ "background-color": "#fff" });
+
+            $(this).find('.fa-check').removeClass('active');
+            $(this).find('.barcode_icon.type5').removeClass('active');
+            $(this).find('.frm_input').val("");
+
+          });
+
+          // 23.05.22 : 서원 - 미등록바코드로 발생하는 공백 필드를 순차적 필드로 채움.
+          var activeCount = 0;
+          $('.folding_box.id_' + ct_id + ' li').each(function () {
+            if( _TmpBarcode[activeCount] ){
+              $(this).find('.frm_input').val(_TmpBarcode[activeCount]);
+              $(this).find('.frm_input').prop('readonly', true);
+              $(this).find('.frm_input').css({ "background-color": "#f1f1f1" });              
+              $(this).find('.fa-check').addClass('active');
+            }
+            activeCount++;
           });
 
           alert(data && data.message);
           return;
           //alert('바코드 재고 확인 도중 오류가 발생했습니다. 관리자에게 문의해주세요.');
 
-        }, 500);
+        }, 250);
       })
     }
   }

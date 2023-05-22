@@ -21,37 +21,86 @@ $data = array(
 
 
 
-// 23.02.14 : 서원 - for문에서 foreach로 변경.
-foreach( $barcodeArr as $key => $val ) {
-  
-  $bc_row = sql_fetch(" SELECT bc_status FROM `g5_cart_barcode` 
-                        WHERE `it_id` = '" . $it_id . "' AND
-                              `io_id` = '" . $io_id . "' AND
-                              (bc_status = '정상' OR bc_status = '관리자승인완료') AND
-                              bc_barcode = '" . $val['barcode'] . "' AND
-                              bc_del_yn = 'N' 
-                        ORDER BY bc_id DESC 
-                        LIMIT 1
-  ");
+// 23.04.11 : 서원 - 바코드 미등록시 출고 제한을 위한 코드 삽입. 
+if( $default['de_barcode_approve_type'] == "part_auto" || $default['de_barcode_approve_type'] == "full_auto" ) {
 
-  if ($bc_row) {
-    $data['barcodeArr'][$key] = array(
-      'index' => $val['index'], 
-      'status' => $bc_row['bc_status']
-    );
-  } else {
+  // 23.02.14 : 서원 - for문에서 foreach로 변경.
+  foreach( $barcodeArr as $key => $val ) {
+    
+    $bc_row = sql_fetch(" SELECT bc_status FROM `g5_cart_barcode` 
+                          WHERE `it_id` = '" . $it_id . "' AND
+                                `io_id` = '" . $io_id . "' AND
+                                (bc_status = '정상' OR bc_status = '관리자승인완료') AND
+                                bc_barcode = '" . $val['barcode'] . "' AND
+                                bc_del_yn = 'N' 
+                          ORDER BY bc_id DESC 
+                          LIMIT 1
+    ");
 
-		// 23.04.11 : 서원 - 바코드 미등록시 출고 제한을 위한 코드 삽입. 
-		if( $default['de_barcode_approve_type'] == "part_auto" || $default['de_barcode_approve_type'] == "full_auto" ) {
-			$data['barcodeArr'][$key] = array( 
+    if ($bc_row) {
+      $data['barcodeArr'][$key] = array(
         'index' => $val['index'], 
-        'status' => '미보유재고'
+        'status' => $bc_row['bc_status']
       );
-		} else {
-			json_response(400, "재고로 등록되지 않은 바코드 입니다.\n입력된 바코드는 초기화 됩니다.");
-		}
+    } else {
+
+      // 23.04.11 : 서원 - 바코드 미등록시 출고 제한을 위한 코드 삽입. 
+      if( $default['de_barcode_approve_type'] == "part_auto" || $default['de_barcode_approve_type'] == "full_auto" ) {
+        $data['barcodeArr'][$key] = array( 
+          'index' => $val['index'], 
+          'status' => '미보유재고'
+        );
+      } else {
+        $data['barcodeArr'][$key] = array( 
+          'index' => $val['index']
+        );
+        json_response(400, "재고로 등록되지 않은 바코드 입니다.\n입력된 바코드는 초기화 됩니다.",$data);
+      }
+
+    }
+  }
+
+} else {
+  
+  // 23.05.22 : 서원
+  // 쇼핑몰설정 > 기타설정 > 바코드 출고 설정 > "미등록 PDA 바코드 스캔 / 입력 제한 (관리자 제외)"
+  // 특정 설정 값에 따른 바코드 검색 후 회신데이터 변경.
+
+  $_setCheck = 0;
+  // 23.02.14 : 서원 - for문에서 foreach로 변경.
+  foreach( $barcodeArr as $key => $val ) {
+    
+    $bc_row = sql_fetch(" SELECT bc_status FROM `g5_cart_barcode` 
+                          WHERE `it_id` = '" . $it_id . "' 
+                                AND `io_id` = '" . $io_id . "'
+                                AND (bc_status = '정상' OR bc_status = '관리자승인완료')
+                                AND bc_barcode = '" . $val['barcode'] . "'
+                                AND bc_del_yn = 'N' 
+                          ORDER BY bc_id DESC 
+                          LIMIT 1
+    ");
+
+    if ($bc_row) {
+      $data['barcodeArr'][$key] = array(
+        'index' => $val['index'], 
+        'status' => $bc_row['bc_status']
+      );
+    } else {
+      $data['barcodeArr'][$key] = array(
+        'index' => $val['index'], 
+        'status' => '미등록재고'
+      );
+      $_setCheck = 1;
+    }
 
   }
+
+  if( !$_setCheck ) {
+    json_response(200, 'OK', $data);
+  } else {
+    json_response(400, "[미재고 바코드 확인] 재고로 등록된 바코드만 정렬하여 입력됩니다.",$data);
+  }
+
 }
 
 
