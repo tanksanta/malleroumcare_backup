@@ -624,7 +624,9 @@ $(function() {
             </div>
           </div>
         <?php } ?>
+      </div>
       <?php } ?>
+      
 
       <h4>상품 정보</h4>
       <div class="info-wrap">
@@ -1021,7 +1023,7 @@ $(function() {
         <p>*해당 주문을 숨김처리하면 주문내역에 노출되지 않습니다.<br>*숨김처리는 주문취소가 되지 않습니다.</p>
       </div>
       <?php } ?>
-    </div>
+      </div>
 
     <div class="detail-price">
       <?php if( ( $od["od_type"] != '1' ) && $od["od_penId"]) { ?>
