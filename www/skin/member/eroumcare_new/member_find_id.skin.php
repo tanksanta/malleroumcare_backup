@@ -69,11 +69,14 @@ if($header_skin)
                         <div class="thkc_cont">
                             <div>
                                 <label for="bnum" class="thkc_blind">사업자등록번호</label>
-                                <input class="thkc_input _error_input_inner numOnly" id="bnum" maxlength="10" placeholder="사업자등록번호" value="" type="text" autocomplete="off" />
+                                <input class="thkc_input _error_input_inner numOnly" id="sms_bnum" maxlength="10" placeholder="사업자등록번호" value="" type="text" autocomplete="off" />
+                                <div class="error-txt error_sms_bnum"></div>
 								<?php
 									// 23.03.31 : 서원 - 주석용
 									// 				기존 사업자등록번호가 '-'(하이픈)이 입력된 상태 인데... 기획서에는 숫자만 입력 받으라고 되어있음.
 									//				기획서 대로 진행하며, 추후 문제 발생할 경우 입력 필드 조건을 바꿔야 하거나, 기존 입력된 사업자번호 컨버전 필요!! ( 단, 이카운트와 연동 및 다른쪽 사업자번호로 연동되는 부분 문제성 확인 필요. )
+                                    // 23.05.23 : 서원 - 결국 하이픈 입력방식으로 전환됨.
+                                    //                    기존 WMDS 운영 방식을 고려하지 않은 프론트 기획으로 인해 동일 우려하던 상황 발생(문제 발생 시점 담당자 무대응)
 								?>
                             </div>
                             <!-- <div class="error-txt">담당자 이름을 입력해주세요.</div> -->
@@ -144,7 +147,8 @@ if($header_skin)
                         <div class="thkc_cont">
                             <div>
                                 <label for="bnum" class="thkc_blind">사업자등록번호</label>
-                                <input class="thkc_input _error_input_inner numOnly" id="bnum" maxlength="10" placeholder="사업자등록번호" value="" type="text" autocomplete="off"  />
+                                <input class="thkc_input _error_input_inner numOnly" id="mail_bnum" maxlength="10" placeholder="사업자등록번호" value="" type="text" autocomplete="off"  />
+                                <div class="error-txt error_mail_bnum"></div>
                             </div>
                             <!-- <div class="error-txt">담당자 이름을 입력해주세요.</div> -->
                         </div>
@@ -178,169 +182,189 @@ if($header_skin)
 
 
     <script>
-		// 숫자만 입력!!
-		$('.numOnly').on('keyup', function() {
-			var num = $(this).val();
-			num.trim();
-			this.value = only_num(num) ;
-		});
 
-
-    // 아이디 찾기 - 인증 번호 발송
-	let intervalId ="";
-    function SendSMS(mod){
-
-		if( !$(".modeSMS #bnum").val() ) {
-			alert( "사업자등록번호를 입력하세요." ); return;
-		} else if( (!$(".modeSMS #hp2").val()) || (!$(".modeSMS #hp3").val()) ) {
-			alert( "휴대폰번호를 입력하세요." ); return;
-		}
-
-		if( mod === "re" ) {
-			var _time = $(".modeSMS #timeout").val();
-			if( _time>150 ) { alert( "요청 후 30초가 지나야 재요청이 가능합니다." ); return; }
-			clearInterval(intervalId);
-		}
-
-        $.ajax({
-            url: '<?=G5_BBS_URL?>/ajax.member_findInfo.php', type: 'POST', dataType: 'json',
-            data: {
-                mode:"findID_SMS",
-				bnum:$(".modeSMS #bnum").val(),
-				hp: $(".modeSMS #hp1").val() + "-" + $(".modeSMS #hp2").val() + "-" + $(".modeSMS #hp3").val()
-            },
-            success: function(data) {
-
-                if( data.YN === "Y" ) { 
-					$(".modeSMS #bnum").attr("disabled", true);
-					$(".modeSMS #hp1, .modeSMS #hp2, .modeSMS #hp3").attr("disabled", true);
-
-					$(".modeSMS .tel-num .thkc_btn_bbs").text("인증번호 재요청");
-					$(".modeSMS .tel-num .thkc_btn_bbs").css("font-size","12px");
-					$(".modeSMS .tel-num .thkc_btn_bbs").attr("onclick", "SendSMS('re')");
-
-					let count = 180;
-					$(".modeSMS .time").html( calcTime(count) );
-					$(".modeSMS #timeout").val( parseInt(count) );
-
-					intervalId = setInterval(function() { count--;
-						if( count>0 ) { $(".modeSMS .time").html( calcTime(count) ); } else { $(".modeSMS .time").html( "" ); }
-						if( (count <= 0) ) { clearInterval(intervalId); }
-						$(".modeSMS #timeout").val( parseInt(count) );
-					}, 1000)
-
-					$(".modeSMS .cert_num").show();
-					$(".modeSMS #cert_tmp_num").val(data.CertNum);
-					$(".modeSMS .thkc_newID").html(data.FindID);
-
-					alert( "인증번호를 전송하였습니다.\n 인증번호는 3분간 유효합니다." ); return; 
-                } else {
-					alert(data.YN_msg);
-					return;
-				}
-
-            },
-            error: function(e) {}
-        });
-    }
-	
-	// 아이디 찾기 - 인증번호 체크
-	function SendSMSck(cert){
-		if( !cert  ) { 
-			alert( "SMS로 전송된 인증문자 4자리를 입력하세요." ); return; 
-		} else if( cert != $(".modeSMS #cert_tmp_num").val() ) { 
-			alert( "입력된 인증번호가 일치하지 않습니다." ); return; 
-		}
-
-		clearInterval(intervalId);
-		$(".modeSMS .time").html("");
-		$(".modeSMS .thkc_btn_bbs").hide();
-		$(".modeSMS #cert").attr("disabled", true);
-
-		$(".modeSMS .find_id").show();
-	}
-
-	// 아이디 찾기 - 메일발송
-	function SendMAIL(){
-		if( !$(".modeMAIL #bnum").val() ) {
-			alert( "사업자등록번호를 입력하세요." ); return;
-		} else if( !$(".modeMAIL #email").val() ) {
-			alert( "메일주소를 입력하세요." ); return;
-		}
-
-        $.ajax({
-            url: '<?=G5_BBS_URL?>/ajax.member_findInfo.php', type: 'POST', dataType: 'json',
-            data: {
-                mode:"findID_MAIL",
-				bnum:$(".modeMAIL #bnum").val(),
-				mail: $(".modeMAIL #email").val()
-            },
-            success: function(data) {
-				if( data.YN === "Y" ) {					
-					$(".modeMAIL #bnum").attr("disabled", true);
-					$(".modeMAIL #email").attr("disabled", true);
-					$(".modeMAIL .thkc_btn_bbs").hide();
-					alert( "아이디 정보를 이메일로 전송하였습니다.\n 메일함을 확인해 주세요." ); return; 
-				} else {
-					alert(data.YN_msg);
-					return;
-				}
-			},
-            error: function(e) {}
+        // 숫자만 입력!!
+        $('.numOnly').on('keyup blur', function() {
+            var num = $(this).val();
+            num.trim();
+            this.value = only_num(num);
         });
 
-	}
 
-	// 남은시간 출력 계산 부분
-	function calcTime(time, type='') {    
-		let setHour;    
-		let setMin = 0;    
-		let setSec = 0;    
-		let setText = "";    
-		let setArray = []    
-		time = parseInt(time);    
-		const cutMin = Math.floor(time / 60);    
+        // 사업자번호 입력 유효성 체크
+        $('#sms_bnum, #mail_bnum').on('keyup blur', function() {
+            if( $(this).val().length == 10 ) {
+                var _ck = checkCorporateRegiNumber( $(this).val() );
+                if( !_ck ){
+                    $('.error_' + $(this).attr('id') ).html("사업자등록번호를 정확하게 입력해주세요.");
+                    $('.error_' + $(this).attr('id') ).css( "color", "#d44747" );
+                } else  {
+                    $('.error_' + $(this).attr('id') ).html("");
+                }
 
-		if (cutMin >= 60) {        
-			setHour = Math.floor(cutMin / 60);        
-			setMin = cutMin % 60;    
-		} else {        
-			setMin = 0;        
-			setMin = cutMin;    
-		}    
+                /* 23.05.23 - 사업자번호 하이픈 추가 */
+                $(this).val( auto_saup_hypen( $(this).val() ) );
+            }
 
-		setSec = time % 60;    
-		if (typeof setHour !== "undefined") {        
-			if (setHour < 10) {            
-				setText = "0" + setHour + "시간 ";        
-			} else {            
-				setText = setHour + "시간 ";        
-			}    
-		} else {        
-			setText = "";    
-		}    
+        });
 
-		if (setMin < 10) {        
-			setText += "0" + setMin + "분 ";    
-		} else {        
-			setText += setMin + "분 ";    
-		}    
 
-		if (setSec < 10) {        
-			setText += "0" + setSec + "초 ";      
-		} else {        
-			setText += setSec + "초 ";     
-		}    
+        // 아이디 찾기 - 인증 번호 발송
+        let intervalId ="";
+        function SendSMS(mod){
 
-		setArray.hour = setHour;    
-		setArray.minute = setMin;    
-		setArray.second = setSec;    
+            if( !$(".modeSMS #sms_bnum").val() ) {
+                alert( "사업자등록번호를 입력하세요." ); return;
+            } else if( (!$(".modeSMS #hp2").val()) || (!$(".modeSMS #hp3").val()) ) {
+                alert( "휴대폰번호를 입력하세요." ); return;
+            }
 
-		if(type === '') {        
-			return "남은시간 : " + setText;    
-		} else {        
-			return setArray;    
-		}
-	}
+            if( mod === "re" ) {
+                var _time = $(".modeSMS #timeout").val();
+                if( _time>150 ) { alert( "요청 후 30초가 지나야 재요청이 가능합니다." ); return; }
+                clearInterval(intervalId);
+            }
+
+            $.ajax({
+                url: '<?=G5_BBS_URL?>/ajax.member_findInfo.php', type: 'POST', dataType: 'json',
+                data: {
+                    mode:"findID_SMS",
+                    bnum:$(".modeSMS #sms_bnum").val(),
+                    hp: $(".modeSMS #hp1").val() + "-" + $(".modeSMS #hp2").val() + "-" + $(".modeSMS #hp3").val()
+                },
+                success: function(data) {
+
+                    if( data.YN === "Y" ) { 
+                        $(".modeSMS #sms_bnum").attr("disabled", true);
+                        $(".modeSMS #hp1, .modeSMS #hp2, .modeSMS #hp3").attr("disabled", true);
+
+                        $(".modeSMS .tel-num .thkc_btn_bbs").text("인증번호 재요청");
+                        $(".modeSMS .tel-num .thkc_btn_bbs").css("font-size","12px");
+                        $(".modeSMS .tel-num .thkc_btn_bbs").attr("onclick", "SendSMS('re')");
+
+                        let count = 180;
+                        $(".modeSMS .time").html( calcTime(count) );
+                        $(".modeSMS #timeout").val( parseInt(count) );
+
+                        intervalId = setInterval(function() { count--;
+                            if( count>0 ) { $(".modeSMS .time").html( calcTime(count) ); } else { $(".modeSMS .time").html( "" ); }
+                            if( (count <= 0) ) { clearInterval(intervalId); }
+                            $(".modeSMS #timeout").val( parseInt(count) );
+                        }, 1000)
+
+                        $(".modeSMS .cert_num").show();
+                        $(".modeSMS #cert_tmp_num").val(data.CertNum);
+                        $(".modeSMS .thkc_newID").html(data.FindID);
+
+                        alert( "인증번호를 전송하였습니다.\n 인증번호는 3분간 유효합니다." ); return; 
+                    } else {
+                        alert(data.YN_msg);
+                        return;
+                    }
+
+                },
+                error: function(e) {}
+            });
+        }
+        
+
+        // 아이디 찾기 - 인증번호 체크
+        function SendSMSck(cert){
+            if( !cert  ) { 
+                alert( "SMS로 전송된 인증문자 4자리를 입력하세요." ); return; 
+            } else if( cert != $(".modeSMS #cert_tmp_num").val() ) { 
+                alert( "입력된 인증번호가 일치하지 않습니다." ); return; 
+            }
+
+            clearInterval(intervalId);
+            $(".modeSMS .time").html("");
+            $(".modeSMS .thkc_btn_bbs").hide();
+            $(".modeSMS #cert").attr("disabled", true);
+
+            $(".modeSMS .find_id").show();
+        }
+
+        // 아이디 찾기 - 메일발송
+        function SendMAIL(){
+            if( !$(".modeMAIL #mail_bnum").val() ) {
+                alert( "사업자등록번호를 입력하세요." ); return;
+            } else if( !$(".modeMAIL #email").val() ) {
+                alert( "메일주소를 입력하세요." ); return;
+            }
+
+            $.ajax({
+                url: '<?=G5_BBS_URL?>/ajax.member_findInfo.php', type: 'POST', dataType: 'json',
+                data: {
+                    mode:"findID_MAIL",
+                    bnum:$(".modeMAIL #mail_bnum").val(),
+                    mail: $(".modeMAIL #email").val()
+                },
+                success: function(data) {
+                    if( data.YN === "Y" ) {					
+                        $(".modeMAIL #mail_bnum").attr("disabled", true);
+                        $(".modeMAIL #email").attr("disabled", true);
+                        $(".modeMAIL .thkc_btn_bbs").hide();
+                        alert( "아이디 정보를 이메일로 전송하였습니다.\n 메일함을 확인해 주세요." ); return; 
+                    } else {
+                        alert(data.YN_msg);
+                        return;
+                    }
+                },
+                error: function(e) {}
+            });
+
+        }
+
+        // 남은시간 출력 계산 부분
+        function calcTime(time, type='') {    
+            let setHour;    
+            let setMin = 0;    
+            let setSec = 0;    
+            let setText = "";    
+            let setArray = []    
+            time = parseInt(time);    
+            const cutMin = Math.floor(time / 60);    
+
+            if (cutMin >= 60) {        
+                setHour = Math.floor(cutMin / 60);        
+                setMin = cutMin % 60;    
+            } else {        
+                setMin = 0;        
+                setMin = cutMin;    
+            }    
+
+            setSec = time % 60;    
+            if (typeof setHour !== "undefined") {        
+                if (setHour < 10) {            
+                    setText = "0" + setHour + "시간 ";        
+                } else {            
+                    setText = setHour + "시간 ";        
+                }    
+            } else {        
+                setText = "";    
+            }    
+
+            if (setMin < 10) {        
+                setText += "0" + setMin + "분 ";    
+            } else {        
+                setText += setMin + "분 ";    
+            }    
+
+            if (setSec < 10) {        
+                setText += "0" + setSec + "초 ";      
+            } else {        
+                setText += setSec + "초 ";     
+            }    
+
+            setArray.hour = setHour;    
+            setArray.minute = setMin;    
+            setArray.second = setSec;    
+
+            if(type === '') {        
+                return "남은시간 : " + setText;    
+            } else {        
+                return setArray;    
+            }
+        }
 
 	</script>

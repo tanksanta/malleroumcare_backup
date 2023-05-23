@@ -30,6 +30,20 @@
 
     include_once('./_common.php');
 
+
+    function validateBusinessNumber($number) {
+        // 사업자 번호 정규식 패턴
+        $pattern = "/^\d{3}-\d{2}-\d{5}$/";
+      
+        // 정규식과 매치되는지 확인
+        if (preg_match($pattern, $number)) {
+            return true; // 형식이 맞는 경우
+        } else {
+            return false; // 형식이 맞지 않는 경우
+        }
+      }    
+
+
     $_referer = false;
     if( strpos($_SERVER["HTTP_REFERER"],"member_find_id.php") || strpos($_SERVER["HTTP_REFERER"],"member_find_pw.php") ){
         $_referer = true;
@@ -70,6 +84,12 @@
             echo json_encode($result); exit();
         }
 
+        
+        // 23.05.23 - 서원 : 사업자번호 형식 체크
+        if(!validateBusinessNumber($tBNUM)) {
+            alert('사업자 번호 형식이 맞지 않습니다.',G5_BBS_URL."/register.php");
+        }
+        
 
         $temp = sql_fetch("SELECT mb_id FROM `g5_member` WHERE `mb_giup_bnum` = '{$tBNUM}' AND `mb_hp` = '{$tHP}' " );
         if( !$temp && !$temp['mb_id'] ) {
@@ -135,6 +155,16 @@
             echo json_encode($result); exit();
         }
 
+
+        // 23.05.23 - 서원 : 사업자번호 형식 체크
+        if(!validateBusinessNumber($tBNUM)) {
+            $result["YN"] = "N";
+            $result["YN_msg"] = "사업자 번호 형식이 맞지 않습니다.";
+            
+            echo json_encode($result); exit();
+        }
+
+
         $row = sql_fetch(" SELECT count(*) as cnt FROM `g5_member` WHERE `mb_email` = '{$tMAIL}' ");
         if ($row['cnt'] > 1) { 
             $result["YN"] = "N";
@@ -195,6 +225,15 @@
             $result["YN"] = "N";
             $result["YN_msg"] = "입력된 휴대폰번호를 확인할 수 없습니다.";
 
+            echo json_encode($result); exit();
+        }
+
+
+        // 23.05.23 - 서원 : 사업자번호 형식 체크
+        if(!validateBusinessNumber($tBNUM)) {
+            $result["YN"] = "N";
+            $result["YN_msg"] = "사업자 번호 형식이 맞지 않습니다.";
+            
             echo json_encode($result); exit();
         }
 
@@ -276,6 +315,15 @@
         }
 
 
+        // 23.05.23 - 서원 : 사업자번호 형식 체크
+        if(!validateBusinessNumber($tBNUM)) {
+            $result["YN"] = "N";
+            $result["YN_msg"] = "사업자 번호 형식이 맞지 않습니다.";
+            
+            echo json_encode($result); exit();
+        }
+
+
         $temp = sql_fetch("SELECT mb_id FROM `g5_member` WHERE `mb_id` = '{$tID}' AND `mb_giup_bnum` = '{$tBNUM}' AND `mb_hp` = '{$tHP}' " );
         if( !$temp && !$temp['mb_id'] ) {
             $result["YN"] = "N";
@@ -315,6 +363,16 @@
     
             echo json_encode($result); exit();
         }
+
+
+        // 23.05.23 - 서원 : 사업자번호 형식 체크
+        if(!validateBusinessNumber($tBNUM)) {
+            $result["YN"] = "N";
+            $result["YN_msg"] = "사업자 번호 형식이 맞지 않습니다.";
+
+            echo json_encode($result); exit();
+        }
+
 
         $row = sql_fetch(" SELECT count(*) as cnt FROM `g5_member` WHERE `mb_email` = '{$tMAIL}' ");
         if ($row['cnt'] > 1) { 
