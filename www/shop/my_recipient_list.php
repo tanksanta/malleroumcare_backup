@@ -303,7 +303,6 @@ $(document.body).on('change','#page_rows',function(){ // 10/15/20/.../개씩 보
   var recipient_page_rows = $("#page_rows option:selected").val();
   // console.log(recipient_page_rows);
   $.cookie('recipient_page_rows', recipient_page_rows, { expires: 365 })
-  loading_onoff2('on');
   window.location.reload();
 })
 
@@ -405,7 +404,6 @@ function form_check(act) {
   if (requests.length > 0) {
     $.when.apply($, requests).then(function() {
       alert('완료되었습니다');
-	  loading_onoff2('on');
       window.location.reload();
     }, function(error) {
       alert(error.message)
@@ -618,7 +616,7 @@ function form_check(act) {
             <option value="it_id" <?php echo $orderby == 'it_id' || !$orderby ? 'selected' : ''; ?>>최근등록순 정렬</option>
             <option value="it_name" <?php echo $orderby == 'it_name' ? 'selected' : ''; ?>>가나다순 정렬</option>
         </select> -->
-        <select name="page_rows" id="page_rows" style="font-weight: normal;" onChange="loading_onoff2('on')">
+        <select name="page_rows" id="page_rows" style="font-weight: normal;">
             <option value="10" <?php echo $page_rows == '10' ? 'selected' : ''; ?>>10개씩보기</option>
             <option value="15" <?php echo $page_rows == '15' ? 'selected' : ''; ?>>15개씩보기</option>
             <option value="20" <?php echo $page_rows == '20' ? 'selected' : ''; ?>>20개씩보기</option>
@@ -643,13 +641,13 @@ function form_check(act) {
           </th>
           <th>
               <p class="con_top">적용구간 종료 30일 이내</p>
-      		  <p class="con_mid"><a href="my_recipient_list.php?option=expire" onclick="loading_onoff2('on')"><?php echo $count_on_deadline ?>명</a></p>
+      		  <p class="con_mid"><a href="my_recipient_list.php?option=expire"><?php echo $count_on_deadline ?>명</a></p>
               <p class="con_bot">* 조회일이 포함된 적용구간 기준</p>
           </th>
           <th>
               <p class="con_top">대여기간 종료 30일 이내</p>
               <!-- <p class="con_mid"><a href="my_recipient_list.php?option=rental"><?php echo count($rental_list_within_period)?>명</p> -->
-              <p class="con_mid"><a href="my_recipient_list.php?option=rental" onclick="loading_onoff2('on')"><?php echo count($arr_rental)?>명</a></p>
+              <p class="con_mid"><a href="my_recipient_list.php?option=rental"><?php echo count($arr_rental)?>명</p>
               <p class="con_bot">* 재계약 가능 금액 : <?php echo number_format($total_rental_price)?>원</p>
           </th>
       </table>
@@ -953,7 +951,7 @@ function form_check(act) {
   <button type="button" class="btn eroumcare_btn2" style ="float : right;" onclick="return form_check('show_list_all');">전체목록</button>
 
   <div class="list-paging"; >
-    <ul class="pagination pagination-sm en" onclick="loading_onoff2('on')">
+    <ul class="pagination pagination-sm en">
       <?php 
       if($page_option == 'none'){
         echo apms_paging($write_pages, $page, $total_page, "?sel_field={$sel_field}&search={$search}&page_spare={$page_spare}&page=");
@@ -1242,7 +1240,6 @@ function excelPost(action, data) {
   })
   .done(function(result) {
     alert(result.message);
-	loading_onoff2('on');
     window.location.reload();
   })
   .fail(function($xhr) {
