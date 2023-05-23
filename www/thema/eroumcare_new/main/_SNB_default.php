@@ -123,7 +123,7 @@
 
         /* PG사 팝업 최상단 */
         body.bootpay-open .bootpay-payment-background { z-index: 99991; }
-		#loading {
+		#loading2 {
 		  display: none;
 		  background-color: rgba(0,0,0,0.7);
 		  position: fixed;
@@ -134,7 +134,7 @@
 		  z-index : 9999999999999999 !important;
 		}
 
-		#loading > div {
+		#loading2 > div {
 		  position: relative;
 		  top: 50%;
 		  left: 50%;
@@ -143,7 +143,7 @@
 		  
 		}
 
-		#loading img {
+		#loading2 img {
 		  top: 50%;
 		  left: 50%;
 		  margin-left : -75px; 
@@ -151,32 +151,32 @@
 		  position: relative;
 		}
 
-		#loading p {
+		#loading2 p {
 		  color: #fff;
 		  position: relative;
 		  top: -25px;
 		}
     </style>
 	<!--로딩 중 -->
-	<div id="loading" style="display: none">
+	<div id="loading2" style="display: none">
 	  <div>
 		<img src="/img/loading_apple.gif" class="img-responsive" >
 		<p style="margin-top:40px;font-size:30px;line-height:40px;">정보를 불러오고 있습니다.<br>잠시만 기다려주세요.</p>
 	  </div>
 	</div>
 <script>
-	function loading_onoff(a){
+	function loading_onoff2(a){
 		if(a == "on" ){
 			$('body').css('overflow-y', 'hidden');
-			$('#loading').show();
+			$('#loading2').show();
 		}else{
 			$('body').css('overflow-y', 'scroll');
-			$('#loading').hide(); 
+			$('#loading2').hide(); 
 		}
 	}
 	window.onpageshow = function(event){
 		if(event.persisted || (window.performance && window.performance.navigation.type == 2)){
-			loading_onoff('off');
+			loading_onoff2('off');
 		}
 	}
 
@@ -346,7 +346,7 @@
                                 <li><img src="<?=G5_IMG_URL;?>/new_main_eroum/thkc_ico_manage08.svg" alt="복지용구 신청관리"><a href="/shop/eroumon_order_list.php">복지용구 신청관리</a></li>
                                 <?php } ?>
                                 <li><img src="<?=G5_IMG_URL;?>/new_main_eroum/thkc_ico_manage01.svg" alt="주문/배송 관리"><a href="/shop/orderinquiry.php">주문/배송 관리</a></li>
-                                <li><img src="<?=G5_IMG_URL;?>/new_main_eroum/thkc_ico_manage02.svg" alt="수급자 관리"><a href="/shop/my_recipient_list.php" onclick="loading_onoff('on')">수급자 관리</a></li>
+                                <li><img src="<?=G5_IMG_URL;?>/new_main_eroum/thkc_ico_manage02.svg" alt="수급자 관리"><a href="/shop/my_recipient_list.php" onclick="loading_onoff2('on')">수급자 관리</a></li>
                                 <li><img src="<?=G5_IMG_URL;?>/new_main_eroum/thkc_ico_manage03.svg" alt="계약서 관리"><a href="/shop/electronic_manage_new.php">계약서 관리</a></li>
                                 <li><img src="<?=G5_IMG_URL;?>/new_main_eroum/thkc_ico_manage04.svg" alt="청구 내역 관리"><a href="/shop/claim_manage.php">청구 내역 관리</a></li>
                                 <li><img src="<?=G5_IMG_URL;?>/new_main_eroum/thkc_ico_manage05.svg" alt="보유 급여상품 관리"><a href="/shop/sales_Inventory.php">보유 급여상품 관리</a></li>
