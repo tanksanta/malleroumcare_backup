@@ -214,15 +214,17 @@ function agreement_confirm(a){
             </div>
           </div>
         </div>
-        <div class="im_send_wr im_desc_wr" style="border: none; <?php if($today_count <= 0) echo 'opacity: 10%;' ?>">
-          <button type="submit" id="btn_im_send_alim" class="btn_im_send" style="display: block;">
-            <img src="<?=THEMA_URL?>/assets/img/icon_kakao.png" alt="">
-            알림 메시지 전달
-          </button>
-          <button type="submit" id="btn_im_send_sms" class="btn_im_send" style="display: block;">
-            <img src="<?=THEMA_URL?>/assets/img/icon_email.png" width="40" height="40" alt="">
-            문자 메시지 전달
-          </button>
+        <div class="im_send_wr im_desc_wr" style="border: none;">
+          <div class="im_send_button" style="<?php if($today_count <= 0) echo 'opacity: 50%;' ?>">
+            <button type="submit" id="btn_im_send_alim" class="btn_im_send" style="display: block;">
+              <img src="<?=THEMA_URL?>/assets/img/icon_kakao.png" alt="">
+              알림 메시지 전달
+            </button>
+            <button type="submit" id="btn_im_send_sms" class="btn_im_send" style="display: block;">
+              <img src="<?=THEMA_URL?>/assets/img/icon_email.png" width="40" height="40" alt="">
+              문자 메시지 전달
+            </button>
+          </div>
           <div class="im_desc">
           	<p>
           	간편 제안서 무료발송 이벤트 진행중<br>
