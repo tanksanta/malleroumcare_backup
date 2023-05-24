@@ -98,6 +98,14 @@ if($header_skin)
 .list-checkbox input[type=checkbox] { display:none; }
 .list-checkbox input[type=checkbox] + label { font-size: 20px; display: inline-block; cursor: pointer; line-height: 21px; padding-left: 27px; background: url('/adm/shop_admin/img/checkbox.png') left/21px no-repeat; margin-right:10px; height:21px; }
 .list-checkbox input[type=checkbox]:checked + label { background-image: url('/adm/shop_admin/img/checkbox_checked.png'); }
+
+@media screen and (max-width: 600px) {
+      
+  .list-checkbox input[type=checkbox] + label {
+    font-size: 14px;
+  }
+  
+}
 </style>
 
 <!-- 210326 재고조회팝업 -->

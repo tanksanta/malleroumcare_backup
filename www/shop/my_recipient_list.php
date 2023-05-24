@@ -858,7 +858,7 @@ function form_check(act) {
 			<style>
 				a:link { color : black; }
 				a:visited { color : black; }
-				a:hover { color : red; }
+				a:hover { color : black; }
 				a:active { color : green }
 			</style>
 			<a href="<?=G5_SHOP_URL.'/connect_recipient.php?pen_id='.$data['penId'].'&redirect='.urlencode('/shop/cart.php')?>"><?php echo $data['carts'] . '개'; ?></a>

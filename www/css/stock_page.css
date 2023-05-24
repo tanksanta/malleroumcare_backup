@@ -351,6 +351,14 @@ table {border-collapse: collapse;}
 @media screen and (max-width: 650px){
     .list-more + .list-more { margin: 0; }
     .m_off {display: none !important;}
+    .stock-tab {
+        margin-bottom: 10px;
+    }
+    .stock-form {
+        display: inline-block;
+        align-content: space-between;
+        width: 100%;
+    }
 
     .pg-wrap {margin: 20px 0 0;}
     .popup01 {width: 96%;}

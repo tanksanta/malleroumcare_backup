@@ -383,10 +383,10 @@ table {border-collapse: collapse;}
 
 @media screen and (max-width: 1220px) {
   .wrap {padding: 0 4%;}
-  .order-date .date-box {display: block;}
+  .order-date .date-box { /* display: block; */ }
   .order-date .list-date {float: left;}
   .order-date .list-tab {float: left;margin-left: 20px;}
-  .order-date .list-select {float: left;margin-top: 30px;}
+  .order-date .list-select {float: left;margin-left: 20px;}
 
   #pro-order2 .table-list2 .pro {width: 40%;}
   .tab-2 .table-list2 .delivery-price {display: none;}
@@ -452,6 +452,9 @@ table {border-collapse: collapse;}
 }
 
 @media screen and (max-width: 600px) {
+  .order-date .date-box {display: -webkit-box; display: -ms-flexbox; display: block;-webkit-box-pack: justify; -ms-flex-pack: justify; justify-content: space-between;}
+
+
   .info-btn{ margin-left:0px;}
 
   .m_none {display: none !important;}
@@ -507,7 +510,7 @@ table {border-collapse: collapse;}
 }
 
 @media screen and (max-width: 500px){
-    
+
   .detail-tab ul li h4 {font-size: 13px;}
   .table-list2 .pro-info {padding-left:10px;}
   .table-list2 .pro .img {width: 74px;height: 74px;}
@@ -521,4 +524,28 @@ table {border-collapse: collapse;}
   #pro-order2 .table-list2 .list-btm {display: block;}
   #pro-order2 .table-list2 .list-btm > div::after {display: none;}
 
+  }
+
+
+  @media screen and (max-width: 440px){
+    .sub_section_tit { padding: 35px 5px; }
+    .order-date .list-date input { width: 90px; }
+    .order-date .date-box { display: inline-block; }
+  }
+  @media screen and (max-width: 365px){
+    .list-checkbox { height: 70px; }
+  }
+  @media screen and (max-width: 349px){
+    .sub_section_tit { padding: 10px 5px; }
+    .order-list .r_btn_area, .order-list .r_btn_area2 { top: 0px;}
+    .order-date .list-date { margin-top: 20px; }
+    .order-date .list-date input { height: 30px; font-size: 12px; width: 72px; }
+    .order-date .list-date img { padding: 0px 2px; }
+    .order-date .list-tab a {
+      margin-right: 5px;
+      width: 65px;
+      height: 30px;
+      line-height: 26px;
+      font-size: 12px;
+    }
   }
