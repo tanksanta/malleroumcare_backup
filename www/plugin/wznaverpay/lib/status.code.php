@@ -216,6 +216,7 @@ $NPI_DELIVERYCOMPANYCODE = array(
     'hdexp' => '합동택배',
     'lotteglogis' => '롯데택배',
     'chunilps' => '천일택배',
+    'epost' => '우체국택배',
 );
 
 // A.1.11 : 클레임 요청 사유 코드 (반품접수용)

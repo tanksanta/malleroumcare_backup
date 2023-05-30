@@ -1156,6 +1156,10 @@ $delivery_companys = array(
     'val' => 'chunilps'
   ),
   array(
+    'name' => '우체국택배',
+    'val' => 'epost'
+  ),
+  array(
     'name' => '화물배송',
     'val' => 'hwamul'
   ),
