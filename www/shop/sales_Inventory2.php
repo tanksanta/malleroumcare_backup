@@ -199,7 +199,12 @@ $total_block = ceil($total_page/$b_pageNum_listCnt);
     <section id="stock" class="wrap stock-list">
         <div class="sub_section_tit">보유 급여상품 관리</div>
         <div class="r_btn_area">
-            <a href="#" class="btn eroumcare_btn2" id="prod_control_list" onclick="popCtrlList()" title="제품관리대장">제품관리대장</a>
+            <?php
+                // 23.05.23 - 서원 : 작업중인 메뉴가 리뉴얼작업에 포함되어 상용에 반영됨.
+                //              해당 메뉴 주석 처리 함. (필요시 주석 삭제 처리)
+                //              요청건 : https://www.notion.so/04fc62bf7929455ba4f041a875bdd701?pvs=4
+            /*<a href="#" class="btn eroumcare_btn2" id="prod_control_list" onclick="popCtrlList()" title="제품관리대장" <?php if($mobile_yn=="Mobile") echo 'style="display:none;"'; ?>>제품관리대장</a>*/
+            ?>
             <a href="#" class="btn eroumcare_btn2" id="excel_download" title="엑셀다운로드">엑셀다운로드</a>
             <a href="#" class="btn eroumcare_btn2 add_sales_inventory" title="품목추가">품목추가</a>
         </div>
