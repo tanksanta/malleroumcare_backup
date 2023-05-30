@@ -175,7 +175,7 @@ function apms_category($ca_id) {
 
 	$options = '';
 	$field = "ca_id, ca_name, as_min, as_max, as_grade, as_equal, as_menu_show";
-	$result = sql_query(" select $field from {$g5['g5_shop_category_table']} where ca_use = '1' order by ca_order, ca_id ");
+	$result = sql_query(" select $field from {$g5['g5_shop_category_table']} where ca_use = '1' order by ca_id, ca_order ");
 	for ($i=0; $row=sql_fetch_array($result); $i++) {
 
 		if(!$is_admin && $row['as_menu_show']) { // 접근제한
@@ -2109,7 +2109,7 @@ function apms_shop_category_name($opt='') {
 	global $g5;
 
 	$list = array();
-	$result = sql_query(" select ca_id, ca_name from {$g5['g5_shop_category_table']} order by ca_order, ca_id ");
+	$result = sql_query(" select ca_id, ca_name from {$g5['g5_shop_category_table']} order by ca_id, ca_order ");
 	for ($i=0; $row=sql_fetch_array($result); $i++) {
 		$c = $row['ca_id'];
 		$list[$c] = $row['ca_name'];
@@ -2182,7 +2182,7 @@ function apms_item_category_array($ca_id) {
 	$len2 = $ca_id_len + 2;
 	$len4 = $ca_id_len + 4;
 	$field = "ca_id, ca_name, as_min, as_max, as_grade, as_equal, as_menu_show";
-	$where = "and ca_use = '1' order by ca_order, ca_id";
+	$where = "and ca_use = '1' order by ca_id, ca_order";
 	$result = sql_query(" select $field from {$g5['g5_shop_category_table']} where ca_id like '$ca_id%' and length(ca_id) = $len2 $where ");
 	$z = 0;
 	for ($i=0; $row=sql_fetch_array($result); $i++) {

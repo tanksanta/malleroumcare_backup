@@ -532,7 +532,7 @@ function apms_it_category($is_auth, $is_partner) {
 			$sql .= " where pt_use = '1' ";
 		}
 	}
-	$sql .= " order by ca_order, ca_id ";
+	$sql .= " order by ca_id, ca_order ";
 	$result = sql_query($sql);
 	$str = '';
 	for ($i=0; $row=sql_fetch_array($result); $i++) {
