@@ -47,7 +47,7 @@ if ($sca != "") {
 $sql_search .= " $where (a.ca_id LIKE '10%' OR a.ca_id LIKE '20%') ";
 $sql_search .= " $where a.it_id NOT IN ('PRO2021072200013', 'PRO2021072200012') "; // 체험상품 제외
 $sql_search .= " $where a.it_name NOT LIKE 'test%' "; // 테스트 상품 제외
-$sql_search .= " $where a.it_use = 1 "; // 판매 상품
+// $sql_search .= " $where a.it_use = 1 "; // 판매 상품 // 230503 판매 불가 제품이더라고 재고는 추가할 수 있도록 수정
 
 if ($sfl == "")  $sfl = "all";
 
