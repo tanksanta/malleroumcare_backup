@@ -366,6 +366,10 @@ if($tot_sell_price - $tot_sell_discount >=$result_d['de_send_conditional']){
         $("#send_estimate").click(function() {
             var send_estimate_pop;
             var od_id = '<?php echo $od_id; ?>';
+            if(od_id == ''){
+                alert("장바구니에 담긴 상품이 없습니다.");
+                return false;
+            }
             var send_cost = '<?php echo $send_cost ? $send_cost : 0; ?>';
             send_estimate_pop = window.open('<?php echo G5_SHOP_URL; ?>/pop.estimate.php?od_id=' + od_id + '&send_cost=' + send_cost, "send_estimate", "width=730, height=800, resizable = no, scrollbars = no");
         });
