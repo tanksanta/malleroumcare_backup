@@ -192,7 +192,13 @@ if ($b_end_page > $total_page){
 }
 $total_block = ceil($total_page/$b_pageNum_listCnt);
 
-
+// 모바일과 pc 환경 구분
+$mobile_agent = "/(iPod|iPhone|Android|BlackBerry|SymbianOS|SCH-M\d+|Opera Mini|Windows CE|Nokia|SonyEricsson|webOS|PalmOS)/";
+if(preg_match($mobile_agent, $_SERVER['HTTP_USER_AGENT'])){
+	$mobile_yn = "Mobile";
+}else{
+	$mobile_yn = "Pc";
+}
 ?>
 <link rel="stylesheet" href="<?=G5_CSS_URL ?>/stock_page.css">
     <title>판매재고목록</title>
@@ -343,6 +349,10 @@ $total_block = ceil($total_page/$b_pageNum_listCnt);
 </div>
 
 <style>
+@media (max-width: 480px) {
+  .r_btn_area { display: block; margin-bottom: 30px; float: left!important; }
+}
+
 #popup_order_add {
   position: fixed;
   width: 100%;
@@ -354,10 +364,8 @@ $total_block = ceil($total_page/$b_pageNum_listCnt);
   display:none;
 }
 #popup_order_add > div {
-  width: 30%;
-  max-width: 80%;
-  min-height: 400px;
-  height: 40%;
+  width: 80%;
+  height: 70%;
   position: absolute;
   left: 50%;
   top: 50%;
@@ -414,6 +422,14 @@ function popCtrlList() {
         $('#popup_order_add iframe').contents().find('.mb_id_flexdatalist').focus();
     });
 }
+$(function() {
+    $(document).on( "click", "#popup_order_add", function(e){
+
+        $('#popup_order_add iframe').remove();
+        $("#popup_order_add").hide();
+        $('#hd').css('z-index', 10);
+    });
+});
 </script>
 <?php
 if($is_inquiry_sub) {
