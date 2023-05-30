@@ -574,8 +574,8 @@ $(function() {
       alert('적용되었습니다.');
 
       if (is_mobile) {
-        $opener.$('#barcode_popup_iframe').hide();
-        return;
+        //$opener.$('#barcode_popup_iframe').hide();
+        //return;
       }
       do_cancel();
     });
