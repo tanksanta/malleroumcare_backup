@@ -36,7 +36,7 @@
   font-size: 18px;
   font-weight: bold;
   border-radius: 5px;
-  background: #e7e7e7;
+  background: #c0c0c0;
 }
 .btn_im_send.active {
   background: #8abf63;
@@ -51,6 +51,7 @@
 .panel-default {
   position: relative;
   border-radius: 5px;
+  min-height: 220px;
 }
 
 .form-group .control-label {
@@ -653,13 +654,19 @@
     margin: 0;
     width: 100%;
     z-index: 10;
+    background: white;
   }
 
   .im_send_wr .btn_im_send {
     margin: 0;
     width: 100%;
-    padding: 20px 0 40px 0;
+    /*padding: 20px 0 40px 0;*/
     border-radius: 0;
+    margin: 5px 0px;
+  }
+
+  .im_send_wr .im_send_button {
+    margin-bottom: 40px;
   }
 
   .im_send_wr .im_desc {
@@ -672,7 +679,7 @@
   }
 
   .im_send_wr .im_desc p {
-    color: #fff;
+    color: #000000;
   }
 
   #form_item_msg > .im_flex {
