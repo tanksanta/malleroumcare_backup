@@ -7,7 +7,7 @@ if ($token && get_session("ss_token") == $token) {
     set_session("ss_token", "");
 } else {
     set_session("ss_token", "");
-    alert("토큰 에러", G5_SHOP_URL);
+    alert("로그아웃 상태입니다.", G5_SHOP_URL);
 }
 
 $od = sql_fetch(" select * from {$g5['g5_shop_order_table']} where od_id = '$od_id' and mb_id = '{$member['mb_id']}' ");
