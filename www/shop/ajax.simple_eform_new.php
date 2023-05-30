@@ -218,81 +218,12 @@ if (!$sealFile_self) { //직인 직접날인이 아니면
         json_response(400, '회원정보에 직인 이미지를 등록해주세요.');
     }
 }
-
-if($w == 'u' || $w == 'w') {
-    // 수정 or 생성
-
-    $dc_id = clean_xss_tags($_POST['dc_id']);
-
-    $dc = sql_fetch(" select * from eform_document where dc_id = UNHEX('$dc_id') and dc_status in ('10', '11') ");
-    if(!$dc['entId'] || $dc['entId'] != $member['mb_entId'])
-        json_response(400, '유효하지 않은 요청입니다.');
-    
-    // 직인 파일 삭제
-    if($dc['dc_signUrl']) {
-        @unlink(G5_PATH . $dc['dc_signUrl']);
-    }
-    
-    if($w == 'w' || $dc['dc_status'] == '11')
-        $dc_status = '11';
-    else
-        $dc_status = '10';
-	
-	$sql = "
-        UPDATE
-            eform_document
-        SET
-            dc_status = '$dc_status',
-            entNm = '{$member["mb_entNm"]}',
-            entCrn = '{$member["mb_giup_bnum"]}',
-            entNum = '{$member["mb_ent_num"]}',
-            entMail = '{$member["mb_email"]}',
-            entCeoNm = '{$member["mb_giup_boss_name"]}',
-            entConAcc01 = '$entConAcc01',
-            entConAcc02 = '$entConAcc02',
-            penId = '$penId',
-            penNm = '$penNm',
-            penConNum = '$penConNum',
-            penBirth = '$penBirth',
-            penLtmNum = '$penLtmNum',
-            penRecGraCd = '$penRecGraCd', # 장기요양등급
-            penRecGraNm = '$penRecGraNm',
-            penRecTypeCd = '$penRecTypeCd', # 수령방법
-            penRecTypeTxt = '$penRecTypeTxt',
-            penTypeCd = '$penTypeCd', # 본인부담금율
-            applicantCd = '$applicantCd', # 장기요양입소이용신청서 신청인
-            penTypeNm = '$penTypeNm',
-            penExpiDtm = '$penExpiDtm', # 수급자 이용기간
-            penJumin = '$penJumin',
-            penZip = '$penZip',
-            penAddr = '$penAddr',
-            penAddrDtl = '$penAddrDtl',
-            contract_sign_type = '$contract_sign_type',
-            contract_sign_name = '$contract_sign_name',
-            contract_sign_relation = '$contract_sign_relation',
-			contract_tel = '$contract_tel',
-			contract_addr = '$contract_addr',
-			applicantNm = '$applicantNm',
-			applicantRelation = '$applicantRelation',
-			applicantBirth = '$applicantBirth',
-			applicantAddr = '$applicantAddr',
-			applicantTel = '$applicantTel',
-			applicantDate = '$applicantDate',
-			do_date = '$do_date',
-			dc_sign_send_datetime = '$dc_sign_send_datetime'
-        WHERE
-            dc_id = UNHEX('$dc_id') and
-            entId = '{$member["mb_entId"]}'
-    ";
-    $result = sql_query($sql);
-
-    if(!$result)
-        json_response(500, 'DB 서버 오류로 계약서를 저장하지 못했습니다.');
-    
-    // 먼저 계약서 품목 삭제
-    $sql = " DELETE FROM eform_document_item WHERE dc_id = UNHEX('$dc_id') ";
-    sql_query($sql);
-} else {
+/** 0504 "[간편계약서 작성]필수정보(연락처, 주소)가 입력 안 되어있는 수급자로 계약작성 시 오류발생" 작업
+ * if($w=='u'||$w=='w'){...} else{...} ==> if($w==''||($_POST['dc_id']==''&&$w=='w')) {...} if($w=='u'||$w=='w') {...}
+ * (기존 진행순서) 수급자 정보입력 => 상품 선택(eform_document 테이블에 로우 insert) => return de_id => 계약서 생성 버튼 클릭 => dc_id에 맞는 데이터 찾아서 update
+ * 기존에는 계약서 생성/수정 버튼 클릭 시에  dc_id 생성 여부 상관없이 update 만 진행했었음 => 수급자 정보가 완전하지 않은 경우 dc_id가 정상적으로 생성되지 않기 때문에 계약서 생성이 불가하게 됨
+ * if문을 분리함으로써 dc_id가 없는 계약서는 전처리 작업 진행 할 수 있게 함 **/
+if($w == '' || ($_POST['dc_id'] == '' && $w == 'w')) {
     // 작성
 
     $dc_id = sql_fetch("SELECT REPLACE(UUID(),'-','') as uuid")["uuid"];
@@ -379,6 +310,81 @@ if($w == 'u' || $w == 'w') {
         `dl_browser` = '$browser',
         `dl_datetime` = '$datetime'
     ");
+}
+
+if($w == 'u' || $w == 'w') {
+    // 수정 or 생성
+
+    $dc_id = $dc_id?:clean_xss_tags($_POST['dc_id']);
+
+    $dc = sql_fetch(" select * from eform_document where dc_id = UNHEX('$dc_id') and dc_status in ('10', '11') ");
+    if(!$dc['entId'] || $dc['entId'] != $member['mb_entId'])
+        json_response(400, '유효하지 않은 요청입니다.');
+    
+    // 직인 파일 삭제
+    if($dc['dc_signUrl']) {
+        @unlink(G5_PATH . $dc['dc_signUrl']);
+    }
+    
+    if($w == 'w' || $dc['dc_status'] == '11')
+        $dc_status = '11';
+    else
+        $dc_status = '10';
+	
+	$sql = "
+        UPDATE
+            eform_document
+        SET
+            dc_status = '$dc_status',
+            entNm = '{$member["mb_entNm"]}',
+            entCrn = '{$member["mb_giup_bnum"]}',
+            entNum = '{$member["mb_ent_num"]}',
+            entMail = '{$member["mb_email"]}',
+            entCeoNm = '{$member["mb_giup_boss_name"]}',
+            entConAcc01 = '$entConAcc01',
+            entConAcc02 = '$entConAcc02',
+            penId = '$penId',
+            penNm = '$penNm',
+            penConNum = '$penConNum',
+            penBirth = '$penBirth',
+            penLtmNum = '$penLtmNum',
+            penRecGraCd = '$penRecGraCd', # 장기요양등급
+            penRecGraNm = '$penRecGraNm',
+            penRecTypeCd = '$penRecTypeCd', # 수령방법
+            penRecTypeTxt = '$penRecTypeTxt',
+            penTypeCd = '$penTypeCd', # 본인부담금율
+            applicantCd = '$applicantCd', # 장기요양입소이용신청서 신청인
+            penTypeNm = '$penTypeNm',
+            penExpiDtm = '$penExpiDtm', # 수급자 이용기간
+            penJumin = '$penJumin',
+            penZip = '$penZip',
+            penAddr = '$penAddr',
+            penAddrDtl = '$penAddrDtl',
+            contract_sign_type = '$contract_sign_type',
+            contract_sign_name = '$contract_sign_name',
+            contract_sign_relation = '$contract_sign_relation',
+			contract_tel = '$contract_tel',
+			contract_addr = '$contract_addr',
+			applicantNm = '$applicantNm',
+			applicantRelation = '$applicantRelation',
+			applicantBirth = '$applicantBirth',
+			applicantAddr = '$applicantAddr',
+			applicantTel = '$applicantTel',
+			applicantDate = '$applicantDate',
+			do_date = '$do_date',
+			dc_sign_send_datetime = '$dc_sign_send_datetime'
+        WHERE
+            dc_id = UNHEX('$dc_id') and
+            entId = '{$member["mb_entId"]}'
+    ";
+    $result = sql_query($sql);
+
+    if(!$result)
+        json_response(500, 'DB 서버 오류로 계약서를 저장하지 못했습니다.');
+    
+    // 먼저 계약서 품목 삭제
+    $sql = " DELETE FROM eform_document_item WHERE dc_id = UNHEX('$dc_id') ";
+    sql_query($sql);
 }
 
 $dc_signUrl = '';
