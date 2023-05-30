@@ -91,7 +91,8 @@ if ($is_admin || $is_author || $is_purchaser) {
       alert('판매가능한 상품이 아닙니다.');
     }
   }else{
-    if (!($it['ca_use'] && $it['it_use'])) {
+    // if (!($it['ca_use'] && $it['it_use'])) { // 230503 판매 불가 제품이더라고 재고 상세 페이지는 확인 할 수 있도록 변경
+    if (!$it['ca_use']) {
       alert('판매가능한 상품이 아닙니다.');
     }
   }
@@ -116,7 +117,8 @@ if ( THEMA_KEY == 'partner') {
     $is_orderable = false;
   }
 } else {
-  if(!$it['it_use'] || $it['it_tel_inq'] || $is_soldout) {
+  // if(!$it['it_use'] || $it['it_tel_inq'] || $is_soldout) { // 230503 판매 불가 제품이더라고 재고 상세 페이지는 확인 할 수 있도록 변경
+  if($it['it_tel_inq'] || $is_soldout) {
     $is_orderable = false;
   }
 }
@@ -214,7 +216,11 @@ $row = sql_fetch($sql);
     </div>
     <script>
     function popup01_show(){
+		<?php if($it['prodSupYn'] == "N"){?>
+		alert("비유통 상품은 신규상품주문이 제한되어 있습니다.");
+	<?php }else{?>
       document.getElementById('popup01').style.display = 'block';
+	<?php }?>
     };
     function popup01_hide(){
       document.getElementById('popup01').style.display = 'none'
@@ -223,7 +229,7 @@ $row = sql_fetch($sql);
 
     <div class="popup01 popup2" id="popup01">
       <div class="p-inner">
-        <div class="pop_tit">상품 옵션 설정</div>
+        <h2>상품 수량 및 옵션 설정</h2>
         <button class="cls-btn p-cls-btn" type="button"><img src="<?=G5_IMG_URL?>/icon_08.png" alt="" onclick="popup01_hide()"></button>
         <?php include_once($item_skin_file);?>
       </div>
@@ -654,14 +660,14 @@ $row = sql_fetch($sql);
                       }
                     }
                   }else{//추가
-					$sql = "SELECT a.penId,a.penNm,HEX(a.dc_id) AS UUID FROM `eform_document` AS a INNER JOIN `eform_document_item` AS b ON a.dc_id = b.dc_id WHERE b.it_barcode='".$list[$i]['prodBarNum']."' AND a.dc_status='3'";
+					$sql = "SELECT a.penId,a.penNm,HEX(a.dc_id) AS UUID,dc_sign_send_datetime FROM `eform_document` AS a INNER JOIN `eform_document_item` AS b ON a.dc_id = b.dc_id WHERE b.it_barcode='".$list[$i]['prodBarNum']."' AND a.dc_status='3'";
 					$rows2 = sql_fetch($sql);
 					$list[$i]['penId'] = $rows2['penId'];
                     $list[$i]['penNm'] = $rows2['penNm'];
 				  }
                 }else{//추가
 					$rows2 = array();
-					$sql = "SELECT a.penId,a.penNm,HEX(a.dc_id) AS UUID FROM `eform_document` AS a INNER JOIN `eform_document_item` AS b ON a.dc_id = b.dc_id WHERE b.it_barcode='".$list[$i]['prodBarNum']."' AND a.dc_status='3' AND a.penId !='' 
+					$sql = "SELECT a.penId,a.penNm,HEX(a.dc_id) AS UUID,dc_sign_send_datetime FROM `eform_document` AS a INNER JOIN `eform_document_item` AS b ON a.dc_id = b.dc_id WHERE b.it_barcode='".$list[$i]['prodBarNum']."' AND a.dc_status='3' AND a.penId !='' 
 					AND LEFT(a.dc_sign_datetime,10) = '".substr($date2,0,10)."' ORDER BY a.dc_sign_datetime DESC LIMIT 1";
 					$rows2 = sql_fetch($sql);
 					$list[$i]['penId'] = $rows2['penId'];
@@ -694,9 +700,13 @@ $row = sql_fetch($sql);
                 <?php /*if($result_stock['od_id']) { ?>
                 <a href="<?=G5_SHOP_URL.'/eform/downloadEform.php?od_id='.$result_stock['od_id']?>">확인</a>
                 <?php } */?>
-				<?php if($rows2['UUID']) { ?>
+				<?php if($rows2['UUID']) { 
+				  if($rows2['dc_sign_send_datetime'] == "0000-00-00 00:00:00"){?>
                 <a href="<?=G5_SHOP_URL.'/eform/downloadEform.php?dc_id='.$rows2['UUID']?>">확인</a>
-                <?php } ?>
+                <?php }else{?>
+					<a href="javascript:;" onclick="mds_download('<?=$rows2['UUID']?>','1')">확인</a>  
+				 <?php }
+			  }?>
               </span>
             </li>
             <?php } ?>
@@ -1084,6 +1094,41 @@ function sell_stoId(stoId, prodBarNum, penNm) {
   });
 }
 
+// 계약서,감사추적인증서 보기 
+	function mds_download(dc_id,gubun) {//1:계약서,2:감사추적인증서
+ 		$.post('ajax.eform_mds_api.php', {
+			dc_id:dc_id,
+			gubun:gubun,
+			div:'view_doc'
+		})
+		.done(function(data) {
+			if(data.api_stat != "1"){
+				loading_onoff('off');
+				alert("API 통신 장애가 있습니다. 잠시 후 이용해 주세요.");
+				return false;				
+			}
+			if(data.url != "url생성실패"){				
+				loading_onoff('off');
+				window.open(data.url, "PopupDoc", "width=1000,height=1000");
+			}else{
+				alert(data.url);//url 생성실패 알림
+			}
+		})
+		.fail(function($xhr) {
+		  var data = $xhr.responseJSON;
+		  alert(data && data.message);
+		});	
+	}
+
+	function loading_onoff(a){
+		if(a == "on" ){
+			$('body').css('overflow-y', 'hidden');
+			$('#loading').show();
+		}else{
+			$('body').css('overflow-y', 'scroll');
+			$('#loading').hide(); 
+		}
+	}
 </script>
 <?php
 include_once('./_tail.php');

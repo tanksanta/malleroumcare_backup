@@ -91,7 +91,8 @@ if ($is_admin || $is_author || $is_purchaser) {
       alert('판매가능한 상품이 아닙니다.');
     }
   }else{
-    if (!($it['ca_use'] && $it['it_use'])) {
+    // if (!($it['ca_use'] && $it['it_use'])) { // 230503 판매 불가 제품이더라고 재고 상세 페이지는 확인 할 수 있도록 변경
+    if (!$it['ca_use']) {
       alert('판매가능한 상품이 아닙니다.');
     }
   }
@@ -116,7 +117,8 @@ if ( THEMA_KEY == 'partner') {
     $is_orderable = false;
   }
 } else {
-  if(!$it['it_use'] || $it['it_tel_inq'] || $is_soldout) {
+  // if(!$it['it_use'] || $it['it_tel_inq'] || $is_soldout) { // 230503 판매 불가 제품이더라고 재고 상세 페이지는 확인 할 수 있도록 변경
+  if($it['it_tel_inq'] || $is_soldout) {
     $is_orderable = false;
   }
 }
@@ -221,7 +223,7 @@ expired_rental_item_clean($_GET['prodId']);
     </div>
     <div class="popup01 popup2" id="popup01">
       <div class="p-inner">
-        <h2>상품 옵션 설정</h2>
+        <h2>상품 수량 및 옵션 설정</h2>
         <button class="cls-btn p-cls-btn" type="button"><img src="<?=G5_IMG_URL?>/icon_08.png" alt="" onclick="popup01_hide()"></button>
         <?php include_once($item_skin_file);?>
       </div>
@@ -371,7 +373,7 @@ expired_rental_item_clean($_GET['prodId']);
             }
 
 			$date2 = $ordLendStrDtm_date."-".$ordLendEndDtm_date;
-			$sql = "SELECT a.penId,a.penNm,HEX(a.dc_id) AS UUID FROM `eform_document` AS a INNER JOIN `eform_document_item` AS b ON a.dc_id = b.dc_id WHERE b.it_barcode='".$list[$i]['prodBarNum']."' AND a.dc_status='3' AND b.it_date='".$date2."' order by a.dc_datetime DESC limit 1";
+			$sql = "SELECT a.penId,a.penNm,HEX(a.dc_id) AS UUID,dc_sign_send_datetime FROM `eform_document` AS a INNER JOIN `eform_document_item` AS b ON a.dc_id = b.dc_id WHERE b.it_barcode='".$list[$i]['prodBarNum']."' AND a.dc_status='3' AND b.it_date='".$date2."' order by a.dc_datetime DESC limit 1";
 				$rows2 = sql_fetch($sql);
             //상태 메뉴
             $state_menu_all="";
@@ -380,7 +382,11 @@ expired_rental_item_clean($_GET['prodId']);
 				$state_menu2='';
 			}else{
 				$state_menu1='';
-				$state_menu2='<li><a href="'.G5_SHOP_URL.'/eform/downloadEform.php?dc_id='.$rows2['UUID'].'">계약서 확인</a></li>';
+				if($rows2['dc_sign_send_datetime'] == "0000-00-00 00:00:00"){
+					$state_menu2='<li><a href="'.G5_SHOP_URL.'/eform/downloadEform.php?dc_id='.$rows2['UUID'].'">계약서 확인</a></li>';
+				}else{
+					$state_menu2='<li><a href="javascript:;" onClick="mds_download(\''.$rows2["UUID"].'\',\'1\')">계약서 확인</a></li>';
+				}
 			}
             //if($result_stock['od_id']){
 			//	$state_menu2='<li><a href="'.G5_SHOP_URL.'/eform/downloadEform.php?od_id='.$result_stock['od_id'].'">계약서 확인</a></li>';
@@ -637,7 +643,7 @@ expired_rental_item_clean($_GET['prodId']);
                     </ul>
 					<script>
 						$("#strDate<?=$i?>").datepicker({});
-                        $("#endDate<?=$i?>").datepicker({});
+                        $("#endDate<?=$i?>").datepicker({});   
                     </script>
                     <label class="label_confirm">
                       <input type="checkbox" name="chk_confirm" class=".chk_confirm">
@@ -1280,7 +1286,6 @@ $(function() {
     change_option(this);
   });
 */
-
   $('#chk_stock_all').change(function() {
     var checked = $(this).prop('checked');
     $('.chk_stock').prop('checked', checked);
@@ -1470,7 +1475,11 @@ function close_popup(e){
 
 //신규재고 등록
 function popup01_show(){
+	<?php if($it['prodSupYn'] == "N"){?>
+		alert("비유통 상품은 신규상품주문이 제한되어 있습니다.");
+	<?php }else{?>
   document.getElementById('popup01').style.display = 'block';
+	<?php }?>
 };
 function popup01_hide(){
   document.getElementById('popup01').style.display = 'none'
@@ -1700,6 +1709,42 @@ function del_stoId(stoId) {
     });
   }
 }
+// 계약서,감사추적인증서 보기 
+	function mds_download(dc_id,gubun) {//1:계약서,2:감사추적인증서
+ 		$.post('ajax.eform_mds_api.php', {
+			dc_id:dc_id,
+			gubun:gubun,
+			div:'view_doc'
+		})
+		.done(function(data) {
+			if(data.api_stat != "1"){
+				loading_onoff('off');
+				alert("API 통신 장애가 있습니다. 잠시 후 이용해 주세요.");
+				return false;				
+			}
+			if(data.url != "url생성실패"){				
+				loading_onoff('off');
+				window.open(data.url, "PopupDoc", "width=1000,height=1000");
+			}else{
+				alert(data.url);//url 생성실패 알림
+			}
+		})
+		.fail(function($xhr) {
+		  var data = $xhr.responseJSON;
+		  alert(data && data.message);
+		});	
+	}
+
+	function loading_onoff(a){
+		if(a == "on" ){
+			$('body').css('overflow-y', 'hidden');
+			$('#loading').show();
+		}else{
+			$('body').css('overflow-y', 'scroll');
+			$('#loading').hide(); 
+		}
+	}
+</script>
 </script>
 
 <?php
