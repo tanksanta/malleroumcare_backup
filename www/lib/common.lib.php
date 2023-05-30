@@ -900,7 +900,7 @@ function is_admin($mb_id)
 
     // mb_level:9 인 사람도 특정 기능에서 admin과 똑같이 작동하게 하기 위한 코드 (is_admin() 함수가 게시물 작성 외에도 쓰여서 별개의 권한 부여)
     // 모든 기능에서 mb_level:10 과 완전하게 같은 권한을 부여받도록 수정하려면 return 'super';
-    //if(get_member($mb_id)['mb_level']=='9') return 'manager';
+    if(get_member($mb_id)['mb_level']=='9') return 'manager';
 
     return '';
 }
