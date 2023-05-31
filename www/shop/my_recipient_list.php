@@ -398,7 +398,7 @@ function form_check(act) {
     });
   }
   else if (act == "show_list_all")
-  {
+  {	loading_onoff2('on');
 	location.href = './my_recipient_list.php';
   }
 
@@ -710,7 +710,7 @@ function form_check(act) {
       </select>
       <div class="input_search">
           <input name="search" id="search" value="<?=$search?>" type="text">
-          <button id="btn_search" type="submit"></button>
+          <button id="btn_search" type="submit" onclick="loading_onoff2('on')"></button>
       </div>
     </div>
     <?php if($noti_count = get_recipient_noti_count() > 0) { ?>
@@ -953,7 +953,7 @@ function form_check(act) {
   <button type="button" class="btn eroumcare_btn2" style ="float : right;" onclick="return form_check('show_list_all');">전체목록</button>
 
   <div class="list-paging"; >
-    <ul class="pagination pagination-sm en" onclick="loading_onoff2('on')">
+    <ul class="pagination pagination-sm en">
       <?php 
       if($page_option == 'none'){
         echo apms_paging($write_pages, $page, $total_page, "?sel_field={$sel_field}&search={$search}&page_spare={$page_spare}&page=");
@@ -1412,6 +1412,14 @@ function excelPost(action, data) {
 }
 
   $(function() {
+	$('.pagination li').click(function(e) {
+		if($(this).hasClass("disabled") === true || $(this).hasClass("active") === true){
+			loading_onoff2('off');
+		}else{
+			loading_onoff2('on');
+		}
+	});
+	
     $("#popup_recipient").hide();
     $("#popup_recipient").css("opacity", 1);
 
@@ -1481,6 +1489,7 @@ function excelPost(action, data) {
         $(".table_box").show();
       });
     });
+	loading_onoff2('off');
   });
 
   $.extend({
