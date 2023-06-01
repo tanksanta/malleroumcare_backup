@@ -57,8 +57,10 @@ if($list_hist){
 }
 */
 $mapping_list_this = [];
+$CNCL_YN = [];
 if($list_this_hist){
 	for($i=0; $i<sizeof($list_this_hist);$i++){
+		$CNCL_YN[$list_this_hist[$i]['BCD_NO']] = $list_this_hist[$i]['CNCL_YN'];
 		if($mapping_list_this[$list_this_hist[$i]['BCD_NO']]){
 			$mapping_item = [];
 			$mapping_item['BCD_NO'] = $list_this_hist[$i]['BCD_NO'];
@@ -171,6 +173,7 @@ for($i = 0; $i < sizeof($list_hist); $i++){
 	$insert_list[$i]['REG_USR_IP'] = $_SERVER['REMOTE_ADDR'];
 	$insert_list[$i]['MODIFY_USR_ID'] = $member["mb_id"];
 	$insert_list[$i]['MODIFY_USR_IP'] = $_SERVER['REMOTE_ADDR'];
+	$insert_list[$i]['CNCL_YN'] = ($CNCL_YN[$list_hist[$i]['BCD_NO']] != "")?$CNCL_YN[$list_hist[$i]['BCD_NO']]:"정상";
 	if($data['status']){
 		$insert_list[$i]['SYNC_GOVERN'] = 1;
 	} else {
@@ -198,7 +201,14 @@ ITEM_NM, PROD_NM, ORD_STATUS, ORD_DTM, ORD_STR_DTM, ORD_END_DTM,
 TOTAL_PRICE, MONTH_PRICE, REG_USR_ID, REG_USR_IP,
 MODIFY_USR_ID, MODIFY_USR_IP, PEN_BUDGET, SYNC_GOVERN) VALUES ";
 */
-$sql = "INSERT INTO pen_purchase_hist (PEN_EXPI_ST_DTM, PEN_EXPI_ED_DTM, PEN_BUDGET, PAST_YM, ENT_ID, PEN_NM, PEN_LTM_NUM, PEN_REC_GRA_NM, PEN_TYPE_NM, PEN_TYPE_CD, PROD_PAY_CODE, PROD_BAR_NUM, ITEM_NM, PROD_NM, ORD_STATUS, ORD_DTM, ORD_STR_DTM, ORD_END_DTM, TOTAL_PRICE, MONTH_PRICE, REG_USR_ID, REG_USR_IP, MODIFY_USR_ID, MODIFY_USR_IP, SYNC_GOVERN) VALUES ";
+$query = "SHOW COLUMNS FROM pen_purchase_hist WHERE `Field` = 'CNCL_YN';";//업데이트멤버 없을 시 추가
+	$wzres = sql_fetch( $query );
+	if(!$wzres['Field']) {
+		sql_query("ALTER TABLE `pen_purchase_hist`
+		ADD `CNCL_YN` varchar(10) NULL DEFAULT '정상' COMMENT '계약상태' AFTER PEN_BUDGET", true);
+	}
+
+$sql = "INSERT INTO pen_purchase_hist (PEN_EXPI_ST_DTM, PEN_EXPI_ED_DTM, PEN_BUDGET, PAST_YM, ENT_ID, PEN_NM, PEN_LTM_NUM, PEN_REC_GRA_NM, PEN_TYPE_NM, PEN_TYPE_CD, PROD_PAY_CODE, PROD_BAR_NUM, ITEM_NM, PROD_NM, ORD_STATUS, ORD_DTM, ORD_STR_DTM, ORD_END_DTM, TOTAL_PRICE, MONTH_PRICE, REG_USR_ID, REG_USR_IP, MODIFY_USR_ID, MODIFY_USR_IP, SYNC_GOVERN,CNCL_YN) VALUES ";
 
 for($idx = 0; $idx < sizeof($insert_list); $idx++){
 	$sql = $sql."('".$insert_list[$idx]['PEN_EXPI_ST_DTM']."','".$insert_list[$idx]['PEN_EXPI_ED_DTM']."','"
@@ -209,7 +219,8 @@ for($idx = 0; $idx < sizeof($insert_list); $idx++){
 	.$insert_list[$idx]['ORD_DTM']."','".$insert_list[$idx]['ORD_STR_DTM']."','".$insert_list[$idx]['ORD_END_DTM']."','"
 	.$insert_list[$idx]['TOTAL_PRICE']."','".$insert_list[$idx]['MONTH_PRICE']."','".$insert_list[$idx]['REG_USR_ID']."','"
 	.$insert_list[$idx]['REG_USR_IP']."','".$insert_list[$idx]['MODIFY_USR_ID']."','".$insert_list[$idx]['MODIFY_USR_IP']."','"
-	.$insert_list[$idx]['SYNC_GOVERN']."')";
+	.$insert_list[$idx]['SYNC_GOVERN']."','"
+	.$insert_list[$idx]['CNCL_YN']."')";
 }
 $sql_del = "delete from pen_purchase_hist where ENT_ID = '".$member["mb_entId"]."' and PEN_LTM_NUM = '".$insert_list[0]['PEN_LTM_NUM']."';";
 sql_query($sql_del);

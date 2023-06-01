@@ -80,8 +80,9 @@ while ($res_item = sql_fetch_array($result)) {
 	$recipientContractHistory['Result']['ds_result'][$i]['WLR_MTHD_CD'] = $res_item["ORD_STATUS"];//판매,대여 구분
 	$recipientContractHistory['Result']['ds_result'][$i]['PROD_NM'] = str_replace(" ","",$res_item["ITEM_NM"]);//품명명
 	$recipientContractHistory['Result']['ds_result'][$i]['MGDS_NM'] = $res_item["PROD_NM"];//제품명
-	$recipientContractHistory['Result']['ds_result'][$i]['POF_FR_DT'] = $res_item["ORD_STR_DTM"]."~".$res_item["ORD_END_DTM"];//제품명
-	$recipientContractHistory['Result']['ds_result'][$i]['TOT_AMT'] = $res_item["TOTAL_PRICE"];//제품명
+	$recipientContractHistory['Result']['ds_result'][$i]['POF_FR_DT'] = $res_item["ORD_STR_DTM"]."~".$res_item["ORD_END_DTM"];//기간
+	$recipientContractHistory['Result']['ds_result'][$i]['TOT_AMT'] = $res_item["TOTAL_PRICE"];//급여가
+	$recipientContractHistory['Result']['ds_result'][$i]['CNCL_YN'] = $res_item["CNCL_YN"];//계약상태
 	$i++;
 }
 
