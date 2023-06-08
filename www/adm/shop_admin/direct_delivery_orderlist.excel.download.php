@@ -78,7 +78,11 @@ if ($search_b_addr != "") {//배송주소 검색
 $search_partner_text = "없음";
 if ($search_partner != "") {//파트너 ID 검색
   $search_partner = trim($search_partner);
-  $where[] = " ct_direct_delivery_partner like '$search_partner' ";
+  if($search_partner == "미등록"){
+	$where[] = " ct_direct_delivery_partner = '' ";	
+  }else{
+	$where[] = " ct_direct_delivery_partner like '$search_partner' ";	
+  }
   $search_partner_text = $_REQUEST["search_partner"];
 }
 $it_deadline_text ="전체";
@@ -94,7 +98,7 @@ if($_REQUEST["it_deadline"] != ""){//마감시간
 		case 7: $where[] .= " i.it_deadline between '15:00:00' and '15:59:59' ";$it_deadline_text ="15:00~16:00"; break;
 		case 8: $where[] .= " i.it_deadline between '16:00:00' and '16:59:59' ";$it_deadline_text ="16:00~17:00"; break;
 		case 9: $where[] .= " i.it_deadline between '17:00:00' and '17:59:59' ";$it_deadline_text ="17:00~18:00"; break;
-		case 10: $where[] .= " (i.it_deadline between '18:00:00' and '23:59:59' or i.it_deadline between '00:00:00' and '08:59:59') ";$it_deadline_text ="18:00~익)09:00"; break;
+		case 10: $where[] .= " (i.it_deadline between '18:00:00' and '23:59:59' or i.it_deadline between '00:00:00' and '08:59:59') ";$it_deadline_text ="기타/시간미등록"; break;
 		default: $where[] .= " i.it_deadline between '09:00:00' and '09:59:59' ";$it_deadline_text ="09:00~10:00"; break;
 	}
 }
@@ -106,10 +110,10 @@ if($_REQUEST["it_deadline"] != ""){//마감시간
 if (gettype($ct_barcode_saved) == 'string' && $ct_barcode_saved !== '') {
   $barcode_text = "전체";
   if ($ct_barcode_saved == 'saved'){
-    $where[] = " ( ct_barcode_insert = ct_qty or ct_barcode_insert > ct_qty) ";
+    $where[] = " ( ct_barcode_insert = ct_qty or ct_barcode_insert > ct_qty or substring(ca_id,1,2) = '70') ";
   	$barcode_text = "입력완료";
   }else if ($ct_barcode_saved == 'none'){
-    $where[] = " ( ct_barcode_insert = 0 OR ct_barcode_insert ='') ";
+    $where[] = " ( ct_barcode_insert = 0 OR ct_barcode_insert ='') and substring(ca_id,1,2) != '70'";
   	$barcode_text = "미입력";
   }
 
@@ -357,7 +361,7 @@ foreach($orderlist as $order) {
 	$order['prodMemo'],
 	substr($order['od_time'],0,10),
 	($order["ct_ex_date"]=="" || $order["ct_ex_date"]=="0000-00-00")?"-":$order["ct_ex_date"],
-	($order["it_deadline"] == "00:00:00" || $order["it_type11"] == "0")?"-":$row["it_deadline"],
+	($order["it_deadline"] == "00:00:00" || $order["it_type11"] == "0")?"-":$order["it_deadline"],
   ];
   $i++;
 }
