@@ -108,7 +108,6 @@
                         mb_partner_type = '{$partner_type}',
 
                         mb_name = '{$bname}',
-                        mb_nick = '{$bname}',
                         mb_giup_bname = '{$bname}',
                         mb_entNm = '{$bname}',
 
