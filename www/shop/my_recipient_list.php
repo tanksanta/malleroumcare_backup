@@ -10,6 +10,15 @@ if(!$wzres['Field']) {
 	ADD `cert_data_ref` text NOT NULL COMMENT '공인인증서 key ref file' AFTER cert_reg_date", true);
 }
 
+if($member["mb_id"] != $_COOKIE['membre_id']){//이전 로그인 사용자 쿠키가 남아있을 경우 초기화
+	setcookie("total_rental_price", "", time() + (12*3600));
+	setcookie("total_amt", "", time() + (12*3600));
+	setcookie("expire_30", "", time() + (12*3600));
+	setcookie("rental_30", "", time() + (12*3600));
+	setcookie("membre_id", "", time() + (12*3600));
+	setcookie("shearch_time","", time() + (12*3600));
+}
+
 define('_RECIPIENT_', true);
 
 include_once("./_head.php");
@@ -33,8 +42,9 @@ $page_option = $_GET['option'] ?? 'none'; // none : expire : rental
 $send_data = [];
 $send_data["usrId"] = $member["mb_id"];
 $send_data["entId"] = $member["mb_entId"];
-$res_tot = get_eroumcare(EROUMCARE_API_RECIPIENT_SELECTLIST, $send_data);
-
+if ( $page_option === 'expire' || $page_option === 'rental'){// 30일 이내 수급자 클릭 시만 활성화
+	$res_tot = get_eroumcare(EROUMCARE_API_RECIPIENT_SELECTLIST, $send_data);
+}
 $send_data["pageNum"] = $page;
 $send_data["pageSize"] = $page_rows;
 if ($sel_field === 'penNm') {
@@ -48,8 +58,7 @@ if ($sel_field === 'penProNm') {
 }
 $res = get_eroumcare(EROUMCARE_API_RECIPIENT_SELECTLIST, $send_data);
 
-if ( $page_option === 'expire' || $page_option === 'rental')
-{
+if ( $page_option === 'expire' || $page_option === 'rental'){// 30일 이내 수급자 클릭 시만 활성화	
 	$res['data']=null;
 }
 
@@ -91,6 +100,7 @@ $res_tot = get_eroumcare(EROUMCARE_API_RECIPIENT_SELECTLIST, $send_data);
 // echo "<script>console.log('res count :  ".count($res['data'])."');</script>"; // 정상
 
 // 남은 적용기간이 30일 이내인 수급자 찾기(전체목록에서는 카운트만 사용)
+if ( $page_option === 'expire' || $page_option === 'rental'){// 30일 이내 수급자 클릭 시만 활성화
 for ($idx = 0 ; $idx < $res_tot['total'] ; $idx++){
   $thatday = new DateTime(substr($res_tot['data'][$idx]['penAppEdDtm'],0,8)); // 각 수급자의 적용기간 끝나는 시점
   if (strtotime($timetoday) < strtotime(substr($res_tot['data'][$idx]['penAppEdDtm'],0,8))) { // 오늘보다 적용기간 끝나는 날짜가 뒤여야 한다
@@ -102,7 +112,8 @@ for ($idx = 0 ; $idx < $res_tot['total'] ; $idx++){
 			}
 
     if (date_diff($thatday,$today)->days > 0) { // 적용구간 남아있는 수급자 
-      $tmp_row = get_totalamt_pention($res_tot['data'][$idx]['penLtmNum']); // PEN_PURCHASE_HIST 기록 가져오기
+      $sql = "SELECT * FROM PEN_PURCHASE_HIST WHERE pen_ltm_num='".$res_tot['data'][$idx]['penLtmNum']."' AND (CURDATE() between PEN_EXPI_ST_DTM and PEN_EXPI_ED_DTM) AND ENT_ID='".$member["mb_entId"]."';";
+	  $tmp_row = sql_fetch($sql); //get_totalamt_pention($res_tot['data'][$idx]['penLtmNum']); // PEN_PURCHASE_HIST 기록 가져오기
       $remainAmt = $tmp_row['PEN_BUDGET']; 
       $tmpLtmNum =$res_tot['data'][$idx]['penLtmNum']; 
       $remainAmtList[$tmpLtmNum]["remainAmt"] = $remainAmt> 0?$remainAmt:$penDefaultAmt;
@@ -122,7 +133,7 @@ for ($idx = 0 ; $idx < $res_tot['total'] ; $idx++){
   $thatday = null;
 } 
 echo "<script>console.log('remainAmtList :  ".json_encode($remainAmtList)."');</script>"; // 정상
-
+}
 // 적용기간 종료 명수를 클릭해서 들어온 경우
 if ( $page_option === 'expire' ){
   // $res['data'] = $arr_expire;
@@ -131,6 +142,8 @@ if ( $page_option === 'expire' ){
   $res['total'] = count($arr_expire);
 }
 
+// 대여기간 종료 명수를 클릭해서 들어온 경우
+if ( $page_option === 'rental' ){
 $rental_list_within_period = []; 
 $rental_list_within_period = get_rentalitem_deadline2($member["mb_entId"]);
 $total_rental_price = 0;
@@ -143,21 +156,42 @@ for ($idx = 0 ; $idx < count($rental_list_within_period); $idx++){
   }
 }
 
-// 대여기간 종료 명수를 클릭해서 들어온 경우
-if ( $page_option === 'rental' ){
+
   // $res['data'] = $arr_rental;
   $page_start = $page - 1;
   $res['data'] = array_slice($arr_rental, $page_start*$page_rows, $page_rows, true);
   $res['total'] = count($arr_rental);
-}
+
 
 echo "<script>console.log('arr_rental :  ".json_encode($arr_rental)."');</script>"; // 정상
 echo "<script>console.log('arr_rental :  ".count($arr_rental)."');</script>"; // 정상
-
+}
 
 if($res["data"]) {
+ 
   foreach($res['data'] as $data) {
-    // 수급자 필수정보 입력 체크
+    $thatday = new DateTime(substr($data['penAppEdDtm'],0,8)); // 각 수급자의 적용기간 끝나는 시점
+	 // if (strtotime($timetoday) < strtotime(substr($data['penAppEdDtm'],0,8))) { // 오늘보다 적용기간 끝나는 날짜가 뒤여야 한다
+		$day_diff = fmod(date_diff($thatday,$today)->days,365); // 날짜 차이 계산(365로 나눈 나머지를 구하는 이유는 모름)
+
+		if (date_diff($thatday,$today)->days > 0) { // 적용구간 남아있는 수급자 
+		  $sql = "SELECT * FROM PEN_PURCHASE_HIST WHERE pen_ltm_num='".$data['penLtmNum']."' AND (CURDATE() between PEN_EXPI_ST_DTM and PEN_EXPI_ED_DTM) AND ENT_ID='".$member["mb_entId"]."';";
+		  $tmp_row = sql_fetch($sql); //get_totalamt_pention($data['penLtmNum']); // PEN_PURCHASE_HIST 기록 가져오기
+		  $remainAmt = $tmp_row['PEN_BUDGET']; 
+		  $tmpLtmNum =$data['penLtmNum']; 
+		  $remainAmtList[$tmpLtmNum]["remainAmt"] = $remainAmt> 0?$remainAmt:$penDefaultAmt;
+		  //$remainAmtList[$tmpLtmNum]["updatedDate"] = $tmp_row['MODIFY_DTM'];
+		  $remainAmtList[$tmpLtmNum]["updatedDate"] =
+			substr($data['modifyDtm'],0,4).'-'.substr($data['modifyDtm'],4,2).'-'.substr($data['modifyDtm'],6,2);
+
+
+		} 
+
+	  //}
+
+	 // $thatday = null;
+	
+	// 수급자 필수정보 입력 체크
     $checklist = ['penRecGraCd', 'penTypeCd', 'penExpiDtm', 'penBirth'];
     $is_incomplete = false;
     foreach($checklist as $check) {
@@ -271,6 +305,7 @@ if($member["cert_data_ref"] != ""){
 }
 //인증서 업로드 추가 영역 끝
 ?>
+<script src="<?php echo G5_JS_URL; ?>/cookie.js"></script>
 <script src="<?php echo G5_JS_URL; ?>/client.min.js"></script>
 <script src="<?php echo G5_JS_URL; ?>/recipient_device_security.js"></script>
 <script src="https://code.iconify.design/iconify-icon/1.0.0/iconify-icon.min.js"></script>
@@ -398,7 +433,7 @@ function form_check(act) {
     });
   }
   else if (act == "show_list_all")
-  {
+  {	loading_onoff2('on');
 	location.href = './my_recipient_list.php';
   }
 
@@ -636,23 +671,29 @@ function form_check(act) {
           <th>
             <div>
               <p class="con_top">계약 가능 금액</p>
-              <p class="con_mid" style="color: #ee0000;"><?php echo number_format($total_amt_pention_in_list); ?></p>
+              <p class="con_mid" style="color: #ee0000;" id="total_amt"><?php echo number_format($total_amt_pention_in_list); ?></p>
               <p class="con_bot">* 등록된 전체 수급자의 잔여금액 합계</p>
               <p class="con_bot">(유효 적용기간 기준)</p>
             </div>
           </th>
           <th>
               <p class="con_top">적용구간 종료 30일 이내</p>
-      		  <p class="con_mid"><a href="my_recipient_list.php?option=expire" onclick="loading_onoff2('on')"><?php echo $count_on_deadline ?>명</a></p>
+      		  <p class="con_mid"><a href="my_recipient_list.php?option=expire" onclick="loading_onoff2('on')" id="expire_30"><?php echo $count_on_deadline ?>명</a></p>
               <p class="con_bot">* 조회일이 포함된 적용구간 기준</p>
           </th>
           <th>
               <p class="con_top">대여기간 종료 30일 이내</p>
               <!-- <p class="con_mid"><a href="my_recipient_list.php?option=rental"><?php echo count($rental_list_within_period)?>명</p> -->
-              <p class="con_mid"><a href="my_recipient_list.php?option=rental" onclick="loading_onoff2('on')"><?php echo count($arr_rental)?>명</a></p>
-              <p class="con_bot">* 재계약 가능 금액 : <?php echo number_format($total_rental_price)?>원</p>
+              <p class="con_mid"><a href="my_recipient_list.php?option=rental" onclick="loading_onoff2('on')" id="rental_30"><?php echo count($arr_rental)?>명</a></p>
+              <p class="con_bot">* 재계약 가능 금액 : <span id="total_rental_price"><?php echo number_format($total_rental_price)?></span>원</p>
           </th>
       </table>
+  </div>
+  <div id="loading_bg" class="rep_update" style="background-color:#000000;margin-top:-210px;opacity:0.6;border-radius:5px;padding-top:0px;height:200px;">
+  </div>
+  <div id="loading_con" class="rep_update" style="padding-top:0px;height:170px;margin-top:-160px;text-align:center;color:#ffffff;font-size:20px;font-weight:bold;">
+	<img src="/img/loading_apple.gif" width="70px"><br><br>
+	데이터 로딩중...
   </div>
 <!--
   <div style="position: relative; width: 100%; height: 250px; padding-top: 30px; margin-bottom: 30px;">
@@ -710,7 +751,7 @@ function form_check(act) {
       </select>
       <div class="input_search">
           <input name="search" id="search" value="<?=$search?>" type="text">
-          <button id="btn_search" type="submit"></button>
+          <button id="btn_search" type="submit" onclick="loading_onoff2('on')"></button>
       </div>
     </div>
     <?php if($noti_count = get_recipient_noti_count() > 0) { ?>
@@ -759,7 +800,7 @@ function form_check(act) {
         $('.tooltip_btn .btn_tooltip').fadeOut(1000, function() {
           $('.tooltip_btn .btn_tooltip').css('display', '');
         });
-      }, 4000);
+      }, 4000);	  
     });
   </script>
   <?php } ?>
@@ -858,7 +899,7 @@ function form_check(act) {
 			<style>
 				a:link { color : black; }
 				a:visited { color : black; }
-				a:hover { color : red; }
+				a:hover { color : black; }
 				a:active { color : green }
 			</style>
 			<a href="<?=G5_SHOP_URL.'/connect_recipient.php?pen_id='.$data['penId'].'&redirect='.urlencode('/shop/cart.php')?>"><?php echo $data['carts'] . '개'; ?></a>
@@ -953,7 +994,7 @@ function form_check(act) {
   <button type="button" class="btn eroumcare_btn2" style ="float : right;" onclick="return form_check('show_list_all');">전체목록</button>
 
   <div class="list-paging"; >
-    <ul class="pagination pagination-sm en" onclick="loading_onoff2('on')">
+    <ul class="pagination pagination-sm en">
       <?php 
       if($page_option == 'none'){
         echo apms_paging($write_pages, $page, $total_page, "?sel_field={$sel_field}&search={$search}&page_spare={$page_spare}&page=");
@@ -1412,6 +1453,14 @@ function excelPost(action, data) {
 }
 
   $(function() {
+	$('.pagination li').click(function(e) {
+		if($(this).hasClass("disabled") === true || $(this).hasClass("active") === true){
+			loading_onoff2('off');
+		}else{
+			loading_onoff2('on');
+		}
+	});
+	
     $("#popup_recipient").hide();
     $("#popup_recipient").css("opacity", 1);
 
@@ -1481,6 +1530,9 @@ function excelPost(action, data) {
         $(".table_box").show();
       });
     });
+	loading_onoff2('off');
+	//계약가능 금액,적용구간종료30일
+	setTimeout(function() { loading_data() }, 100);
   });
 
   $.extend({
@@ -1542,7 +1594,43 @@ function excelPost(action, data) {
 		  $('body').removeClass('modal-open');
 		  $('#cert_guide_popup_box').hide();
 		});
+		
 	});
+	function loading_data(){
+		var shearch_time = 0;
+		if(getCookie("total_amt") != "" && getCookie("total_amt") != null){
+			$("#total_rental_price").text(parseInt(getCookie("total_rental_price")).toLocaleString('ko-KR'));
+			$("#total_amt").text(parseInt(getCookie("total_amt")).toLocaleString('ko-KR'));
+			$("#expire_30").text(parseInt(getCookie("expire_30")).toLocaleString('ko-KR')+"명");
+			$("#rental_30").text(parseInt(getCookie("rental_30")).toLocaleString('ko-KR')+"명");
+			shearch_time = getCookie("shearch_time");
+			
+		}
+		// ajax 통신
+        if(parseInt(shearch_time)<<?=strtotime('Now')?>){
+		$.ajax({
+            type : "POST",            // HTTP method type(GET, POST) 형식이다.
+            url : "./ajax.my_recipient_total.php",      // 컨트롤러에서 대기중인 URL 주소이다.
+            data : "1",            // Json 형식의 데이터이다.
+			dataType: "json",
+            success : function(res){ // 비동기통신의 성공일경우 success콜백으로 들어옵니다. 'res'는 응답받은 데이터이다.
+                // 응답코드 > 0000
+				$("#total_rental_price").text(res["total_rental_price"].toLocaleString('ko-KR'));
+                $("#total_amt").text(res["total_amt"].toLocaleString('ko-KR'));
+				$("#expire_30").text(res["expire_30"].toLocaleString('ko-KR')+"명");
+				$("#rental_30").text(res["rental_30"].toLocaleString('ko-KR')+"명");
+				$("#loading_bg").css("display","none");
+				$("#loading_con").css("display","none");
+            },
+            error : function(XMLHttpRequest, textStatus, errorThrown){ // 비동기 통신이 실패할경우 error 콜백으로 들어옵니다.
+                alert("통신 실패.");
+            }
+        });
+		}else{
+			$("#loading_bg").css("display","none");
+			$("#loading_con").css("display","none");
+		}
+	}	
 	
 	function tilko_call(a=1){
 		$("#tilko").attr("src","/tilko_test.php?option="+a);
