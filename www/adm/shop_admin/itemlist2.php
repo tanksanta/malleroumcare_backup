@@ -5,7 +5,7 @@ include_once('./_common.php');
 auth_check($auth[$sub_menu], "r");
 add_javascript('<script src="'.G5_JS_URL.'/jquery.fileDownload.js"></script>', 0);
 
-$g5['title'] = '직배송 상품관리';
+$g5['title'] = '상품관리2';
 include_once (G5_ADMIN_PATH.'/admin.head.php');
 include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 
@@ -84,7 +84,6 @@ if($_REQUEST["it_is_direct_delivery"] != ""){//위탁여부
 }
 
 if($_REQUEST["it_direct_delivery_partner"] != ""){//파트너
-	$sql_search .= " AND it_is_direct_delivery = 'Y' ";
 	if($_REQUEST["it_direct_delivery_partner"] == "no_reg"){//미등록
 		$sql_search .= " AND it_direct_delivery_partner = '' ";
 	}else{
@@ -141,7 +140,7 @@ if (!$sst) {
 
 $sql_order = "order by  $sst $sod ";
 
-$sql  = " select *
+$sql  = " select *, CASE WHEN a.it_update_time = '0000-00-00 00:00:00' THEN a.it_time ELSE a.it_update_time END AS it_update_time2
            $sql_common
            $sql_order
            limit $from_record, $rows "; 
@@ -253,7 +252,7 @@ $warehouse_list = get_warehouses();
 			<option value="7" <?php echo get_selected($it_deadline, '7'); ?>>15:00~16:00</option>
 			<option value="8" <?php echo get_selected($it_deadline, '8'); ?>>16:00~17:00</option>
 			<option value="9" <?php echo get_selected($it_deadline, '9'); ?>>17:00~18:00</option>
-			<option value="10" <?php echo get_selected($it_deadline, '10'); ?>>18:00~익)09:00</option>
+			<option value="10" <?php echo get_selected($it_deadline, '10'); ?>>기타/시간미등록</option>
 
           </select>
         </td>
@@ -271,11 +270,11 @@ $warehouse_list = get_warehouses();
             <option value="" >전체</option>
 			<option value="no_reg" >미등록</option>
             <?php
-            $partners = get_partner_members();
-            foreach($partners as $partner) {
-            ?>
+            $sql_p = "SELECT * FROM g5_member WHERE mb_type = 'partner' and mb_partner_auth = 1 and mb_level='5' and mb_partner_type like '%직배송%'";
+			$result_p = sql_query($sql_p);
+			while($partner = sql_fetch_array($result_p)) {?>
             <option value="<?=$partner['mb_id']?>"<?=get_selected($partner['mb_id'], $it_direct_delivery_partner)?>><?=$partner['mb_name']?></option>
-            <?php } ?>
+			<?php }?>
           </select>
         </td>
 		<td width="130">
@@ -352,7 +351,7 @@ $warehouse_list = get_warehouses();
 		<th scope="col" width="100px;">관리자 메모</th>
 		<th scope="col" width="50px;">주문마감<br>시간</th>
 		<th scope="col" width="75px;"><a href="javascript:;" onClick="sort('it_time')">상품등록일자</a></th>
-		<th scope="col" width="125px;"><a href="javascript:;" onClick="sort('it_update_time')">상품수정일자</a></th>
+		<th scope="col" width="125px;"><a href="javascript:;" onClick="sort('it_update_time2')">상품수정일자</a></th>
 		<th scope="col" width="20px;">위탁<br>수정</th>
 		<th scope="col" width="20px;">상품<br>수정</th>
     </tr>
@@ -405,7 +404,7 @@ $warehouse_list = get_warehouses();
 		<td align="center"><?=$row["it_admin_memo"];//관리자메모 ?></td>
 		<td align="center"><?=($row["it_deadline"] == "00:00:00")?"":substr($row["it_deadline"],0,5);//주문마감시간 ?></td>
 		<td align="center"><?=substr($row["it_time"],0,10);//상품등록일자 ?></td>
-		<td align="center"><?=$row["it_update_time"];//상품수정일자 ?></td>
+		<td align="center"><?=$row["it_update_time2"];//상품수정일자 ?></td>
 		<td align="center"><a href="javascript:;" onClick="go_edit('<?=$row["it_id"];//수정 ?>','<?=($row["prodSupYn"] == "Y") ? "유통" : "비유통";//유통유무?>','<?=(substr($row["ca_id"],0,2) == "70")?"비급여":"급여";//급여유무 ?>','<?=$row["it_name"];//상품명 ?>','<?=$row["it_is_direct_delivery"]?>','<?=$row["it_direct_delivery_partner"];//회원ID ?>','<?=($row["it_deadline"] == "00:00:00")?"":$row["it_deadline"];//주문마감시간 ?>','<?=$row["it_default_warehouse"];//출하창고 ?>','<?=$row["it_admin_memo"];//관리자메모 ?>')"><font color="blue">수정</font></a></td>
 		<td align="center"><a href="itemform.php?w=u&it_id=<?=$row["it_id"]?>" target="_blank"><font color="blue">수정</font></a></td>
     </tr>
@@ -471,9 +470,13 @@ $warehouse_list = get_warehouses();
 					<span id="" style="width:310px;float:right;line-height:30px;">
 						<select name="edit_it_direct_delivery_partner" id="edit_it_direct_delivery_partner"  style="width:315px;background-color:#ffffff;" class="frm_input">
 							<option value="no_reg" >미등록</option>
-							<?php
-							$partners = get_partner_members();
-							foreach($partners as $partner) {
+							 <?php
+							$sql_p = "SELECT * FROM g5_member WHERE mb_type = 'partner' and mb_partner_auth = 1 and mb_level='5' and mb_partner_type like '%직배송%'";
+							$result_p = sql_query($sql_p);
+							$ret = [];
+							if(!$result_p)
+								return $ret;
+							while($partner = sql_fetch_array($result_p)) {?>
 							?>
 							<option value="<?=$partner['mb_id']?>"<?=get_selected($partner['mb_id'], $it_direct_delivery_partner)?>><?=$partner['mb_name']?></option>
 							<?php } ?>

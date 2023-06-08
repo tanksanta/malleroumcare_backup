@@ -86,7 +86,7 @@ if($_REQUEST["it_deadline"] != ""){//마감시간
 		case 7: $sql_search .= " AND it_deadline between '15:00:00' and '15:59:59' "; $it_deadline_text = "15:00~16:00"; break;
 		case 8: $sql_search .= " AND it_deadline between '16:00:00' and '16:59:59' "; $it_deadline_text = "16:00~17:00"; break;
 		case 9: $sql_search .= " AND it_deadline between '17:00:00' and '17:59:59' "; $it_deadline_text = "17:00~18:00"; break;
-		case 10: $sql_search .= " AND (it_deadline between '18:00:00' and '23:59:59' or it_deadline between '00:00:00' and '08:59:59') "; $it_deadline_text = "18:00~익)09:00"; break;
+		case 10: $sql_search .= " AND (it_deadline between '18:00:00' and '23:59:59' or it_deadline between '00:00:00' and '08:59:59') "; $it_deadline_text = "기타/시간미등록"; break;
 		default: $sql_search .= " AND it_deadline between '09:00:00' and '09:59:59' "; $it_deadline_text = "09:00~10:00"; break;
 	}
 	$qstr .="&amp;it_deadline=".$_REQUEST["it_deadline"];
@@ -104,7 +104,6 @@ if($_REQUEST["it_is_direct_delivery"] != ""){//위탁여부
 
 
 if($_REQUEST["it_direct_delivery_partner"] != ""){//파트너
-	$sql_search .= " AND it_is_direct_delivery = 'Y' ";
 	if($_REQUEST["it_direct_delivery_partner"] == "no_reg"){//미등록
 		$sql_search .= " AND it_direct_delivery_partner = '' ";
 		$it_direct_delivery_partner_text = "미등록";
@@ -171,7 +170,7 @@ if (!$sst) {
 
 $sql_order = "order by  $sst $sod ";
 
-$sql  = " select *
+$sql  = " select *, CASE WHEN a.it_update_time = '0000-00-00 00:00:00' THEN a.it_time ELSE a.it_update_time END AS it_update_time2
            $sql_common
            $sql_order"; 
 $result = sql_query($sql, true);
@@ -235,7 +234,7 @@ while ($row = sql_fetch_array($result)) {
 	$row["it_admin_memo"],
 	$row["it_deadline"],
 	substr($row["it_time"],0,10),
-	$row["it_update_time"],
+	$row["it_update_time2"],
   ];
   $i++;
 }
