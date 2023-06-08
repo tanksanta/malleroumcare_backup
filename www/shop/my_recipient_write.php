@@ -1391,8 +1391,9 @@ $(function(){
               }
 
               let penPayRate = rep_info['REDUCE_NM'] == '일반' ? '15%': rep_info['REDUCE_NM'] == '기초' ? '0%': rep_info['REDUCE_NM'] == '의료급여' ? '6%':
-              (rep_info['SBA_CD'].split('(')[1].substr(0, rep_info['SBA_CD'].split('(')[1].length-1));
-
+              rep_info['SBA_CD'] == '일반' ? '15%': rep_info['SBA_CD'] == '기초' ? '0%': rep_info['SBA_CD'] == '의료급여' ? '6%':
+			  (rep_info['SBA_CD'].split('(')[1].substr(0, rep_info['SBA_CD'].split('(')[1].length-1));
+			  rep_info['REDUCE_NM'] = (rep_info['REDUCE_NM'] == null)?rep_info['SBA_CD']:rep_info['REDUCE_NM'];
               $("input[name='penRecGraCd']")[0].value = rep_info['LTC_RCGT_GRADE_CD']+"등급";
 
               $("input[name='penTypeCd']")[0].value = rep_info['REDUCE_NM'];

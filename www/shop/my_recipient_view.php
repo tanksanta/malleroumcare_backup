@@ -442,7 +442,9 @@ $(function() {
 		  	  }
 
           var penTypeCd = '';
-          if(rep_info['REDUCE_NM'].substr(0, 2) == '일반' || rep_info['REDUCE_NM'].substr(0, 2) == '의료' || rep_info['REDUCE_NM'].substr(0, 2) == '기초'){ //일반의료기초
+          if(rep_info['REDUCE_NM'] == null && (rep_info['SBA_CD'].substr(0, 2) == '일반' || rep_info['SBA_CD'].substr(0, 2) == '의료' || rep_info['SBA_CD'].substr(0, 2) == '기초') ){
+			penTypeCd = rep_info['SBA_CD'].substr(0, 2) == '일반'? '00' : rep_info['SBA_CD'].substr(0, 2) == '의료'? '03' : '04';  
+		  }else if(rep_info['REDUCE_NM'].substr(0, 2) == '일반' || rep_info['REDUCE_NM'].substr(0, 2) == '의료' || rep_info['REDUCE_NM'].substr(0, 2) == '기초'){ //일반의료기초
             penTypeCd = rep_info['REDUCE_NM'].substr(0, 2) == '일반'? '00' : rep_info['REDUCE_NM'].substr(0, 2) == '의료'? '03' : '04';
           } else { //감경
             penTypeCd = rep_info['SBA_CD'].substr(3, 1) == '6'? '02' : '01';

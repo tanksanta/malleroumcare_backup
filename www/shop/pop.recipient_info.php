@@ -68,11 +68,13 @@ while ($res_item = sql_fetch_array($ct_result)) {
     $res_item['ITEM_NM'] = str_replace(' ','',$res_item['ITEM_NM']);
     $ct_list[] = $res_item;
     $paycode = $res_item['PROD_PAY_CODE']==1?'1':'0';
-    if($ct_count[str_replace(' ','',$res_item['ITEM_NM']).'0'.$paycode]){
+    if($res_item['CNCL_YN'] =="정상"){
+	if($ct_count[str_replace(' ','',$res_item['ITEM_NM']).'0'.$paycode]){
         $ct_count[str_replace(' ','',$res_item['ITEM_NM']).'0'.$paycode] += 1;
     } else {
         $ct_count[str_replace(' ','',$res_item['ITEM_NM']).'0'.$paycode] = 1;
-    }    
+    }
+	}
 }
 
 if(substr($_GET['penLtmNum'],0,2)=='LL'){
@@ -88,10 +90,10 @@ while ($hist_result = sql_fetch_array($res_hist)) {
 
 $arr_period = [];
 $sql_period = "
-(select PEN_NM, PROD_PAY_CODE, replace(ITEM_NM,' ','') as ITEM_NM, PROD_BAR_NUM, PROD_NM, ORD_DTM, PEN_EXPI_ST_DTM, PEN_EXPI_ED_DTM from pen_purchase_hist where ent_id = '{$member['mb_entId']}' and PEN_LTM_NUM = '{$_GET['penLtmNum']}' 
+(select PEN_NM, PROD_PAY_CODE, replace(ITEM_NM,' ','') as ITEM_NM, PROD_BAR_NUM, PROD_NM, ORD_DTM, PEN_EXPI_ST_DTM, PEN_EXPI_ED_DTM,CNCL_YN from pen_purchase_hist where ent_id = '{$member['mb_entId']}' and PEN_LTM_NUM = '{$_GET['penLtmNum']}' 
 and ITEM_NM in ('성인용보행기','경사로(실내용)') order by ITEM_NM desc)
 UNION
-(select PEN_NM, PROD_PAY_CODE, replace(ITEM_NM,' ','') as ITEM_NM, PROD_BAR_NUM, PROD_NM, max(ORD_DTM) as ORD_DTM, PEN_EXPI_ST_DTM, PEN_EXPI_ED_DTM from pen_purchase_hist where ent_id = '{$member['mb_entId']}' and PEN_LTM_NUM = '{$_GET['penLtmNum']}'
+(select PEN_NM, PROD_PAY_CODE, replace(ITEM_NM,' ','') as ITEM_NM, PROD_BAR_NUM, PROD_NM, max(ORD_DTM) as ORD_DTM, PEN_EXPI_ST_DTM, PEN_EXPI_ED_DTM,CNCL_YN from pen_purchase_hist where ent_id = '{$member['mb_entId']}' and PEN_LTM_NUM = '{$_GET['penLtmNum']}'
 and ITEM_NM not in ('안전손잡이','미끄럼 방지용품','간이변기','자세변환용구','요실금팬티','성인용보행기','경사로(실내용)') group by ITEM_NM order by ITEM_NM desc);
 ";
 
@@ -561,13 +563,13 @@ if($member["cert_data_ref"] != ""){
                         let penPayRate_api = rep_info_api['SBA_CD'].replace('(', ' ').replace(')', '');
                     } else {
                         let penPayRate_api = rep_info_api['REDUCE_NM'] == '일반' ? '일반 15%': rep_info_api['REDUCE_NM'] == '기초' ? '기초 0%'
-                                                                : rep_info_api['SBA_CD'];
+                                                                : rep_info_api['SBA_CD']=='일반'?'일반 15%':rep_info_api['SBA_CD'] == '기초' ? '기초 0%':rep_info_api['SBA_CD'];
                     }
                     
                     let penPayRate_api = '';
                     if(rep_info_api['REDUCE_NM'] != '감경'){ //REDUCE_NM가 대상자 구분, 감경은 SBA_CD를 이용하여 본인부담율을 가져오기
                         penPayRate_api = rep_info_api['REDUCE_NM'] == '일반' ? '일반 15%': rep_info_api['REDUCE_NM'] == '기초' ? '기초 0%'
-                                                                : rep_info_api['SBA_CD'];
+                                                                : rep_info_api['SBA_CD'] == '일반' ? '일반 15%': rep_info_api['SBA_CD'] == '기초' ? '기초 0%':rep_info_api['SBA_CD'];
                     } else {
                         penPayRate_api = rep_info_api['SBA_CD'].replace('(', ' ').replace(')', '');
                     }
@@ -612,12 +614,12 @@ if($member["cert_data_ref"] != ""){
 						*/
                         for(var i = 0; i < contract_list.length; i++){
                             var paycode = contract_list[i]['WLR_MTHD_CD'] == '판매'?'01':'00';
-                            
+                            if(contract_list[i]['CNCL_YN'] == "정상"){
 							if(contract_cnt[contract_list[i]['PROD_NM']+paycode] == null)
                                 contract_cnt[contract_list[i]['PROD_NM']+paycode] = 1;
                             else 
                                 contract_cnt[contract_list[i]['PROD_NM']+paycode] += 1;
-							
+							}
 							//alert(contract_list[i]['PROD_NM']+paycode+":"+contract_cnt[contract_list[i]['PROD_NM']+paycode]);
                         }
                     }
@@ -685,9 +687,10 @@ if($member["cert_data_ref"] != ""){
                                 for(var ind = 0; ind < contract_list.length; ind++){
                                     if(contract_list[ind]['PROD_NM'] != sale_y[i]['WIM_ITM_CD']) continue;
                                     if(contract_list[ind]['WLR_MTHD_CD'] == '대여') continue;
-                                    row += `<tr id="${'gumae'+index}" class="${'contract-gumae'+index}" style="display:none;">
+                                    var CNCL_YN = (contract_list[ind]['CNCL_YN']=="변경")?"<font color='red'>(변경)</font>":"";
+									row += `<tr id="${'gumae'+index}" class="${'contract-gumae'+index}" style="display:none;">
                                                 <td colspan="1" style="border-top-style: none; border-bottom-style: none;"></td>
-                                                <td colspan="5">${contract_list[ind]['MGDS_NM']}</td>
+                                                <td colspan="5">${contract_list[ind]['MGDS_NM']}${CNCL_YN}</td>
                                                 <td colspan="3">${contract_list[ind]['POF_FR_DT'].split('~')[0]}</td>
                                                 <td colspan="1">${makeComma(contract_list[ind]['TOT_AMT'])}</td>
                                             </tr>`;
@@ -760,9 +763,10 @@ if($member["cert_data_ref"] != ""){
                                 for(var ind = 0; ind < contract_list.length; ind++){
                                     if(contract_list[ind]['PROD_NM'].replace(' ', '') != rent_y[i]['WIM_ITM_CD'].replace(' ', '')) continue;                                    
                                     if(contract_list[ind]['WLR_MTHD_CD'] == '판매') continue;
+									var CNCL_YN = (contract_list[ind]['CNCL_YN']=="변경")?"<font color='red'>(변경)</font>":"";
                                     row += `<tr id="${'daeyeo'+index}" class="${'contract-daeyeo'+index}" style="display:none;">
                                                 <td colspan="1" style="border-top-style: none; border-bottom-style: none;"></td>
-                                                <td colspan="5">${contract_list[ind]['MGDS_NM']}</td>
+                                                <td colspan="5">${contract_list[ind]['MGDS_NM']}${CNCL_YN}</td>
                                                 <td colspan="3">${contract_list[ind]['POF_FR_DT'].split('~')[0]}</br>~${contract_list[ind]['POF_FR_DT'].split('~')[1]}</td>
                                                 <td colspan="1">${makeComma(contract_list[ind]['TOT_AMT'])}</td>
                                             </tr>`;
@@ -977,9 +981,10 @@ if($member["cert_data_ref"] != ""){
 
                             for(var ind = 0; ind < ct_list.length; ind++){
                                 if(ct_list[ind]['ITEM_NM'] != Object.keys(penToolRefCnt)[i].substr(0,Object.keys(penToolRefCnt)[i].length-2)) continue;
-                                row += `<tr id="${'daeyeo'+rent_index}" class="${'contract-daeyeo'+rent_index}" style="display:none;">
+                                var CNCL_YN = (ct_list[ind]['CNCL_YN'] == "변경")?"<font color='red'>("+ct_list[ind]['CNCL_YN']+")</font>":"";
+								row += `<tr id="${'daeyeo'+rent_index}" class="${'contract-daeyeo'+rent_index}" style="display:none;">
                                             <td colspan="1" style="border-top-style: none; border-bottom-style: none;"></td>
-                                            <td colspan="5">${ct_list[ind]['PROD_NM']}</td>
+                                            <td colspan="5">${ct_list[ind]['PROD_NM']}${CNCL_YN}</td>
                                             <td colspan="3">${ct_list[ind]['ORD_STR_DTM']}</br> ~ ${ct_list[ind]['ORD_END_DTM']}</td>
                                             <td colspan="1">${makeComma(ct_list[ind]['TOTAL_PRICE'])}</td>
                                         </tr>`;
@@ -1067,9 +1072,10 @@ if($member["cert_data_ref"] != ""){
 
                             for(var ind = 0; ind < ct_list.length; ind++){
                                 if(ct_list[ind]['ITEM_NM'].replace(' ', '') != item_nm.substr(0,item_nm.length-2)) continue;
-                                row += `<tr id="${'gumae'+sale_index}" class="${'contract-gumae'+sale_index}" style="display:none;">
+                                var CNCL_YN = (ct_list[ind]['CNCL_YN'] == "변경")?"<font color='red'>("+ct_list[ind]['CNCL_YN']+")</font>":"";
+								row += `<tr id="${'gumae'+sale_index}" class="${'contract-gumae'+sale_index}" style="display:none;">
                                             <td colspan="1" style="border-top-style: none; border-bottom-style: none;"></td>
-                                            <td colspan="5">${ct_list[ind]['PROD_NM']}</td>
+                                            <td colspan="5">${ct_list[ind]['PROD_NM']}${CNCL_YN}</td>
                                             <td colspan="3">${ct_list[ind]['ORD_DTM']}</td>
                                             <td colspan="1">${makeComma(ct_list[ind]['TOTAL_PRICE'])}</td>
                                         </tr>`;
@@ -1137,13 +1143,13 @@ if($member["cert_data_ref"] != ""){
                         let penPayRate_api = rep_info_api['SBA_CD'].replace('(', ' ').replace(')', '');
                     } else {
                         let penPayRate_api = rep_info_api['REDUCE_NM'] == '일반' ? '일반 15%': rep_info_api['REDUCE_NM'] == '기초' ? '기초 0%'
-                                                                : rep_info_api['SBA_CD'];
+                                                                : rep_info_api['SBA_CD'] == "일반"?'일반 15%': rep_info_api['SBA_CD'] == '기초' ? '기초 0%':rep_info_api['SBA_CD'];
                     }
                     
                     let penPayRate_api = '';
                     if(rep_info_api['REDUCE_NM'] != '감경'){ //REDUCE_NM가 대상자 구분, 감경은 SBA_CD를 이용하여 본인부담율을 가져오기
                         penPayRate_api = rep_info_api['REDUCE_NM'] == '일반' ? '일반 15%': rep_info_api['REDUCE_NM'] == '기초' ? '기초 0%'
-                                                                : rep_info_api['SBA_CD'];
+                                                                : rep_info_api['SBA_CD'] == "일반"?'일반 15%': rep_info_api['SBA_CD'] == '기초' ? '기초 0%':rep_info_api['SBA_CD'];
                     } else {
                         penPayRate_api = rep_info_api['SBA_CD'].replace('(', ' ').replace(')', '');
                     }
@@ -1254,9 +1260,10 @@ if($member["cert_data_ref"] != ""){
 									if(contract_list[ind]['CNCL_YN']!="정상")continue;
                                     if(contract_list[ind]['PROD_NM'] != sale_y[i]['WIM_ITM_CD']) continue;
                                     if(contract_list[ind]['WLR_MTHD_CD'] == '대여') continue;
+									var CNCL_YN = (contract_list[ind]['CNCL_YN']=="변경")?"<font color='red'>(변경)</font>":"";
                                     row += `<tr id="${'gumae'+index}" class="${'contract-gumae'+index}" style="display:none;">
                                                 <td colspan="1" style="border-top-style: none; border-bottom-style: none;"></td>
-                                                <td colspan="5">${contract_list[ind]['MGDS_NM']}</td>
+                                                <td colspan="5">${contract_list[ind]['MGDS_NM']}${CNCL_YN}</td>
                                                 <td colspan="3">${contract_list[ind]['POF_FR_DT'].split('~')[0]}</td>
                                                 <td colspan="1">${makeComma(contract_list[ind]['TOT_AMT'])}</td>
                                             </tr>`;
@@ -1328,9 +1335,10 @@ if($member["cert_data_ref"] != ""){
                                 for(var ind = 0; ind < contract_list.length; ind++){
                                     if(contract_list[ind]['PROD_NM'].replace(' ', '') != rent_y[i]['WIM_ITM_CD'].replace(' ', '')) continue;                                    
                                     if(contract_list[ind]['WLR_MTHD_CD'] == '판매') continue;
+									var CNCL_YN = (contract_list[ind]['CNCL_YN']=="변경")?"<font color='red'>(변경)</font>":"";
                                     row += `<tr id="${'daeyeo'+index}" class="${'contract-daeyeo'+index}" style="display:none;">
                                                 <td colspan="1" style="border-top-style: none; border-bottom-style: none;"></td>
-                                                <td colspan="5">${contract_list[ind]['MGDS_NM']}</td>
+                                                <td colspan="5">${contract_list[ind]['MGDS_NM']}${CNCL_YN}</td>
                                                 <td colspan="3">${contract_list[ind]['POF_FR_DT'].split('~')[0]}</br>~${contract_list[ind]['POF_FR_DT'].split('~')[1]}</td>
                                                 <td colspan="1">${makeComma(contract_list[ind]['TOT_AMT'])}</td>
                                             </tr>`;
@@ -1352,7 +1360,9 @@ if($member["cert_data_ref"] != ""){
                     buildTable_api(contract_list);
                     buildTable_api(add_contract_list, 'add');
                     let penPayRate2 = rep_info_api['REDUCE_NM'] == '일반' ? '15%': rep_info_api['REDUCE_NM'] == '기초' ? '0%' : rep_info_api['REDUCE_NM'] == '의료급여' ? '6%'
-                                                              : (rep_info_api['SBA_CD'].split('(')[1].substr(0, rep_info_api['SBA_CD'].split('(')[1].length-1));
+                    :rep_info_api['SBA_CD'] == '일반' ? '15%': rep_info_api['SBA_CD'] == '기초' ? '0%' : rep_info_api['SBA_CD'] == '의료급여' ? '6%'
+					: (rep_info_api['SBA_CD'].split('(')[1].substr(0, rep_info_api['SBA_CD'].split('(')[1].length-1));
+					rep_info_api['REDUCE_NM'] = (rep_info_api['REDUCE_NM'] == null)?rep_info_api['SBA_CD']:rep_info_api['REDUCE_NM'];
 					$.post('ajax.macro_update.php', {
 						mb_id: '<?=$member['mb_id']?>',
 						recipient_name: penNm_parent,

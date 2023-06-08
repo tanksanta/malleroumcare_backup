@@ -596,7 +596,8 @@ input[type="number"]::-webkit-inner-spin-button {
                 let rep_list = data['data']['recipientContractDetail']['Result'];                
                 let rep_info = rep_list['ds_welToolTgtList'][0];
                 let penPayRate = rep_info['REDUCE_NM'] == '일반' ? '15%': rep_info['REDUCE_NM'] == '기초' ? '0%' : rep_info['REDUCE_NM'] == '의료급여' ? '6%'
-                                                              : (rep_info['SBA_CD'].split('(')[1].substr(0, rep_info['SBA_CD'].split('(')[1].length-1));
+				: rep_info['SBA_CD'] == '일반' ? '15%': rep_info['SBA_CD'] == '기초' ? '0%' : rep_info['SBA_CD'] == '의료급여' ? '6%'
+                : (rep_info['SBA_CD'].split('(')[1].substr(0, rep_info['SBA_CD'].split('(')[1].length-1));
 								
                 let rem_amount = 1600000;
                 let today = new Date();
@@ -628,7 +629,7 @@ input[type="number"]::-webkit-inner-spin-button {
                   var data = $xhr.responseJSON;
                   alert("계약정보 업데이트에 실패했습니다!");
                 });
-
+				rep_info['REDUCE_NM'] = (rep_info['REDUCE_NM'] == null)?rep_info['SBA_CD']:rep_info['REDUCE_NM'];
                 $.ajax({
                     type: 'POST',
                     url: './ajax.macro_request.php',
