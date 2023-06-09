@@ -76,7 +76,7 @@
     <div id="thkc_headerWrap">
     
     <?php if( ($member['mb_type'] != "partner" ) ) { ?>
-    <?php if(($member["mb_level"] =="3" || $member["mb_level"] =="4")) { if($_COOKIE["viewType"] == "adm") { ?>
+    <?php if($_COOKIE["viewType"] == "adm") { ?>
 
         <!-- 최상단 띠 배너 (스와이퍼 슬라이드) -->
         <div id="topBannerWrap">
@@ -96,7 +96,7 @@
             </div>
         </div>
 
-    <?php } else { ?>
+    <?php } else { if(($member["mb_level"] =="3" || $member["mb_level"] =="4")) { ?>
         <div class="topBanner_mode"> "구매모드" 실행 중입니다 </div>
     <?php } } ?>
     <?php } ?>
