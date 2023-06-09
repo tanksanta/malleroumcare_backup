@@ -23,7 +23,7 @@ $sql_common = "
 ";
 $sql  = "
   select *, o.od_id as od_id, c.ct_id as ct_id, c.mb_id as mb_id,m2.mb_name AS partner_name, (od_cart_coupon + od_coupon + od_send_coupon) as couponprice,
-  TIMEDIFF(it_deadline,DATE_FORMAT(NOW(), '%H:%i:%s')) AS time_dead, c.stoId AS c_stoId 
+  TIMEDIFF(it_deadline,DATE_FORMAT(NOW(), '%H:%i:%s')) AS time_dead, c.stoId AS c_stoId, c.it_id 
   $sql_common
   where c.ct_id in ($ct_id)
   order by c.ct_id DESC
@@ -62,7 +62,7 @@ $result = sql_query($sql);
     border: 1px solid #ddd;
     box-sizing: border-box;
 	margin: 20px 0px;
-	height:595px;
+	height:470px;
 	overflow-y:auto;overflow-x:hidden;
 	width:100%;	
  }
@@ -118,8 +118,14 @@ li {
     opacity: 1;
     visibility: visible;
 }
+
+@media (max-width: 991px){
+	html, body {
+		max-width: 100%;
+		overflow: visible;
+	}
+}
   </style>
-  <?php include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');?>
 </head>
 
 <body style="margin-bottom:15px;">
@@ -130,7 +136,7 @@ li {
 </form>
 <!-- 고정 상단 -->
 <div style="padding: 10px 15px;">
-	<div class="" id="" class="" style="float:left;width:64%;height:615px;margin-right:1%;">
+	<div class="" id="" class="" style="float:left;width:64%;height:350px;margin-right:1%;">
 		<span style="float:left;margin-left:5px;font-weight:bold;">주문 정보</span><span style="float:right;margin-right:5px;font-weight:bold;">총 <?=number_format($ct_id_count)?>건</span>
 		<div id="" class="new_form2">
 <?php $i = 0;
@@ -160,6 +166,14 @@ li {
 
 		$stock_list = ($stock_list == "")?"우측 바코드 정보에 바코드를 등록 바랍니다.":$stock_list;
 		$ct_direct_delivery_partner_name = ($row['partner_name'] == "")?"미등록": $row['partner_name'];//파트너
+		
+		$sql = "SELECT ct_delivery_company FROM `g5_shop_order` o
+				LEFT JOIN g5_shop_cart c ON o.od_id = c.od_id
+				WHERE c.it_id = '".$row["it_id"]."' AND o.od_b_addr1 LIKE '".$row["od_b_addr1"]."%'
+				ORDER BY o.od_time DESC
+				LIMIT 1";
+		$row22 = sql_fetch($sql);
+		$row["ct_delivery_company"] = ($row["ct_delivery_company"]=="")? $row22["ct_delivery_company"]:$row["ct_delivery_company"];
 		?>
 			<div id="wrap<?=$i?>" class="new_form3">
 				<div class="parent" onclick="show_hide('<?=$i?>','<?=$ct_direct_delivery_partner_name?>')">
@@ -202,10 +216,10 @@ li {
 			
 		</div>
 	</div>
-	<div class="" id="" class="" style="float:left;width:35%;height:615px;position:relative;">
+	<div class="" id="" class="" style="float:left;width:35%;height:400px;position:relative;">
 		<span style="float:left;margin-left:5px;font-weight:bold;">바코드 정보</span>
-		<div id="cover" class="new_form2" style="position:absolute;top:0px;right:0px;width:100%;height:595px;background-color:#efefef">
-			<div style="position:relative;left:-65px;width:150px;height:20px;margin-left:50%;margin-top:90%;">
+		<div id="cover" class="new_form2" style="position:absolute;top:0px;right:0px;width:100%;height:470px;background-color:#efefef">
+			<div style="position:relative;left:-65px;width:150px;height:20px;margin-left:50%;margin-top:65%;">
 				주문 선택 시 활성화 됩니다.
 			</div>
 		</div>
@@ -221,13 +235,13 @@ li {
 					<button type="button" onClick="copy_text('barcode');" class="btn" style="border-radius:3px;width:25px;padding:0px 3px;"><img src="/img/copy.png" width="14" border="0" title="바코드 복사" ></button>&nbsp;<button type="button" onClick="barcode_del();" class="btn" style="border-radius:3px;width:25px;padding:0px 3px;" id="del_btn"><img src="/img/trash.png" width="20"border="0" title="바코드 삭제"></button>
 				</div>
 			</div>
-			<div class="new_form3 parent" style="margin-top:3px;height:53.3%;overflow-y:auto;overflow-x:hidden;padding:0px">
+			<div class="new_form3 parent" style="margin-top:3px;height:41%;overflow-y:auto;overflow-x:hidden;padding:0px">
 				<div id="" class="new_form3" style="width:50px;text-align:center;margin:0px;height:139693px;">
 					<?php for($i=0;$i<10000;$i++){
 						echo (($i!=0)?"<br>":"").($i+1);
 				}?>
 				</div>
-				<textarea name="" rows="" cols="" name="barcode" id="barcode" style="padding:5px 5px;height:139682px;resize: none;"></textarea>
+				<textarea name="" rows="" cols="" name="barcode" id="barcode" style="padding:5px 5px;height:139682px;resize: none;" onClick="text_remove(this.value)"></textarea>
 			</div>
 			<div id="" class="" style="margin-left:10px;">
 				<input type="button" value="오류검사" onclick="error_check();" class="btn" style=" background-color:#555555;color:#ffffff;font-weight:bold;height:26px;border-radius:3px;width:31.6%;cursor:pointer;">
@@ -272,6 +286,11 @@ li {
 </div>
 <div id="toast"></div>
 <script>
+	function text_remove(a){
+		if(a.includes('엔터') == true){
+			$("#barcode").val("");
+		}
+	}
 	var barcode_org = "";
 	function show_hide(n,p,c){
 		for(var i=0;i<<?=count(explode(",",$_REQUEST["barcode_ct_id"]))?>;i++ ){
@@ -350,11 +369,11 @@ li {
 	}
 	
 	function save_delivery_info(c,i){
-		if($("#ct_delivery_num_"+i).val() == ""){
+		/*if($("#ct_delivery_num_"+i).val() == ""){
 			alert("송장번호를 입력해 주세요.");
 			$("#ct_delivery_num_"+i).focus();
 			return;
-		}
+		}*/
 		$("#ct_id").val(c);//ct_id 값
 		$("#ct_delivery_company").val($("#ct_delivery_company_"+i).val());//택배사
 		$("#ct_delivery_num").val($("#ct_delivery_num_"+i).val());//송장번호
@@ -373,12 +392,13 @@ li {
                 if(res == true){
 					toast('저장 되었습니다.');
 					//alert("저장 되었습니다.");
-					$("#delivery_num_yn_"+i).html('Y');
-					for(var j = 0; j<<?=$ct_id_count?>;j++ ){
+					var delivery_num_yn = ($("#ct_delivery_num_"+i).val() != "")? 'Y': "<font color='red'>N</font>";
+					$("#delivery_num_yn_"+i).html(delivery_num_yn);
+					/*for(var j = 0; j<<?=$ct_id_count?>;j++ ){
 						if($("#ct_delivery_num_"+j).val() == ""){
 							$("#ct_delivery_company_"+j).val($("#ct_delivery_company").val());
 						}
-					}
+					}*/
 				}else{
 					toast('배송정보 저장에 실패 했습니다.\n다시 시도해 주세요.');
 					//alert("배송정보 저장에 실패 했습니다.\n다시 시도해 주세요.");
@@ -428,7 +448,10 @@ li {
 		if(barcode_disabled()==false){
 			return false;
 		}
+		$("#error_list").val("");
 		var barcode_insert = $("#barcode").val();
+		barcode_insert = $.trim(barcode_insert);
+		barcode_insert = barcode_insert.replace(/ /g,'\n');
 		barcode_insert = barcode_insert.replace(/,|\/|\||\.|\t/g,'\n');
 		barcode_insert = barcode_insert.replace(/-|~/g,'\n-\n');
 		var barcode_error = "";//에러바코드
@@ -438,7 +461,8 @@ li {
 		var back_barcode = "";//뒤바코드
 		var bar_arr = barcode_insert.split("\n");
 		var j = 0;//바코드 에러 카운트용
-		var k = 0;//바코드 저장용     
+		var k = 0;//바코드 저장용   
+		var h2 = "";
 		for(var i=0;i<bar_arr.length;i++){
 			if (bar_arr[i].length === 12) {
 				if(isNaN(bar_arr[i])) {//숫자 아닌경우
@@ -458,11 +482,17 @@ li {
 					fron_barcode = pre_barcode.substring(0,(12-bar_arr[i].length));
 					back_barcode = pre_barcode.slice(-bar_arr[i].length);
 					for(var h = parseInt(back_barcode)+1;h<parseInt(bar_arr[i])+1; h++){
+						h2 = "";
+						if(back_barcode.length > String(h).length){							
+							for(var t=0;t<back_barcode.length-String(h).length;t++){
+								h2 += "0";
+							}
+						}
 						if(isNaN(fron_barcode+h)) {//숫자 아닌경우
-							barcode_error +=((j!=0)?",":"")+fron_barcode+h;
+							barcode_error +=((j!=0)?",":"")+fron_barcode+h2+h;
 							j++;
 						}else{
-							barcodeArr += ((k!=0)?"\n":"")+fron_barcode+h;
+							barcodeArr += ((k!=0)?"\n":"")+fron_barcode+h2+h;
 							k++;
 						}
 					}
@@ -502,13 +532,14 @@ li {
 		$("#count1").text(bar_arr.length);//정상
 		$("#total_count").text(bar_arr.length+count2);//총바코드
 		barcode_org = $("#barcode").val();
-		stock_check();		
+		//stock_check();//재고검사		
 	}
 
 	function stock_check(){//재고검사
 		if(barcode_disabled()==false){
 			return false;
 		}
+		$("#stock_list").val("");
 		var barcodeArr = [];
 		var bar_arr = $("#barcode").val().split("\n");
         for(var i=0;i<bar_arr.length;i++){
@@ -564,7 +595,7 @@ li {
 		if(barcode_disabled()==false){
 			return false;
 		}
-		if(barcode_org != $("#barcode").val() || $("#error_chk").val() != "ok"){
+		if((barcode_org != $("#barcode").val() || $("#error_chk").val() != "ok") && $("#barcode").val() != ""){
 			if(barcode_org != $("#barcode").val()){
 				alert("바코드에 변경 사항이 있습니다. 검사 실행 후 등록바랍니다.");//오류검사 후 변경 사항 발생 시
 			}else{
@@ -577,8 +608,8 @@ li {
 			return false;
 		}
 		if($("#stock_list").val() != ""){
-			alert("상품관리 재고에 등록된 바코드입니다.\n확인 후 다시 저장바랍니다.");
-			return false;
+			//alert("상품관리 재고에 등록된 바코드입니다.\n확인 후 다시 저장바랍니다.");
+			//return false;
 		}
 		var bar_arr = $("#barcode").val().split("\n");
 		if($("#ct_qty").val() < bar_arr.length){
@@ -658,7 +689,7 @@ li {
 			}			
 		});
 		
-		if (flag) {
+		if (flag && $("#barcode").val() != "") {
 			alert('바코드는 12자리를 입력해주세요.');
 			loading_barnumsave = false;
 			return false;
@@ -718,20 +749,25 @@ li {
             
             // 미재고 바코드 처리
             var toApproveBarcodeArr = [];
-            for(var k=0;k<barcode_arr2.length;k++){            
-                var ct_id = $("#ct_id").val();
+			var orgBarcodeArr = [];
+			var org_barcode_arr = $("#barcode"+$("#n").val()).val().split(",");  
+			var ct_id = $("#ct_id").val();
+            for(var k=0;k<barcode_arr2.length;k++){                
                 var barcode = barcode_arr2[k];
                 toApproveBarcodeArr.push({ ct_id: ct_id, barcode: barcode });
             }
-			//alert(JSON.stringify(toApproveBarcodeArr));		
-
+			for(var h=0;h<org_barcode_arr.length;h++){
+                orgBarcodeArr.push(org_barcode_arr[h]);
+            }
+			//alert(JSON.stringify(orgBarcodeArr));		
 
             if (toApproveBarcodeArr.length > 0) {
               $.ajax({
                 url: '/shop/ajax.ct_barcode_insert_not_approved.php',
                 type: 'POST',
                 data: {
-                  toApproveBarcodeArr: toApproveBarcodeArr
+                  toApproveBarcodeArr: toApproveBarcodeArr,
+				  orgBarcodeArr: orgBarcodeArr
                 },
                 dataType: 'json',
                 async: false
@@ -744,13 +780,18 @@ li {
               })
             }
 
-			if($("#ct_qty").val() == barcode_arr2.length){//수량과 바코드 수와 같으면
-				$("#barcode_qty"+$("#n").val()).html(barcode_arr2.length+"/"+$("#ct_qty").val());
-			}else{//다르면
-				$("#barcode_qty"+$("#n").val()).html("<font color='red'>"+barcode_arr2.length+"/"+$("#ct_qty").val()+"</font>");
+			if($("#barcode").val() != ""){
+				if($("#ct_qty").val() == barcode_arr2.length){//수량과 바코드 수와 같으면
+					$("#barcode_qty"+$("#n").val()).html(barcode_arr2.length+"/"+$("#ct_qty").val());
+				}else{//다르면
+					$("#barcode_qty"+$("#n").val()).html("<font color='red'>"+barcode_arr2.length+"/"+$("#ct_qty").val()+"</font>");
+				}
+				$("#barcode"+$("#n").val()).val($("#barcode").val().replace(/\n/g,','));
+			}else{
+				$("#barcode_qty"+$("#n").val()).html("<font color='red'>0/"+$("#ct_qty").val()+"</font>");
+				$("#barcode"+$("#n").val()).val("우측 바코드 정보에 바코드를 등록 바랍니다.");
 			}
-			toast('등록 되었습니다.');
-         
+			toast('등록 되었습니다.');         
           }
         },
         error: function() {
