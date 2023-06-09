@@ -206,8 +206,18 @@
                             <span class="admin">( <a href="<?php echo G5_ADMIN_URL;?>/shop_admin/samhwa_orderlist.php">관리메뉴</a> )</span>
                             <?php } ?>
                         </p>
-                        <p class="member_modi">
-                            <a href="#" onclick="location.href='<?=G5_BBS_URL?>/member_confirm.php?url=member_info_newform.php'">회원정보 수정</a>
+                        <p>
+                            <a href="#" class="member_modi" onclick="location.href='<?=G5_BBS_URL?>/member_confirm.php?url=member_info_newform.php'">[회원정보 수정]</a> &nbsp;
+                            <?php
+                                // 23.06.09 : 서원 - 구매모드 기능 복구.
+                                if(($member["mb_level"] =="3" || $member["mb_level"] =="4")) {
+                                    if($_COOKIE["viewType"] == "adm") {
+                                        echo '<a href="#" class="modeBtn member_modi" data-type="basic">[구매모드]</a>';
+                                    } else {
+                                        echo '<a href="#" class="modeBtn member_modi" data-type="adm">[급여안내모드]</a>';
+                                    }
+                                }
+                            ?>
                         </p>
                     </div>
 
