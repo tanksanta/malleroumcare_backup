@@ -74,8 +74,10 @@
 
     <!-- ## 상단 메뉴 영역 ## -->
     <div id="thkc_headerWrap">
+    
+    <?php if( ($member['mb_type'] != "partner" ) ) { ?>
+    <?php if(($member["mb_level"] =="3" || $member["mb_level"] =="4")) { if($_COOKIE["viewType"] == "adm") { ?>
 
-        <?php if( ($member['mb_type'] != "partner" ) ) { ?>
         <!-- 최상단 띠 배너 (스와이퍼 슬라이드) -->
         <div id="topBannerWrap">
             <div class="topBanner">
@@ -83,6 +85,7 @@
                     <div class="swiper-button-next"></div>
                     <div class="swiper-button-prev"></div>
                 </div>
+                
                 <div class="swiper mySwiper_band">
                     <div class="swiper-wrapper">
                         <div class="swiper-slide f_topBanner" onclick="location.href='<?=G5_BBS_URL;?>/board.php?bo_table=notice&wr_id=152'">성장하는 사업소의 비결 모두 <b>"이로움"</b>에 있습니다. </div>
@@ -92,7 +95,12 @@
                 </div>
             </div>
         </div>
-        <?php } ?>
+
+    <?php } else { ?>
+        <div class="topBanner_mode"> "구매모드" 실행 중입니다 </div>
+    <?php } } ?>
+    <?php } ?>
+        
 
         <!-- GNB -->
         <header class="thkc_container">

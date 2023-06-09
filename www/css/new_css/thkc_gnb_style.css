@@ -44,6 +44,9 @@
 
 @charset "utf-8";
 
+/* 구매모드 띠 배너 */
+#thkc_headerWrap .topBanner_mode { height: 48px; text-align: center; color: #fff; background: #555; display: flex; justify-content: center; align-items: center;}
+
 /* 최상단 띠 배너 */
 #topBannerWrap {
     background: #001E9A;

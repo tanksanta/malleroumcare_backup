@@ -279,6 +279,21 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 
     <script>
 
+      $(function(){
+        
+        <?php if($member["mb_level"] == "3"||$member["mb_level"] =="4") { ?>
+        $(".modeBtn").click(function(e){
+          e.preventDefault();
+          $.ajax({
+            url : "/shop/ajax.mode.change.php", type : "POST",
+            data : { type : $(this).attr("data-type") },
+            success : function(){ window.location.reload(); }
+          });
+        });
+        <?php } ?>
+
+      });
+
       <?php if($member['mb_id']) { ?>
       try {
         if (navigator.userAgent.indexOf("Android") > - 1) {
