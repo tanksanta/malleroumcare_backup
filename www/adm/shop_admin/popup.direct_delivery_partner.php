@@ -11,41 +11,42 @@ if ($search != "") {
   }
 }
 
-if ($sel_ca_id != "") {
-  $sql_search .= " and it.ca_id like '$sel_ca_id%' ";
-}
-
-$sql_common = "FROM g5_shop_cart c 
-     LEFT JOIN g5_shop_order o ON c.od_id = o.od_id 
-     LEFT JOIN g5_member m ON c.mb_id = m.mb_id 
-     LEFT JOIN g5_member m2 ON c.ct_direct_delivery_partner = m2.mb_id 
-     LEFT JOIN partner_install_report pir ON c.od_id = pir.od_id 
-     WHERE ct_is_direct_delivery = '1' AND od_del_yn = 'N' AND ct_status IN ('준비','출고준비','배송') 
-     AND (m.mb_intercept_date = '' OR m.mb_intercept_date IS NULL)		
+$sql_common = "FROM g5_member m
+ WHERE m.mb_type = 'partner' AND m.mb_partner_auth = 1 AND m.mb_level='5' AND m.mb_partner_type LIKE '%직배송%'
+ AND (m.mb_intercept_date = '' OR m.mb_intercept_date IS NULL)		
 ";
 
-$total_count = 0;
 
-
+$total_count=0;
 $order_by = ($orb == "")?"count1" : $orb;
-$sql = "SELECT ct_direct_delivery_partner, m2.mb_name,m2.mb_thezone,
-    m2.mb_hp,
-    m2.mb_fax,
-    COUNT(CASE WHEN ct_status='준비' THEN 1 END) AS count1, 
-	COUNT(CASE WHEN ct_status='출고준비' THEN 1 END) AS count2,
-	COUNT(CASE WHEN ct_status='배송' THEN 1  END) AS count3 ". $sql_common . $sql_search." GROUP BY ct_direct_delivery_partner order by ".$order_by." DESC,ct_direct_delivery_partner ASC";
+$sql = "SELECT m.mb_id,m.mb_name,m.mb_thezone, m.mb_hp, m.mb_fax
+ ,(SELECT COUNT(ct_id) FROM g5_shop_cart c 
+ LEFT JOIN g5_shop_order o ON c.od_id = o.od_id 
+ WHERE ct_is_direct_delivery = '1' AND od_del_yn = 'N'  AND ct_status='준비' AND ct_direct_delivery_partner=m.mb_id) AS count1
+ ,(SELECT COUNT(ct_id) FROM g5_shop_cart c 
+ LEFT JOIN g5_shop_order o ON c.od_id = o.od_id  
+ WHERE ct_is_direct_delivery = '1' AND od_del_yn = 'N' AND ct_status='출고준비' AND ct_direct_delivery_partner=m.mb_id) AS count2
+ ,(SELECT COUNT(ct_id) FROM g5_shop_cart c 
+ LEFT JOIN g5_shop_order o ON c.od_id = o.od_id  
+ WHERE ct_is_direct_delivery = '1' AND od_del_yn = 'N' AND ct_status='배송' AND ct_direct_delivery_partner=m.mb_id) AS count3 ". $sql_common . $sql_search."order by ".$order_by." DESC,m.mb_id ASC";
 $result = sql_query($sql);
 $qstr1 = 'sel_ca_id='.$sel_ca_id.'&amp;sel_field='.$sel_field.'&amp;search='.$search.'&amp;wh_name='.$wh_name.'&amp;stock_type='.$stock_type;
 $qstr = $qstr1.'&amp;sort1='.$sort1.'&amp;sort2='.$sort2.'&amp;page='.$page;
 $partner_list = array();
 while ($row = sql_fetch_array($result)) { 
-	if($row["ct_direct_delivery_partner"] == ""){
-		$no_partner =  $row;
-	}else{
-		$partner_list[] = $row;
-		$total_count++;
-	}
+			$partner_list[] = $row;
+			$total_count++;
 }
+$sql_no = "SELECT 
+ COUNT(CASE WHEN ct_status='준비' THEN 1 END) AS count1, 
+ COUNT(CASE WHEN ct_status='출고준비' THEN 1 END) AS count2, 
+ COUNT(CASE WHEN ct_status='배송' THEN 1 END) AS count3 
+ FROM g5_shop_cart c 
+ LEFT JOIN g5_shop_order o ON c.od_id = o.od_id
+ WHERE ct_is_direct_delivery = '1' AND od_del_yn = 'N' AND ct_status IN ('준비','출고준비','배송') 
+ AND c.ct_direct_delivery_partner = ''";
+ $row_no = sql_fetch($sql_no);
+
 ?>
 <!DOCTYPE html>
 <html lang="ko">
@@ -104,9 +105,9 @@ while ($row = sql_fetch_array($result)) {
         <th>키워드 검색</th>
         <td>
 			<select name="sel_field" id="sel_field">
-            <option value="m2.mb_name" <?php echo get_selected($sel_field, 'm2.mb_name'); ?>>파트너명</option>
-            <option value="ct_direct_delivery_partner" <?php echo get_selected($sel_field, 'ct_direct_delivery_partner'); ?>>파트너 ID</option>
-			<option value="m2.mb_thezone" <?php echo get_selected($sel_field, 'm2.mb_thezone'); ?>>거래처 코드</option>
+            <option value="m.mb_name" <?php echo get_selected($sel_field, 'm.mb_name'); ?>>파트너명</option>
+            <option value="m.mb_id" <?php echo get_selected($sel_field, 'm.mb_id'); ?>>파트너 ID</option>
+			<option value="m.mb_thezone" <?php echo get_selected($sel_field, 'm.mb_thezone'); ?>>거래처 코드</option>
 			</select>
 			<input type="text" name="search" value="<?php echo $search; ?>" id="search" class="frm_input" autocomplete="off" style="width:200px;">
 			<input type="submit" value="검색" class="newbutton" style="background-color:#000000;color:#ffffff;width:70px;">
@@ -117,7 +118,6 @@ while ($row = sql_fetch_array($result)) {
 	</form>
   </div>
   <div class="tbl_head01" style="overflow: auto; height:500px;">
-    <!--p style="float:left;">총 입고 건수 <?php echo $total_count ?>개</p-->
     <table>
       <thead>
         <tr>
@@ -136,17 +136,17 @@ while ($row = sql_fetch_array($result)) {
         <?php  $i = 0; $j = 0;
 		if($search == ""){ $j = 1?>
 		<tr class="<?php echo $bg; ?>" style="text-align:center;">
-		  <td colspan="6" style="background-color:#ffff99;"> 
+		  <td colspan="6" style="background-color:#ffff99;cursor:pointer;" onClick="partner_id_send('미등록')"> 
             위탁업체 미등록
           </td>		      
           <td>
-            <?=number_format($no_partner['count1'])?>
+            <?=number_format($row_no['count1'])?>
           </td>
 		  <td>
-            <?=number_format($no_partner['count2'])?>
+            <?=number_format($row_no['count2'])?>
           </td>
 		  <td>
-            <?=number_format($no_partner['count3'])?>
+            <?=number_format($row_no['count3'])?>
           </td>		  
         </tr>
 		<?php }
@@ -154,12 +154,12 @@ while ($row = sql_fetch_array($result)) {
 			$mb = get_member($partner['it_purchase_order_partner']);
 			$bg = 'bg'.(($i+$j)%2);
 			?>
-        <tr class="<?php echo $bg; ?>" style="text-align:center;cursor:pointer;" onClick="partner_id_send('<?=$partner['ct_direct_delivery_partner'] ?>')">
+        <tr class="<?php echo $bg; ?>" style="text-align:center;cursor:pointer;" onClick="partner_id_send('<?=$partner['mb_id'] ?>')">
 		  <td>
             <?=($total_count-$i)?>
           </td>
 		  <td>
-            <?=$partner['ct_direct_delivery_partner'] ?>
+            <?=$partner['mb_id'] ?>
           </td>          
           <td>
             <?=$partner['mb_name'] ?>
