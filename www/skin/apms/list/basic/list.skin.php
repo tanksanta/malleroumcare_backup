@@ -194,14 +194,14 @@ while($wish_row = sql_fetch_array($wish_result)) {
     ?>
     <?php
       $add_height="";
-      if($is_admin) {
+      if($is_admin=="super") {
         $add_height='style="height: 500px;"';
       }
     ?>
     <li class="<?=$list[$i]["it_id"]?>" data-ca="<?=substr($list[$i]["ca_id"], 0, 2)?>" >
       <?php 
       // 우선순위 조정
-      if ($is_admin && $sort == 'custom') {
+      if ($is_admin=="super" && $sort == 'custom') {
         $sql_custom_index = "select *
                             from g5_shop_item_custom_index
                             where it_id = '{$list[$i]['it_id']}' and ca_id = '{$ca_id}'";
@@ -354,7 +354,7 @@ while($wish_row = sql_fetch_array($wish_result)) {
 </div>
 
 <div class="list-btn">
-  <?php if ($is_admin && $sort == 'custom') { ?>
+  <?php if ($is_admin=="super" && $sort == 'custom') { ?>
   <div style="float: right">
     <button type="button" style="background: #333; color: #fff; padding: 5px 15px;" onclick="submitCustomIndex('<?php echo $ca_id ?>')">우선순위 저장</button>
   </div>
@@ -452,7 +452,7 @@ function apms_wishlist(it_id, $this) {
   })
 </script>
 
-<?php if ($is_admin) { ?>
+<?php if ($is_admin=="super") { ?>
 <script>
     function submitCustomIndex(ca_id) {
         // var notEmptyInputs = $('.custom-index input').filter(function() {
