@@ -1395,7 +1395,7 @@ section.thkc_section .cs_infoWrap {
 		grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
 	}
 
-	section.thkc_section .pd_BoxWrap:nth-last-child(3) {
+	section.thkc_section .pd_BoxWrap:nth-last-child(1) {
 		display: none;
 	}
 
@@ -1544,7 +1544,7 @@ section.thkc_section .cs_infoWrap {
 		grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
 	}
 
-	section.thkc_section .pd_BoxWrap:nth-last-child(3) {
+	section.thkc_section .pd_BoxWrap:nth-last-child(1) {
 		display: block;
 	}
 }
