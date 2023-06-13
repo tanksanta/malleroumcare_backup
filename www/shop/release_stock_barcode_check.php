@@ -440,10 +440,10 @@ $prod_pay_code = sql_fetch("SELECT * FROM g5_shop_item WHERE it_id = '{$it_id}'"
 
     #add_barcode_pop .pop {
       position: absolute;
-      width: 80%;
-      height: 60%;
-      left: 10%;
-      top: 20%;
+      width: 90%;
+      height: 80%;
+      left: 5%;
+      top: 5%;
       background: #fff;
       padding: 20px 20px 70px;
     }
@@ -928,7 +928,7 @@ if ($option) {
         
 		<ul class="barcode_input_list">
           <li>
-            <input type="text" maxlength="12" class="notall frm_input required" placeholder="바코드를 입력하세요.">
+            <input type="number" maxlength="12" class="notall frm_input required" placeholder="바코드를 입력하세요.">
             <img src="/img/bacod_add_img.png" class="barcode_add" onclick="addAutoBarcode(this)">
             <img class="barcode_icon type1" src="/img/barcode_icon_1.png" alt="등록가능">
             <span class="overlap">중복</span>
@@ -948,7 +948,7 @@ if ($option) {
 
   <div style="display: none" id="mockup">
     <li>
-      <input type="text" maxlength="12" class="notall frm_input required" placeholder="바코드를 입력하세요.">
+      <input type="number" maxlength="12" class="notall frm_input required" placeholder="바코드를 입력하세요.">
       <img src="/img/bacod_add_img.png" class="barcode_add" onclick="addAutoBarcode(this)">
       <img class="barcode_icon type1" src="/img/barcode_icon_1.png" alt="등록가능">
       <span class="overlap">중복</span>
@@ -1145,21 +1145,30 @@ if (!$member['mb_id']) {
         console.log("item count = %d", $item.length );
 
         $item.each(function(i,val) {
-            $currentFocus++ ;
-            $currentInput = $(this);
-            $barcode = $currentInput.val();
-            console.log("input barcode = ", $barcode);
-            if ($barcode.length === 12)
-                $shift_input = 1;
-            if ($barcode.length === 0 && $shift_input === 1) {
-                $currentInput.focus();
-                $shift_input = 0;
-            }else if ( $barcode.length > 0 && $barcode.length < 12) {
-                    $shift_input = 0;
-            }
-            if ( ($arrLength === $currentFocus) && $barcode.length ==12) {
-                $moreInput = 1;
-            }
+          $currentFocus++ ;
+          $currentInput = $(this);
+          $barcode = $currentInput.val();
+          //console.log("input barcode = ", $barcode);
+
+          if ($barcode.length >= 12) {
+            $shift_input = 1;
+            $(this).val($barcode.slice(0, 12));
+          }
+          
+          
+          if ( ($arrLength === $currentFocus) && $barcode.length == 12) {
+            $moreInput = 1;
+          }
+
+
+          console.log("shift_input = ", $shift_input);
+          console.log("barcode.length = ", $barcode.length);
+
+          if($barcode.length == 0 && $shift_input == 1) {              
+            console.log("barcode focus");
+            $currentInput.focus();
+            $shift_input = 0;
+          }
 
         });
         if ($moreInput === 1) {
@@ -1884,7 +1893,7 @@ if (!$member['mb_id']) {
     }
 
     $('#web-barcode').css('display', 'flex');
-
+    
     $('#web-barcode-input').attr("readonly",true);
     $('#web-barcode-input').focus();
     setTimeout(function(){ $('#web-barcode-input').attr("readonly",false); }, 80);
@@ -2215,7 +2224,7 @@ if (!$member['mb_id']) {
     $('#add_barcode_pop .barcode_input_list').append($('#mockup').html());
   }
 
-
+  
   // 앱이 아닌 경우 바코드버튼 숨김
   if(!window.EroummallApp && !(window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.openBarcode )) {
     $('.nativePopupOpenBtn').hide();
