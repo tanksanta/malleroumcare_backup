@@ -75,6 +75,7 @@ if($header_skin)
                             <label for="sms_id" class="thkc_blind">아이디</label>
                             <input
                                 class="thkc_input _error_input_inner" id="sms_id" placeholder="아이디" value="" type="text" autocomplete="off" />
+								<div class="error-txt error_sms_bnum"></div>
                         </div>
                         <!-- <div class="error-txt">담당자 이름을 입력해주세요.</div> -->
                     </div>
@@ -186,6 +187,7 @@ if($header_skin)
                         <div>
                             <label for="mail_bnum" class="thkc_blind">사업자등록번호</label>
                             <input class="thkc_input _error_input_inner numOnly" id="mail_bnum" placeholder="사업자등록번호" value="" maxlength="10" type="text" autocomplete="off" />
+							<div class="error-txt error_mail_bnum"></div>
                         </div>
                         <!-- <div class="error-txt">담당자 이름을 입력해주세요.</div> -->
                     </div>
@@ -224,11 +226,28 @@ if($header_skin)
 
 	<script>
 		// 숫자만 입력!!
-		$('.numOnly').on('keyup', function() {
+		$('.numOnly').on('keyup blur', function() {
 			var num = $(this).val();
 			num.trim();
 			this.value = only_num(num) ;
 		});
+
+        // 사업자번호 입력 유효성 체크
+        $('#sms_bnum, #mail_bnum').on('keyup blur', function() {
+            if( $(this).val().length == 10 ) {
+                var _ck = checkCorporateRegiNumber( $(this).val() );
+                if( !_ck ){
+                    $('.error_' + $(this).attr('id') ).html("사업자등록번호를 정확하게 입력해주세요.");
+                    $('.error_' + $(this).attr('id') ).css( "color", "#d44747" );
+                } else  {
+                    $('.error_' + $(this).attr('id') ).html("");
+                }
+
+                /* 23.05.23 - 사업자번호 하이픈 추가 */
+                $(this).val( auto_saup_hypen( $(this).val() ) );
+            }
+
+        });
 
 		// 비밀번호 찾기 - 메일발송
 		function SendMAIL(){
@@ -270,9 +289,6 @@ if($header_skin)
 			});
 			
 		}
-
-
-
 
 
 		// 비밀번호 찾기 - 인증 번호 발송

@@ -863,6 +863,48 @@ function auto_saup_hypen(companyNum) {
   }
 }
 
+
+// 사업자번호 유효성 검증
+function checkCorporateRegiNumber(number) {
+  var numberMap = number.replace(/-/gi, '').split('').map(function (d) {
+      return parseInt(d, 10);
+  });
+
+  if(numberMap.length == 10) {
+      var keyArr = [1, 3, 7, 1, 3, 7, 1, 3, 5];
+      var chk = 0;
+
+      keyArr.forEach(function(d, i) {
+          chk += d * numberMap[i];
+      });
+
+      chk += parseInt((keyArr[8] * numberMap[8])/ 10, 10);
+      console.log(chk);
+      return Math.floor(numberMap[9]) === ( (10 - (chk % 10) ) % 10);
+  }
+
+  // 숫자만 포함된 10자리 혹은 12자리 문자열인지 확인
+  const isValidFormat = /^[0-9]{10}$|^[0-9]{3}-[0-9]{2}-[0-9]{5}$/.test(number);
+  if (!isValidFormat) {
+      return false;
+  }
+
+  // "-"를 제거하여 숫자만 남기고 앞 9자리를 가져옴
+  const digits = number.replace(/-/g, "").slice(0, 9);
+
+  // 사업자번호 유효성 검증을 위한 계산식
+  const checkSum = (11 - (
+      ((digits[0] * 1) + (digits[1] * 3) + (digits[2] * 7) + (digits[3] * 1) +
+      (digits[4] * 3) + (digits[5] * 7) + (digits[6] * 1) + (digits[7] * 3) +
+      (digits[8] * 5)) % 10
+  )) % 10;
+
+  // 계산된 체크썸과 마지막 자리 숫자를 비교하여 유효성을 판단
+  return checkSum === Number(number[number.length - 1]);
+  
+}
+
+
 function only_num(text) {
   return text.replace(/[^0-9]/g, '');
 }

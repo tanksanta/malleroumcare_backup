@@ -963,6 +963,9 @@ add_javascript(G5_POSTCODE_JS, 0);
                 } else  {
                     $('.errorBNUM').html("");
                 }
+
+                /* 23.05.23 - 사업자번호 하이픈 추가 */
+                $(this).val( auto_saup_hypen( $(this).val() ) );
             }
         });
 
@@ -1020,29 +1023,7 @@ add_javascript(G5_POSTCODE_JS, 0);
             }
         }
 
-        // 사업자번호 유효성 검증
-        function checkCorporateRegiNumber(number) {
-            var numberMap = number.replace(/-/gi, '').split('').map(function (d) {
-                return parseInt(d, 10);
-            });
-
-            if(numberMap.length == 10) {
-                var keyArr = [1, 3, 7, 1, 3, 7, 1, 3, 5];
-                var chk = 0;
-
-                keyArr.forEach(function(d, i) {
-                    chk += d * numberMap[i];
-                });
-
-                chk += parseInt((keyArr[8] * numberMap[8])/ 10, 10);
-                console.log(chk);
-                return Math.floor(numberMap[9]) === ( (10 - (chk % 10) ) % 10);
-            }
-
-            return false;
-        }
-
-
+        
         // submit 최종 폼체크
         function fregisterform_submit() {
             setTimeout(function() { $("body").removeClass("stop-scroll"); }, 500);

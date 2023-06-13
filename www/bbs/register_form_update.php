@@ -6,6 +6,20 @@ include_once(G5_LIB_PATH.'/mailer.lib.php');
 include_once(G5_LIB_PATH.'/thumbnail.lib.php');
 include_once(G5_LIB_PATH.'/apms.thema.lib.php');
 
+
+function validateBusinessNumber($number) {
+  // 사업자 번호 정규식 패턴
+  $pattern = "/^\d{3}-\d{2}-\d{5}$/";
+
+  // 정규식과 매치되는지 확인
+  if (preg_match($pattern, $number)) {
+      return true; // 형식이 맞는 경우
+  } else {
+      return false; // 형식이 맞지 않는 경우
+  }
+}
+
+
 if (!($w == '' || $w == 'u')) {
   alert('w 값이 제대로 넘어오지 않았습니다.');
 }
@@ -101,6 +115,12 @@ if ($w == '' || $w == 'u') {
   if ($w == '') {
     if ($msg = exist_mb_id($mb_id))     alert($msg);
   }
+
+
+  if(!validateBusinessNumber($mb_giup_bnum)) {
+    alert('사업자 번호 형식이 맞지 않습니다.',G5_BBS_URL."/register.php");
+  }
+
 
   //서버 최대 용량 10Mb
   $max_file_size = 1024*1024*10;
