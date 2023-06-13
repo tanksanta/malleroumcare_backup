@@ -164,7 +164,7 @@ function calc_rental_price($str_date, $end_date, $price) {
     }
 
     // 마지막 달 계산
-    $rental_price += (int) floor(
+    $rental_price += (int) ceil(
         $price * (
             date('j', $end_time)
             /
@@ -174,7 +174,7 @@ function calc_rental_price($str_date, $end_date, $price) {
 
     if($diff > 0) {
         // 첫째 달 계산
-        $rental_price += (int) floor(
+        $rental_price += (int) ceil(
             $price * (
                 ( date('t', $str_time) - date('j', $str_time) + 1 )
                 /
@@ -205,7 +205,7 @@ function calc_pen_price($penTypeCd, $price) {
             break;
     }
 
-    $pen_price = (int) floor(
+    $pen_price = (int) ceil(
         $price * $rate / (100 * 10)
     ) * 10;
 
