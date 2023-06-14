@@ -205,7 +205,7 @@ function calc_pen_price($penTypeCd, $price) {
             break;
     }
 
-    $pen_price = (int) ceil(
+    $pen_price = (int) floor(
         $price * $rate / (100 * 10)
     ) * 10;
 
