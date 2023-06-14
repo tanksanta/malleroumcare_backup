@@ -503,13 +503,13 @@ while( $row = sql_fetch_array($result) ) {
     <tr>
         <th scope="col" width="10px;"><input type="checkbox" name="all_chk" id="all_chk" class="frm_input"></th>
 		<th scope="col" width="107px;">주문번호</th>
+		<th scope="col" width="170px;">상품명</th>
+		<th scope="col" width="60px;">바코드<br>/수량</th>
         <th scope="col" width="110px;">직배송 파트너</th>
 		<th scope="col" width="120px;">수령인</th>
         <th scope="col" width="100px;">수령인 연락처</th>
 		<th scope="col">배송주소</th>
-        <th scope="col" width="50px;">급여<br>구분</th>
-		<th scope="col" width="170px;">상품명</th>
-		<th scope="col" width="60px;">바코드<br>/수량</th>
+        <th scope="col" width="50px;">급여<br>구분</th>		
 		<th scope="col" width="60px;">배송정보</th>
 		<th scope="col" width="60px;">단가</th>
 		<th scope="col" width="70px;">공급가격</th>
@@ -570,15 +570,15 @@ while( $row = sql_fetch_array($result) ) {
 		  }
     ?>
     <tr class="<?php echo $bg; ?>">
-        <td align="center"><input type="checkbox" name="od_id[]" value="<?=$order["ct_id"];?>" class="frm_input checkSelect"></td>
+        <td align="center"><input type="checkbox" name="od_id[]" value="<?=$order["ct_id"];?>" data-value="<?=substr($order["ca_id"],0,2)?>" data-barcode='<?=($order['ct_barcode_insert']!=$order['ct_qty'])?0:1;?>' class="frm_input checkSelect"></td>
 		<td align="center"><a href="samhwa_orderform.php?od_id=<?=$order["od_id"];?>&sub_menu=400405" target="_blank"><?=$order["od_id"];//주문번호 ?></a></td>
+		<td align="center"><?=$order["it_name"].(($order["ct_option"] != $order["it_name"])?" [".$order["ct_option"]."]":"");//상품명 ?></td>
+		<td align="center" <?=($order['ct_barcode_insert'] >= $order['ct_qty'] || substr($order["ca_id"],0,2) == "70")?"":"style='color:red;'"; ?>><span  style='cursor:pointer;' onClick="barcode_insert('<?=$order["ct_id"]?>')"><?=(substr($order["ca_id"],0,2) != "70")?$order['ct_barcode_insert']."/".$order['ct_qty']:$order['ct_qty'];//바코드/수량 ?></span></td>
         <td align="center"><?=$ct_direct_delivery_partner_name;//직배송파트너?></td>
 		<td align="center"><?=$order["od_b_name"];//수령인 ?></a></td>
 		<td align="center"><?=$order["od_b_tel"];//연락처 ?></td>
 		<td align="center"><?=$order["od_b_addr1"].(($order["od_b_addr2"]!="")?" ".$order["od_b_addr2"]:"").(($order["od_b_addr3"]!="")?" ".$order["od_b_addr3"]:"");//배송주소 ?></td>
-   		<td align="center"><?=(substr($order["ca_id"],0,2) == "70")?"비급여":"급여";//급여구분 ?></td>
-		<td align="center"><?=$order["it_name"].(($order["ct_option"] != $order["it_name"])?" [".$order["ct_option"]."]":"");//상품명 ?></td>
-		<td align="center" <?=($order['ct_barcode_insert'] >= $order['ct_qty'] || substr($order["ca_id"],0,2) == "70")?"":"style='color:red;'"; ?>><span  style='cursor:pointer;' onClick="barcode_insert('<?=$order["ct_id"]?>')"><?=(substr($order["ca_id"],0,2) != "70")?$order['ct_barcode_insert']."/".$order['ct_qty']:$order['ct_qty'];//바코드/수량 ?></span></td>
+   		<td align="center"><?=(substr($order["ca_id"],0,2) == "70")?"비급여":"급여";//급여구분 ?></td>		
 		<td align="center" <?=($order['ct_combine_ct_id']||$order['ct_delivery_num'])?"":"style='color:red;'";?>><?=($order['ct_combine_ct_id']||$order['ct_delivery_num'])?"입력완료":"미입력";//배송정보 ?></td>
 		<td align="right"><?=number_format($order["opt_price"]);//단가 ?></td>
 		<td align="right"><?=number_format($order["basic_price"]);//공급가격?></td>
@@ -778,41 +778,61 @@ function select_check() {
 function change_step_go(step){
 	if(select_check() == true){
 		var od_id = [];
+		var od_id2 = [];
 		var item = $("input[name='od_id[]']:checked");
 		for(var i = 0; i < item.length; i++) {
 			od_id.push($(item[i]).val());
+			if($(item[i]).data('value') == "70" && $(item[i]).data('barcode') == "0"){//비급여 건 처리
+				od_id2.push($(item[i]).val());				
+			}
 		}
-		
-		change_step2(od_id, step);
-		if(step == "배송"){
-			$("#click_status3").trigger("click");
-		}else if(step == "출고준비"){
-			$("#click_status2").trigger("click");
-		}else{
-			$("#click_status1").trigger("click");
-		}
+		change_step2(od_id, step,'',od_id2);
 	}
 }
-function change_step2(od_id, step, api) {
+function change_step2(od_id, step, api,od_id2) {
     console.log(od_id);
     console.log(step);
     console.log(api);
-    $.ajax({
-        method: "POST",
-        url: "./ajax.order.step.php",
-        data: {
-            'step': step,
-            'od_id[]': od_id,
-            'api': api
-        },
-    }).done(function (data) {
-        console.log(data);
-        if (data == 'success') {
-            alert('상태가 변경되었습니다.');            
-        } else {
-            alert(data);
-        }
-    });
+	var response = true; 
+    if(od_id2.length > 0){//비급여 바코드 확인 패스 처리
+		response = false;
+		$.ajax({
+			method: "POST",
+			url: "./ajax.pass_ct.php",
+			async:false,
+			data: {
+				'ct_id': od_id2
+			},
+		}).done(function (data) {
+			response = true;
+		});
+	}
+	if(response == true){
+		$.ajax({
+			method: "POST",
+			url: "./ajax.order.step.php",
+			async:false,
+			data: {
+				'step': step,
+				'od_id[]': od_id,
+				'api': api
+			},
+		}).done(function (data) {
+			console.log(data);
+			if (data == 'success') {
+				alert('상태가 변경되었습니다.');  
+				if(step == "배송"){
+					$("#click_status3").trigger("click");
+				}else if(step == "출고준비"){
+					$("#click_status2").trigger("click");
+				}else{
+					$("#click_status1").trigger("click");
+				}
+			} else {
+				alert(data);			
+			}
+		});
+	}
 }
 
 function direct_delivery_excel(){
