@@ -220,7 +220,11 @@ pop_add_item {
 $(function() {
   var list_data = "";
   $("#div_load_image").hide();
-  
+
+  // 최초 창 크기 설정 600*500
+  parent.document.getElementById("content").style.width = "600px";
+  parent.document.getElementById("content").style.height = "500px";
+
   // datepicker 설정
   $('.datepicker').datepicker({ changeMonth: true, changeYear: true, dateFormat: 'yy-mm-dd' });
 
@@ -246,8 +250,9 @@ $(function() {
       $('#search_period').text(fr_date+" ~ "+to_date);
       $('#search_period').val(fr_date+" ~ "+to_date);
 
-      parent.document.getElementById("content").style.height = "70%";
-      parent.document.getElementById("content").style.width = "80%";
+      // 미리보기 창 크기 변경 1094*656
+      parent.document.getElementById("content").style.height = "656px";
+      parent.document.getElementById("content").style.width = "1094px";
       $('#pop_add_item').hide();
       $('#pop_ctrl_list').show();
       $('.headerTitle').show();
@@ -316,9 +321,6 @@ $(function() {
 			}
 		});
 
-
-
-
       return false;
   });
 
@@ -358,13 +360,6 @@ $(function() {
           search_period: $('#search_period').val()
         }
       });
-
-      var index = 0;
-      for(var i=0; i<list_data.length; i++){
-          for(var ind=0; ind<list_data[i].length; ind++) {
-              console.log(list_data[i][ind]);
-          }
-      }
   });
 });
 </script>

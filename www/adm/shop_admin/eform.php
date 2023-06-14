@@ -50,7 +50,7 @@ if($sel_stat !="" && $sel_stat != "all"){
 	}else{
 		$where[] = " E.dc_status='$sel_stat'";
 	}
-	$qstr .= 'sel_stat=$sel_stat';
+	$qstr .= 'sel_stat='.$sel_stat;
 }else{
 	// 작성 완료된 계약서 & 마이그레이션 된 계약서만 + 간편 계약서로 생성된 계약서
 	$where[] = " (E.dc_status = '2' OR E.dc_status = '3' OR E.dc_status = '11' OR E.dc_status = '4' OR E.dc_status = '5') ";
