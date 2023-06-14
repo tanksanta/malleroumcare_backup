@@ -485,17 +485,28 @@ if (!$member['mb_id']) {
       device = "ios";
     }
 
-    switch(device) {
-      case "android" :
-        /* android */
-        window.EroummallApp.openInvoiceNum("");
-        break;
-      case "ios" :
-        /* ios */
-        window.webkit.messageHandlers.openInvoiceNum.postMessage("1");
-        break;
+    if (window.ReactNativeWebView) {
+      // WebView가 존재하는 경우에 대한 로직
+      const url = `expo://BarCodeOpen/sendInvoiceNum`;
+      window.location.href = url;
+    } else {
+
+      switch(device) {
+        case "android" :
+          /* android */
+          window.EroummallApp.openInvoiceNum("");
+          break;
+        case "ios" :
+          /* ios */
+          window.webkit.messageHandlers.openInvoiceNum.postMessage("1");
+          break;
+      }
     }
+
   }
+
+  // 23.06.14 : input 엔터값 적용
+  $(document).on("keyup", "#search_text", function(e) { if (e.key === 'Enter') { $("#searchSubmitBtn").click(); } });
 </script>
 
 <?php include_once( G5_PATH . '/shop/open_barcode.php'); ?>

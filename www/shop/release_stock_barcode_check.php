@@ -2229,6 +2229,10 @@ if (!$member['mb_id']) {
   if(!window.EroummallApp && !(window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.openBarcode )) {
     $('.nativePopupOpenBtn').hide();
   }
+
+  // 23.06.14 : 신규 앱 카메라 기능 동작 예외처리.
+  if (window.ReactNativeWebView) { $(".nativePopupOpenBtn").show(); }
+  
 </script>
 
 <?php //include_once( G5_PATH . '/shop/open_barcode.php'); ?>
