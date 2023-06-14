@@ -1279,6 +1279,12 @@ sql_query("update purchase_cart set `ct_edit_member` = '" . $member['mb_id'] . "
 
       showBarcodeHistory(barcode);
     });
+
+
+    // 23.06.14 : 신규 앱 카메라 기능 동작 예외처리.
+    if (window.ReactNativeWebView) { $(".nativePopupOpenBtn").show(); }
+    
+
   })
 
   function addSelectClassBarcode() {
@@ -1761,6 +1767,7 @@ sql_query("update purchase_cart set `ct_edit_member` = '" . $member['mb_id'] . "
       },
       success: function (result) {
         if (result.error == "Y") {
+          
           switch (device) {
             case "android" :
               /* android */

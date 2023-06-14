@@ -482,6 +482,9 @@ if($member['mb_level']< 9){alert("이용권한이 없습니다.");}
     cf_flag();
   });
 
+  // 23.06.14 : input 엔터값 적용
+  $(document).on("keyup", "#search_text, #add_search_text", function(e) { if (e.key === 'Enter') { $("#searchSubmitBtn").click(); } });
+
   //바코드 버튼 클릭
   $(document).on("click", ".barcode_box", function(e) {
     e.preventDefault();
@@ -535,16 +538,25 @@ if($member['mb_level']< 9){alert("이용권한이 없습니다.");}
       /* ios */
       device = "ios";
     }
+    
+    // 23.06.14 : 신규 앱 카메라 기능 동작 예외처리.
+    if (window.ReactNativeWebView) {
+      // WebView가 존재하는 경우에 대한 로직
+      const url = `expo://BarCodeOpen/sendInvoiceNum`;
+      window.location.href = url;
+    } else {
 
-    switch(device) {
-      case "android" :
-        /* android */
-        window.EroummallApp.openInvoiceNum("");
-        break;
-      case "ios" :
-        /* ios */
-        window.webkit.messageHandlers.openInvoiceNum.postMessage("1");
-        break;
+      switch(device) {
+        case "android" :
+          /* android */
+          window.EroummallApp.openInvoiceNum("");
+          break;
+        case "ios" :
+          /* ios */
+          window.webkit.messageHandlers.openInvoiceNum.postMessage("1");
+          break;
+      }
+
     }
   }
 
@@ -553,6 +565,7 @@ if($member['mb_level']< 9){alert("이용권한이 없습니다.");}
 
     open_invoice_scan();
   });
+
   </script>
 </body>
 </html>

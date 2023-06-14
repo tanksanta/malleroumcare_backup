@@ -970,15 +970,25 @@ if($od["od_b_tel"]) {
       },
       success : function(result) {
         if(result.error == "Y") {
-          switch(device){
-            case "android" :
-              /* android */
-              window.EroummallApp.closeBarcode("");
-              break;
-            case "ios" :
-              /* ios */
-              window.webkit.messageHandlers.closeBarcode.postMessage("");
-              break;
+          
+          // 23.06.14 : 신규 앱 카메라 기능 동작 예외처리.
+          if (window.ReactNativeWebView) {
+            // WebView가 존재하는 경우에 대한 로직
+            const url = `expo://BarCodeOpen/sendInvoiceNum`;
+            window.location.href = url;
+          } else {
+
+            switch(device){
+              case "android" :
+                /* android */
+                window.EroummallApp.closeBarcode("");
+                break;
+              case "ios" :
+                /* ios */
+                window.webkit.messageHandlers.closeBarcode.postMessage("");
+                break;
+            }
+
           }
           var params = getUrlParams();
           delete params.od_id;
@@ -999,15 +1009,32 @@ if($od["od_b_tel"]) {
               check_option(cur_it_id);
             })
             .fail(function($xhr) {
-              switch(device){
-                case "android" :
-                  /* android */
-                  window.EroummallApp.closeBarcode("");
-                  break;
-                case "ios" :
-                  /* ios */
-                  window.webkit.messageHandlers.closeBarcode.postMessage("");
-                  break;
+              // 23.06.14 : 신규 앱 카메라 기능 동작 예외처리.
+              if (window.ReactNativeWebView) {
+                // WebView가 존재하는 경우에 대한 로직
+                const url = `expo://BarCodeOpen/sendInvoiceNum`;
+                window.location.href = url;
+              } else {
+
+                // 23.06.14 : 신규 앱 카메라 기능 동작 예외처리.
+                if (window.ReactNativeWebView) {
+                  // WebView가 존재하는 경우에 대한 로직
+                  const url = `expo://BarCodeOpen/sendInvoiceNum`;
+                  window.location.href = url;
+                } else {
+
+                  switch(device){
+                    case "android" :
+                      /* android */
+                      window.EroummallApp.closeBarcode("");
+                      break;
+                    case "ios" :
+                      /* ios */
+                      window.webkit.messageHandlers.closeBarcode.postMessage("");
+                      break;
+                  }
+
+                }
               }
               var data = $xhr.responseJSON;
               setTimeout(function() {
@@ -1051,15 +1078,24 @@ if($od["od_b_tel"]) {
     $(".nativeDeliveryPopupOpenBtn").click(function() {
       sendInvoiceTarget = $(this).parent().find("input[type='text']");
 
-      switch(device) {
-        case "android" :
-          /* android */
-          window.EroummallApp.openInvoiceNum("");
-          break;
-        case "ios" :
-          /* ios */
-          window.webkit.messageHandlers.openInvoiceNum.postMessage("1");
-          break;
+      // 23.06.14 : 신규 앱 카메라 기능 동작 예외처리.
+      if (window.ReactNativeWebView) {
+        // WebView가 존재하는 경우에 대한 로직
+        const url = `expo://BarCodeOpen/sendInvoiceNum`;
+        window.location.href = url;
+      } else {
+
+        switch(device) {
+          case "android" :
+            /* android */
+            window.EroummallApp.openInvoiceNum("");
+            break;
+          case "ios" :
+            /* ios */
+            window.webkit.messageHandlers.openInvoiceNum.postMessage("1");
+            break;
+        }
+
       }
     });
 
@@ -1402,6 +1438,12 @@ if($od["od_b_tel"]) {
 
       showBarcodeHistory(barcode, ct_id);
     });
+
+
+    // 23.06.14 : 신규 앱 카메라 기능 동작 예외처리.
+    if (window.ReactNativeWebView) { $(".nativePopupOpenBtn").show(); }
+
+
   });
 
 
