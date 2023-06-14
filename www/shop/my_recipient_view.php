@@ -496,8 +496,36 @@ $(function() {
 		        if(data.isSpare)
 		          return window.location.href = "./my_recipient_view.php?id"+data.penId;
 		  
-		  
-		        $.post('./ajax.my.recipient.setItem.php', {
+				if(ct_history_list.length != 0){ // 계약이력 삽입
+				  let penPurchaseHist = <?=json_encode($recent_result)?>;
+				  //if(penPurchaseHist == null){
+					$.post('./ajax.my.recipient.hist.php', {
+					  data: ct_history_list,
+					  status: true
+					}, 'json')
+					.fail(function($xhr) {
+					  var data = $xhr.responseJSON;
+					  alert("계약정보 업데이트에 실패했습니다!");
+					})
+
+				  //} else if(ct_history_list['recipientContractDetail']['Result']['ds_ctrHistTotalList'].length > penPurchaseHist['cnt']){
+					//ct_history_list['recipientContractDetail']['Result']['ds_ctrHistTotalList'] = ct_history_list['recipientContractDetail']['Result']['ds_ctrHistTotalList'].slice(penPurchaseHist['cnt'], ct_history_list.length);
+
+					// TODO : pen_purchase_hist update 만들기
+					// 이로움 DB에 계약정보 insert
+					//$.post('./ajax.my.recipient.hist.php', {
+					//  data: ct_history_list,
+					//  status: true
+					//}, 'json')
+					
+					//.fail(function($xhr) {
+					//  var data = $xhr.responseJSON;
+					//  alert("계약정보 업데이트에 실패했습니다!");
+					//})
+				  //}
+				}
+		        
+				$.post('./ajax.my.recipient.setItem.php', {
 		          penId: "<?=$pen['penId'] ?>",
 		          itemList: itemList
 		        }, 'json')
@@ -513,35 +541,8 @@ $(function() {
 		          var data = $xhr.responseJSON;
 		          alert(data && data.message);
 		        }); 
-
-            if(ct_history_list.length != 0){ // 계약이력 삽입
-              let penPurchaseHist = <?=json_encode($recent_result)?>;
-
-              if(penPurchaseHist == null){
-                $.post('./ajax.my.recipient.hist.php', {
-                  data: ct_history_list,
-                  status: true
-                }, 'json')
-                .fail(function($xhr) {
-                  var data = $xhr.responseJSON;
-                  alert("계약정보 업데이트에 실패했습니다!");
-                })
-
-              } else if(ct_history_list['recipientContractDetail']['Result']['ds_ctrHistTotalList'].length > penPurchaseHist['cnt']){
-                ct_history_list['recipientContractDetail']['Result']['ds_ctrHistTotalList'] = ct_history_list['recipientContractDetail']['Result']['ds_ctrHistTotalList'].slice(penPurchaseHist['cnt'], ct_history_list.length);
-
-                // TODO : pen_purchase_hist update 만들기
-                // 이로움 DB에 계약정보 insert
-                $.post('./ajax.my.recipient.hist.php', {
-                  data: ct_history_list,
-                  status: true
-                }, 'json')
-                .fail(function($xhr) {
-                  var data = $xhr.responseJSON;
-                  alert("계약정보 업데이트에 실패했습니다!");
-                })
-              }
-            }
+				
+            
 
 		      })
 		      .fail(function($xhr) {

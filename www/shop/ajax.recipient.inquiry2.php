@@ -83,6 +83,7 @@ while ($res_item = sql_fetch_array($result)) {
 	$recipientContractHistory['Result']['ds_result'][$i]['POF_FR_DT'] = $res_item["ORD_STR_DTM"]."~".$res_item["ORD_END_DTM"];//기간
 	$recipientContractHistory['Result']['ds_result'][$i]['TOT_AMT'] = $res_item["TOTAL_PRICE"];//급여가
 	$recipientContractHistory['Result']['ds_result'][$i]['CNCL_YN'] = $res_item["CNCL_YN"];//계약상태
+	$recipientContractHistory['Result']['ds_result'][$i]['PROD_BAR_NUM'] = $res_item["PROD_BAR_NUM"];//바코드
 	$i++;
 }
 

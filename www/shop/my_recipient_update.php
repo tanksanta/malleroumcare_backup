@@ -1166,7 +1166,7 @@ $(function() {
     if(ct_history_list.length != 0){
       let penPurchaseHist = <?=json_encode($recent_result)?>;
 
-      if(penPurchaseHist == null){
+      //if(penPurchaseHist == null){
         $.post('./ajax.my.recipient.hist.php', {
           data: ct_history_list,
           status: true
@@ -1176,20 +1176,20 @@ $(function() {
           alert("계약정보 업데이트에 실패했습니다!");
         })
 
-      } else if(ct_history_list['recipientContractDetail']['Result']['ds_ctrHistTotalList'].length > penPurchaseHist['cnt']){
-        ct_history_list['recipientContractDetail']['Result']['ds_ctrHistTotalList'] = ct_history_list['recipientContractDetail']['Result']['ds_ctrHistTotalList'].slice(penPurchaseHist['cnt'], ct_history_list.length);
+      //} else if(ct_history_list['recipientContractDetail']['Result']['ds_ctrHistTotalList'].length > penPurchaseHist['cnt']){
+      //  ct_history_list['recipientContractDetail']['Result']['ds_ctrHistTotalList'] = ct_history_list['recipientContractDetail']['Result']['ds_ctrHistTotalList'].slice(penPurchaseHist['cnt'], ct_history_list.length);
 
         // TODO : pen_purchase_hist update 만들기
         // 이로움 DB에 계약정보 insert
-        $.post('./ajax.my.recipient.hist.php', {
-          data: ct_history_list,
-          status: true
-        }, 'json')
-        .fail(function($xhr) {
-          var data = $xhr.responseJSON;
-          alert("계약정보 업데이트에 실패했습니다!");
-        })
-      }
+      //  $.post('./ajax.my.recipient.hist.php', {
+      //    data: ct_history_list,
+      //   status: true
+      //  }, 'json')
+      //  .fail(function($xhr) {
+      //    var data = $xhr.responseJSON;
+      //    alert("계약정보 업데이트에 실패했습니다!");
+      //  })
+     // }
     }
 
     var penJumin =  document.getElementById('penJumin1').value;
@@ -1476,7 +1476,7 @@ $(function() {
           type: 'POST',  // http method
           data: { id : str_id,rn : str_rn },  // data to submit
           success: function (data, status, xhr) {
-              alert(data['message']);
+			  alert(data['message']);
 
               let sale_ll = [];
               let rent_ll = [];
