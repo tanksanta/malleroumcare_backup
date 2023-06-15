@@ -555,7 +555,7 @@ li {
       if (barcodeArr.length > 0) {
 
         $.ajax({
-          url: './ajax.barcode_validate_bulk.php',
+          url: './ajax.barcode_validate_bulk2.php',
           type: 'POST',
           data: {
             ct_id: $("#ct_id").val(),
@@ -770,7 +770,7 @@ li {
 
             if (toApproveBarcodeArr.length > 0) {
               $.ajax({
-                url: '/shop/ajax.ct_barcode_insert_not_approved.php',
+                url: '/shop/ajax.ct_barcode_insert_not_approved2.php',
                 type: 'POST',
                 data: {
                   toApproveBarcodeArr: toApproveBarcodeArr,
