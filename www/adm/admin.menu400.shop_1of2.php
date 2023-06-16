@@ -16,8 +16,10 @@ $menu['menu400'] = array (
     array('400401', '주문완료관리', G5_ADMIN_URL.'/shop_admin/samhwa_orderlist_complete.php', 'scf_order_complete', 1),
     //array('400440', '개인결제관리', G5_ADMIN_URL.'/shop_admin/personalpaylist.php', 'scf_personalpay', 1),
     //array('400450', '파트너결제관리', G5_ADMIN_URL.'/shop_admin/partnerpaylist.php', 'scf_partnerpay', 1),
+	array('400405', '직배송주문관리', G5_ADMIN_URL.'/shop_admin/direct_delivery_orderlist.php', 'scf_order', 1),
     array('400200', '분류관리', G5_ADMIN_URL.'/shop_admin/categorylist.php', 'scf_cate'),
     array('400300', '상품관리', G5_ADMIN_URL.'/shop_admin/itemlist.php', 'scf_item'),
+	array('400310', '상품관리2', G5_ADMIN_URL.'/shop_admin/itemlist2.php', 'scf_item'),//직배송상품관리 추가(20230508 정한진)
     array('400660', '상품문의', G5_ADMIN_URL.'/shop_admin/itemqalist.php', 'scf_item_qna'),
     array('400650', '사용후기', G5_ADMIN_URL.'/shop_admin/itemuselist.php', 'scf_ps'),
     array('400620', '상품재고관리', G5_ADMIN_URL.'/shop_admin/itemstocklist.php', 'scf_item_stock'),
