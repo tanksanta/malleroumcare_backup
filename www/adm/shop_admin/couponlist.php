@@ -7,6 +7,7 @@ include_once (G5_ADMIN_PATH.'/admin.head.php');
 include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 add_javascript('<script src="'.G5_JS_URL.'/popModal/popModal.min.js"></script>', 0);
 add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min.css">', 0);
+add_javascript('<script src="'.G5_JS_URL.'/jquery.fileDownload.js"></script>', 0);
 
 auth_check($auth[$sub_menu], "r");
 
@@ -212,6 +213,40 @@ $qstr = "type={$type}&amp;cp_expiration={$cp_expiration}&amp;sel_cp_method={$sel
     border:1px solid #333;
     background:#333;
 }
+ #loading_excel {
+    display: none;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 9999;
+    background: rgba(0, 0, 0, 0.3);
+  }
+  #loading_excel .loading_modal {
+    position: absolute;
+    width: 400px;
+    padding: 30px 20px;
+    background: #fff;
+    text-align: center;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  #loading_excel .loading_modal p {
+    padding: 0;
+    font-size: 16px;
+  }
+  #loading_excel .loading_modal img {
+    display: block;
+    margin: 20px auto;
+  }
+  #loading_excel .loading_modal button {
+    padding: 10px 30px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
 </style>
 
 <!-- 쿠폰 관리 메뉴 -->
@@ -552,11 +587,21 @@ $qstr = "type={$type}&amp;cp_expiration={$cp_expiration}&amp;sel_cp_method={$sel
             <input type="submit" name="act_button" value="선택삭제" onclick="document.pressed=this.value" class="btn btn_02">
         <?php } ?>
        <a href="./couponform.php" id="coupon_add" class="btn btn_01">쿠폰 추가</a>
+	   <?php if($type=="user") { // 회원별 보기만 엑셀 다운로드?>
+            <a href="javascript:downloadExcel();" id="coupon_excel" class="btn btn_02" style="background: #339900 !important">엑셀다운로드</a>
+        <?php } ?>
     </div>
 </form>
 
 <?php echo get_paging(G5_IS_MOBILE ? $config['cf_mobile_pages'] : $config['cf_write_pages'], $page, $total_page, "{$_SERVER['SCRIPT_NAME']}?$qstr&amp;page="); ?>
-
+<div id="loading_excel">
+  <div class="loading_modal">
+    <p>엑셀파일 다운로드 중입니다.</p>
+    <p>잠시만 기다려주세요.</p>
+    <img src="/shop/img/loading.gif" alt="loading">
+    <button onclick="cancelExcelDownload();" class="btn_cancel_excel">취소</button>
+  </div>
+</div>
 <script>
 $(function () {
     $('#fr_date, #to_date').datepicker({
@@ -597,6 +642,26 @@ function fcouponlist_submit(f)
 
     return true;
 }
+
+function downloadExcel() {
+    var href = './couponlist.excel.download.php';
+
+    $('#loading_excel').show();
+    EXCEL_DOWNLOADER = $.fileDownload(href, {
+      httpMethod: "POST",
+      data: $("#frmcouponlist").serialize()
+    })
+      .always(function() {
+        $('#loading_excel').hide();
+      });
+  }
+
+function cancelExcelDownload() {
+    if (EXCEL_DOWNLOADER != null) {
+      EXCEL_DOWNLOADER.abort();
+    }
+    $('#loading_excel').hide();
+  }
 </script>
 
 <?php
