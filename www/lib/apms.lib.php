@@ -295,12 +295,28 @@ function apms_opener($id, $msg='', $url='', $opt='') {
 
 	$url = str_replace("&amp;", "&", $url);
 
-    echo "<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\">";
-    echo "<script>";
+    echo ("
+		<!DOCTYPE html>
+		<html>
+		<head>
+		<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\">
+		</head>
+		<body>
+			<script>
+	");
     if($msg) echo "alert('".$msg."');";
-    echo "opener.apms_page('".$id."', '".$url."', '".$opt."');";
-    echo "self.close();";
-    echo "</script>";
+    echo ("
+		if(!window.ReactNativeWebView){ 
+			opener.apms_page('".$id."', '".$url."', '".$opt."'); 
+			self.close();
+		} else {
+			window.ReactNativeWebView.postMessage('reload');
+			window.ReactNativeWebView.postMessage('selfClose');
+		}    	
+			</script>
+		</body>
+		</html>	
+	");
     exit;
 }
 
