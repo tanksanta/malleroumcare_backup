@@ -591,6 +591,7 @@ input[type="number"]::-webkit-inner-spin-button {
         } else {
           $.ajax('ajax.recipient.inquiry.php', {
             type: 'POST',  // http method
+			async:false,
             data: { id : num,rn : name },  // data to submit
             success: function (data, status, xhr) {
                 let rep_list = data['data']['recipientContractDetail']['Result'];                
@@ -621,15 +622,16 @@ input[type="number"]::-webkit-inner-spin-button {
                   alert("로그 저장에 실패했습니다!");
                 });
 
-                $.post('./ajax.my.recipient.hist.php', {
-                  data: data['data'],
-                  status: false
-                }, 'json')
-                .fail(function($xhr) {
-                  var data = $xhr.responseJSON;
-                  alert("계약정보 업데이트에 실패했습니다!");
-                });
-				rep_info['REDUCE_NM'] = (rep_info['REDUCE_NM'] == null)?rep_info['SBA_CD']:rep_info['REDUCE_NM'];
+                $.post('./ajax.my.recipient.hist.php', {//계약정보먼저 업데이트 시킴
+					data: data['data'],
+					status: false,
+					async:false,
+				}, 'json')
+				.done(function(result) {
+					  //alert(result["data"]["rem_amount"]);
+					var rem_amount2 = result["data"]["rem_amount"];
+					var used_amount2 = 1600000-result["data"]["rem_amount"];
+					rem_amount = rem_amount2;
                 $.ajax({
                     type: 'POST',
                     url: './ajax.macro_request.php',
@@ -657,6 +659,12 @@ input[type="number"]::-webkit-inner-spin-button {
                     var data = $xhr.responseJSON;
                     alert(data && data.message);
                 });
+				})
+				.fail(function($xhr) {
+					var data = $xhr.responseJSON;
+					alert("계약정보 업데이트에 실패했습니다!");
+				});
+
                 
                 btn_submit.disabled = false;
             },

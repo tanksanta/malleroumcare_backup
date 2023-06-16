@@ -159,7 +159,7 @@ li {
 		if ($result_again && count($result_again)) {
 		  $j = 0 ;
 		  foreach ($result_again as $stock) {
-			$stock_list .= (($j != 0)?",":"").$stock['prodBarNum'];
+			$stock_list .= (($j != 0 && $stock['prodBarNum']!="")?",":"").$stock['prodBarNum'];
 			$j++;
 		  }
 		}
@@ -169,11 +169,11 @@ li {
 		
 		$sql = "SELECT ct_delivery_company FROM `g5_shop_order` o
 				LEFT JOIN g5_shop_cart c ON o.od_id = c.od_id
-				WHERE c.it_id = '".$row["it_id"]."' AND o.od_b_addr1 LIKE '".$row["od_b_addr1"]."%'
+				WHERE c.it_id = '".$row["it_id"]."' AND o.od_b_addr1 LIKE '".$row["od_b_addr1"]."%' and c.ct_delivery_num != ''
 				ORDER BY o.od_time DESC
 				LIMIT 1";
 		$row22 = sql_fetch($sql);
-		$row["ct_delivery_company"] = ($row["ct_delivery_company"]=="")? $row22["ct_delivery_company"]:$row["ct_delivery_company"];
+		$row["ct_delivery_company"] = ($row["ct_delivery_num"]=="")? $row22["ct_delivery_company"]:$row["ct_delivery_company"];
 		?>
 			<div id="wrap<?=$i?>" class="new_form3">
 				<div class="parent" onclick="show_hide('<?=$i?>','<?=$ct_direct_delivery_partner_name?>')">
@@ -555,7 +555,7 @@ li {
       if (barcodeArr.length > 0) {
 
         $.ajax({
-          url: './ajax.barcode_validate_bulk.php',
+          url: './ajax.barcode_validate_bulk2.php',
           type: 'POST',
           data: {
             ct_id: $("#ct_id").val(),
@@ -677,17 +677,24 @@ li {
                 alert("통신 실패.");
             }
         });
-		$.each(stoldList, function(key, value) {
-			if(barcode_arr2[key].length !=12){ flag =true;}
+		var prodBarNum = "";
+		$.each(stoldList, function(key, value) {			
+			if(barcode_arr2[key] != "" && barcode_arr2[key] != undefined){
+				if(barcode_arr2[key].length !=12){ flag =true;}	
+				prodBarNum = barcode_arr2[key];
+			}else{
+				prodBarNum = "";
+			}
 			prodsList[key] = {
 				stoId : value.stoId,
 				prodId : value.prodId,
-				prodBarNum : barcode_arr2[key],//($("." + value.stoId).val()) ? $("." + value.stoId).val() : "",
+				prodBarNum : prodBarNum,//($("." + value.stoId).val()) ? $("." + value.stoId).val() : "",
 			}
-			if(barcode_arr2[key]){
+			if(prodBarNum != ""){
 				insertBarCnt++;
 			}			
 		});
+		//alert(JSON.stringify(prodsList));
 		
 		if (flag && $("#barcode").val() != "") {
 			alert('바코드는 12자리를 입력해주세요.');
@@ -703,7 +710,7 @@ li {
 			prods : prodsList,
 			entId : $("#od_entId").val(),
 			pass: pass,
-		}		
+		}
 		
 		$.ajax({
         url : "./samhwa_orderform_stock_update.php",
@@ -763,7 +770,7 @@ li {
 
             if (toApproveBarcodeArr.length > 0) {
               $.ajax({
-                url: '/shop/ajax.ct_barcode_insert_not_approved.php',
+                url: '/shop/ajax.ct_barcode_insert_not_approved2.php',
                 type: 'POST',
                 data: {
                   toApproveBarcodeArr: toApproveBarcodeArr,
@@ -791,6 +798,7 @@ li {
 				$("#barcode_qty"+$("#n").val()).html("<font color='red'>0/"+$("#ct_qty").val()+"</font>");
 				$("#barcode"+$("#n").val()).val("우측 바코드 정보에 바코드를 등록 바랍니다.");
 			}
+			stock_check();
 			toast('등록 되었습니다.');         
           }
         },
