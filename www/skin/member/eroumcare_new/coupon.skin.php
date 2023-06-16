@@ -31,7 +31,7 @@ add_stylesheet('<link rel="stylesheet" href="'.$skin_url.'/style.css" media="scr
 		<th class="text-center" scope="col">사용기한</th>
 	</tr>
 	<?php for($i=0; $i < count($cp); $i++) { 
-		$cp_a = ($cp[$i]['cp_href']) ? '<a href="'.$cp[$i]['cp_href'].'" target="_blank">' : '<a>';	
+		$cp_a = ($cp[$i]['cp_href']) ? '<a href="" onclick="openLinkInParent(\''.$cp[$i]['cp_href'].'\')">' : '<a>';	
 	?>
 		<tr>
 			<td><?php echo $cp_a;?><?php echo $cp[$i]['cp_subject']; ?></a></td>
@@ -50,3 +50,16 @@ add_stylesheet('<link rel="stylesheet" href="'.$skin_url.'/style.css" media="scr
 		<button type="button" onclick="window.close();" class="btn btn-black btn-sm">닫기</button>
 	</p>
 </div>
+<script>
+function openLinkInParent(link) {
+
+	if(!window.ReactNativeWebView) { 
+		window.opener.location.href = link;
+		self.close();
+	} else {
+		window.ReactNativeWebView.postMessage('url:'+link);
+		window.ReactNativeWebView.postMessage('selfClose');
+	}
+
+}
+</script>

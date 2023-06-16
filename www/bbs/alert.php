@@ -32,7 +32,7 @@ $msg = isset($msg) ? strip_tags($msg) : '';
 $msg2 = str_replace("\\n", "<br>", $msg);
 
 $url = clean_xss_tags($url, 1);
-if (!$url) $url = clean_xss_tags($_SERVER['HTTP_REFERER'], 1);
+//if (!$url) $url = clean_xss_tags($_SERVER['HTTP_REFERER'], 1);
 
 $url = preg_replace("/[\<\>\'\"\\\'\\\"\(\)]/", "", $url);
 $url = preg_replace('/\r\n|\r|\n|[^\x20-\x7e]/','', $url);
@@ -52,7 +52,11 @@ alert("<?php echo $msg; ?>");
 <?php if ($url) { ?>
 document.location.replace("<?php echo str_replace('&amp;', '&', $url); ?>");
 <?php } else { ?>
-history.back();
+if(!window.ReactNativeWebView){ 
+    history.back(); 
+} else {
+    window.ReactNativeWebView.postMessage('historyBack');
+}
 <?php } ?>
 </script>
 
