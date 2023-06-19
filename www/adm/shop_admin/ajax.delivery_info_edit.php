@@ -1,6 +1,6 @@
 <?php
 include_once('./_common.php');
-auth_check($auth[$sub_menu], "r");
+//auth_check($auth[$sub_menu], "r");
 header('Content-type: application/json');
 if(!$member["mb_id"]){
   json_response(400, '먼저 로그인하세요.');

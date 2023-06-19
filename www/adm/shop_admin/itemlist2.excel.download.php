@@ -2,7 +2,7 @@
 $sub_menu = '400310';
 include_once("./_common.php");
 
-auth_check($auth[$sub_menu], "r");
+//auth_check($auth[$sub_menu], "r");
 
 // 데이터 처리
 $data = [];
