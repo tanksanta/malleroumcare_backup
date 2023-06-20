@@ -8,7 +8,12 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 
 function editor_html($id, $content)
 {
-    return "<textarea id=\"$id\" name=\"$id\" style=\"width:100%;\" maxlength=\"65536\">$content</textarea>";
+    //return "<textarea id=\"$id\" name=\"$id\" style=\"width:100%;\" maxlength=\"65536\">$content</textarea>";
+    if ( $member['mb_level'] >= 9 ) {  // 23.06.20 : 서원 - 게시물 입력 사이즈 변경
+        return "<textarea id=\"{$id}\" name=\"{$id}\" style=\"width:100%;\">{$content}</textarea>"; // 23.06.20 : 서원 - 게시물 입력 사이즈 변경
+    } else { // 23.06.20 : 서원 - 게시물 입력 사이즈 변경
+        return "<textarea id=\"{$id}\" name=\"{$id}\" style=\"width:100%;\" maxlength=\"65536\">{$content}</textarea>";
+    } // 23.06.20 : 서원 - 게시물 입력 사이즈 변경
 }
 
 
