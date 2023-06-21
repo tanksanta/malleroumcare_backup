@@ -206,18 +206,31 @@
                             <span class="admin">( <a href="<?php echo G5_ADMIN_URL;?>/shop_admin/samhwa_orderlist.php">관리메뉴</a> )</span>
                             <?php } ?>
                         </p>
-                        <p>
-                            <a href="#" class="member_modi" onclick="location.href='<?=G5_BBS_URL?>/member_confirm.php?url=member_info_newform.php'">[회원정보 수정]</a> &nbsp;
+                        <p style="display: flex; align-items: flex-start; justify-content: center; margin-top: 10px;">
+                            <a href="<?=G5_BBS_URL?>/member_confirm.php?url=member_info_newform.php" class="member_modi">· 회원정보 수정</a> &nbsp;
+
+                            <?php if(($member["mb_level"] =="3" || $member["mb_level"] =="4")) { ?>
                             <?php
+                                $_modeBtn_ck = "";
+                                $_modeBtn_type = "adm";
                                 // 23.06.09 : 서원 - 구매모드 기능 복구.
                                 if(($member["mb_level"] =="3" || $member["mb_level"] =="4")) {
                                     if($_COOKIE["viewType"] == "adm") {
-                                        echo '<a href="#" class="modeBtn member_modi" data-type="basic">[구매모드]</a>';
+                                        $_modeBtn_type = "basic";   
                                     } else {
-                                        echo '<a href="#" class="modeBtn member_modi" data-type="adm">[급여안내모드]</a>';
+                                        $_modeBtn_ck = " checked";
                                     }
                                 }
                             ?>
+                            <a href="#" class="modeBtn member_modi" data-type="<?=$_modeBtn_type;?>">· 급여가 안내</a> 
+                            <label class="thkc_switch modeBtn" data-type="<?=$_modeBtn_type;?>">
+                                <input type="checkbox"<?=$_modeBtn_ck;?>>
+                                <span class="slider">
+                                    <span class="slider-label slider-label-left">ON</span>
+                                    <span class="slider-label slider-label-right">OFF</span>
+                                </span>
+                            </label>
+                            <?php } ?>
                         </p>
                     </div>
 

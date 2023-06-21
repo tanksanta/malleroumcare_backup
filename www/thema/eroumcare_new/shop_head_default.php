@@ -97,7 +97,7 @@
         </div>
 
     <?php } else { if(($member["mb_level"] =="3" || $member["mb_level"] =="4")) { ?>
-        <div class="topBanner_mode"> "구매모드" 실행 중입니다 </div>
+        <div class="topBanner_mode"> "급여가 안내"모드 실행 중입니다 </div>
     <?php } } ?>
     <?php } ?>
         
