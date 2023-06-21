@@ -493,12 +493,12 @@ $response = '';
 if ($recipientContractDetail['Result']['ds_toolPayLmtList'] != null)
 {
 	$count = count($recipientContractDetail['Result']['ds_toolPayLmtList']);
-	$dateToday = date("ymd");
+	$dateToday = date("Ymd");
  
 	for ($i=0; $i < $count ; $i++)
 	{
-	    if ((strtotime($recipientContractDetail['Result']['ds_toolPayLmtList'][$i]['APDT_FR_DT']) < strtotime($dateToday)) &&
-	    (strtotime($recipientContractDetail['Result']['ds_toolPayLmtList'][$i]['APDT_TO_DT']) > strtotime($dateToday)))
+	    if ((strtotime($recipientContractDetail['Result']['ds_toolPayLmtList'][$i]['APDT_FR_DT']) < strtotime($dateToday) &&
+	    strtotime($recipientContractDetail['Result']['ds_toolPayLmtList'][$i]['APDT_TO_DT']) > strtotime($dateToday)) || $recipientContractDetail['Result']['ds_toolPayLmtList'][$i]['APDT_FR_DT'] == $dateToday || $recipientContractDetail['Result']['ds_toolPayLmtList'][$i]['APDT_TO_DT'] == $dateToday)
 	    {
 	        $target_period = $i;
 			break;
@@ -548,89 +548,89 @@ if ($recipientContractHistory['Result']['ds_result'] != null){
 	{
 		if (strcmp($recipientContractHistory['Result']['ds_result'][$i]['PROD_NM'], '이동변기') == 0)
 		{
-			$obj_purchaseHistory->movingToilet++; // 이동변기 : 1개
+			//$obj_purchaseHistory->movingToilet++; // 이동변기 : 1개
 		}
 		else if (strcmp($recipientContractHistory['Result']['ds_result'][$i]['PROD_NM'], '목욕의자') == 0)
 		{
-			$obj_purchaseHistory->bathingChair++; // 목욕의자 : 1개
+			//$obj_purchaseHistory->bathingChair++; // 목욕의자 : 1개
 		}
 		else if (strcmp($recipientContractHistory['Result']['ds_result'][$i]['PROD_NM'], '안전손잡이') == 0)
 		{
-			$obj_purchaseHistory->safetyHandGrip++; // 안전손잡이 : 10개
+			//$obj_purchaseHistory->safetyHandGrip++; // 안전손잡이 : 10개
 		}
 		else if (strcmp($recipientContractHistory['Result']['ds_result'][$i]['PROD_NM'], '미끄럼 방지용품') == 0)
 		{
 			if (strpos($recipientContractHistory['Result']['ds_result'][$i]['MGDS_NM'], '양말') != 0)
 			{
-				$obj_purchaseHistory->safetyPreventSlivery++; // 미끄럼방지용품(매트,방지액): 5개
+				//$obj_purchaseHistory->safetyPreventSlivery++; // 미끄럼방지용품(매트,방지액): 5개
 			}
 			else 
 			{
-				$obj_purchaseHistory->sliveryPreventSocks++;	 //미끄럼방지양말 : 6켤레	
+				//$obj_purchaseHistory->sliveryPreventSocks++;	 //미끄럼방지양말 : 6켤레	
 			}
 		}
 		else if (strcmp($recipientContractHistory['Result']['ds_result'][$i]['PROD_NM'], '간이변기') == 0)
 		{
-			$obj_purchaseHistory->simpleToilet++;			 //간이변기 : 2개
+			//$obj_purchaseHistory->simpleToilet++;			 //간이변기 : 2개
 		}
 		else if (strcmp($recipientContractHistory['Result']['ds_result'][$i]['PROD_NM'], '지팡이') == 0)
 		{
-			$obj_purchaseHistory->cane++;					//지팡이 : 1개
+			//$obj_purchaseHistory->cane++;					//지팡이 : 1개
 		}
 		else if (strcmp($recipientContractHistory['Result']['ds_result'][$i]['PROD_NM'], '욕창예방 매트리스') == 0)
 		{
-			$obj_purchaseHistory->bedsorePreventMatriss++; 	//욕창방지 매트리스 : 1개
+			//$obj_purchaseHistory->bedsorePreventMatriss++; 	//욕창방지 매트리스 : 1개
 		}
 		else if (strcmp($recipientContractHistory['Result']['ds_result'][$i]['PROD_NM'], '욕창예방방석') == 0)
 		{
-			$obj_purchaseHistory->cushionPreventMatriss++; 	//욕창방지 방석 : 1개 
+			//$obj_purchaseHistory->cushionPreventMatriss++; 	//욕창방지 방석 : 1개 
 		}
 		else if (strcmp($recipientContractHistory['Result']['ds_result'][$i]['PROD_NM'], '자세변환용구') == 0)
 		{
-			$obj_purchaseHistory->postureChangeTool++; 		//자세변환 용구 : 5개
+			//$obj_purchaseHistory->postureChangeTool++; 		//자세변환 용구 : 5개
 		}
 		else if (strcmp($recipientContractHistory['Result']['ds_result'][$i]['PROD_NM'], '성인용보행기') == 0)
 		{
-			$obj_purchaseHistory->adultWalker++; 		//성인용 보행기 : 2개
+			//$obj_purchaseHistory->adultWalker++; 		//성인용 보행기 : 2개
 		}
 		else if (strcmp($recipientContractHistory['Result']['ds_result'][$i]['PROD_NM'], '요실금팬티') == 0)
 		{
-			$obj_purchaseHistory->incontinencePanty++; 		//요실금 팬티: 4개
+			//$obj_purchaseHistory->incontinencePanty++; 		//요실금 팬티: 4개
 		}
 		else if (strcmp($recipientContractHistory['Result']['ds_result'][$i]['PROD_NM'], '경사로(실내용)') == 0)
 		{
-			$obj_purchaseHistory->runway++; 		//경사로(실내용) : 6개
+			//$obj_purchaseHistory->runway++; 		//경사로(실내용) : 6개
 		}
 		else if (strcmp($recipientContractHistory['Result']['ds_result'][$i]['PROD_NM'], '수동휠체어') == 0)
 		{
-			$obj_purchaseHistory->mWheelChair++; 		//경사로(실내용) : 6개
+			//$obj_purchaseHistory->mWheelChair++; 		//경사로(실내용) : 6개
 		}
 		else if (strcmp($recipientContractHistory['Result']['ds_result'][$i]['PROD_NM'], '전동침대') == 0)
 		{
-			$obj_purchaseHistory->eBed++; 		//경사로(실내용) : 6개
+			//$obj_purchaseHistory->eBed++; 		//경사로(실내용) : 6개
 		}else if ( strcmp($recipientContractHistory['Result']['ds_result'][$i]['PROD_NM'], '수동침대') == 0)
 		{
-			$obj_purchaseHistory->mBed++;
+			//$obj_purchaseHistory->mBed++;
 		}
 		else if ( strcmp($recipientContractHistory['Result']['ds_result'][$i]['PROD_NM'], '욕창예방 매트리스') == 0)
 		{
-			$obj_purchaseHistory->lendBedsorePreventionMatriss++;
+			//$obj_purchaseHistory->lendBedsorePreventionMatriss++;
 		}
 		else if ( strcmp($recipientContractHistory['Result']['ds_result'][$i]['PROD_NM'], '이동욕조') == 0)
 		{
-			$obj_purchaseHistory->portableBath++;
+			//$obj_purchaseHistory->portableBath++;
 		}
 		else if ( strcmp($recipientContractHistory['Result']['ds_result'][$i]['PROD_NM'], '목욕리프트') == 0)
 		{
-			$obj_purchaseHistory->bathLift++;
+			//$obj_purchaseHistory->bathLift++;
 		}
 		else if ( strcmp($recipientContractHistory['Result']['ds_result'][$i]['PROD_NM'], '배회감지기') == 0)
 		{
-			$obj_purchaseHistory->loiteringDetection++;
+			//$obj_purchaseHistory->loiteringDetection++;
 		}
 		else if ( strcmp($recipientContractHistory['Result']['ds_result'][$i]['PROD_NM'], '경사로(실외용)') == 0)
 		{
-			$obj_purchaseHistory->lendRunway++;
+			//$obj_purchaseHistory->lendRunway++;
 		}
 		else
 		{
