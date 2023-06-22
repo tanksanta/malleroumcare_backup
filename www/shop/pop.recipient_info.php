@@ -70,17 +70,20 @@ while ($res_item = sql_fetch_array($ct_result)) {
     $ct_list[] = $res_item;
     $paycode = $res_item['PROD_PAY_CODE']==1?'1':'0';
     if($res_item['CNCL_YN'] =="정상"){		
-	if($ct_count[str_replace(' ','',$res_item['ITEM_NM']).'0'.$paycode]){
-        $ct_count[str_replace(' ','',$res_item['ITEM_NM']).'0'.$paycode] += 1;
-		$sql2 = "select count('past_id') as cnt from pen_purchase_hist where ENT_ID = '".$member['mb_entId']."' and PEN_NM = '".$res['data'][0]['penNm']."' and PEN_LTM_NUM  = '".$res['data'][0]['penLtmNum']."' and ('".date("Y-m-d")."' between PEN_EXPI_ST_DTM and PEN_EXPI_ED_DTM) and replace(ITEM_NM,' ','')='".$res_item['ITEM_NM']."' and CNCL_YN='정상' and PROD_BAR_NUM='".$res_item['PROD_BAR_NUM']."' and ('".date("Y-m-d")."' between ORD_STR_DTM and ORD_END_DTM) and ORD_STATUS='".$res_item['ORD_STATUS']."' ;";
-		$bar_row = sql_fetch($sql2);
-		if($bar_row["cnt"] == 1){
-			$ct_count2[str_replace(' ','',$res_item['ITEM_NM']).'0'.$paycode] += 1;
+		if($ct_count[str_replace(' ','',$res_item['ITEM_NM']).'0'.$paycode]){
+			$ct_count[str_replace(' ','',$res_item['ITEM_NM']).'0'.$paycode] += 1;
+			$sql2 = "select count('past_id') as cnt from pen_purchase_hist where ENT_ID = '".$member['mb_entId']."' and PEN_NM = '".$res['data'][0]['penNm']."' and PEN_LTM_NUM  = '".$res['data'][0]['penLtmNum']."' and ('".date("Y-m-d")."' between PEN_EXPI_ST_DTM and PEN_EXPI_ED_DTM) and replace(ITEM_NM,' ','')='".$res_item['ITEM_NM']."' and CNCL_YN='정상' and PROD_BAR_NUM='".$res_item['PROD_BAR_NUM']."'";
+			if($res_item['ORD_STATUS'] == "대여"){
+				$sql2 .= " and ('".date("Y-m-d")."' between ORD_STR_DTM and ORD_END_DTM) and ORD_STATUS='".$res_item['ORD_STATUS']."' ;";
+			}
+			$bar_row = sql_fetch($sql2);
+			if($bar_row["cnt"] == 1){
+				$ct_count2[str_replace(' ','',$res_item['ITEM_NM']).'0'.$paycode] += 1;
+			}
+		}else {
+			$ct_count[str_replace(' ','',$res_item['ITEM_NM']).'0'.$paycode] = 1;
+			$ct_count2[str_replace(' ','',$res_item['ITEM_NM']).'0'.$paycode] = 1;
 		}
-    }else {
-        $ct_count[str_replace(' ','',$res_item['ITEM_NM']).'0'.$paycode] = 1;
-		$ct_count2[str_replace(' ','',$res_item['ITEM_NM']).'0'.$paycode] = 1;
-    }
 	}elseif($res_item['CNCL_YN'] =="변경"){
 		//$sql2 = "select count('past_id') as cnt from pen_purchase_hist where ENT_ID = '".$member['mb_entId']."' and PEN_NM = '".$res['data'][0]['penNm']."' and PEN_LTM_NUM  = '".$res['data'][0]['penLtmNum']."' and ('".date("Y-m-d")."' between PEN_EXPI_ST_DTM and PEN_EXPI_ED_DTM) and replace(ITEM_NM,' ','')='".$res_item['ITEM_NM']."' and CNCL_YN='정상';";
 		//$cncl_row = sql_fetch($sql2);
@@ -95,6 +98,7 @@ while ($res_item = sql_fetch_array($ct_result)) {
 		//}
 	}
 }
+
 if(substr($_GET['penLtmNum'],0,2)=='LL'){
     $_GET['penLtmNum'] = substr($_GET['penLtmNum'], 1);
 }
