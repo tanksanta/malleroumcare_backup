@@ -73,7 +73,7 @@ $recipientContractHistory['Result']['ds_result'] = null;
 $PEN_EXPI_ST_DTM = substr($row["penApplyDtm"],0,10);
 $PEN_EXPI_ED_DTM = substr($row["penApplyDtm"],13,10);
 //$sql2 = "select * from pen_purchase_hist where ENT_ID='{$member['mb_entId']}' and PEN_NM='{$rn}' and PEN_LTM_NUM ='L{$id}' and PEN_EXPI_ST_DTM>='{$PEN_EXPI_ST_DTM}' and PEN_EXPI_ED_DTM<='{$PEN_EXPI_ED_DTM}' order by ORD_END_DTM DESC";//구매한 품목
-$sql2 = "select * from pen_purchase_hist where ENT_ID='{$member['mb_entId']}' and PEN_NM='{$rn}' and PEN_LTM_NUM ='L{$id}' and (PEN_EXPI_ED_DTM Between '{$PEN_EXPI_ST_DTM}' AND '$PEN_EXPI_ED_DTM') order by ORD_END_DTM DESC";//구매한 품목
+$sql2 = "select * from pen_purchase_hist where ENT_ID='{$member['mb_entId']}' and PEN_NM='{$rn}' and PEN_LTM_NUM ='L{$id}' and ('".date("Y-m-d")."' between PEN_EXPI_ST_DTM and PEN_EXPI_ED_DTM) order by ORD_END_DTM DESC";//구매한 품목
 $result = sql_query($sql2);
 $i = 0;
 while ($res_item = sql_fetch_array($result)) {
@@ -83,6 +83,7 @@ while ($res_item = sql_fetch_array($result)) {
 	$recipientContractHistory['Result']['ds_result'][$i]['POF_FR_DT'] = $res_item["ORD_STR_DTM"]."~".$res_item["ORD_END_DTM"];//기간
 	$recipientContractHistory['Result']['ds_result'][$i]['TOT_AMT'] = $res_item["TOTAL_PRICE"];//급여가
 	$recipientContractHistory['Result']['ds_result'][$i]['CNCL_YN'] = $res_item["CNCL_YN"];//계약상태
+	$recipientContractHistory['Result']['ds_result'][$i]['PROD_BAR_NUM'] = $res_item["PROD_BAR_NUM"];//바코드
 	$i++;
 }
 

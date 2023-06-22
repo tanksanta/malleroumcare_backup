@@ -18,9 +18,9 @@ if($data['penLtmNum'] != null){
 		$update_data = "UPDATE pen_purchase_hist set SYNC_GOVERN = '1' where ENT_ID = '".$member["mb_entId"]."' and PEN_LTM_NUM = 'L".$data['penLtmNum']."';";
         sql_query($update_data);
 
-		json_response(200, 'OK', array(
-			'msg' => "contract update"
-		));
+		//json_response(200, 'OK', array(
+		//	'msg' => "contract update"
+		//));
 	}
 }
 
@@ -230,7 +230,41 @@ $sql = $sql.';';
 
 sql_query($sql);
 
+//***** 틸코블렛 API 조회 값중 대여 상품이 있는 경우 잔여 금액을 계산하지 못하고 잘못된 값을 반환하는 사례가 발생하여 아래 계약건에 대한 금액 합산 로직을 추가하였음 - 정한진 차장 2023.06.13
+/*
+$pen_budget = $list_data['ds_toolPayLmtList'][$ind]['REMN_AMT'];//잔여금액 초기화
+$sql_b = "SELECT COUNT(*) cnt FROM pen_purchase_hist 
+WHERE ENT_ID = '".$member["mb_entId"]."' AND PEN_NM = '".$list_detail['FNM']."' AND PEN_LTM_NUM = '".$list_detail['LTC_MGMT_NO']."' 
+AND (CURRENT_TIMESTAMP BETWEEN PEN_EXPI_ST_DTM AND PEN_EXPI_ED_DTM) AND (PEN_BUDGET = '1600000' OR ORD_STATUS='대여');";
+$row_b = sql_fetch($sql_b);
+$count = $row_b["cnt"];
+
+if($count > 0){//잔여금액 점검 시작
+*/	
+	$sql_b2 = "SELECT SUM(TOTAL_PRICE) total_price1	
+	FROM pen_purchase_hist
+	WHERE ENT_ID = '".$member["mb_entId"]."' AND PEN_NM = '".$list_detail['FNM']."' AND PEN_LTM_NUM = '".$list_detail['LTC_MGMT_NO']."' 
+	AND (CNCL_YN = '변경' OR CNCL_YN = '정상')
+	AND ('".date("Ymd")."' BETWEEN PEN_EXPI_ST_DTM AND PEN_EXPI_ED_DTM) ;";
+	$row = sql_fetch($sql_b2);
+	$pen_budget = 1600000-$row["total_price1"];
+	
+	$sql_u = "UPDATE pen_purchase_hist set PEN_BUDGET='".$pen_budget."'
+	where ENT_ID = '".$member["mb_entId"]."' AND PEN_NM = '".$list_detail['FNM']."' AND PEN_LTM_NUM = '".$list_detail['LTC_MGMT_NO']."' 
+	AND ('".date("Y-m-d")."' BETWEEN PEN_EXPI_ST_DTM AND PEN_EXPI_ED_DTM)";
+	sql_query($sql_u);//잔여금액 업데이트
+
+//}
+$sql_m = "select count(id) cnt from macro_request where mb_id='{$member['mb_id']}' and recipient_name='".$list_detail['FNM']."' and recipient_num='".str_replace("L","",$list_detail['LTC_MGMT_NO'])."'";
+$row_m = sql_fetch($sql_m);
+$count = $row_m["cnt"];
+if($count>0){
+	$sql_mu = "update macro_request set rem_amount='".$pen_budget."' where mb_id='{$member['mb_id']}' and recipient_name='".$list_detail['FNM']."' and recipient_num='".str_replace("L","",$list_detail['LTC_MGMT_NO'])."'";
+	sql_query($sql_mu);
+}
+
 json_response(200, 'OK', array(
-  'sql' => $sql
+  'sql' => $sql_mu,
+  'rem_amount' => $pen_budget,
 ));
 ?>

@@ -371,8 +371,8 @@ $(function() {
               
               let applydtm = '';
               for(var ind = 0; ind < rep_list['ds_toolPayLmtList'].length; ind++){
-                var appst = new Date(rep_list['ds_toolPayLmtList'][ind]['APDT_FR_DT'].substr(0,4)+'-'+rep_list['ds_toolPayLmtList'][ind]['APDT_FR_DT'].substr(4,2)+'-'+rep_list['ds_toolPayLmtList'][ind]['APDT_FR_DT'].substr(6,2));
-                var apped = new Date(rep_list['ds_toolPayLmtList'][ind]['APDT_TO_DT'].substr(0,4)+'-'+rep_list['ds_toolPayLmtList'][ind]['APDT_TO_DT'].substr(4,2)+'-'+rep_list['ds_toolPayLmtList'][ind]['APDT_TO_DT'].substr(6,2));
+                var appst = new Date(rep_list['ds_toolPayLmtList'][ind]['APDT_FR_DT'].substr(0,4)+'-'+rep_list['ds_toolPayLmtList'][ind]['APDT_FR_DT'].substr(4,2)+'-'+rep_list['ds_toolPayLmtList'][ind]['APDT_FR_DT'].substr(6,2)+" 00:00:00");
+                var apped = new Date(rep_list['ds_toolPayLmtList'][ind]['APDT_TO_DT'].substr(0,4)+'-'+rep_list['ds_toolPayLmtList'][ind]['APDT_TO_DT'].substr(4,2)+'-'+rep_list['ds_toolPayLmtList'][ind]['APDT_TO_DT'].substr(6,2)+" 23:59:59");
                 var today = new Date();
                 if(today < apped && today > appst){
                   applydtm = appst.toISOString().split('T')[0]+' ~ '+apped.toISOString().split('T')[0];
@@ -496,8 +496,36 @@ $(function() {
 		        if(data.isSpare)
 		          return window.location.href = "./my_recipient_view.php?id"+data.penId;
 		  
-		  
-		        $.post('./ajax.my.recipient.setItem.php', {
+				if(ct_history_list.length != 0){ // 계약이력 삽입
+				  let penPurchaseHist = <?=json_encode($recent_result)?>;
+				  //if(penPurchaseHist == null){
+					$.post('./ajax.my.recipient.hist.php', {
+					  data: ct_history_list,
+					  status: true
+					}, 'json')
+					.fail(function($xhr) {
+					  var data = $xhr.responseJSON;
+					  alert("계약정보 업데이트에 실패했습니다!");
+					})
+
+				  //} else if(ct_history_list['recipientContractDetail']['Result']['ds_ctrHistTotalList'].length > penPurchaseHist['cnt']){
+					//ct_history_list['recipientContractDetail']['Result']['ds_ctrHistTotalList'] = ct_history_list['recipientContractDetail']['Result']['ds_ctrHistTotalList'].slice(penPurchaseHist['cnt'], ct_history_list.length);
+
+					// TODO : pen_purchase_hist update 만들기
+					// 이로움 DB에 계약정보 insert
+					//$.post('./ajax.my.recipient.hist.php', {
+					//  data: ct_history_list,
+					//  status: true
+					//}, 'json')
+					
+					//.fail(function($xhr) {
+					//  var data = $xhr.responseJSON;
+					//  alert("계약정보 업데이트에 실패했습니다!");
+					//})
+				  //}
+				}
+		        
+				$.post('./ajax.my.recipient.setItem.php', {
 		          penId: "<?=$pen['penId'] ?>",
 		          itemList: itemList
 		        }, 'json')
@@ -513,35 +541,8 @@ $(function() {
 		          var data = $xhr.responseJSON;
 		          alert(data && data.message);
 		        }); 
-
-            if(ct_history_list.length != 0){ // 계약이력 삽입
-              let penPurchaseHist = <?=json_encode($recent_result)?>;
-
-              if(penPurchaseHist == null){
-                $.post('./ajax.my.recipient.hist.php', {
-                  data: ct_history_list,
-                  status: true
-                }, 'json')
-                .fail(function($xhr) {
-                  var data = $xhr.responseJSON;
-                  alert("계약정보 업데이트에 실패했습니다!");
-                })
-
-              } else if(ct_history_list['recipientContractDetail']['Result']['ds_ctrHistTotalList'].length > penPurchaseHist['cnt']){
-                ct_history_list['recipientContractDetail']['Result']['ds_ctrHistTotalList'] = ct_history_list['recipientContractDetail']['Result']['ds_ctrHistTotalList'].slice(penPurchaseHist['cnt'], ct_history_list.length);
-
-                // TODO : pen_purchase_hist update 만들기
-                // 이로움 DB에 계약정보 insert
-                $.post('./ajax.my.recipient.hist.php', {
-                  data: ct_history_list,
-                  status: true
-                }, 'json')
-                .fail(function($xhr) {
-                  var data = $xhr.responseJSON;
-                  alert("계약정보 업데이트에 실패했습니다!");
-                })
-              }
-            }
+				
+            
 
 		      })
 		      .fail(function($xhr) {

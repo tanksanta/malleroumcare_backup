@@ -591,6 +591,7 @@ input[type="number"]::-webkit-inner-spin-button {
         } else {
           $.ajax('ajax.recipient.inquiry.php', {
             type: 'POST',  // http method
+			async:false,
             data: { id : num,rn : name },  // data to submit
             success: function (data, status, xhr) {
                 let rep_list = data['data']['recipientContractDetail']['Result'];                
@@ -604,15 +605,15 @@ input[type="number"]::-webkit-inner-spin-button {
                 let st_date, ed_date;
                 if(rep_list['ds_toolPayLmtList'] != null && rep_list['ds_toolPayLmtList'].length>0){
                   for(var i =0; i< rep_list['ds_toolPayLmtList'].length;i++){                    
-                    st_date = new Date(setDate(rep_list['ds_toolPayLmtList'][i]['APDT_FR_DT']));
-                    ed_date = new Date(setDate(rep_list['ds_toolPayLmtList'][i]['APDT_TO_DT']));
+                    st_date = new Date(rep_list['ds_toolPayLmtList'][i]['APDT_FR_DT'].substr(0,4)+'-'+rep_list['ds_toolPayLmtList'][i]['APDT_FR_DT'].substr(4,2)+'-'+rep_list['ds_toolPayLmtList'][i]['APDT_FR_DT'].substr(6,2)+" 00:00:00" );//new Date(setDate(rep_list['ds_toolPayLmtList'][i]['APDT_FR_DT']));
+                    ed_date = new Date(rep_list['ds_toolPayLmtList'][i]['APDT_TO_DT'].substr(0,4)+'-'+rep_list['ds_toolPayLmtList'][i]['APDT_TO_DT'].substr(4,2)+'-'+rep_list['ds_toolPayLmtList'][i]['APDT_TO_DT'].substr(6,2)+" 23:59:59");//new Date(setDate(rep_list['ds_toolPayLmtList'][i]['APDT_TO_DT']));
                     if(st_date < today && ed_date > today){
                       rem_amount = rep_list['ds_toolPayLmtList'][i]['REMN_AMT'];
                       break;
                     }
                   }
                 }
-
+				$.ajaxSetup({async:false});
                 $.post('./ajax.inquiry_log.php', {
                   data: { ent_id : "<?=$member['mb_id']?>",ent_nm : "<?=$member['mb_name']?>",pen_id : num,pen_nm : name,resultMsg : status,occur_page : "check_my_ltcare_info.php" }
                 }, 'json')
@@ -620,19 +621,20 @@ input[type="number"]::-webkit-inner-spin-button {
                   var data = $xhr.responseJSON;
                   alert("로그 저장에 실패했습니다!");
                 });
-
-                $.post('./ajax.my.recipient.hist.php', {
-                  data: data['data'],
-                  status: false
-                }, 'json')
-                .fail(function($xhr) {
-                  var data = $xhr.responseJSON;
-                  alert("계약정보 업데이트에 실패했습니다!");
-                });
-				rep_info['REDUCE_NM'] = (rep_info['REDUCE_NM'] == null)?rep_info['SBA_CD']:rep_info['REDUCE_NM'];
+				$.ajaxSetup({async:false});
+                $.post('./ajax.my.recipient.hist.php', {//계약정보먼저 업데이트 시킴
+					data: data['data'],
+					status: false,					
+				}, 'json')
+				.done(function(result) {
+					  //alert(result["data"]["rem_amount"]);
+					var rem_amount2 = result["data"]["rem_amount"];
+					var used_amount2 = 1600000-result["data"]["rem_amount"];
+					rem_amount = rem_amount2;
                 $.ajax({
                     type: 'POST',
                     url: './ajax.macro_request.php',
+					async:false,
                     data: {
                         status: "U",
                         mb_id: "<?=$member['mb_id']?>",
@@ -657,6 +659,12 @@ input[type="number"]::-webkit-inner-spin-button {
                     var data = $xhr.responseJSON;
                     alert(data && data.message);
                 });
+				})
+				.fail(function($xhr) {
+					var data = $xhr.responseJSON;
+					alert("계약정보 업데이트에 실패했습니다!");
+				});
+
                 
                 btn_submit.disabled = false;
             },
@@ -666,6 +674,7 @@ input[type="number"]::-webkit-inner-spin-button {
                 //인증서 업로드 추가 영역 
 				if(errMSG == "수급자명 / 장기요양인정번호 확인 후, 조회하시기 바랍니다." ){
 					alert(errMSG);
+					$.ajaxSetup({async:false});
 					$.post('./ajax.inquiry_log.php', {
 					  data: { ent_id : "<?=$member['mb_id']?>",ent_nm : "<?=$member['mb_name']?>",pen_id : num,pen_nm : name,resultMsg : "fail",occur_page : "check_my_ltcare_info.php",err_msg:errMSG }
 					}, 'json')
@@ -691,6 +700,7 @@ input[type="number"]::-webkit-inner-spin-button {
 						//tilko_call('2');
 						pwd_insert();
 					}
+					$.ajaxSetup({async:false});
 					$.post('./ajax.inquiry_log.php', {
 					  data: { ent_id : "<?=$member['mb_id']?>",ent_nm : "<?=$member['mb_name']?>",pen_id : num,pen_nm : name,resultMsg : "fail",occur_page : "check_my_ltcare_info.php",err_msg:errMSG }
 					}, 'json')
