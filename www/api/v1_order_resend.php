@@ -194,16 +194,9 @@ include_once("./_common.php");
 	}
 	
 	
-	$log_txt .= "====== API 보내기 끝 ============================================================= \r\n";
-	fwrite($log_file, $log_txt . "\r\n");
-	fclose($log_file);
-	
-	echo "<pre>";
-    print_r($rs);
-
-if(strpos($_SERVER['HTTP_HOST'],"dev.eroumcare")){	
 //======================= 내부 테스트용 ===============================================================
-	$url2 = "http://192.168.0.229//eroumcareApi/bplcRecv/callback.json";
+if(strpos($_SERVER['HTTP_HOST'],"test.eroumcare")){
+	$url2 = "https://eroum.icubesystems.co.kr/eroumcareApi/bplcRecv/callback.json";
 	$ch = curl_init(); // 리소스 초기화
     curl_setopt($ch, CURLOPT_URL, $url2);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -223,8 +216,46 @@ if(strpos($_SERVER['HTTP_HOST'],"dev.eroumcare")){
     //echo $output;
     $rs=json_decode($output);
     curl_close($ch);  // 리소스 해제
+
+
+	$log_txt .= "[".date("Y-m-d H:i:s")."]"." 응답 - ".$API_Div." \r\n";
+
+	$log_txt .= stripslashes(json_encode($rs, JSON_UNESCAPED_UNICODE))."\r\n";
+	$rs2 = json_encode($rs);
+	$rs = json_decode($rs2,true);
+	if($rs["resultCode"] == "0"){//성공응답시
+		if($API_Div == "order_ent_response"){//승인반려 주문처리 성공시
+			if(is_array($rs["_array_item"]) && $od_status != "주문취소"){// 취소 상품이 있을 경우 처리
+				for($i=0; $i<count($rs["_array_item"]); $i++){
+					$sql1 = "update `g5_shop_cart_api` set ct_status='반려',ct_memo='수급자취소[".$rs["_array_item"][$i]["item_memo"]."]' where order_send_id2='".$rs["_array_item"][$i]["order_send_dtl_id"]."' AND mb_id='".$member["mb_id"]."'";
+					sql_query($sql1);//취소 상품 반려 처리
+					api_log_write($order_send_id,$member['mb_id'], '3', "수급자 승인 전 취소[급여코드:".$ProdPayCode[$rs["_array_item"][$i]["order_send_dtl_id"]]."]");
+				}
+				$sql2 = "SELECT COUNT(ct_id) AS all_cnt,COUNT(CASE WHEN ct_status='반려' THEN 1 END) AS c_cnt 
+						FROM `g5_shop_cart_api` 
+						WHERE order_send_id='".$order_send_id."' AND mb_id='".$member["mb_id"]."'";
+				$row2 = sql_fetch($sql2);//전체 상품수, 반려 상품수 비교
+				if($row2["all_cnt"] == $row2["c_cnt"]){// 전체 상품수와 반려 상품수가 동일할 경우 전체 취소 처리 
+					$od_status = "주문취소";
+					api_log_write($order_send_id,$member['mb_id'], '3', "수급자 승인 전 취소로 전체 취소 처리");
+				}
+			}
+
+			$sql = "update `g5_shop_order_api` o
+			set o.od_status = '".$od_status."'
+			WHERE o.mb_id='".$member["mb_id"]."' and o.order_send_id='".$order_send_id."'";
+			sql_query($sql);
+		}
+	}
 	//header('Content-type: application/json');
 	//echo json_encode($rows);
 //======================= 내부 테스트용 ===============================================================
 }
+
+$log_txt .= "====== API 보내기 끝 ============================================================= \r\n";
+	fwrite($log_file, $log_txt . "\r\n");
+	fclose($log_file);
+	
+	echo "<pre>";
+    print_r($rs);
 ?>
