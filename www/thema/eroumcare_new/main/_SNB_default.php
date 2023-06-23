@@ -206,8 +206,31 @@
                             <span class="admin">( <a href="<?php echo G5_ADMIN_URL;?>/shop_admin/samhwa_orderlist.php">관리메뉴</a> )</span>
                             <?php } ?>
                         </p>
-                        <p class="member_modi">
-                            <a href="#" onclick="location.href='<?=G5_BBS_URL?>/member_confirm.php?url=member_info_newform.php'">회원정보 수정</a>
+                        <p style="display: flex; align-items: flex-start; justify-content: center; margin-top: 10px;">
+                            <a href="<?=G5_BBS_URL?>/member_confirm.php?url=member_info_newform.php" class="member_modi">· 회원정보 수정</a> &nbsp;
+
+                            <?php if(($member["mb_level"] =="3" || $member["mb_level"] =="4")) { ?>
+                            <?php
+                                $_modeBtn_ck = "";
+                                $_modeBtn_type = "adm";
+                                // 23.06.09 : 서원 - 구매모드 기능 복구.
+                                if(($member["mb_level"] =="3" || $member["mb_level"] =="4")) {
+                                    if($_COOKIE["viewType"] == "adm") {
+                                        $_modeBtn_type = "basic";   
+                                    } else {
+                                        $_modeBtn_ck = " checked";
+                                    }
+                                }
+                            ?>
+                            <a href="#" class="modeBtn member_modi" data-type="<?=$_modeBtn_type;?>">· 급여가 안내</a> 
+                            <label class="thkc_switch modeBtn" data-type="<?=$_modeBtn_type;?>">
+                                <input type="checkbox"<?=$_modeBtn_ck;?>>
+                                <span class="slider">
+                                    <span class="slider-label slider-label-left">ON</span>
+                                    <span class="slider-label slider-label-right">OFF</span>
+                                </span>
+                            </label>
+                            <?php } ?>
                         </p>
                     </div>
 
