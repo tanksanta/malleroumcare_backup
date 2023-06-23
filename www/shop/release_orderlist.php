@@ -176,7 +176,7 @@ if($member['mb_level']< 9){alert("이용권한이 없습니다.");}
           <option value="od_name" <?php echo $search_option == 'od_name' ? 'selected' : ''; ?>>사업소명</option>
           <option value="ct_delivery_num" <?php echo $search_option == 'ct_delivery_num' ? 'selected' : ''; ?>>송장번호</option>
         </select>
-        <input type="text" name="search_text" id="search_text" placeholder="검색명입력" value="<?php echo $search_text; ?>">
+        <input type="text" name="search_text" id="search_text" inputmode="search" placeholder="검색명입력" value="<?php echo $search_text; ?>">
       </li>
     </ul>
     <ul>
@@ -185,7 +185,7 @@ if($member['mb_level']< 9){alert("이용권한이 없습니다.");}
           <option value="od_name" <?php echo !$add_search_option ? "selected" : ''; ?>>사업소명</option>
           <option value="it_name" <?php echo $add_search_option == 'it_name' ? 'selected' : ''; ?>>상품명</option>
         </select>
-        <input type="text" name="add_search_text" id="add_search_text" placeholder="검색명입력" value="<?php echo $add_search_text; ?>">
+        <input type="text" name="add_search_text" id="add_search_text" inputmode="search" placeholder="검색명입력" value="<?php echo $add_search_text; ?>">
       </li>
     </ul>
     <ul>
@@ -483,7 +483,8 @@ if($member['mb_level']< 9){alert("이용권한이 없습니다.");}
   });
 
   // 23.06.14 : input 엔터값 적용
-  $(document).on("keyup", "#search_text, #add_search_text", function(e) { if (e.key === 'Enter') { $("#searchSubmitBtn").click(); } });
+  $(document).on("keyup", "#search_text", function(e) { if (e.key === 'Enter') { $("#searchSubmitBtn").click(); } });
+  $(document).on("keyup", "#add_search_text", function(e) { if (e.key === 'Enter') { $("#searchSubmitBtn").click(); } });
 
   //바코드 버튼 클릭
   $(document).on("click", ".barcode_box", function(e) {
