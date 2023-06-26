@@ -717,8 +717,8 @@ if($od["od_b_tel"]) {
           $cur.parent().find("i").addClass("active");
           $cur.parent().find(".nativePopupOpenBtn.btn_pda").hide();
 
-          //$cur.parent().find('.frm_input').prop('readonly', true);
-          //$cur.parent().find('.frm_input').css({ "background-color": "#f1f1f1" });
+          $cur.parent().find('.frm_input').prop('readonly', true);
+          $cur.parent().find('.frm_input').css({ "background-color": "#f1f1f1" });
 
           if( !dataTable[barcode] ) { dataTable[barcode] = []; }
           dataTable[barcode].push(i);
