@@ -144,7 +144,7 @@ add_javascript(G5_POSTCODE_JS, 0);
                 <div class="thkc_cont">
                     <div>
                         <label for="mb_giup_bnum" class="thkc_blind">사업자등록번호</label>
-                        <input class="thkc_input numOnly" id="mb_giup_bnum" name="mb_giup_bnum" placeholder="숫자만 입력 " maxlength="10" value="" type="text"  autocomplete="off" />
+                        <input class="thkc_input" id="mb_giup_bnum" name="mb_giup_bnum" placeholder="숫자만 입력 " maxlength="12" value="" type="text"  autocomplete="off" />
                         <?php
                             // 23.03.31 : 서원 - 주석용
                             // 				기존 사업자등록번호가 '-'(하이픈)이 입력된 상태 인데... 기획서에는 숫자만 입력 받으라고 되어있음.
@@ -954,19 +954,33 @@ add_javascript(G5_POSTCODE_JS, 0);
         });
 
         // 사업자번호 입력 유효성 체크
-        $('#mb_giup_bnum').on('keyup blur', function() {
-            if( $(this).val().length == 10 ) {
-                var _ck = checkCorporateRegiNumber( $(this).val() );
-                if( !_ck ){
-                    $('.errorBNUM').html("사업자등록번호를 정확하게 입력해주세요.");
-                    $('.errorBNUM').css( "color", "#d44747" );
-                } else  {
-                    $('.errorBNUM').html("");
-                }
+        var mb_bnum_check_timer = null;
+        $('#mb_giup_bnum').on('keyup change input blur', function() {
 
-                /* 23.05.23 - 사업자번호 하이픈 추가 */
-                $(this).val( auto_saup_hypen( $(this).val() ) );
+            /* 23.05.23 - 사업자번호 하이픈 추가 */
+            $(this).val( auto_saup_hypen( $(this).val() ) );
+
+            var _ck = checkCorporateRegiNumber( $(this).val() );
+            if( !_ck ){
+                $('.errorBNUM').html("사업자번호를 정확하게 입력해주세요.");
+                $('.errorBNUM').css( "color", "#d44747" );
+                return;
+            } else  {
+                $('.errorBNUM').html("");
             }
+
+            mb_bnum_check_timer = setTimeout(function() {
+            var msg = reg_mb_giup_bnum_check();
+            if(msg) {
+                $('.errorBNUM').html(msg);
+                $('.errorBNUM').css( "color", "#d44747" );
+            } else {
+                $('.errorBNUM').html("가입 가능한 사업자번호 입니다.");
+                $('.errorBNUM').css( "color", "#4788d4" );
+            }
+            }, 500);
+            
+
         });
 
         // 기본배송지로 설정 체크박스
@@ -1099,7 +1113,14 @@ add_javascript(G5_POSTCODE_JS, 0);
                     error_MSG( 'errorBNUM', '사업자등록번호를 정확하게 입력해주세요.', 'mb_giup_bnum' );
                     return false;
                 }
+
+                var msg = reg_mb_giup_bnum_check();
+                if(msg) {
+                    error_MSG( 'errorBNUM', msg, 'mb_giup_bnum' );                    
+                    return false;
+                }  
             }
+  
 
             // 장기요양기관번호 입력 검증
             var _ck = $("#mb_ent_num_ck:checked").val();

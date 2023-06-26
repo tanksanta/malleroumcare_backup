@@ -121,6 +121,10 @@ if ($w == '' || $w == 'u') {
     alert('사업자 번호 형식이 맞지 않습니다.',G5_BBS_URL."/register.php");
   }
 
+  // 23.03.26 : 서원 - 사업자번호 중복가입 체크 추가.
+  $msg = exist_mb_giup_bnum($mb_giup_bnum);
+  if($msg) alert("이미 사용 중인 사업자번호 입니다.",G5_BBS_URL."/register.php");
+
 
   //서버 최대 용량 10Mb
   $max_file_size = 1024*1024*10;
