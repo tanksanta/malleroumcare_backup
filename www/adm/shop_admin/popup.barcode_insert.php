@@ -169,7 +169,7 @@ li {
 		
 		$sql = "SELECT ct_delivery_company FROM `g5_shop_order` o
 				LEFT JOIN g5_shop_cart c ON o.od_id = c.od_id
-				WHERE c.it_id = '".$row["it_id"]."' AND o.od_b_addr1 LIKE '".$row["od_b_addr1"]."%' and c.ct_delivery_num != ''
+				WHERE c.it_id = '".$row["it_id"]."' and c.ct_delivery_num != ''
 				ORDER BY o.od_time DESC
 				LIMIT 1";
 		$row22 = sql_fetch($sql);
@@ -194,12 +194,17 @@ li {
 						</div>
 					</li>
 					<li class="parent">
+						<div class="" style="width:70%"><?=$row["od_b_name"];//수령인 ?></div>
+						<div class="" style="width:30%"><?=$row['od_b_tel'];//수령인 연락처 ?></div>
+					</li>
+					<li class="parent">
 						<div class="" style="width:70%"><?=$row["od_b_addr1"].(($row["od_b_addr2"]!="")?" ".$row["od_b_addr2"]:"").(($row["od_b_addr3"]!="")?" ".$row["od_b_addr3"]:"");//배송주소 ?></div>
 						<div class="" style="width:20%">송장번호 입력</div>
 						<div class="" id="delivery_num_yn_<?=$i?>" style="width:10%"><?=($row['ct_combine_ct_id']||$row['ct_delivery_num'])?"Y":"<font color='red'>N</font>";//배송정보 ?></div>
 					</li>
+					
 				</ul>
-				<input type="button" id="btn<?=$i?>" value="▼"  class="newbutton" style="color:#888888;margin-top:4px;margin-right:2px;">
+				<input type="button" id="btn<?=$i?>" value="▼"  class="newbutton" style="color:#888888;margin-top:15px;margin-right:2px;">
 				</div>
 				<div id="down_arear<?=$i?>" style="display:none;">
 				<ul >

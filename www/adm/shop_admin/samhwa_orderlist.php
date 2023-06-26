@@ -138,6 +138,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
             ?>
         </select>
         <button id="ct_direct_delivery_partner_all">위탁 선택적용</button>
+		<button id="ct_direct_delivery_partner_cncl">위탁 선택해제</button>
         <button id="delivery_excel_upload">택배정보 일괄 업로드</button>
         <select class="sb1" name="" id="ct_manager_sb">
             <?php
@@ -167,7 +168,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
             ?>
         </select>
         <button id="ct_warehouse_all">출하창고 선택변경</button>
-
+		<button id="ct_warehouse_cncl">출하창고 선택해제</button>
         <button id="delivery_edi_send_all">로젠 EDI 선택 전송</button>
         <button id="delivery_edi_send_all" data-type="resend">로젠 EDI 재전송</button>
         <button id="delivery_edi_return_all">송장리턴</button>
@@ -757,6 +758,66 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
 
 <script>
     $(function() {
+		// 위탁 선택해제
+		$('#ct_direct_delivery_partner_cncl').click(function() {
+			var ct_id = [];
+			var item = $("input[name='od_id[]']:checked");
+
+			for (var i = 0; i < item.length; i++) {
+				ct_id.push($(item[i]).val());
+			}
+
+			if (!ct_id.length) {
+				alert('해제하실 주문을 선택해주세요.');
+				return;
+			}
+
+			$.post('./ajax.ct_direct_delivery_partner.php', {
+				ct_id: ct_id,
+				ct_direct_delivery_partner: "미지정"
+			 }, 'json')
+				.done(function() {
+					alert('위탁(직배송) 해제가 완료되었습니다.');
+				})
+				.fail(function($xhr) {
+					var data = $xhr.responseJSON;
+					alert(data && data.message);
+				});
+		});
+
+		// 일괄 출하창고 해제
+		$('#ct_warehouse_cncl').click(function() {
+			var ct_id = [];
+			var item = $("input[name='od_id[]']:checked");
+			
+			for (var i = 0; i < item.length; i++) {
+			  ct_id.push($(item[i]).val());
+			}
+
+			if (!ct_id.length) {
+			  alert('해제하실 주문을 선택해주세요.');
+			  return;
+			}
+
+			$.ajax({
+			  method: 'POST',
+			  url: './ajax.ct_warehouse_update.php',
+			  data: {
+				ct_id: ct_id,
+				ct_warehouse: "미지정",
+			  },
+			}).done(function (data) {
+			  // return false;
+			  if (data.msg) {
+				alert(data.msg);
+			  }
+			  if (data.result === 'success') {
+				alert('출하창고가 해제되었습니다.');
+				// location.reload();
+			  }
+			});
+		});
+
         $(document).on("click", "#order_add", function (e) {
             e.preventDefault();
 

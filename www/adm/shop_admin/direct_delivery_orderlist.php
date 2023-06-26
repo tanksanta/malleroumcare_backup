@@ -71,12 +71,18 @@ if ($search_b_addr != "") {//배송주소 검색
   $qstr .="&amp;search_b_addr=".$_REQUEST["search_b_addr"];
 }
 
+if ($search_b_memo != "") {//관리자메모 검색
+  $search_b_memo = trim($search_b_memo);
+  $where[] = " (i.it_admin_memo like '%$search_b_memo%') ";
+  $qstr .="&amp;search_b_memo=".$_REQUEST["search_b_memo"];
+}
+
 if ($search_partner != "") {//파트너 ID 검색
   $search_partner = trim($search_partner);
   if($search_partner == "미등록"){
 	$where[] = " ct_direct_delivery_partner = '' ";	
   }else{
-	$where[] = " ct_direct_delivery_partner like '$search_partner' ";	
+	$where[] = " (ct_direct_delivery_partner like '%$search_partner%' or ct_direct_delivery_partner in (select mb_id from g5_member where mb_name like '%$search_partner%' and mb_type = 'partner' AND mb_partner_auth = 1 AND mb_level='5' AND mb_partner_type LIKE '%직배송%' AND (mb_intercept_date = '' OR mb_intercept_date IS NULL))) ";	
   }
   $qstr .="&amp;search_partner=".$_REQUEST["search_partner"];  
 }
@@ -266,7 +272,7 @@ $qstr .= "&amp;orb=".$_REQUEST["orb"];
 $sql_common .= $sql_order;
 
 $sql  = "
-  select *, o.od_id as od_id, c.ct_id as ct_id, c.mb_id as mb_id,m2.mb_name AS partner_name, (od_cart_coupon + od_coupon + od_send_coupon) as couponprice,
+  select *, o.od_id as od_id, c.ct_id as ct_id, c.mb_id as mb_id,m2.mb_name AS partner_name,(od_cart_coupon + od_coupon + od_send_coupon) as couponprice,
   TIMEDIFF(it_deadline,DATE_FORMAT(NOW(), '%H:%i:%s')) AS time_dead 
   $sql_common
   limit $from_record, $rows
@@ -282,7 +288,7 @@ $orderlist = array();
 while( $row = sql_fetch_array($result) ) {
   $orderlist[] = $row;
 }
-
+$warehouse_list = get_warehouses();
 ?>
 <style>
   #loading_excel {
@@ -372,8 +378,36 @@ while( $row = sql_fetch_array($result) ) {
 	.bg1 {background:#f2f5f9}
 	.bg1 td {border-color:#e9e9e9}
 </style>
-<form name="frmsamhwaorderlist" id="frmsamhwaorderlist" style="margin-top:-15px;">
+<div id="" class="" style="margin:-60px 100px 0px 0px;text-align:right;padding:10px">			
+		<select name="" id="ct_direct_delivery_partner_sb" style="border: 1px solid #dbdde2;border-radius: 0px;width: 150px;height: 33px !important;padding: 0px 13px !important;font-size: 12px; color: #555;">
+            <option value="">위탁(직배송) 선택</option>
+            <?php
+            $sql_p = "SELECT * FROM g5_member WHERE mb_type = 'partner' and mb_partner_auth = 1 and mb_level='5' and mb_partner_type like '%직배송%'";
+			$result_p = sql_query($sql_p);
+			while($partner = sql_fetch_array($result_p)) {?>
+            <option value="<?=$partner['mb_id']?>"><?=$partner['mb_name']?></option>
+			<?php }?>
+        </select>
+        <button id="ct_direct_delivery_partner_all" class="newbutton2">위탁 선택적용</button>
+		<button id="ct_direct_delivery_partner_cncl" class="newbutton2">위탁 선택해제</button>
+        <select name="it_default_warehouse" id="ct_warehouse_sb" style="border: 1px solid #dbdde2;border-radius: 0px;width: 150px;height: 33px !important;padding: 0px 13px !important;font-size: 12px; color: #555;">
+            <?php
+            $default_warehouse_select="";
+            $default_warehouse_select .= '<option value="">출하창고 선택</option>';
+            foreach($warehouse_list as $warehouse) {
+                $default_warehouse_select .='<option value="'.$warehouse.'" >'.$warehouse.'</option>';
+            }
+            echo $default_warehouse_select;
+            ?>
+        </select>
+        <button id="ct_warehouse_all" class="newbutton2">출하창고 선택변경</button>
+		<button id="ct_warehouse_cncl" class="newbutton2">출고창고 선택해제</button>
+        </div>
+<form name="frmsamhwaorderlist" id="frmsamhwaorderlist" style="margin-top:-15px;" method="post">
 <input type="hidden" name="page_rows" id="page_rows" value="<?=$page_rows?>">
+<input type="hidden" name="ct_ids" id="ct_ids" value="<?=$ct_ids?>">
+<input type="hidden" name="reload_submit" id="reload_submit" value="<?=$reload_submit?>">
+<input type="hidden" name="page" id="page" value="">
   <div class="tbl_wrap" style="margin-bottom:-25px;margin-top:30px;">
 		<input type="button" value="상품준비(<?=number_format($count1)?>)" class="<?=($click_status == "준비")?"newbutton3":"newbutton2";?>" onClick="$('#click_status').val('준비');move_staus();" id="click_status1"/>
 		<input type="button" value="출고준비(<?=number_format($count2)?>)" class="<?=($click_status == "출고준비")?"newbutton3":"newbutton2";?>" onClick="$('#click_status').val('출고준비');move_staus();"id="click_status2"/>
@@ -454,15 +488,17 @@ while( $row = sql_fetch_array($result) ) {
       <tr>
         <th>키워드 검색</th>
         <td>
-			파트너ID&nbsp;&nbsp;
-			<input type="text" name="search_partner" value="<?php echo $search_partner; ?>" id="search_partner" class="frm_input" autocomplete="off" style="width:200px;" placeholder="파트너ID로 검색"> <input type="button" value="파트너검색" class="newbutton" style="background-color:#000000;color:#ffffff;" onClick="partner_search()">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			파트너&nbsp;&nbsp;
+			<input type="text" name="search_partner" value="<?php echo $search_partner; ?>" id="search_partner" class="frm_input" autocomplete="off" style="width:150px;" placeholder="파트너ID 또는 이름 검색"> <input type="button" value="파트너검색" class="newbutton" style="background-color:#000000;color:#ffffff;" onClick="partner_search()">&nbsp;&nbsp;&nbsp;&nbsp;
 			상품명&nbsp;&nbsp;
-			<input type="text" name="search_it_name" value="<?php echo $search_it_name; ?>" id="search_it_name" class="frm_input" autocomplete="off" style="width:150px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<input type="text" name="search_it_name" value="<?php echo $search_it_name; ?>" id="search_it_name" class="frm_input" autocomplete="off" style="width:150px;">&nbsp;&nbsp;&nbsp;&nbsp;
 			수령인명&nbsp;&nbsp;
-			<input type="text" name="search_b_name" value="<?php echo $search_b_name; ?>" id="search_b_name" class="frm_input" autocomplete="off" style="width:150px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<input type="text" name="search_b_name" value="<?php echo $search_b_name; ?>" id="search_b_name" class="frm_input" autocomplete="off" style="width:150px;">&nbsp;&nbsp;&nbsp;&nbsp;
 			배송주소&nbsp;&nbsp;
-			<input type="text" name="search_b_addr" value="<?php echo $search_b_addr; ?>" id="search_b_addr" class="frm_input" autocomplete="off" style="width:300px;">&nbsp;&nbsp;
-			<input type="submit" value="검색" class="newbutton" style="background-color:#000000;color:#ffffff;width:70px;">
+			<input type="text" name="search_b_addr" value="<?php echo $search_b_addr; ?>" id="search_b_addr" class="frm_input" autocomplete="off" style="width:150px;">&nbsp;&nbsp;&nbsp;&nbsp;
+			관리자메모&nbsp;&nbsp;
+			<input type="text" name="search_b_memo" value="<?php echo $search_b_memo; ?>" id="search_b_memo" class="frm_input" autocomplete="off" style="width:150px;">&nbsp;&nbsp;
+			<input type="submit" value="검색" class="newbutton" style="background-color:#000000;color:#ffffff;width:70px;" onClick="$('#reload_submit').val('');">
         </td>
       </tr>
 	  
@@ -472,7 +508,7 @@ while( $row = sql_fetch_array($result) ) {
 
 <div style="margin:0px 0px 5px 20px; float:left">
 	<!--검색 개수 : <?php echo $total_count; ?> 건 -->
-	<input type="button" value="전체선택" id="all_chk2" name="all_chk2" class="newbutton2"/>
+	<input type="button" value="0건 선택" id="all_chk2" name="all_chk2" class="newbutton2" style="pointer-events : none;"/>
 <?php if($click_status == "준비"){
 		echo '<input type="button" value="선택 출고준비로 변경 ▶" id="" name="" class="newbutton2" onClick="return change_step_go(\'출고준비\')"/>';
 	}elseif($click_status == "출고준비"){
@@ -512,12 +548,14 @@ while( $row = sql_fetch_array($result) ) {
         <th scope="col" width="50px;">급여<br>구분</th>		
 		<th scope="col" width="60px;">배송정보</th>
 		<th scope="col" width="60px;">단가</th>
-		<th scope="col" width="70px;">공급가격</th>
-		<th scope="col" width="60px;">부가세</th>
+		<!--th scope="col" width="70px;">공급가격</th>
+		<th scope="col" width="60px;">부가세</th-->
 		<th scope="col" width="70px;">총액</th>
 		<th scope="col" width="75px;">마감시간</th>
 		<th scope="col" width="5px;">요청사항</th>
+		<th scope="col" width="130px;">관리자메모</th>
 		<th scope="col" width="75px;">주문일</th>
+		<th scope="col" width="75px;">출고준비<br>변경일</th>
 		<th scope="col" width="75px;">출고일</th>
 		<th scope="col" width="70px;">위탁엑셀다운</th>
     </tr>
@@ -570,7 +608,7 @@ while( $row = sql_fetch_array($result) ) {
 		  }
     ?>
     <tr class="<?php echo $bg; ?>">
-        <td align="center"><input type="checkbox" name="od_id[]" value="<?=$order["ct_id"];?>" data-value="<?=substr($order["ca_id"],0,2)?>" data-barcode='<?=($order['ct_barcode_insert']!=$order['ct_qty'])?0:1;?>' class="frm_input checkSelect"></td>
+        <td align="center"><input type="checkbox" name="od_id[]" id="<?=$order["ct_id"];?>" value="<?=$order["ct_id"];?>" data-value="<?=substr($order["ca_id"],0,2)?>" data-barcode='<?=($order['ct_barcode_insert']!=$order['ct_qty'])?0:1;?>' class="frm_input checkSelect chkbox"></td>
 		<td align="center"><a href="samhwa_orderform.php?od_id=<?=$order["od_id"];?>&sub_menu=400405" target="_blank"><?=$order["od_id"];//주문번호 ?></a></td>
 		<td align="center"><?=$order["it_name"].(($order["ct_option"] != $order["it_name"])?" [".$order["ct_option"]."]":"");//상품명 ?></td>
 		<td align="center" <?=($order['ct_barcode_insert'] >= $order['ct_qty'] || substr($order["ca_id"],0,2) == "70")?"":"style='color:red;'"; ?>><span  style='cursor:pointer;' onClick="barcode_insert('<?=$order["ct_id"]?>')"><?=(substr($order["ca_id"],0,2) != "70")?$order['ct_barcode_insert']."/".$order['ct_qty']:$order['ct_qty'];//바코드/수량 ?></span></td>
@@ -579,14 +617,16 @@ while( $row = sql_fetch_array($result) ) {
 		<td align="center"><?=$order["od_b_tel"];//연락처 ?></td>
 		<td align="center"><?=$order["od_b_addr1"].(($order["od_b_addr2"]!="")?" ".$order["od_b_addr2"]:"").(($order["od_b_addr3"]!="")?" ".$order["od_b_addr3"]:"");//배송주소 ?></td>
    		<td align="center"><?=(substr($order["ca_id"],0,2) == "70")?"비급여":"급여";//급여구분 ?></td>		
-		<td align="center" <?=($order['ct_combine_ct_id']||$order['ct_delivery_num'])?"":"style='color:red;'";?>><?=($order['ct_combine_ct_id']||$order['ct_delivery_num'])?"입력완료":"미입력";//배송정보 ?></td>
+		<td align="center" <?=($order['ct_combine_ct_id']||$order['ct_delivery_num'])?"":"style='color:red;'";?>><?=($order['ct_combine_ct_id']||$order['ct_delivery_num'])?"입력완료":"미입력";//배송정보 ?></td>		
 		<td align="right"><?=number_format($order["opt_price"]);//단가 ?></td>
-		<td align="right"><?=number_format($order["basic_price"]);//공급가격?></td>
-		<td align="right"><?=number_format($order["tax_price"]);//부가세 ?></td>
+		<!--td align="right"><?=number_format($order["basic_price"]);//공급가격?></td>
+		<td align="right"><?=number_format($order["tax_price"]);//부가세 ?></td-->
 		<td align="right"><?=number_format($order["ct_price_stotal"]);//총액 ?></td>
 		<td align="center"><?=($order["it_deadline"] == "00:00:00" || $order["it_type11"] == "0")?"-":$order["it_deadline"];//마감시간 ?></td>
 		<td align="center"><?=$memo;//요청사항 ?></td>
+		<td align="center"><?=$order['it_admin_memo'];//관리자메모 ?></td>
 		<td align="center"><?=substr($order['od_time'],0,10);//주문일 ?></td>
+		<td align="center"><?=substr($order['ct_rdy_date'],0,10);//주문일 ?></td>
 		<td align="center"><?=($order["ct_ex_date"]=="" || $order["ct_ex_date"]=="0000-00-00")?"-":$order["ct_ex_date"];//출고일 ?></td>
 		<td align="center"><?=$direct_delivery_text?></td>
     </tr>
@@ -657,10 +697,10 @@ while( $row = sql_fetch_array($result) ) {
 </div>
 <?php //바코드 입력 모달팝업 ?>
 <div id="popup_box5" class="popup_box2">    
-	<div id="" class="popup_box_con" style="height:500px;margin-top:-240px;margin-left:-30%;width:60%;left:50%;top:50%;padding:0px;">
-		<div style="text-align:left;top:0px;width:100%;background-color:#000000;padding:10px;float:left;">
+	<div id="dragg_popup" class="popup_box_con" style="height:500px;margin-top:-240px;margin-left:-30%;width:60%;left:50%;top:50%;padding:0px;">
+		<div style="text-align:left;top:0px;width:100%;background-color:#000000;padding:10px;float:left;" title="여기를 드레그하여 이동이 가능합니다.">
 		<span style="color:#ffffff;font-size:17px;float:left;">바코드 입력</span>
-		<span style="color:#ffffff;font-size:17px;float:right;cursor:pointer;" onClick="info_close3()" >Ⅹ</span>
+		<span style="color:#ffffff;font-size:17px;float:right;cursor:pointer;" onClick="reload_submit()" >Ⅹ</span>
 		</div>
 		<div id="" style="float:left;width:100%;">
 		<form method="post" action="/adm/shop_admin/popup.barcode_insert.php" name="barcode_form" target='barcode_frame'>
@@ -668,8 +708,8 @@ while( $row = sql_fetch_array($result) ) {
 		</form>
 		<iframe id="barcode_frame" name="barcode_frame" src="" scrolling="yes" frameborder="0" allowTransparency="false" style="width:100%;height:500px;"></iframe>		
 		</div>
-		<div style="text-align:center;width:100%;background-color:#ffffff;padding:10px;">
-		<a href="javascript:info_close3();" class="btn " style="background:#dddddd;border-radius:3px;width:70px;">닫기</a>
+		<div style="text-align:center;width:100%;background-color:#ffffff;padding:10px;" title="여기를 드레그하여 이동이 가능합니다.">
+		<a href="javascript:reload_submit();" class="btn " style="background:#dddddd;border-radius:3px;width:70px;">닫기</a>
 		</div>
 	</div>
 </div>
@@ -680,9 +720,185 @@ while( $row = sql_fetch_array($result) ) {
 </div>
 
 <script>
+
 $(function() {
-	var EXCEL_DOWNLOADER = null;
-    $("#fr_date, #to_date").datepicker({
+	// 위탁 선택적용
+	$('#ct_direct_delivery_partner_all').click(function() {
+        $("#reload_submit").val("");
+		var ct_id = [];
+        var item = $("input[name='od_id[]']:checked");
+
+        var sb1 = $('#ct_direct_delivery_partner_sb').val();
+        if(!sb1){
+            alert('위탁 파트너를 선택하신 후 변경을 눌러주세요. ');
+            return false;
+        }
+
+        for (var i = 0; i < item.length; i++) {
+            ct_id.push($(item[i]).val());
+        }
+
+        if (!ct_id.length) {
+            alert('적용하실 주문을 선택해주세요.');
+            return;
+        }
+
+        $.post('./ajax.ct_direct_delivery_partner.php', {
+            ct_id: ct_id,
+            ct_direct_delivery_partner: sb1
+        }, 'json')
+            .done(function() {
+				$("#page").val("<?=$page?>");
+                alert('위탁(직배송) 적용이 완료되었습니다.');
+				document.frmsamhwaorderlist.submit();
+            })
+            .fail(function($xhr) {
+                var data = $xhr.responseJSON;
+                alert(data && data.message);
+            });
+    });
+
+	// 위탁 선택해제
+	$('#ct_direct_delivery_partner_cncl').click(function() {
+        $("#reload_submit").val("");
+		var ct_id = [];
+        var item = $("input[name='od_id[]']:checked");
+
+        for (var i = 0; i < item.length; i++) {
+            ct_id.push($(item[i]).val());
+        }
+
+        if (!ct_id.length) {
+            alert('해제하실 주문을 선택해주세요.');
+            return;
+        }
+
+        $.post('./ajax.ct_direct_delivery_partner.php', {
+            ct_id: ct_id,
+			ct_direct_delivery_partner: "미지정"
+         }, 'json')
+            .done(function() {
+			 	$("#page").val("<?=$page?>");
+                alert('위탁(직배송) 해제가 완료되었습니다.');
+				document.frmsamhwaorderlist.submit();
+            })
+            .fail(function($xhr) {
+                var data = $xhr.responseJSON;
+                alert(data && data.message);
+            });
+    });
+
+	// 일괄 출하창고 변경
+	$('#ct_warehouse_all').click(function() {
+		$("#reload_submit").val("");
+		var ct_id = [];
+		var item = $("input[name='od_id[]']:checked");
+		var type = $(this).data('type');
+		
+		var sb1 = $('#ct_warehouse_sb').val();
+		if(!sb1){
+			alert('출하창고를 선택하신 후 변경을 눌러주세요. ');
+			return false;
+		}
+
+		for (var i = 0; i < item.length; i++) {
+		  ct_id.push($(item[i]).val());
+		}
+
+		if (!ct_id.length) {
+		  alert('변경하실 주문을 선택해주세요.');
+		  return;
+		}
+
+		$.ajax({
+		  method: 'POST',
+		  url: './ajax.ct_warehouse_update.php',
+		  data: {
+			ct_id: ct_id,
+			ct_warehouse: sb1,
+		  },
+		}).done(function (data) {
+		  // return false;
+		  if (data.msg) {
+			alert(data.msg);
+		  }
+		  if (data.result === 'success') {
+			alert('출하창고가 지정되었습니다.');
+			// location.reload();
+		  }
+		});
+	});
+
+	// 일괄 출하창고 해제
+	$('#ct_warehouse_cncl').click(function() {
+		$("#reload_submit").val("");
+		var ct_id = [];
+		var item = $("input[name='od_id[]']:checked");
+		
+		for (var i = 0; i < item.length; i++) {
+		  ct_id.push($(item[i]).val());
+		}
+
+		if (!ct_id.length) {
+		  alert('해제하실 주문을 선택해주세요.');
+		  return;
+		}
+
+		$.ajax({
+		  method: 'POST',
+		  url: './ajax.ct_warehouse_update.php',
+		  data: {
+			ct_id: ct_id,
+			ct_warehouse: "미지정",
+		  },
+		}).done(function (data) {
+		  // return false;
+		  if (data.msg) {
+			alert(data.msg);
+		  }
+		  if (data.result === 'success') {
+			alert('출하창고가 해제되었습니다.');
+			// location.reload();
+		  }
+		});
+	});
+
+	if($("#ct_ids").val() != "" && $("#reload_submit").val() == "ok"){
+		var ct_ids = $("#ct_ids").val().split(",");
+		for(var i = 0; i < ct_ids.length; i++) {
+			$("#"+ct_ids[i]).attr("checked",true);
+		}
+		$("#ct_ids").val('');
+		checkbox_count();
+	}
+
+	$("#dragg_popup").draggable();
+	
+	//시프트(shift) 멀티 체크박스 선택 =======================================
+	var $chkboxes = $('.chkbox');
+    var lastChecked = null;
+
+    $chkboxes.click(function(e) {
+        if(!lastChecked) {
+            lastChecked = this;
+            return;
+        }
+
+        if(e.shiftKey) {
+            var start = $chkboxes.index(this);
+            var end = $chkboxes.index(lastChecked);
+
+            $chkboxes.slice(Math.min(start,end), Math.max(start,end)+ 1).prop('checked', lastChecked.checked);
+
+        }
+
+        lastChecked = this;
+    });
+	//시프트(shift) 멀티 체크박스 선택 =======================================
+
+	var EXCEL_DOWNLOADER = null;//엑셀 다운로더
+
+	$("#fr_date, #to_date").datepicker({
         changeMonth: true,
         changeYear: true,
         dateFormat: "yy-mm-dd",
@@ -735,25 +951,44 @@ $(function() {
 	$("#all_chk").click(function() {
 		if($("#all_chk").is(":checked")){
 			$(".checkSelect").prop("checked", true);
-			$("#all_chk2").val("전체해제");
+			//$("#all_chk2").val("전체해제");
 		}else{
 			$(".checkSelect").prop("checked", false);
-			$("#all_chk2").val("전체선택");
+			//$("#all_chk2").val("전체선택");
 		}
+		checkbox_count();
 	});
-
+/*
 	$("#all_chk2").click(function() {
 		$("#all_chk").trigger("click");
 	});
-
+*/
 	$(".checkSelect").click(function() {
 		var total = $(".checkSelect").length;
 		var checked = $(".checkSelect:checked").length;
-
 		if(total != checked) $("#all_chk").prop("checked", false);
 		else $("#all_chk").prop("checked", true); 
+		checkbox_count();
 	});
 });
+
+function checkbox_count(){
+	var checked = $(".checkSelect:checked").length;
+	$("#all_chk2").val(checked+"건 선택");
+	
+}
+function reload_submit(){
+	var ct_id = [];
+	var item = $("input[name='od_id[]']:checked");
+	for(var i = 0; i < item.length; i++) {
+		ct_id.push($(item[i]).val());			
+	}
+	$("#ct_ids").val(ct_id);
+	$("#ct_ids").val(ct_id);
+	$("#reload_submit").val("ok");
+	$("#page").val("<?=$page?>");
+	document.frmsamhwaorderlist.submit();
+}
 
 function formatDate(date) {
   var y = date.getFullYear();
