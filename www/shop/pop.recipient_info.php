@@ -1734,12 +1734,12 @@ if($member["cert_data_ref"] != ""){
                     }, 'json')
                     .fail(function($xhr) {
                         var data = $xhr.responseJSON;
-                        alert("로그 저장에 실패했습니다!");
+                        //alert("로그 저장에 실패했습니다!");
                     });
 					})
 					.fail(function($xhr) {
 					  var data = $xhr.responseJSON;
-					  alert("계약정보 업데이트에 실패했습니다!");
+					  //alert("계약정보 업데이트에 실패했습니다!");
 					});
                 },
                 error: function (jqXhr, textStatus, errorMessage) {
@@ -1754,7 +1754,7 @@ if($member["cert_data_ref"] != ""){
                     }, 'json')
                     .fail(function($xhr) {
                         var data = $xhr.responseJSON;
-                        alert("로그 저장에 실패했습니다!");
+                        //alert("로그 저장에 실패했습니다!");
                     });
 				}else if(jqXhr['responseJSON']["data"]['err_code'] == "3"){
 					alert("등록된 인증서가 사용 기간이 만료 되었습니다.<?=($mobile_yn == 'Mobile')?' 컴퓨터에서':'';?> 공인인증서를 재등록 해 주세요.");
@@ -1780,7 +1780,7 @@ if($member["cert_data_ref"] != ""){
                     }, 'json')
                     .fail(function($xhr) {
                         var data = $xhr.responseJSON;
-                        alert("로그 저장에 실패했습니다!");
+                        //alert("로그 저장에 실패했습니다!");
                     });
 				}else if(jqXhr['responseJSON']["data"]['err_code'] == "5"){
 					ent_num_insert();
@@ -1993,7 +1993,7 @@ if($member["cert_data_ref"] != ""){
 				cnt = res;				
             },
             error : function(XMLHttpRequest, textStatus, errorThrown){ // 비동기 통신이 실패할경우 error 콜백으로 들어옵니다.
-                alert("통신 실패.");
+                //alert("통신 실패.");
             }
 		});
 		return cnt;
