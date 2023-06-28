@@ -46,7 +46,12 @@ if ($wr_subject == '') {
 
 $wr_content = '';
 if (isset($_POST['wr_content'])) {
-    $wr_content = substr(trim($_POST['wr_content']),0,65536);
+    //$wr_content = substr(trim($_POST['wr_content']),0,65536);
+    if ( $member['mb_level'] >= 9) {   // 23.06.20 : 서원 - 게시물 입력 사이즈 변경(관리자만 Lv9, Lv10)
+        $wr_content = trim($_POST['wr_content']);
+    } else {
+        $wr_content = substr(trim($_POST['wr_content']),0,65536);
+    } // // 23.06.20 : 서원 - 게시물 입력 사이즈 변경
     $wr_content = preg_replace("#[\\\]+$#", "", $wr_content);
 }
 if ($wr_content == '') {
