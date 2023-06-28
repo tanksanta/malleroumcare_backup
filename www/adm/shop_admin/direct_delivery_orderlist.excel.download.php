@@ -366,7 +366,7 @@ foreach($orderlist as $order) {
 	$order['od_memo'],
 	$order['prodMemo'],
 	$order['it_admin_memo'],
-	substr($order['od_time'],0,10),
+	$order['od_time'],
 	($order["ct_ex_date"]=="" || $order["ct_ex_date"]=="0000-00-00")?"-":$order["ct_ex_date"],
 	($order["it_deadline"] == "00:00:00" || $order["it_type11"] == "0")?"-":$order["it_deadline"],
   ];
