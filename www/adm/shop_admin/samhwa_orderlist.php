@@ -778,6 +778,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
 			 }, 'json')
 				.done(function() {
 					alert('위탁(직배송) 해제가 완료되었습니다.');
+					location.reload();
 				})
 				.fail(function($xhr) {
 					var data = $xhr.responseJSON;

@@ -290,7 +290,8 @@ $qstr .= "&amp;orb=".$_REQUEST["orb"];
 $sql_common .= $sql_order;
 
 $sql  = "
-  select *, o.od_id as od_id, c.ct_id as ct_id, c.mb_id as mb_id,m2.mb_name AS partner_name, (od_cart_coupon + od_coupon + od_send_coupon) as couponprice
+  select *, o.od_id as od_id, c.ct_id as ct_id, c.mb_id as mb_id,m2.mb_name AS partner_name, (od_cart_coupon + od_coupon + od_send_coupon) as couponprice,
+  TIMEDIFF(it_deadline,DATE_FORMAT(NOW(), '%H:%i:%s')) AS time_dead
   $sql_common 
 ";
 if ($click_status || $od_status) {
@@ -436,7 +437,8 @@ $sheet->getColumnDimension('R')->setWidth(15);
 $sheet->getColumnDimension('S')->setWidth(15);
 $sheet->getColumnDimension('T')->setWidth(15);
 $sheet->getColumnDimension('U')->setWidth(15);
-
+$excel->setActiveSheetIndex(0)->getStyle(sprintf("B5:B%s", ($last_row+3)))->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_NUMBER);
+$excel->setActiveSheetIndex(0)->getStyle(sprintf("F5:F%s", ($last_row+3)))->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
 
 header("Content-Type: application/octet-stream");
 header("Content-Disposition: attachment; filename=\"직배송_주문관리(".$title_text.")_".date("Ymd").".xlsx\"");
