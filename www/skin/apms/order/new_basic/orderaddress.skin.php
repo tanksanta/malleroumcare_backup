@@ -37,7 +37,7 @@ if(isset($wset['ahead']) && $wset['ahead']) {
     <input type="hidden" name="w" value="s">
     <div id="sod_addr">
         <div class="table-responsive">
-            <table class="div-table table">
+            <table class="div-table table" style="width:100%;">
             <tbody>
             <tr class="<?php echo $head_class;?>">
                 <th scope="col" style="width:50px;">
@@ -86,7 +86,7 @@ if(isset($wset['ahead']) && $wset['ahead']) {
 
     <div class="pop_foot">
         <div class="menu_wr">
-            <button type="button" class="btn_address" id="btn_address_set">대표주소 선택</button>
+            <button type="button" class="btn_address" id="btn_address_set">선택한 주소를 대표로 지정</button>
             <button type="button" class="btn_address" id="btn_address_del">선택삭제</button>
         </div>
 

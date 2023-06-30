@@ -1606,6 +1606,12 @@ display: none;
     text-align: center;
 }
 
+.pop_foot .page_wr ul li {
+    width: 25px;
+    text-align: center;    
+    display: inline-block;
+}
+
 #btn_close_popup {
     display: block;
 }
