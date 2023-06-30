@@ -994,7 +994,7 @@ $ct = sql_fetch(" SELECT * FROM `purchase_cart` WHERE `od_id` = '" . $od_id . "'
           <img class="barcode_icon type3" src="/img/barcode_icon_2.png" alt="등록가능 (관리자 삭제)">
           <img class="barcode_icon type4" src="/img/barcode_icon_3.png" alt="등록불가 (보유재고)">
           <span class="overlap">중복</span>
-          <!--
+          <!-- 
           <img src="/img/bacod_img.png" class="nativePopupOpenBtn btn_bacod" onclick="openNativeBarcodeScan(this)" data-type="native" data-code="<?=$i?>" data-ct-id="<?php echo $ct['ct_id']; ?>" data-it-id="<?php echo $ct['it_id']; ?>">
           -->
           <img src="/img/btn_pda.png" class="nativePopupOpenBtn btn_pda" onclick="openNativeBarcodeScan(this)" data-type="pda" data-code="<?=$i?>" data-ct-id="<?php echo $ct['ct_id']; ?>" data-it-id="<?php echo $ct['it_id']; ?>" data-pd-code="<?php echo $ct['prodpaycode']; ?>">
@@ -1136,7 +1136,7 @@ sql_query("update purchase_cart set `ct_edit_member` = '" . $member['mb_id'] . "
   // 바코드 스캔용 전역변수
   var sendBarcodeTargetList;
   var cur_ct_id = null;
-  var cur_it_id = null;
+  var cur_it_id = null;  
   var cur_pdcode = null;
 
   $(function() {
@@ -1279,6 +1279,12 @@ sql_query("update purchase_cart set `ct_edit_member` = '" . $member['mb_id'] . "
 
       showBarcodeHistory(barcode);
     });
+
+
+    // 23.06.14 : 신규 앱 카메라 기능 동작 예외처리.
+    if (window.ReactNativeWebView) { $(".nativePopupOpenBtn").show(); }
+    
+
   })
 
   function addSelectClassBarcode() {
@@ -1715,7 +1721,7 @@ sql_query("update purchase_cart set `ct_edit_member` = '" . $member['mb_id'] . "
     sendBarcodeTargetList = [];
 
     cur_ct_id = $(_this).data('ct-id');
-    cur_it_id = $(_this).data('it-id');
+    cur_it_id = $(_this).data('it-id');    
     cur_pdcode = $(this).data('pd-code');
 
     for (var i = 0; i < item.length; i++) {
@@ -1761,6 +1767,7 @@ sql_query("update purchase_cart set `ct_edit_member` = '" . $member['mb_id'] . "
       },
       success: function (result) {
         if (result.error == "Y") {
+          
           switch (device) {
             case "android" :
               /* android */

@@ -911,18 +911,29 @@ if (!$member['mb_id']) {
       /* ios */
       device = "ios";
     }
+    if (window.ReactNativeWebView) {
+      // WebView가 존재하는 경우에 대한 로직
+      const url = `expo://BarCodeOpen/sendInvoiceNum`;
+      window.location.href = url;
+    } else {
 
-    switch(device) {
-      case "android" :
-        /* android */
-        window.EroummallApp.openInvoiceNum("");
-        break;
-      case "ios" :
-        /* ios */
-        window.webkit.messageHandlers.openInvoiceNum.postMessage("1");
-        break;
+      switch(device) {
+        case "android" :
+          /* android */
+          window.EroummallApp.openInvoiceNum("");
+          break;
+        case "ios" :
+          /* ios */
+          window.webkit.messageHandlers.openInvoiceNum.postMessage("1");
+          break;
+      }
+
     }
+
   }
+
+  // 23.06.14 : input 엔터값 적용
+  $(document).on("keyup", "#search_text", function(e) { if (e.key === 'Enter') { $("#searchSubmitBtn").click(); } });
 
   function goBack() {
     location.href = '/shop/release_stocklist.php';
