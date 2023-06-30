@@ -603,68 +603,53 @@ $(function(){
             </li>
             <li class="info-btn">
               <?php if($item['ct_status'] !== "취소" && $item['ct_status'] !== "주문무효"){ ?>
-                            <div class="barcode_preview">
-                                <ul>
-                                    <?php
-                                    // 바코드 5개 미리보기
-                                    $stoId_arr = array(
-                                            'stoId' => $item['stoId']
-                                    );
-                                    $res = get_eroumcare(EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP, $stoId_arr);
+              <div class="barcode_preview">
+                  <ul>
+                      <?php
+                      // 바코드 5개 미리보기
+                      $stoId_arr = array(
+                              'stoId' => $item['stoId']
+                      );
+                      $res = get_eroumcare(EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP, $stoId_arr);
+                      $prodBarNum_arr = [];
 
-                                    $prodBarNum_arr = [];
-                                    for ($j = 0; $j < count($res['data']); $j++) {
-                                        if (!empty($res['data'][$j]['prodBarNum'])) {
-                                            $prodBarNum_arr[] =  $res['data'][$j]['prodBarNum'];
-                                        }
-                                    }
-                                    sort($prodBarNum_arr); // 오름차순 정렬
+                      if( $res['errorYN'] === 'N' ) {                         
+                        for ($j = 0; $j < count($res['data']); $j++) {
+                            if (!empty($res['data'][$j]['prodBarNum'])) {
+                                $prodBarNum_arr[] =  $res['data'][$j]['prodBarNum'];
+                            }
+                        }
+                        sort($prodBarNum_arr); // 오름차순 정렬
 
-                                    $limit = count($prodBarNum_arr) > 6 ? 6 : count($prodBarNum_arr);
-                                    for ($j = 0; $j < $limit; $j++) {
-                                        echo "<li>{$prodBarNum_arr[$j]}</li>";
-                                    }
-                                    ?>
-                                </ul>
-                            </div>
+                        $limit = count($prodBarNum_arr) > 5 ? 5 : count($prodBarNum_arr);
+                        for ($j = 0; $j < $limit; $j++) {
+                            echo "<li>{$prodBarNum_arr[$j]}</li>";
+                        }
+                        if( count($prodBarNum_arr)>5 ) { echo "<li> ... 외 ".( count($prodBarNum_arr)-5 )."건</li>"; }
+                      }
+                      ?>
+                  </ul>
+              </div>
               <div>
-                            <?php
-                                $sendData = [];
-                                $sendData["penOrdId"] = $item["ordId"];
-                                $sendData["uuid"] = $item["uuid"];
-                                $sendData["it_id"] = $item["it_id"];
+                <?php
+                  $sendData = [];
+                  $sendData["penOrdId"] = $item["ordId"];
+                  $sendData["uuid"] = $item["uuid"];
+                  $sendData["it_id"] = $item["it_id"];
 
-                                $oCurl = curl_init();
-                                curl_setopt($oCurl, CURLOPT_PORT, 9901);
+                  $res = get_eroumcare(EROUMCARE_API_ORDER_SELECT_LIST, json_encode($sendData, JSON_UNESCAPED_UNICODE));
 
-                                curl_setopt($oCurl, CURLOPT_URL, EROUMCARE_API_ORDER_SELECT_LIST);
-                                curl_setopt($oCurl, CURLOPT_POST, 1);
-                                curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
-                                curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($sendData, JSON_UNESCAPED_UNICODE));
-                                curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
-                                curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
-                                $res = curl_exec($oCurl);
-                                curl_close($oCurl);
-
-                                $result = json_decode($res, true);
-                                $result = $result["data"];
-                                // print_r($item);
-                            ?>
-                                <?php if($item["prodSupYn"] == "N"){ ?>
-
-                <!-- <li class="barInfo barcode_box  disable" data-id="2021052417305437" data-ct-id="48984"><span class="cnt">입력완료</span></li> -->
-                <a href="#" class="btn-03 btn-0 popupProdBarNumInfoBtn" data-id="<?=$row["od_id"]?>" data-ct-id="<?=$item["ct_id"]?>">
-                바코드 확인
-                </a>
-                <?php } else {
-                  if($limit>0){
+                  $result = $res;
+                  $result = $result["data"];
+                  // print_r($item);
                 ?>
-                  <a href="#" class="btn-01 btn-0 popupProdBarNumInfoBtn" data-id="<?=$row["od_id"]?>" data-ct-id="<?=$item["ct_id"]?>"><img src="<?=$SKIN_URL?>/image/icon_02.png" alt="">
-                  바코드
-                  </a>
-                <?php   }
-                }
-                ?>
+
+                <?php if($item["prodSupYn"] == "N"){ ?>
+                <a href="#" class="btn-03 btn-0 popupProdBarNumInfoBtn" data-id="<?=$row["od_id"]?>" data-ct-id="<?=$item["ct_id"]?>"> 바코드 확인 </a>
+                <?php } else { if( count($prodBarNum_arr)>=1 && ($limit > 0) ) { ?>
+                <a href="#" class="btn-01 btn-0 popupProdBarNumInfoBtn" data-id="<?=$row["od_id"]?>" data-ct-id="<?=$item["ct_id"]?>"><img src="<?=$SKIN_URL?>/image/icon_02.png" alt=""> 바코드 </a>
+                <?php } } ?>
+
               <?php if(($item['ct_status'] == '배송' || $item['ct_status'] == '완료') && ($item["prodSupYn"] == "Y")){ ?>
                 <a href="#" class="btn-02 btn-0 popupDeliveryInfoBtn" data-od="<?=$row["od_id"]?>">배송정보</a>
               <?php } ?>
