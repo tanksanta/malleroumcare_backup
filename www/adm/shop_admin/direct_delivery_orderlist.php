@@ -403,7 +403,7 @@ $warehouse_list = get_warehouses();
         <button id="ct_warehouse_all" class="newbutton2">출하창고 선택변경</button>
 		<button id="ct_warehouse_cncl" class="newbutton2">출고창고 선택해제</button>
         </div>
-<form name="frmsamhwaorderlist" id="frmsamhwaorderlist" style="margin-top:-15px;" method="post">
+<form name="frmsamhwaorderlist" id="frmsamhwaorderlist" style="margin-top:-15px;" method="get">
 <input type="hidden" name="page_rows" id="page_rows" value="<?=$page_rows?>">
 <input type="hidden" name="ct_ids" id="ct_ids" value="<?=$ct_ids?>">
 <input type="hidden" name="reload_submit" id="reload_submit" value="<?=$reload_submit?>">
@@ -625,8 +625,8 @@ $warehouse_list = get_warehouses();
 		<td align="center"><?=($order["it_deadline"] == "00:00:00" || $order["it_type11"] == "0")?"-":$order["it_deadline"];//마감시간 ?></td>
 		<td align="center"><?=$memo;//요청사항 ?></td>
 		<td align="center"><?=$order['it_admin_memo'];//관리자메모 ?></td>
-		<td align="center"><?=substr($order['od_time'],0,10);//주문일 ?></td>
-		<td align="center"><?=substr($order['ct_rdy_date'],0,10);//주문일 ?></td>
+		<td align="center"><?=substr($order['od_time'],0,10)."<br>(".substr($order['od_time'],11,10).")";//주문일 ?></td>
+		<td align="center"><?=substr($order['ct_rdy_date'],0,10);//출고준비변경일 ?></td>
 		<td align="center"><?=($order["ct_ex_date"]=="" || $order["ct_ex_date"]=="0000-00-00")?"-":$order["ct_ex_date"];//출고일 ?></td>
 		<td align="center"><?=$direct_delivery_text?></td>
     </tr>
