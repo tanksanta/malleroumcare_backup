@@ -54,6 +54,14 @@ if( $_POST['od_id'] && $_POST['step'] ) {
       WHERE `ct_id` = '".$_OrderID[$i]."'
     ");
 
+    
+    // 23.06.28 : 서원 - 주문 리스트에서 상태 변경 이벤트가 발생한 경우, 이미 변경된 상태값 중 튀소, 무효 상태 값을 가지고 있을 경우 해당 주문건은 더이상 변경 불가능하도록 처리.
+    //                    1건일 경우 아래 메시지 출력되며, 다건일 경우 정상처리 되었다는 메시지가 나가며, 해당 취소,무효 건은 skip 처리 된다.
+    if(in_array($result['ct_status'], ['취소', '주문무효'])) {
+      $errors[] = "주문번호 " . $result['od_id'] . "는 " . $result['ct_status'] . " 상태입니다.";
+      continue;
+    }
+
 
     $t_mod = sql_fetch("
       SELECT *
@@ -525,13 +533,12 @@ if( $_POST['od_id'] && $_POST['step'] ) {
       }
       */
 
-
       echo "success";
+
     } else {
       if (count($errors)) {
         echo $errors[0];
-      }
-      else {
+      } else {
         echo "fail";
       }
     }
