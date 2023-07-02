@@ -11,6 +11,7 @@ $menu['menu400'] = array (
     array('400400', '주문내역', G5_ADMIN_URL.'/shop_admin/samhwa_orderlist.php', 'scf_order', 1),
 	array('400490', '수급자주문내역', G5_ADMIN_URL.'/shop_admin/pen_orderlist.php', 'scf_order', 1),
     array('400402', '출고리스트', G5_ADMIN_URL.'/shop_admin/samhwa_deliverylist.php', 'scf_order_delivery', 1),
+	array('400406', '설치배송주문관리', G5_ADMIN_URL.'/shop_admin/direct_delivery2_orderlist.php', 'scf_order', 1),
     //array('400403', '반품관리', G5_ADMIN_URL.'/shop_admin/samhwa_cancellist.php', 'scf_order_cancel', 1),
     array('400404', '주문서리스트', G5_ADMIN_URL.'/shop_admin/shop_order_list.php', 'shop_order_list', 1),
     array('400401', '주문완료관리', G5_ADMIN_URL.'/shop_admin/samhwa_orderlist_complete.php', 'scf_order_complete', 1),
