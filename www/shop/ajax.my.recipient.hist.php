@@ -29,7 +29,8 @@ $list_this_hist = $data['data']['recipientContractHistory']['Result']['ds_result
 
 if($list_data['ds_ctrHistTotalList'] == null || $list_data['ds_ctrHistTotalList'] == ''){
 	json_response(200, 'OK', array(
-		'msg' => "no contract"
+		'sql' => "",
+		'rem_amount' => 1600000,
 	));
 }
 
@@ -247,7 +248,8 @@ if($count > 0){//잔여금액 점검 시작
 	AND (CNCL_YN = '변경' OR CNCL_YN = '정상')
 	AND ('".date("Ymd")."' BETWEEN PEN_EXPI_ST_DTM AND PEN_EXPI_ED_DTM) ;";
 	$row = sql_fetch($sql_b2);
-	$pen_budget = 1600000-$row["total_price1"];
+	$total_price1 = (!$row["total_price1"])? 1600000 : $row["total_price1"];
+	$pen_budget = 1600000-$total_price1;
 	
 	$sql_u = "UPDATE pen_purchase_hist set PEN_BUDGET='".$pen_budget."'
 	where ENT_ID = '".$member["mb_entId"]."' AND PEN_NM = '".$list_detail['FNM']."' AND PEN_LTM_NUM = '".$list_detail['LTC_MGMT_NO']."' 

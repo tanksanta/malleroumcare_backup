@@ -33,13 +33,14 @@ $obj_purchaseHistory->bathingChair = $row["bathingChair"]; //목욕의자
 
 $arr_ph = (array) $obj_purchaseHistory;
 */
+$rem_amount = (!$row["rem_amount"])?16000000:$row["rem_amount"];
 $recipientContractDetail["Result"]["ds_welToolTgtList"][0]["REDUCE_NM"] = $row["type"];
 $recipientContractDetail["Result"]["ds_welToolTgtList"][0]["SBA_CD"] = $row["type"]." ".$row["percent"];
 $recipientContractDetail["Result"]["ds_welToolTgtList"][0]["LTC_RCGT_GRADE_CD"] = str_replace("등급","",$row["grade"]);
 $recipientContractDetail["Result"]["ds_welToolTgtList"][0]["RCGT_EDA_DT"] = $row["penExpiDtm"];//인정유효기간
 $recipientContractDetail["Result"]["ds_welToolTgtList"][0]["applydtm"] = $row["penApplyDtm"];//적용기간
-$recipientContractDetail["Result"]["ds_welToolTgtList"][0]["REMN_AMT"] = $row["rem_amount"];//잔액
-$recipientContractDetail["Result"]["ds_welToolTgtList"][0]["USE_AMT"] = (1600000-$row["rem_amount"]);//사용금액
+$recipientContractDetail["Result"]["ds_welToolTgtList"][0]["REMN_AMT"] = $rem_amount;//잔액
+$recipientContractDetail["Result"]["ds_welToolTgtList"][0]["USE_AMT"] = (1600000-$rem_amount);//사용금액
 $recipientContractDetail["Result"]["ds_welToolTgtList"][0]["UPDATE"] = ($row["updated_at"] == "")?$row["regdt"]:$row["updated_at"];//업데이트 
 //판매
 $recipientToolList["Result"]["ds_payPsbl1"] = array();
