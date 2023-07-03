@@ -220,6 +220,7 @@ function change_step(od_id, step, api) {
             }
         } else {
             alert(data);
+            location.reload();
         }
     });
 }
