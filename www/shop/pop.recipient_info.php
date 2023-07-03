@@ -116,7 +116,7 @@ $sql_period = "
 and ITEM_NM in ('성인용보행기','경사로(실내용)') order by ITEM_NM desc)
 UNION
 (select PEN_NM, PROD_PAY_CODE, replace(ITEM_NM,' ','') as ITEM_NM, PROD_BAR_NUM, PROD_NM, max(ORD_DTM) as ORD_DTM, PEN_EXPI_ST_DTM, PEN_EXPI_ED_DTM,CNCL_YN from pen_purchase_hist where ent_id = '{$member['mb_entId']}' and PEN_LTM_NUM = '{$_GET['penLtmNum']}'
-and ITEM_NM not in ('안전손잡이','미끄럼 방지용품','간이변기','자세변환용구','요실금팬티','성인용보행기','경사로(실내용)') group by ITEM_NM order by ITEM_NM desc);
+and ITEM_NM not in ('안전손잡이','미끄럼 방지용품','간이변기','자세변환용구','요실금팬티','성인용보행기','경사로(실내용)') AND PROD_PAY_CODE = 1 group by ITEM_NM order by ITEM_NM desc);
 ";
 
 $period_result = sql_query($sql_period);
@@ -749,6 +749,7 @@ if($member["cert_data_ref"] != ""){
 
 										if(check_hist == false){
 											if(hist_ctr_arr[ind]['ITEM_NM'].replace(' ', '') != sale_n[i-(sale_y.length)]['WIM_ITM_CD'].replace(' ', '')) continue;
+											if(hist_ctr_arr[ind]['ORD_STATUS'] == "대여") continue;
 											row += `<tr id="${'gumae'+index}" class="${'contract-gumae'+index}" style="display:none;">
 														<td colspan="1" style="border-top-style: none; border-bottom-style: none;"></td>
 														<td colspan="4">${hist_ctr_arr[ind]['PROD_NM']}</td>
@@ -834,6 +835,7 @@ if($member["cert_data_ref"] != ""){
 
 										if(check_hist == false){
 											if(hist_ctr_arr[ind]['ITEM_NM'].replace(' ', '') != sale_y[i]['WIM_ITM_CD'].replace(' ', '')) continue;
+											if(hist_ctr_arr[ind]['ORD_STATUS'] == "대여") continue;
 											row += `<tr id="${'gumae'+index}" class="${'contract-gumae'+index}" style="display:none;">
 														<td colspan="1" style="border-top-style: none; border-bottom-style: none;"></td>
 														<td colspan="4">${hist_ctr_arr[ind]['PROD_NM']}</td>
@@ -1298,6 +1300,7 @@ if($member["cert_data_ref"] != ""){
 
 									if(check_hist == false){
 										if(hist_ctr_arr[ind]['ITEM_NM'].replace(' ', '') != item_nm.substr(0,item_nm.length-2)) continue;
+										if(hist_ctr_arr[ind]['ORD_STATUS'] == "대여") continue;
 										row += `<tr id="${'gumae'+sale_index}" class="${'contract-gumae'+sale_index}" style="display:none;">
 													<td colspan="1" style="border-top-style: none; border-bottom-style: none;"></td>
 													<td colspan="4">${hist_ctr_arr[ind]['PROD_NM']}</td>
@@ -1508,6 +1511,7 @@ if($member["cert_data_ref"] != ""){
 
 										if(check_hist == false){
 											if(hist_ctr_arr[ind]['ITEM_NM'].replace(' ', '') != sale_n[i-(sale_y.length)]['WIM_ITM_CD'].replace(' ', '')) continue;
+											if(hist_ctr_arr[ind]['ORD_STATUS'] == "대여") continue;
 											row += `<tr id="${'gumae'+index}" class="${'contract-gumae'+index}" style="display:none;">
 														<td colspan="1" style="border-top-style: none; border-bottom-style: none;"></td>
 														<td colspan="4">${hist_ctr_arr[ind]['PROD_NM']}</td>
@@ -1592,6 +1596,7 @@ if($member["cert_data_ref"] != ""){
 
 										if(check_hist == false){
 											if(hist_ctr_arr[ind]['ITEM_NM'].replace(' ', '') != sale_y[i]['WIM_ITM_CD'].replace(' ', '')) continue;
+											if(hist_ctr_arr[ind]['ORD_STATUS'] == "대여") continue;
 											row += `<tr id="${'gumae'+index}" class="${'contract-gumae'+index}" style="display:none;">
 														<td colspan="1" style="border-top-style: none; border-bottom-style: none;"></td>
 														<td colspan="4">${hist_ctr_arr[ind]['PROD_NM']}</td>
@@ -1734,12 +1739,12 @@ if($member["cert_data_ref"] != ""){
                     }, 'json')
                     .fail(function($xhr) {
                         var data = $xhr.responseJSON;
-                        alert("로그 저장에 실패했습니다!");
+                        //alert("로그 저장에 실패했습니다!");
                     });
 					})
 					.fail(function($xhr) {
 					  var data = $xhr.responseJSON;
-					  alert("계약정보 업데이트에 실패했습니다!");
+					  //alert("계약정보 업데이트에 실패했습니다!");
 					});
                 },
                 error: function (jqXhr, textStatus, errorMessage) {
@@ -1754,7 +1759,7 @@ if($member["cert_data_ref"] != ""){
                     }, 'json')
                     .fail(function($xhr) {
                         var data = $xhr.responseJSON;
-                        alert("로그 저장에 실패했습니다!");
+                        //alert("로그 저장에 실패했습니다!");
                     });
 				}else if(jqXhr['responseJSON']["data"]['err_code'] == "3"){
 					alert("등록된 인증서가 사용 기간이 만료 되었습니다.<?=($mobile_yn == 'Mobile')?' 컴퓨터에서':'';?> 공인인증서를 재등록 해 주세요.");
@@ -1780,7 +1785,7 @@ if($member["cert_data_ref"] != ""){
                     }, 'json')
                     .fail(function($xhr) {
                         var data = $xhr.responseJSON;
-                        alert("로그 저장에 실패했습니다!");
+                        //alert("로그 저장에 실패했습니다!");
                     });
 				}else if(jqXhr['responseJSON']["data"]['err_code'] == "5"){
 					ent_num_insert();
@@ -1993,7 +1998,7 @@ if($member["cert_data_ref"] != ""){
 				cnt = res;				
             },
             error : function(XMLHttpRequest, textStatus, errorThrown){ // 비동기 통신이 실패할경우 error 콜백으로 들어옵니다.
-                alert("통신 실패.");
+                //alert("통신 실패.");
             }
 		});
 		return cnt;
