@@ -220,7 +220,7 @@ if($od["od_b_tel"]) {
       color: #fff;
       font-size: 18px;
       font-weight: bold;
-      z-index: 10;
+      z-index: 8;
       cursor: default;
     }
 
@@ -450,8 +450,8 @@ if($od["od_b_tel"]) {
             <p class="barcode_infotext"><span style="">* 입력된 바코드를 더블 클릭하면 수정 가능 합니다.</span></p>
             
             <div class="barcode_block <?php echo in_array($carts[$i]['ct_status'], ['배송', '완료']) ? 'active' : '' ?>">
-              <div class="flex-row justify-center align-center" style="width: 100%; height: 100%">
-                <p>출고완료 상태에서는 바코드 변경이 불가능합니다.</p>
+              <div class="flex-row justify-center " style="width: 100%; height: 100%; padding-top:10px;">
+                <p>출고완료 상태에서는<br>바코드 변경이 불가능합니다.</p>
               </div>
             </div>
 
