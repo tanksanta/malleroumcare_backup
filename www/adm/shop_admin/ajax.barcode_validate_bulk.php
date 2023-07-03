@@ -21,7 +21,7 @@ if (!$ct_row) {
 //                    취소 처리된 주문건이 출고 처리되는 문제를 바코드 검증작업때 매번 상태값을 확인하여 작업도중 더 이상 프로세스 진행을 못하도록 차단한다.
 if(in_array($ct_row['ct_status'], ['취소', '주문무효'])) {
   $data['error'] = "";
-  json_response(400, '해당 상품은 ' . $ct_row['ct_status'] . ' 처리 되었습니다.\n',$data);
+  json_response(400, '해당 상품은 ' . $ct_row['ct_status'] . ' 처리 되었습니다.',$data);
   exit();
 } 
 

@@ -209,6 +209,25 @@ if($od["od_b_tel"]) {
       display:none;
     }
 
+    .barcode_block {
+      display: none;
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.25);
+      color: #fff;
+      font-size: 18px;
+      font-weight: bold;
+      z-index: 10;
+      cursor: default;
+    }
+
+    .barcode_block.active {
+      display: block;
+    }
+
     .excel_btn {
       display: inline-block;
       margin-top: 10px;
@@ -429,6 +448,12 @@ if($od["od_b_tel"]) {
 
             <p class="barcode_warning"><span style="color: red">(주의)</span> 재고가 없는 바코드가 있습니다. 관리자 승인 시 정상 등록 됩니다.</p>
             <p class="barcode_infotext"><span style="">* 입력된 바코드를 더블 클릭하면 수정 가능 합니다.</span></p>
+            
+            <div class="barcode_block <?php echo in_array($carts[$i]['ct_status'], ['배송', '완료']) ? 'active' : '' ?>">
+              <div class="flex-row justify-center align-center" style="width: 100%; height: 100%">
+                <p>출고완료 상태에서는 바코드 변경이 불가능합니다.</p>
+              </div>
+            </div>
 
           </div>
           <?php } ?>
