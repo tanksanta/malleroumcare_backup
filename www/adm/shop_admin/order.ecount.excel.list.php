@@ -341,6 +341,9 @@
     }
   }
 
+  // 23.04.27 : 서원 - 트랜잭션 시작
+  sql_query("START TRANSACTION");
+
   $rows = [];
   $checked = [];
   for($ii = 0; $ii < count($ct_id); $ii++) {
@@ -374,25 +377,43 @@
         $count_number++;
         $count_od_id = $it['od_id'];
     }
-    #바코드
-    $stoIdDataList = explode('|',$it['stoId']);
-    $stoIdDataList=array_filter($stoIdDataList);
-    $stoIdData = implode("|", $stoIdDataList);
 
+    // 23.04.27 : 서원 - 바코드 누락건으로 인한 프로세스 간략화.
+    //                    WMDS에 등록된 주문건의 경우 cart테이블을 확인하고, ct_barcode 컬럼에 바코드 데이터가 있을 경우 해당 데이터를 WMDS거치지 않고, 컬럼 데이터로 대체한다.
     $barcode=[];
-    $sendData["stoId"] = $stoIdData;
-    $oCurl = curl_init();
-    $res = get_eroumcare(EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP, $sendData);
-    $result_again = $res;
-    $result_again =$result_again['data'];
-    
-    if( is_array($result_again) && count($result_again) ) {
-      for($k=0; $k < count($result_again); $k++) {
-        if($result_again[$k]['prodBarNum']) {
-          array_push($barcode,$result_again[$k]['prodBarNum']);
+    if( $it['ct_barcode'] && ( mb_strlen($it['ct_barcode'] ) > 20 ) ) {
+      $_ct_barcode = json_decode( $it['ct_barcode'], TRUE );
+
+      if( is_array($_ct_barcode) && count($_ct_barcode) ) {
+        foreach ($_ct_barcode as $key => $val) {          
+          array_push( $barcode, $val );
         }
       }
+
+    } else {
+      // 23.04.27 : 서원 - ct_barcode 컬럼에 데이터가 없을 경우 기존 로직 활성화.
+      #바코드
+      $stoIdDataList = explode('|',$it['stoId']);
+      $stoIdDataList=array_filter($stoIdDataList);
+      $stoIdData = implode("|", $stoIdDataList);
+
+
+      $sendData["stoId"] = $stoIdData;
+      $oCurl = curl_init();
+      $res = get_eroumcare(EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP, $sendData);
+      $result_again = $res;
+      $result_again =$result_again['data'];
+      
+      if( is_array($result_again) && count($result_again) ) {
+        for($k=0; $k < count($result_again); $k++) {
+          if($result_again[$k]['prodBarNum']) {
+            array_push($barcode,$result_again[$k]['prodBarNum']);
+          }
+        }
+      }
+
     }
+
     asort($barcode);
     $barcode2=[];
     $y = 0;  
@@ -753,6 +774,11 @@
     ");
     set_order_admin_log($od['od_id'], '이카운트 엑셀 다운로드 : ' . $it_name);
   }
+
+  // 23.04.27 : 서원 - 트랜잭션 커밋
+  sql_query("COMMIT");
+
+
   $headers = array(
     "일자",
     "순서",
