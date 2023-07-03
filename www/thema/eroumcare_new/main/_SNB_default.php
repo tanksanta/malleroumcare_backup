@@ -203,7 +203,7 @@
                         <p class="memTitle"><!-- 회원이름 -->
                             <?=$member["mb_name"]?><span class="dir"> 님</span>
                             <?php if($member['admin'] || $is_samhwa_admin) { ?>
-                            <span class="admin">( <a href="<?php echo G5_ADMIN_URL;?>/shop_admin/samhwa_orderlist.php">관리메뉴</a> )</span>
+                            <span class="admin">( <a href="<?php echo G5_ADMIN_URL;?>">관리메뉴</a> )</span>
                             <?php } ?>
                         </p>
                         <p style="display: flex; align-items: flex-start; justify-content: center; margin-top: 10px;">

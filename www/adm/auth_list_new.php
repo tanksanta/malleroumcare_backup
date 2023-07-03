@@ -213,7 +213,7 @@ $result_m = sql_query($sql_m, true);
 </div>
 
 <div id="auth_list" style="width: 50%; float: left; padding: 0 1%;">
-  <h2>관리자리스트</h2>
+  <h2>메뉴 리스트</h2>
 
   <!-- 검색폼 -->
   <form name="fmanagerlist" id="fmanagerlist">
@@ -297,6 +297,16 @@ var auth_loading = false;
 var sel_mb_id = "";
 var menu_link_list = [];
 
+var url_href = window.location.href;
+var url = new URL(url_href);
+var url_search = url.searchParams;
+if(url_search != ''){ 
+    // sel_mb_id를 가지고 들어온 링크는 권한 설정 후 리로드된 페이지이기 때문에 해당 아이디의 메뉴 리스트를 열어준다
+    var get_id = url_search.get('sel_mb_id');
+    var obj_input = {id:url_search.get('sel_mb_id'), in:"reload"}
+    get_auth(obj_input);
+}
+
 $(function() {
     var a_menu = <?=json_encode($menu)?>;
     console.log(a_menu);
@@ -307,7 +317,9 @@ $(function() {
             data: { id : sel_mb_id, menu : [$(this)[0].dataset.id], status : 'd'},  // data to submit
             success: function (data) {
               alert("권한 삭제가 완료되었습니다.");
-              window.location.reload();
+              // 권한 변경 완료 시, 해당 아이디를  get 파라미터로 넣어 리로드
+              url.searchParams.set("sel_mb_id", sel_mb_id);
+              location.href = url;
             },
             error: function (jqXhr, textStatus, errorMessage) {
                 var errMSG = typeof(jqXhr['responseJSON']) == "undefined"? "오류가 발생하였습니다. 다시 시도해주세요.":jqXhr['responseJSON']['message'];
@@ -328,7 +340,9 @@ $(function() {
             data: { id : sel_mb_id, menu : [$(this)[0].dataset.id], status : 'w', auth:checked_auth.join() },  // data to submit
             success: function (data) {
               alert("권한 등록이 완료되었습니다.");
-              window.location.reload();
+              // 권한 변경 완료 시, 해당 아이디를  get 파라미터로 넣어 리로드
+              url.searchParams.set("sel_mb_id", sel_mb_id);
+              location.href = url;
             },
             error: function (jqXhr, textStatus, errorMessage) {
                 var errMSG = typeof(jqXhr['responseJSON']) == "undefined"? "오류가 발생하였습니다. 다시 시도해주세요.":jqXhr['responseJSON']['message'];
@@ -453,6 +467,7 @@ function get_auth(f)
           data: { id : f.id, menu : <?=json_encode($auth_menu)?>, status : 's' },  // data to submit
           success: function (data) {
               auth_loading = true;
+              if(f.in != "reload") { alert("권한 불러오기를 성공하였습니다."); } // 권한 등록/삭제 후 재진입시, alert 노출하지 않음
               var auth_data = data.message;
               $('#auth_table').empty();
 
