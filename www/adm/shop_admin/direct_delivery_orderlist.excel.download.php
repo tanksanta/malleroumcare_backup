@@ -75,19 +75,25 @@ if ($search_b_addr != "") {//배송주소 검색
   $where[] = " (od_b_addr1 like '%$search_b_addr%' or od_b_addr2 like '%$search_b_addr%' or od_b_addr3 like '%$search_b_addr%') ";
   $search_b_addr_text = $_REQUEST["search_b_addr"];
 }
+$search_b_memo_text = "없음";
+if ($search_b_memo != "") {//관리자메모 검색
+  $search_b_memo = trim($search_b_memo);
+  $where[] = " (i.it_admin_memo like '%$search_b_memo%') ";
+  $search_b_memo_text = $_REQUEST["search_b_memo"];
+}
+
 $search_partner_text = "없음";
 if ($search_partner != "") {//파트너 ID 검색
   $search_partner = trim($search_partner);
   if($search_partner == "미등록"){
 	$where[] = " ct_direct_delivery_partner = '' ";	
   }else{
-	$where[] = " ct_direct_delivery_partner like '$search_partner' ";	
+	$where[] = " (ct_direct_delivery_partner like '%$search_partner%' or ct_direct_delivery_partner in (select mb_id from g5_member where mb_name like '%$search_partner%' and mb_type = 'partner' AND mb_partner_auth = 1 AND mb_level='5' AND mb_partner_type LIKE '%직배송%' AND (mb_intercept_date = '' OR mb_intercept_date IS NULL))) ";	
   }
   $search_partner_text = $_REQUEST["search_partner"];
 }
 $it_deadline_text ="전체";
-if($_REQUEST["it_deadline"] != ""){//마감시간
-	
+if($_REQUEST["it_deadline"] != ""){//마감시간	
 	switch($_REQUEST["it_deadline"]){
 		case 1: $where[] .= " i.it_deadline between '09:00:00' and '09:59:59' ";$it_deadline_text ="09:00~10:00"; break;
 		case 2: $where[] .= " i.it_deadline between '10:00:00' and '10:59:59' ";$it_deadline_text ="10:00~11:00"; break;
@@ -107,8 +113,8 @@ if($_REQUEST["it_deadline"] != ""){//마감시간
 
 
 // 바코드 입력완료, 미입력
-if (gettype($ct_barcode_saved) == 'string' && $ct_barcode_saved !== '') {
-  $barcode_text = "전체";
+$barcode_text = "전체";
+if (gettype($ct_barcode_saved) == 'string' && $ct_barcode_saved !== '') {  
   if ($ct_barcode_saved == 'saved'){
     $where[] = " ( ct_barcode_insert = ct_qty or ct_barcode_insert > ct_qty or substring(ca_id,1,2) = '70') ";
   	$barcode_text = "입력완료";
@@ -120,8 +126,8 @@ if (gettype($ct_barcode_saved) == 'string' && $ct_barcode_saved !== '') {
 }
 
 // 배송정보 입력완료, 미입력
-if (gettype($ct_delivery_saved) == 'string' && $ct_delivery_saved !== '') {
-  $delivery_text = "전체";
+$delivery_text = "전체";
+if (gettype($ct_delivery_saved) == 'string' && $ct_delivery_saved !== '') {  
   if ($ct_delivery_saved == 'saved'){
     $where[] = " ( CHAR_LENGTH(ct_delivery_num) > 6 ) ";
 	$delivery_text = "입력완료";
@@ -132,8 +138,8 @@ if (gettype($ct_delivery_saved) == 'string' && $ct_delivery_saved !== '') {
 }
 
 // 급여, 비급여
-if (gettype($gubun) == 'string' && $gubun !== '') {
-  $gubun_text = "전체";
+$gubun_text = "전체";
+if (gettype($gubun) == 'string' && $gubun !== '') {  
   if ($gubun == '10'){
     $where[] = " ( substring(ca_id,1,2) = '10' or substring(ca_id,1,2) = '20' ) ";
 	$gubun_text = "급여";
@@ -144,8 +150,8 @@ if (gettype($gubun) == 'string' && $gubun !== '') {
 }
 
 // 위탁엑셀 다운, 미다운
-if (gettype($ct_is_delivery_excel_downloaded) == 'string' && $ct_is_delivery_excel_downloaded !== '') {
-  $delivery_excel_text = "전체";
+$delivery_excel_text = "전체";
+if (gettype($ct_is_delivery_excel_downloaded) == 'string' && $ct_is_delivery_excel_downloaded !== '') {  
   if ($ct_is_delivery_excel_downloaded == 'saved'){
     $where[] = " ( ct_is_delivery_excel_downloaded = '1' ) ";
 	$delivery_excel_text = "다운완료";
@@ -284,7 +290,8 @@ $qstr .= "&amp;orb=".$_REQUEST["orb"];
 $sql_common .= $sql_order;
 
 $sql  = "
-  select *, o.od_id as od_id, c.ct_id as ct_id, c.mb_id as mb_id,m2.mb_name AS partner_name, (od_cart_coupon + od_coupon + od_send_coupon) as couponprice
+  select *, o.od_id as od_id, c.ct_id as ct_id, c.mb_id as mb_id,m2.mb_name AS partner_name, (od_cart_coupon + od_coupon + od_send_coupon) as couponprice,
+  TIMEDIFF(it_deadline,DATE_FORMAT(NOW(), '%H:%i:%s')) AS time_dead
   $sql_common 
 ";
 if ($click_status || $od_status) {
@@ -359,22 +366,23 @@ foreach($orderlist as $order) {
 	number_format($order["ct_price_stotal"]),
 	$order['od_memo'],
 	$order['prodMemo'],
-	substr($order['od_time'],0,10),
+	$order['it_admin_memo'],
+	$order['od_time'],
 	($order["ct_ex_date"]=="" || $order["ct_ex_date"]=="0000-00-00")?"-":$order["ct_ex_date"],
 	($order["it_deadline"] == "00:00:00" || $order["it_type11"] == "0")?"-":$order["it_deadline"],
   ];
   $i++;
 }
-$search_where = "바코드 입력여부-".$barcode_text.", 배송정보입력-".$delivery_text.", 급여구분-".$gubun_text.", 위탁엑셀다운로드-".$delivery_excel_text.", 마감시간-".$it_deadline_text.", 검색어 : 파트너ID(".$search_partner_text."), 상품명(".$search_it_name_text."), 수령인명(".$search_b_name_text."), 배송주소(".$search_b_addr_text.")";
+$search_where = "바코드 입력여부-".$barcode_text.", 배송정보입력-".$delivery_text.", 급여구분-".$gubun_text.", 위탁엑셀다운로드-".$delivery_excel_text.", 마감시간-".$it_deadline_text.", 검색어 : 파트너ID 또는 이름(".$search_partner_text."), 상품명(".$search_it_name_text."), 수령인명(".$search_b_name_text."), 배송주소(".$search_b_addr_text."), 관리자메모(".$search_b_memo_text.")";
 
-$title = ['카트번호','주문번호','파트너','파트너ID','상품명(옵션)','상품코드','수령인','배송주소','상세주소','수량(개)','단가(원)','공급가액(원)','부가세(원)','합계금액(원)','배송요청사항','상품요청사항','주문일자','출고일','마감시간'];
+$title = ['카트번호','주문번호','파트너','파트너ID','상품명(옵션)','상품코드','수령인','배송주소','상세주소','수량(개)','단가(원)','공급가액(원)','부가세(원)','합계금액(원)','배송요청사항','상품요청사항','관리자메모','주문일자','출고준비변경일','출고일','마감시간'];
 // 엑셀 라이브러리 설정
 include_once(G5_LIB_PATH."/PHPExcel.php");
 $reader = PHPExcel_IOFactory::createReader('Excel2007');
 $excel = new PHPExcel();
 $sheet = $excel->getActiveSheet();
-$excel->setActiveSheetIndex(0)->mergeCells('A1:S1');
-$excel->setActiveSheetIndex(0)->mergeCells('J3:S3');
+$excel->setActiveSheetIndex(0)->mergeCells('A1:U1');
+$excel->setActiveSheetIndex(0)->mergeCells('J3:U3');
 
 // 시트 네임
 $sheet->setTitle("직배송 주문관리(".$title_text.")");
@@ -382,9 +390,9 @@ $sheet->setTitle("직배송 주문관리(".$title_text.")");
 $last_row = count($data) + 1;
 if($last_row < 2) $last_row = 2;
 // 전체 테두리 지정
-$sheet -> getStyle(sprintf("A4:S%s", ($last_row+3))) -> getBorders() -> getAllBorders() -> setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+$sheet -> getStyle(sprintf("A4:U%s", ($last_row+3))) -> getBorders() -> getAllBorders() -> setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 // 전체 가운데 정렬
-$sheet -> getStyle(sprintf("A1:S%s", ($last_row+3))) -> getAlignment() -> setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+$sheet -> getStyle(sprintf("A1:U%s", ($last_row+3))) -> getAlignment() -> setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
 // 금액 우측 정렬
 $sheet -> getStyle(sprintf("K5:N%s", ($last_row+3))) -> getAlignment() -> setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
 //A4 기준 틀고정
@@ -393,10 +401,10 @@ $sheet->freezePane('A5');
 for($i = 2; $i <= $last_row; $i++) {
   $sheet->getRowDimension($i)->setRowHeight(-1);
 }
-$sheet->getStyle("A4:S4")->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setARGB('cccccc');
+$sheet->getStyle("A4:U4")->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setARGB('cccccc');
 $sheet->getStyle('A1')->getFont()->setSize(15);
 $sheet->getStyle('A1')->getFont()->setBold(true);
-$sheet->getStyle("A4:S4")->getFont()->setBold(true);
+$sheet->getStyle("A4:U4")->getFont()->setBold(true);
 $sheet->getStyle('A1')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
 $sheet->getStyle('A1')->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
 $excel->setActiveSheetIndex(0)->setCellValue('A1', "직배송 주문관리(".$title_text.")"); 
@@ -414,7 +422,7 @@ $sheet->getColumnDimension('C')->setWidth(25);
 $sheet->getColumnDimension('D')->setWidth(20);
 $sheet->getColumnDimension('E')->setWidth(50);
 $sheet->getColumnDimension('F')->setWidth(10);
-$sheet->getColumnDimension('G')->setWidth(20);
+$sheet->getColumnDimension('G')->setWidth(30);
 $sheet->getColumnDimension('H')->setWidth(60);
 $sheet->getColumnDimension('I')->setWidth(50);
 $sheet->getColumnDimension('J')->setWidth(10);
@@ -424,10 +432,13 @@ $sheet->getColumnDimension('M')->setWidth(10);
 $sheet->getColumnDimension('N')->setWidth(15);
 $sheet->getColumnDimension('O')->setWidth(50);
 $sheet->getColumnDimension('P')->setWidth(50);
-$sheet->getColumnDimension('Q')->setWidth(15);
+$sheet->getColumnDimension('Q')->setWidth(50);
 $sheet->getColumnDimension('R')->setWidth(15);
 $sheet->getColumnDimension('S')->setWidth(15);
-
+$sheet->getColumnDimension('T')->setWidth(15);
+$sheet->getColumnDimension('U')->setWidth(15);
+$excel->setActiveSheetIndex(0)->getStyle(sprintf("B5:B%s", ($last_row+3)))->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_NUMBER);
+$excel->setActiveSheetIndex(0)->getStyle(sprintf("F5:F%s", ($last_row+3)))->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
 
 header("Content-Type: application/octet-stream");
 header("Content-Disposition: attachment; filename=\"직배송_주문관리(".$title_text.")_".date("Ymd").".xlsx\"");
