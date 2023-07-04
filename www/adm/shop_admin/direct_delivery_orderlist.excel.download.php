@@ -350,8 +350,8 @@ foreach($orderlist as $order) {
 		  }
 	
   $data[] = [
-    $order["ct_id"],
-	$order["od_id"],
+    $order["ct_id"]." ",
+	$order["od_id"]." ",
 	$ct_direct_delivery_partner_name,
 	$order['ct_direct_delivery_partner'],
     $order["it_name"].(($order["ct_option"] != $order["it_name"])?" [".$order["ct_option"]."]":""),  
@@ -437,7 +437,7 @@ $sheet->getColumnDimension('R')->setWidth(15);
 $sheet->getColumnDimension('S')->setWidth(15);
 $sheet->getColumnDimension('T')->setWidth(15);
 $sheet->getColumnDimension('U')->setWidth(15);
-$excel->setActiveSheetIndex(0)->getStyle(sprintf("B5:B%s", ($last_row+3)))->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_NUMBER);
+$excel->setActiveSheetIndex(0)->getStyle(sprintf("B5:B%s", ($last_row+3)))->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
 $excel->setActiveSheetIndex(0)->getStyle(sprintf("F5:F%s", ($last_row+3)))->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
 
 header("Content-Type: application/octet-stream");
