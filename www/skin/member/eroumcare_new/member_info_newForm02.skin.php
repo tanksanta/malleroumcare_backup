@@ -27,12 +27,7 @@
     /* // 파일명 :  \www\skin\member\eroumcare_new\member_info_newForm02.skin.php */
     /* // 파일 설명 : 신규파일 - 회원정보 변경 > 직원계정관리 파일 */
     /* // == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == */
-	$query = "SHOW COLUMNS FROM g5_member WHERE `Field` = 'manager_auth_order';";//업데이트멤버 없을 시 추가
-	$wzres = sql_fetch( $query );
-	if(!$wzres['Field']) {
-		sql_query("ALTER TABLE `g5_member`
-		ADD `manager_auth_order` tinyint(2) NULL DEFAULT '0' COMMENT '직원주문권한' AFTER mb_manager", true);
-	}
+
 
     $mm_result = sql_query(" SELECT * FROM g5_member WHERE mb_type = 'manager' AND mb_manager = '{$member['mb_id']}'");
 
@@ -150,9 +145,6 @@
                         <div class="table-box table-box_02"><div class="tit tit02">아이디</div><div class="thkc_cont thkc_cont02"><div><?=$mm['mb_id']?></div></div></div>
                         <div class="table-box table-box_02"><div class="tit tit02">이름</div><div class="thkc_cont thkc_cont02"><div><?=$mm['mb_name']?></div></div></div>
                         <div class="table-box table-box_02"><div class="tit tit02">최근접속일</div><div class="thkc_cont thkc_cont02"><div><?=$mm['mb_today_login']?></div></div></div>
-						<?php if($member["mb_level"] == "4"){//사업소 계정일때만 노출?>
-						<div class="table-box table-box_02"><div class="tit tit02">주문권한</div><div class="thkc_cont thkc_cont02"><div><?=($mm['manager_auth_order'] == 0)?"주문불가":"주문가능";?></div></div></div>
-						<?php }?>
                         <div class="thkc_btnWrap_03"><button onclick="manager_del('<?=$mm['mb_no']?>')">삭제</button><button class="on" onclick="manager_modify('<?=$mm['mb_no']?>')">정보수정</button></div>
                     </div>
 
@@ -161,9 +153,6 @@
                     <input type="hidden" id="mm_tel" name="" value="<?=$mm['mb_tel']?>">
                     <input type="hidden" id="mm_email" name="" value="<?=$mm['mb_email']?>">
                     <input type="hidden" id="mm_memo" name="" value="<?=$mm['mb_memo']?>">
-					<?php if($member["mb_level"] == "4"){//사업소 계정일때만 노출?>
-					<input type="hidden" id="mm_auth_order" name="" value="<?=$mm['manager_auth_order']?>">
-					<?php }?>
 
                 </div>
                 <?php } ?>
@@ -240,18 +229,6 @@
                                         <div class="error-txt error"></div>
                                     </div>
                                 </div>
-								<?php if($member["mb_level"] == "4"){//사업소 계정일때만 노출?>
-								<!-- 주문  -->
-                                <div class="table-box table-box_02">
-                                    <div class="tit03 bbs-pd_01">주문가능</div>
-                                    <div class="thkc_cont bbs-pd_01">
-                                        <div class="thkc_dfc">
-                                            <label for="memo" class="thkc_blind">주문가능</label><input class="thkc_input" type="checkbox" id="manager_auth_order" name="manager_auth_order" value='1'>
-                                        </div>
-                                        <div class="error-txt error"></div>
-                                    </div>
-                                </div>
-								<?php }?>
                                 <div class="thkc_btnWrap_03">
                                     <button class="cancel">취소</button>
                                     <button class="on">등록하기</button>
@@ -268,10 +245,7 @@
             <script>
                 // 담당자 추가
                 function manager_add(){
-                    <?php if($member["mb_level"] == "4"){//사업소 계정일때만 노출?>
-					var manager_auth_order = ($(".thkc_popUpWrap #manager_auth_order").is(':checked'))?"1":"0";
-					<?php }?>
-					if(!confirm("신규직원을 등록 하시겠습니까?")) { return; }
+                    if(!confirm("신규직원을 등록 하시겠습니까?")) { return; }
                     if( !ck_input( '' ) ) { return; }
 
                     $.ajax({
@@ -282,11 +256,8 @@
                             "mm_pw":  $(".thkc_popUpWrap #mm_password").val(),
                             "mm_name":  $(".thkc_popUpWrap #mm_name").val(),
                             "mm_tel":  $(".thkc_popUpWrap #mm_hp").val(),
-                            "mm_email":  $(".thkc_popUpWrap #mm_email").val(),                            
-							<?php if($member["mb_level"] == "4"){//사업소 계정일때만 노출?>
-							"manager_auth_order":  manager_auth_order,
-							<?php }?>
-							"mm_memo":  $(".thkc_popUpWrap #mm_memo").val()
+                            "mm_email":  $(".thkc_popUpWrap #mm_email").val(),
+                            "mm_memo":  $(".thkc_popUpWrap #mm_memo").val()
                         },
                         success: function(data) {
                             
@@ -314,13 +285,7 @@
                     $(".thkc_popUpWrap #mm_hp").val( $(".manager_" + _no + " #mm_tel").val() );
                     $(".thkc_popUpWrap #mm_email").val( $(".manager_" + _no + " #mm_email").val() );
                     $(".thkc_popUpWrap #mm_memo").val( $(".manager_" + _no + " #mm_memo").val() );
-					<?php if($member["mb_level"] == "4"){//사업소 계정일때만 노출?>
-					if($(".manager_" + _no + " #mm_auth_order").val() == "0"){
-						$(".thkc_popUpWrap #manager_auth_order").prop('checked',false);
-					}else{
-						$(".thkc_popUpWrap #manager_auth_order").prop('checked',true);
-					}
-					<?php }?>
+
                     $(".thkc_popUpWrap .boxLeft").text("직원정보 수정");
                     $(".thkc_popUpWrap .boxRright").hide();
                     
@@ -333,10 +298,7 @@
                     document.body.classList.add("stop-scroll");                    
                 }
                 function confirm_modify( no ) {
-                    <?php if($member["mb_level"] == "4"){//사업소 계정일때만 노출?>
-					var manager_auth_order = ($(".thkc_popUpWrap #manager_auth_order").is(':checked'))?"1":"0";
-					<?php }?>
-					if(!confirm("직원 정보를 변경 하시겠습니까?")) { return; }
+                    if(!confirm("직원 정보를 변경 하시겠습니까?")) { return; }
 
                     if( !ck_input( 'u' ) ) { return; }
 
@@ -349,9 +311,6 @@
                             "mm_name":  $(".thkc_popUpWrap #mm_name").val(),
                             "mm_tel":  $(".thkc_popUpWrap #mm_hp").val(),
                             "mm_email":  $(".thkc_popUpWrap #mm_email").val(),
-							<?php if($member["mb_level"] == "4"){//사업소 계정일때만 노출?>
-							"manager_auth_order":  manager_auth_order,
-							<?php }?>
                             "mm_memo":  $(".thkc_popUpWrap #mm_memo").val()
                         },
                         success: function(data) {
