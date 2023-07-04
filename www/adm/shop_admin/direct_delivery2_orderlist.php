@@ -94,9 +94,9 @@ if (gettype($partner_id) == 'string' && $partner_id !== '') {
 // 설치결과보고
 if (gettype($pip) == 'string' && $pip !== '') {
   if ($pip == '등록')
-    $where[] = " ( img_cnt1 > 0 && img_cnt2 > 0 && img_cnt3 > 0 ) ";
+    $where[] = " ( pip.img_cnt1 > 0 and pip.img_cnt2 > 0 and pip.img_cnt3 > 0 ) ";
   else
-    $where[] = " ( img_cnt1 < 1 || img_cnt2 < 1 || img_cnt3 < 1 ) ";
+    $where[] = " ( pip.img_cnt1 < 1 OR pip.img_cnt1 IS NULL OR pip.img_cnt2 < 1 OR pip.img_cnt3 IS NULL OR pip.img_cnt3 < 1 OR pip.img_cnt3 IS NULL ) ";
   $qstr .= "&amp;pip=".$pip;
 }
 

@@ -117,9 +117,9 @@ if (gettype($partner_id) == 'string' && $partner_id !== '') {
 $pip_text= "전체";
 if (gettype($pip) == 'string' && $pip !== '') {
   if ($pip == '등록')
-    $where[] = " ( img_cnt1 > 0 && img_cnt2 > 0 && img_cnt3 > 0 ) ";
+    $where[] = " ( pip.img_cnt1 > 0 and pip.img_cnt2 > 0 and pip.img_cnt3 > 0 ) ";
   else
-    $where[] = " ( img_cnt1 < 1 || img_cnt2 < 1 || img_cnt3 < 1 ) ";
+    $where[] = " ( pip.img_cnt1 < 1 OR pip.img_cnt1 IS NULL OR pip.img_cnt2 < 1 OR pip.img_cnt3 IS NULL OR pip.img_cnt3 < 1 OR pip.img_cnt3 IS NULL ) ";
   $pip_text= $pip;
 }
 
@@ -372,7 +372,7 @@ foreach($orderlist as $order) {
 
 
   $data[] = [
-	$order["od_id"],//주문번호
+	$order["od_id"]." ",//주문번호
 	substr($order['od_time'],0,16),//주문일시
 	($order["ct_direct_delivery_date"] == "")?"-":substr($order["ct_direct_delivery_date"],0,16),//설치예정일
 	($order["ct_ex_date"]=="" || $order["ct_ex_date"]=="0000-00-00")?"-":$order["ct_ex_date"],//출고완료일
@@ -473,9 +473,9 @@ $sheet->getColumnDimension('X')->setWidth(50);
 $sheet->getColumnDimension('Y')->setWidth(20);
 $sheet->getColumnDimension('Z')->setWidth(13);
 $sheet->getColumnDimension('AA')->setWidth(25);
-$excel->setActiveSheetIndex(0)->getStyle(sprintf("A5:A%s", ($last_row+3)))->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_NUMBER);
+$excel->setActiveSheetIndex(0)->getStyle(sprintf("A5:A%s", ($last_row+3)))->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
 $excel->setActiveSheetIndex(0)->getStyle(sprintf("H5:H%s", ($last_row+3)))->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
-$excel->setActiveSheetIndex(0)->getStyle(sprintf("AA5:AA%s", ($last_row+3)))->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_NUMBER);
+$excel->setActiveSheetIndex(0)->getStyle(sprintf("AA5:AA%s", ($last_row+3)))->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
 $excel->setActiveSheetIndex(0)->getStyle(sprintf("T5:T%s", ($last_row+3)))->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
 $excel->setActiveSheetIndex(0)->getStyle(sprintf("U5:U%s", ($last_row+3)))->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
 $excel->setActiveSheetIndex(0)->getStyle(sprintf("Y5:Y%s", ($last_row+3)))->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
