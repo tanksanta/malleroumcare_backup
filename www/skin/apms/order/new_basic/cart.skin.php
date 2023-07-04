@@ -16,6 +16,7 @@ if(isset($wset['chead']) && $wset['chead']) {
 if($header_skin)
     include_once('./header.php');
 
+
 if ( is_array($item) && count($item) ) {
     $ct = sql_fetch("SELECT * FROM g5_shop_cart WHERE ct_id = '{$item[0]['ct_id']}'");
     $od_id = $ct['od_id'];
@@ -65,16 +66,22 @@ if($tot_sell_price - $tot_sell_discount >=$result_d['de_send_conditional']){
             <!-- <th scope="col"><span>포인트</span></th> -->
             <th scope="col"><span class="last">배송비</span></th>
         </tr>
-        <?php for($i=0;$i < count($item); $i++) { ?>
+        <?php
+            $_total_sell_discount = 0;
+            $_total_sell_price = 0;
+
+            for($i=0;$i < count($item); $i++) {
+        ?>
             <tr<?php echo ($i == 0) ? ' class="tr-line"' : '';?>>
                 <td class="text-center">
                     <label for="ct_chk_<?php echo $i; ?>" class="sound_only">상품</label>
-                    <input class="check_cart" data-target="<?=$item[$i]['sell_price']?>" data-target2="
+                    <input class="check_cart" data-discount="<?=($item[$i]['sell_discount'])?>" data-target="<?=($item[$i]['sell_price'])?>" data-target2="
                     <?php
                     if($item[$i]["prodSupYn"] == "N"){
                         echo "0";
                     }else{
-                        echo get_item_sendcost($item[$i]['it_id'], $item[$i]['ct_price'], $item[$i]['qty'],$s_cart_id);
+                        //echo get_item_sendcost($item[$i]['it_id'], $item[$i]['ct_price'], $item[$i]['qty'],$s_cart_id);
+                        echo "0";
                     }
                     ?>
                     " type="checkbox" name="ct_chk[<?php echo $i; ?>]" value="1" id="ct_chk_<?php echo $i; ?>" checked="checked">
@@ -108,7 +115,11 @@ if($tot_sell_price - $tot_sell_discount >=$result_d['de_send_conditional']){
                 <!-- <td class="text-right"><?php echo number_format($item[$i]['point']); ?></td> -->
                 <td class="text-center"><?php echo $item[$i]['ct_send_cost']; ?></td>
             </tr>
-        <?php } ?>
+        <?php 
+                $_total_sell_discount += $item[$i]['sell_discount'];
+                $_total_sell_price += $item[$i]['sell_price'];
+            }
+        ?>
         <?php if ($i == 0) { ?>
             <tr><td colspan="8" class="text-center text-muted"><p style="padding:50px 0;">장바구니가 비어 있습니다.</p></td></tr>
         <?php } ?>
@@ -127,10 +138,13 @@ if($tot_sell_price - $tot_sell_discount >=$result_d['de_send_conditional']){
                     </div> -->
                 <?php //} ?>
                 <?php //if ($tot_price > 0) { ?>
-                    <div class="col-xs-6"> 총 상품금액 </div>
-                    <div class="col-xs-6 text-right">
-                        <strong id="total_price"><?php echo number_format($tot_price); ?> 원 <!-- / <?php echo number_format($tot_point); ?> 점 --></strong>
-                    </div>
+                    <?php if ($_total_sell_discount > 0) { ?>   
+                    <div class="col-xs-6"> 총 할인 금액 </div>
+                    <div class="col-xs-6 text-right"><strong id="total_sell_discount" style="color:#8f8f8f">- <?php echo number_format($_total_sell_discount); ?> 원</strong></div>
+                    <?php } ?>
+                    
+                    <div class="col-xs-6"> 총 상품 금액 <span style="font-size:10px;">( 할인 적용된 금액 )</span> </div>
+                    <div class="col-xs-6 text-right"><strong id="total_price"><?php echo number_format($tot_price); ?> 원</strong></div>
                 <?php //} ?>
             </div>
             <span>*10만원 이상 무료배송되며, 비유통상품은 주문시 결제금액에 포함되지 않습니다.</span>
@@ -285,17 +299,20 @@ if($tot_sell_price - $tot_sell_discount >=$result_d['de_send_conditional']){
     $(".check_cart").click(function() {
         var check_cart = $( '.check_cart' ).get();
         var price=0;
+        var discount=0;
         var delivery=0;
         for ( var i = 0; i < check_cart.length; i++) {
             console.log(check_cart[i].checked);
             if(check_cart[i].checked==true){
+                discount = discount+parseInt($(check_cart[i]).data('discount'));
                 price = price+parseInt($(check_cart[i]).data('target'));
                 delivery = delivery+parseInt($(check_cart[i]).data('target2'));
             }
         }
         if(price >= parseInt(<?=$result_d['de_send_conditional']?>)){delivery=0;}
         $("#delivery_pirce").html(number_format(delivery)+" 원 (*10만원이상 무료배송)");
-        $("#total_price").html(number_format(price+delivery)+" 원");
+        $("#total_price").html(number_format(price+delivery-discount)+" 원");
+        $("#total_sell_discount").html(number_format(discount)+" 원");
     });
 
     //콤마찍기
@@ -334,18 +351,21 @@ if($tot_sell_price - $tot_sell_discount >=$result_d['de_send_conditional']){
 
             //체크시 배송비 및 총 상품금액 반영
             var check_cart = $( '.check_cart' ).get();
-            var price=0;
+            var price=0;            
+            var discount=0;
             var delivery=0;
             for ( var i = 0; i < check_cart.length; i++) {
                 console.log(check_cart[i].checked);
-                if(check_cart[i].checked==true){
+                if(check_cart[i].checked==true){                    
+                    discount = discount+parseInt($(check_cart[i]).data('discount'));
                     price = price+parseInt($(check_cart[i]).data('target'));
                     delivery = delivery+parseInt($(check_cart[i]).data('target2'));
                 }
             }
             if(price >= parseInt(<?=$result_d['de_send_conditional']?>)){delivery=0;}
             $("#delivery_pirce").html(number_format(delivery)+" 원 (*10만원이상 무료배송)");
-            $("#total_price").html(number_format(price+delivery)+" 원");
+            $("#total_price").html(number_format(price+delivery-discount)+" 원");
+            $("#total_sell_discount").html(number_format(discount)+" 원");
         });
 
         // 옵션수정 닫기

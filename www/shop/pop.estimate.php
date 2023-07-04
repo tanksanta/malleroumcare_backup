@@ -72,7 +72,7 @@ for($i=0; $row=sql_fetch_array($result); $i++) {
         $row['options'][] = $opt;
     }
 
-
+    /*
     // 합계금액 계산
     $sql = " select SUM(IF(io_type = 1, (io_price * ct_qty), ((ct_price + io_price) * ct_qty))) as price,
                     SUM(ct_qty) as qty,
@@ -93,7 +93,7 @@ for($i=0; $row=sql_fetch_array($result); $i++) {
     }else{
         $money2+=$sum['price'] - $sum['discount'];
     }
-
+    */
 
     if ( !$od['od_send_cost'] ) {
         $od['od_send_cost'] += $sum['ct_send_cost'];
@@ -102,6 +102,7 @@ for($i=0; $row=sql_fetch_array($result); $i++) {
     $carts[] = $row;
 }
 
+/*
 // 주문금액 = 상품구입금액 + 배송비 + 추가배송비 - 할인금액 - 추가할인금액
 if ( $od['od_cart_price'] ) {
     //$amount['order'] = $od['od_cart_price'] + $od['od_send_cost'] + $od['od_send_cost2'] - $od['od_cart_discount'] - $od['od_cart_discount2'];
@@ -123,6 +124,7 @@ $amount['coupon'] = $od['od_cart_coupon'] + $od['od_coupon'] + $od['od_send_coup
 
 // 취소금액
 $amount['cancel'] = $od['od_cancel_price'];
+*/
 
 if ( !$od['od_name'] ) {
     $od['od_name'] = $member['mb_name'];
@@ -285,9 +287,9 @@ body { margin-right:5; margin-top:5; margin-bottom:5; margin-left:5; font:14px b
 	</div>
 </div>
 
-<div id="idPrint" style="padding-left:10px; padding-top: 50px;">
+<div id="idPrint" style="padding:25px 15px;">
 
-<table width="700" cellpadding="0" cellspacing="0" border="0">
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
 <tr>
 	<td align="center">
 
@@ -381,11 +383,10 @@ body { margin-right:5; margin-top:5; margin-bottom:5; margin-left:5; font:14px b
 		<td colspan="7" style="padding-left:30px;">
 			<span style="font-weight:bold;font-size:14px;">
 			합 계 금 액&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			금&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-weight:bold;font-size:14px;letter-spacing:4px;"><?php echo samhwa_price_to_hangul($amount['order']); ?>원</span>&nbsp;&nbsp;&nbsp;정
+			금&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-weight:bold;font-size:14px;letter-spacing:4px;" class="price_to_hangul"></span>&nbsp;&nbsp;&nbsp;정
 			</span>
-			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-		
-			<span style="font-weight:bold;font-size:14px;letter-spacing:1px;">(&nbsp;&nbsp;&#8361;<?php echo number_format($amount['order']); ?>&nbsp;&nbsp;) VAT포함</span>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;		
+			<span style="font-weight:bold;font-size:14px;letter-spacing:1px;" class="amount_order"></span>
 		</td>
 	</tr>
 	<tr height="28">
@@ -401,12 +402,18 @@ body { margin-right:5; margin-top:5; margin-bottom:5; margin-left:5; font:14px b
     <?php
         $a = 0;
         $m_money=0;
-        $price1=0;  //공가금액
-        $price2=0;  //세액
+        $price=0;  //공가금액
+        $vat=0;  //세액
+
         for($i=0; $i<count($carts); $i++) { 
-        $options = $carts[$i]['options'];
+            $options = $carts[$i]['options'];
+
+            for($k=0; $k<count($options); $k++) { 
+                if( $options[$k]['ct_discount'] ) {
+                    $_ct_discount = $options[$k]['ct_discount'] / $options[$k]['ct_qty'];
+                    $options[$k]['opt_price'] = $options[$k]['opt_price']-$_ct_discount;
+                }
     ?>
-          <?php for($k=0; $k<count($options); $k++) { ?>
             <tr height="28" <?php echo $a % 2 ? 'bgcolor="#eeeeee"' : ''; ?>>
                 <td align="left" style="padding-left:5px;"><div class="goods_name"><?php echo $carts[$i]['it_name']; ?></div></td>
                 <td align="left" style="padding-left:5px;">
@@ -429,13 +436,20 @@ body { margin-right:5; margin-top:5; margin-bottom:5; margin-left:5; font:14px b
                 <td align="center">0</td>
                 <td align="center"><?php echo number_format(($options[$k]['opt_price'] * $options[$k]['ct_qty'])); ?></td>
 
-                <?php }else{ ?>
+                <?php 
+                    $price = $price + ($options[$k]['opt_price'] * $options[$k]['ct_qty']); 
+                }else{ 
+                    
+                ?>
                 <td align="center"><?php echo $options[$k]['ct_qty']; ?></td>
-                <td align="center"><?php echo number_format($options[$k]['opt_price'] / 1.1); ?></td>
+                <td align="center"><?php echo number_format($options[$k]['opt_price']); ?></td>
                 <td align="center"><?php echo number_format($options[$k]['opt_price'] / 1.1 * $options[$k]['ct_qty']); ?></td>
                 <td align="center"><?php echo number_format($options[$k]['opt_price'] / 1.1 / 10 * $options[$k]['ct_qty']); ?></td>
                 <td align="center"><?php echo number_format(($options[$k]['opt_price'] / 1.1 * $options[$k]['ct_qty']) + ($options[$k]['opt_price'] / 1.1 / 10 * $options[$k]['ct_qty'])); ?></td>
-                <?php } ?>
+                <?php
+                    $price = $price + ($options[$k]['opt_price'] / 1.1 * $options[$k]['ct_qty']);
+                    $vat = $vat + ($options[$k]['opt_price'] / 1.1 / 10 * $options[$k]['ct_qty']);
+                } ?>
             </tr>
             <?php $a++; ?>
         <?php } ?>
@@ -452,59 +466,74 @@ body { margin-right:5; margin-top:5; margin-bottom:5; margin-left:5; font:14px b
             <td align="center"><?php echo number_format($od['od_send_cost'] / 1.1 + $od['od_send_cost'] / 1.1 / 10); ?></td>
         </tr>
         <?php $a++; ?>
-    <?php } ?>
+    <?php 
+            $price = $price + ($od['od_send_cost'] / 1.1);
+            $vat = $vat + ($od['od_send_cost'] / 1.1 / 10);
+        } ?>
     
     <?php if ( $od['od_send_cost2'] ) { ?>
         <tr height="28" <?php echo $a % 2 ? 'bgcolor="#eeeeee"' : ''; ?>>
             <td align="left" style="padding-left:5px;"><div class="goods_name">추가 배송비</div></td>
             <td align="left" style="padding-left:5px;"></td>
             <td align="center"></td>
-            <td align="center"><?php echo number_format($od['od_send_cost2'] / 1.1); ?></td>
+            <td align="center"><?php echo number_format($od['od_send_cost2']); ?></td>
             <td align="center"><?php echo number_format($od['od_send_cost2'] / 1.1); ?></td>
             <td align="center"><?php echo number_format($od['od_send_cost2'] / 1.1 / 10); ?></td>
             <td align="center"><?php echo number_format($od['od_send_cost2'] / 1.1 + $od['od_send_cost2'] / 1.1 / 10); ?></td>
         </tr>
         <?php $a++; ?>
-    <?php } ?>
+    <?php 
+            $price = $price + ($od['od_send_cost2'] / 1.1);
+            $vat = $vat + ($od['od_send_cost2'] / 1.1 / 10);
+        } ?>
 
     <?php if ( $od['od_cart_discount'] ) { ?>
         <tr height="28" <?php echo $a % 2 ? 'bgcolor="#eeeeee"' : ''; ?>>
             <td align="left" style="padding-left:5px;"><div class="goods_name">할인</div></td>
             <td align="left" style="padding-left:5px;"></td>
             <td align="center"></td>
-            <td align="center">- <?php echo number_format($od['od_cart_discount'] / 1.1); ?></td>
+            <td align="center">- <?php echo number_format($od['od_cart_discount']); ?></td>
             <td align="center">- <?php echo number_format($od['od_cart_discount'] / 1.1); ?></td>
             <td align="center">- <?php echo number_format($od['od_cart_discount'] / 1.1 / 10); ?></td>
             <td align="center">- <?php echo number_format($od['od_cart_discount'] / 1.1 + $od['od_cart_discount'] / 1.1 / 10); ?></td>
         </tr>
         <?php $a++; ?>
-    <?php } ?>
+    <?php 
+            //$price = $price - ($od['od_cart_discount'] / 1.1);
+            //$vat = $vat - ($od['od_cart_discount'] / 1.1 / 10);
+        } ?>
 
     <?php if ( $od['od_cart_discount2'] ) { ?>
         <tr height="28" <?php echo $a % 2 ? 'bgcolor="#eeeeee"' : ''; ?>>
             <td align="left" style="padding-left:5px;"><div class="goods_name">추가할인</div></td>
             <td align="left" style="padding-left:5px;"></td>
             <td align="center"></td>
-            <td align="center">- <?php echo number_format($od['od_cart_discount2'] / 1.1); ?></td>
+            <td align="center">- <?php echo number_format($od['od_cart_discount2']); ?></td>
             <td align="center">- <?php echo number_format($od['od_cart_discount2'] / 1.1); ?></td>
             <td align="center">- <?php echo number_format($od['od_cart_discount2'] / 1.1 / 10); ?></td>
             <td align="center">- <?php echo number_format($od['od_cart_discount2'] / 1.1 + $od['od_cart_discount2'] / 1.1 / 10); ?></td>
         </tr>
         <?php $a++; ?>
-    <?php } ?>
+    <?php 
+            $price = $price - ($od['od_cart_discount2'] / 1.1);
+            $vat = $vat - ($od['od_cart_discount2'] / 1.1 / 10);
+        } ?>
 
     <?php if ( $od['od_sales_discount'] ) { ?>
         <tr height="28" <?php echo $a % 2 ? 'bgcolor="#eeeeee"' : ''; ?>>
             <td align="left" style="padding-left:5px;"><div class="goods_name">매출할인</div></td>
             <td align="left" style="padding-left:5px;"></td>
             <td align="center"></td>
-            <td align="center">- <?php echo number_format($od['od_sales_discount'] / 1.1); ?></td>
+            <td align="center">- <?php echo number_format($od['od_sales_discount']); ?></td>
             <td align="center">- <?php echo number_format($od['od_sales_discount'] / 1.1); ?></td>
             <td align="center">- <?php echo number_format($od['od_sales_discount'] / 1.1 / 10); ?></td>
             <td align="center">- <?php echo number_format($od['od_sales_discount'] / 1.1 + $od['od_sales_discount'] / 1.1 / 10); ?></td>
         </tr>
         <?php $a++; ?>
-    <?php } ?>
+    <?php 
+            $price = $price - ($od['od_sales_discount'] / 1.1);
+            $vat = $vat - ($od['od_sales_discount'] / 1.1 / 10);
+        } ?>
 
 
 	<tr height="28">
@@ -512,11 +541,9 @@ body { margin-right:5; margin-top:5; margin-bottom:5; margin-left:5; font:14px b
 		<td align="center"></td>
 		<td align="center"></td>
 		<td align="center"></td>
-		<!-- <td align="center"><?php echo number_format($amount['order'] / 1.1); ?></td>
-		<td align="center"><?php echo number_format($amount['order'] / 1.1 / 10); ?></td> -->
-		<td align="center"><?php echo number_format(($money1) / 1.1 + $money2); ?></td>
-		<td align="center"><?php echo number_format(($money1) / 1.1 / 10); ?></td>
-        <td align="center"><?php echo number_format(($money1 / 1.1 + $money2) + ($money1 / 1.1 / 10)); ?></td>
+		<td align="center"><?php echo number_format($price); ?></td>
+		<td align="center"><?php echo number_format($vat); ?></td>
+        <td align="center"><?php echo number_format( $price + $vat ); ?></td>
 	</tr>
 	</table>
 
@@ -689,6 +716,10 @@ function go_submit() {
         }
     })
 }
+
+$(".price_to_hangul").text("<?=samhwa_price_to_hangul( $price + $vat ); ?>원");
+$(".amount_order").text("(  ￦<?=number_format( $price + $vat ); ?>  ) VAT포함");
+
 </script>
 
 </div>
