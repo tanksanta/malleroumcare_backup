@@ -683,6 +683,13 @@ function gumae2baesong() {
 // 폼 전송
 var form_loading = false;
 function form_submit(form) {
+  <?php if($_SESSION["ss_manager_auth_order"] != ""){?>
+  var manager_auth_order = <?=$_SESSION["ss_manager_auth_order"]?>;
+  if (manager_auth_order == 0) {
+    alert('<?=$_SESSION["ss_manager_name"]?>(<?=$_SESSION["ss_manager_id"]?>)님은 주문/수정권한이 없습니다.\n회원정보_계정관리를 확인해주세요.');
+    return false;
+  }
+  <?php }?>
 
   var mb_order_approve = $('input[name="mb_order_approve"]').val();
   if (mb_order_approve == 0) {
