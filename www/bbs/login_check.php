@@ -23,6 +23,17 @@ if($check_member['mb_type'] === 'manager') {
     alert('가입된 회원아이디가 아니거나 비밀번호가 틀립니다.\\n비밀번호는 대소문자를 구분합니다.');
   }
 
+  if($mb["mb_level"] == "3" && $mb["mb_type"] == "manager"){//사업소 직원 계정
+	$mb2 = get_member($mb["mb_manager"]);
+	if($mb2["mb_level"] == "4"){//사업소 직원 계정일 경우만 권한 생성
+		set_session('ss_manager_auth_order', $mb["manager_auth_order"]);
+		set_session('ss_manager_name', $mb["mb_name"]);
+		set_session('ss_manager_id', $mb["mb_id"]);
+	}
+
+  }
+	$mb_id2 = $mb["mb_id"];
+	$mb_pw2 = $mb['mb_password'];
   set_session('ss_manager_mb_id', $mb_id);
 
   $mb_id = $_POST['mb_id'] = $mb['mb_manager'];
@@ -351,5 +362,11 @@ recipient_link_clean();
 // 통계등록
 insert_statistics("LOGIN", $member['mb_id'], $member['mb_level'], "로그인", $_SERVER['REMOTE_ADDR']);
 
+if(is_array($mb2) && $mb2["mb_level"] == "4" && $auto_login){
+	set_cookie('ck_mb_id', '', 0);
+	set_cookie('ck_auto', '', 0);
+	alert('직원 계정은 자동로그인이 적용되지 않습니다.', G5_URL);
+	exit;
+}
 goto_url(G5_URL);
 ?>

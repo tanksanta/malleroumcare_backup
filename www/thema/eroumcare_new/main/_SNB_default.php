@@ -205,6 +205,11 @@
                             <?php if($member['admin'] || $is_samhwa_admin) { ?>
                             <span class="admin">( <a href="<?php echo G5_ADMIN_URL;?>">관리메뉴</a> )</span>
                             <?php } ?>
+							<?php if($_SESSION["ss_manager_name"] != ""){?>
+							<div id="" class="" style="text-align:center;margin:-10px 0px;">
+							( 직원 : <?=$_SESSION["ss_manager_name"]?> )
+							</div>
+							<?php }?>
                         </p>
                         <p style="display: flex; align-items: flex-start; justify-content: center; margin-top: 10px;">
                             <a href="<?=G5_BBS_URL?>/member_confirm.php?url=member_info_newform.php" class="member_modi">· 회원정보 수정</a> &nbsp;
