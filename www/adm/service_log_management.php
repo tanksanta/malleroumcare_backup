@@ -36,7 +36,7 @@ $all_cnt = 0;
 $service_type = [ 'login' => [['로그ID'=>10,'회원ID'=>15,'사업소코드'=>10,'회원명'=>50,'접속일자'=>15],['regdt'=>'로그인 일자']]
               ,'order' => [['주문ID'=>10,'회원ID'=>15,'사업소코드'=>10,'회원명'=>40,'관리자주문여부'=>10,'주문생성일자'=>15],['od_time'=>'주문서생성일']]
               ,'eform' => [['계약서ID'=>22,'회원ID'=>15,'사업소코드'=>10,'회원명'=>23,'계약서생성일'=>15,'계약서서명일'=>15],['dc_datetime'=>'계약서생성일','dc_sign_datetime'=>'계약서서명일']]
-              ,'item_msg' => [['제안서ID'=>10,'회원ID'=>15,'사업소코드'=>10,'회원명'=>35,'계약서생성일'=>15,'계약서서명일'=>15],['ms_created_at'=>'제안서생성일','ml_sent_at'=>'제안서발송일']]
+              ,'item_msg' => [['제안서ID'=>10,'회원ID'=>15,'사업소코드'=>10,'회원명'=>35,'제안서생성일'=>15,'제안서발송일'=>15],['ms_created_at'=>'제안서생성일','ml_sent_at'=>'제안서발송일']]
               ,'check_itcare' => [['조회ID'=>10,'회원ID'=>15,'사업소코드'=>10,'회원명'=>35,'조회번호'=>15,'조회일자'=>15],['occur_date'=>'조회요청일']] ];
 $type_data = $service_type[$type];
 
@@ -58,7 +58,7 @@ if ($type == 'login') {
             A.id as '로그ID',
             A.mb_id as '회원ID',
             IFNULL(NULLIF(B.mb_thezone,''), REPLACE(B.mb_giup_bnum,'-','')) as '사업소코드',
-            B.mb_name as '회원이름',
+            B.mb_name as '회원명',
             A.regdt as '로그인일자' ";
 
     $sql_common = "from g5_statistics A 
@@ -76,8 +76,8 @@ else if ($type == 'order') {
             A.od_id '주문서ID',
             A.mb_id as '회원ID',
             IFNULL(NULLIF(B.mb_thezone,''), REPLACE(B.mb_giup_bnum,'-','')) as '사업소코드',
-            B.mb_name as '회원이름',
-            case when A.od_add_admin='1' then 'N' else 'Y' end as '관리자주문여부',
+            B.mb_name as '회원명',
+            case when A.od_add_admin='1' then 'Y' else 'N' end as '관리자주문여부',
             A.od_time as '생성일자' ";
 
     $sql_common = "from g5_shop_order A
@@ -95,7 +95,7 @@ else if ($type == 'eform') {
               HEX(A.dc_id) as '계약서ID',
               B.mb_id as '회원ID',
               IFNULL(NULLIF(B.mb_thezone,''), REPLACE(B.mb_giup_bnum,'-','')) as '사업소코드',
-              B.mb_name as '회원이름',
+              B.mb_name as '회원명',
               A.dc_datetime as '계약서생성일',
               A.dc_sign_datetime as '계약서서명일' ";
 
@@ -126,9 +126,9 @@ else if ($type == 'item_msg') {
               A.ms_id as '제안서ID',
               A.mb_id as '회원ID',
               IFNULL(NULLIF(B.mb_thezone,''), REPLACE(B.mb_giup_bnum,'-','')) as '사업소코드',
-              B.mb_name as '회원이름',
-              A.ms_created_at as '생성일자',
-              C.ml_sent_at as '발송일자' ";
+              B.mb_name as '회원명',
+              A.ms_created_at as '제안서생성일',
+              C.ml_sent_at as '제안서발송일' ";
 
     if($sel_date == 'ms_created_at'){
        $sql_common = "from recipient_item_msg A
@@ -183,21 +183,7 @@ if (empty($fr_date) || ! preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-
 if (empty($to_date) || ! preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/", $to_date) ) $to_date = G5_TIME_YMD;
 
 $qstr = "?type={$type}&amp;sel_date={$sel_date}&amp;fr_date={$fr_date}&amp;to_date={$to_date}&amp;sel_field={$sel_field}&amp;search={$search}&amp;page_rows={$page_rows}";
-
-$results_all = sql_query("{$sql_search}
-                          {$sql_common}");
-$params_td = "";
-while ($row = sql_fetch_array($results_all)) {
-  $params_td .= '<tr class="bg0">';
-  foreach ($row as $key => $value) {
-    $value_str = $value != "0000-00-00 00:00:00" ? $value : "";
-    $params_td .= '<td class="td_center" style="vertical-align: middle;">' . $value_str . '</td>';
-  }
-  $params_td .= '</tr>';
-}
 ?>
-
-<script>console.log("<?=$sel_date.':'.$sel_date_val?>");</script>
 
 <style>
 .statistics_table {
@@ -239,23 +225,6 @@ while ($row = sql_fetch_array($results_all)) {
 <div class="outer">
 
 <div class="search_form" style="width: 100%; margin: 10px 0; padding: 0 20px; float: left;">
-  <form name="excel" id="excel" class="excel" style="display: none">
-    <table class="excel_table">
-      <colgroup>
-          <?php foreach($type_data[0] as $key => $value) { ?>
-				  <col width="<?=$value?>%"/>
-          <?php } ?>
-		  </colgroup>
-    <thead>
-      <tr>
-        <?php foreach($type_data[0] as $key => $value) { ?>
-        <th scope="col"><?=$key?></th>
-        <?php } ?>
-    </tr>
-    </thead>
-    <tbody id = "table_excel"><?php echo $params_td; ?>
-    </tbody>
-    </table></form>
   <form name="flist" id="flist" class="flist">
     <table class="new_form_table" id="search_detail_table">
         <tr>
@@ -263,7 +232,6 @@ while ($row = sql_fetch_array($results_all)) {
             <td style="padding: 5px 10px">
                 <div style="float: left; vertical-align:middle;">
                 <?php foreach($type_data[1] as $key=>$value){ $chkd=""; if($key == $sel_date){ $chkd = "checked";}?>
-                 <script>console.log("<?=$key.":".$sel_date.":".$_GET['sel_date']?>");</script>
                 <input type="radio" name="sel_date" id="<?=$key?>" value="<?=$key?>" <?php echo $chkd; ?>><label for="<?=$key?>"><?=$value?></label>
                 <?php } ?>
                 </div>
@@ -356,14 +324,7 @@ $(function() {
     $("#fr_date, #to_date").datepicker({ changeMonth: true, changeYear: true, dateFormat: "yy-mm-dd", showButtonPanel: true, yearRange: "c-99:c+99", maxDate: "+0d" });
 
     $('#download_excel').click(function(e) {
-        console.log(document.getElementsByClassName('excel_table')[0].innerHTML);
-        console.log('<?=$params_td?>');
-        var body = encodeURIComponent(document.getElementsByClassName('excel_table')[0].innerHTML);
-        body = body.replace(/\s+/g,"");
         var type = $('#type').val();
-        var page = $('#type').val();
-        // var url = 'user_statistics_excel_download.php?body=' + body;
-        // window.location.href = url;
 
         var form = document.createElement('form');
         form.method = 'post';
@@ -372,8 +333,8 @@ $(function() {
 
         var hiddenField = document.createElement('input');
         hiddenField.type = 'hidden';
-        hiddenField.name = 'table_body';
-        hiddenField.value = body;
+        hiddenField.name = 'search';
+        hiddenField.value = `<?=$search?>`;
         form.appendChild(hiddenField);
 
         var hiddenField2 = document.createElement('input');
@@ -381,6 +342,24 @@ $(function() {
         hiddenField2.name = 'type';
         hiddenField2.value = type;
         form.appendChild(hiddenField2);
+
+        var hiddenField3 = document.createElement('input');
+        hiddenField3.type = 'hidden';
+        hiddenField3.name = 'fr_date';
+        hiddenField3.value = `<?=$fr_date?>`;
+        form.appendChild(hiddenField3);
+
+        var hiddenField4 = document.createElement('input');
+        hiddenField4.type = 'hidden';
+        hiddenField4.name = 'to_date';
+        hiddenField4.value = `<?=$to_date?>`;
+        form.appendChild(hiddenField4);
+
+        var hiddenField5 = document.createElement('input');
+        hiddenField5.type = 'hidden';
+        hiddenField5.name = 'sel_date';
+        hiddenField5.value = `<?=$sel_date?>`;
+        form.appendChild(hiddenField5);
 
         document.body.appendChild(form);
         form.submit();
