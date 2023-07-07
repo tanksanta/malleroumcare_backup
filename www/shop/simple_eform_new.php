@@ -378,7 +378,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
           </div>
           <div class="form-group">
             <label style="min-width:220px;">
-              <input type="checkbox" name="contract_sign_type" id="contract_sign_type" value="1" class="input-sm" style="width:20px;" <?php if($dc['contract_sign_type'] == 1) { ?>checked<?php }?> onClick="if(this.checked == true){btn_contract_click();}else{$('#applicantRelation2').val('0');}">&nbsp;&nbsp;&nbsp;<strong>대리인 계약 시</strong>
+              <input type="checkbox" name="contract_sign_type" id="contract_sign_type" value="1" class="input-sm" style="width:20px;" <?php if($dc['contract_sign_type'] == 1) { ?>checked<?php }?> onClick="if(this.checked == true){btn_contract_click();}else{$('#applicantRelation2').val('0');applicant_info_chk();}">&nbsp;&nbsp;&nbsp;<strong>대리인 계약 시</strong>
 			  <input type="hidden" name="contract_sign_relation" id="contract_sign_relation" value="<?=$dc['contract_sign_relation']?>" alt="수급인과의 관계">
 			  <input type="hidden" name="contract_sign_name" id="contract_sign_name" value="<?=$dc['contract_sign_name']?>" alt="대리인 성명">
 			  <input type="hidden" name="contract_tel" id="contract_tel" value="<?=$dc['contract_tel']?>" alt="대리인 전화번호">
@@ -2032,6 +2032,7 @@ function contract_info_chk(){
 	$("#contract_tel").val($("#contract_tel2").val());
 	$("#contract_addr").val($("#contract_addr2").val());
 	$("#applicantRelation2").val('4');
+	applicant_info_chk();
 	div_close('popup_box3');
 }
 
