@@ -458,7 +458,8 @@ if($_REQUEST["signed"] == "ok"){?>
 	//대리인 발송정보
 	$contract_sign_info = ($_POST["contract_sign"] == "1")? '{"excluded":false,"signingMethod":{"type":"'.$_POST["contract_send"].'","value":"'.$_POST["contract_send_tel"].'"},"signingDuration":525600,"locale":"ko","role":"대리인","name":"대리인","requesterMessage":"['.$row["entNm"].'] 에서 복지용구 공급계약을 요청하였습니다."}': '{"excluded":true,"signingMethod":{"type":"SECURE_LINK","value":"01020000000"},"signingDuration":525600,"locale":"ko","role":"대리인","name":"대리인"}' ;
 	//신청자 발송정보
-	$applicant_sign_info = ($_POST["applicant_sign"] == "1")? '{"excluded":false,"signingMethod":{"type":"'.$_POST["applicant_send"].'","value":"'.$_POST["applicant_send_tel"].'"},"signingDuration":525600,"locale":"ko","role":"신청자","name":"신청자","requesterMessage":"['.$row["entNm"].'] 에서 복지용구 공급계약을 요청하였습니다."}': '{"excluded":true,"signingMethod":{"type":"SECURE_LINK","value":"01030000000"},"signingDuration":525600,"locale":"ko","role":"신청자","name":"신청자"}' ;
+	$applicant_sign_info = '{"excluded":true,"signingMethod":{"type":"SECURE_LINK","value":"01030000000"},"signingDuration":525600,"locale":"ko","role":"신청자","name":"신청자"}' ;//신청자 무조건 서명 무효
+	//($_POST["applicant_sign"] == "1")? '{"excluded":false,"signingMethod":{"type":"'.$_POST["applicant_send"].'","value":"'.$_POST["applicant_send_tel"].'"},"signingDuration":525600,"locale":"ko","role":"신청자","name":"신청자","requesterMessage":"['.$row["entNm"].'] 에서 복지용구 공급계약을 요청하였습니다."}': '{"excluded":true,"signingMethod":{"type":"SECURE_LINK","value":"01030000000"},"signingDuration":525600,"locale":"ko","role":"신청자","name":"신청자"}' ;
 
 	$str = file_get_contents($_SERVER['DOCUMENT_ROOT'].$row["dc_signUrl"]);
 	$stamp = base64_encode($str);
