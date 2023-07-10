@@ -378,7 +378,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
           </div>
           <div class="form-group">
             <label style="min-width:220px;">
-              <input type="checkbox" name="contract_sign_type" id="contract_sign_type" value="1" class="input-sm" style="width:20px;" <?php if($dc['contract_sign_type'] == 1) { ?>checked<?php }?> onClick="if(this.checked == true){btn_contract_click();}else{$('#applicantRelation2').val('0');}">&nbsp;&nbsp;&nbsp;<strong>대리인 계약 시</strong>
+              <input type="checkbox" name="contract_sign_type" id="contract_sign_type" value="1" class="input-sm" style="width:20px;" <?php if($dc['contract_sign_type'] == 1) { ?>checked<?php }?> onClick="if(this.checked == true){btn_contract_click();}else{$('#applicantRelation2').val('0');applicant_info_chk();}">&nbsp;&nbsp;&nbsp;<strong>대리인 계약 시</strong>
 			  <input type="hidden" name="contract_sign_relation" id="contract_sign_relation" value="<?=$dc['contract_sign_relation']?>" alt="수급인과의 관계">
 			  <input type="hidden" name="contract_sign_name" id="contract_sign_name" value="<?=$dc['contract_sign_name']?>" alt="대리인 성명">
 			  <input type="hidden" name="contract_tel" id="contract_tel" value="<?=$dc['contract_tel']?>" alt="대리인 전화번호">
@@ -818,7 +818,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 		* 구매계약서 작성 시 대리인 정보가 입력됩니다.
 	  </div>
 	  <div style="text-align:right;bottom:0px;float:left;width:100%;">
-			 <button type="button" class="btn btn-black btn-sm btn_close" style="margin-right:15px;" onClick="info_close('대리인','popup_box3','contract_sign_type')">돌아가기</button> <button type="button" class="btn btn-black btn-sm" style="margin-right:15px;background:black;" onClick="contract_info_chk()">입력완료</button>
+			 <button type="button" class="btn btn-black btn-sm" style="margin-right:15px;" onClick="info_close('대리인','popup_box3','contract_sign_type')">돌아가기</button> <button type="button" class="btn btn-black btn-sm" style="margin-right:15px;background:black;" onClick="contract_info_chk()">입력완료</button>
 		</div>
 	</div>
 	
@@ -841,7 +841,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 			<input type="checkbox" name="entConAcc01_save2" id="entConAcc01_save2" value="1" class="input-sm" style="width:20px;">&nbsp;&nbsp;작성된 특약사항을 내 정보에 저장합니다.
 		</div>
 		<div style="text-align:right;bottom:0px;float:left;width:100%;">
-			<button type="button" class="btn btn-black btn-sm btn_close" style="margin-right:15px;"  onClick="info_close('특약사항','popup_box4','acc_chk')">돌아가기</button> <button type="button"  class="btn btn-black btn-sm" style="margin-right:15px;background:black;" onClick="acc_info_chk()">입력완료</button>
+			<button type="button" class="btn btn-black btn-sm" style="margin-right:15px;"  onClick="info_close('특약사항','popup_box4','acc_chk')">돌아가기</button> <button type="button"  class="btn btn-black btn-sm" style="margin-right:15px;background:black;" onClick="acc_info_chk()">입력완료</button>
 		</div>
 	</div>
 	</div>
@@ -866,7 +866,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 					<option value="2" <?php if($dc) echo get_selected($dc['applicantRelation'], '2'); ?>>친족</option>
 					<option value="3" <?php if($dc) echo get_selected($dc['applicantRelation'], '3'); ?>>기타</option>
 					<option value="4" <?php if($dc) echo get_selected($dc['applicantRelation'], '4'); ?>>대리인</option>
-					<option value="5" <?php if($dc) echo get_selected($dc['applicantRelation'], '5'); ?>>공란</option>
+					<!--option value="5" <?php if($dc) echo get_selected($dc['applicantRelation'], '5'); ?>>공란</option-->
 					
 				  </select>
 			  </label><br>		
@@ -874,25 +874,25 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 				<b>신청인명</b>
 			  </label>
 			  <label style="width:240px;">
-				<input type="text" name="applicantNm2" id="applicantNm2" class="form-control input-sm" style="width:99% !important;" value="<?php if($dc) echo $dc['applicantNm']; ?>" placeholder="신청인 성명을 입력해 주세요." <?php if($dc) echo "data-orig=\"{$dc['applicantNm']}\""; ?> disabled>
+				<input type="text" name="applicantNm2" id="applicantNm2" class="form-control input-sm" style="width:99% !important;" value="<?php if($dc) echo $dc['applicantNm']; ?>" placeholder="신청인 성명을 입력해 주세요." <?php if($dc) echo "data-orig=\"{$dc['applicantNm']}\""; ?>>
 			  </label><br>
 			  <label style="width:120px;">
 				<b>신청인 전화번호</b>
 			  </label>
 			  <label style="width:240px;">
-				<input type="text" name="applicantTel2" id="applicantTel2" class="form-control input-sm" style="width:99% !important;" value="<?php if($dc) echo $dc['applicantTel']; ?>" placeholder="신청인 전화번호를 입력해 주세요." <?php if($dc) echo "data-orig=\"{$dc['applicantTel']}\""; ?> disabled>
+				<input type="text" name="applicantTel2" id="applicantTel2" class="form-control input-sm" style="width:99% !important;" value="<?php if($dc) echo $dc['applicantTel']; ?>" placeholder="신청인 전화번호를 입력해 주세요." <?php if($dc) echo "data-orig=\"{$dc['applicantTel']}\""; ?>>
 			  </label><br>
 			  <label style="width:120px;">
 				<b>신청인 생년월일</b>
 			  </label>
 			  <label style="width:240px;">
-				<input type="text" name="applicantBirth2" id="applicantBirth2" class="form-control input-sm" style="width:99% !important;" value="<?php if($dc) echo $dc['applicantBirth']; ?>" placeholder="신청인 생년월일을 입력해 주세요. ex)630319" <?php if($dc) echo "data-orig=\"{$dc['applicantBirth']}\""; ?> disabled>
+				<input type="text" name="applicantBirth2" id="applicantBirth2" class="form-control input-sm" style="width:99% !important;" value="<?php if($dc) echo $dc['applicantBirth']; ?>" placeholder="신청인 생년월일을 입력해 주세요. ex)630319" <?php if($dc) echo "data-orig=\"{$dc['applicantBirth']}\""; ?>>
 			  </label><br>
 			  <label style="width:120px;">
 				<b>신청인 주소</b>
 			  </label>
 			  <label style="width:240px;">
-				<input type="text" name="applicantAddr2" id="applicantAddr2" class="form-control input-sm" style="width:99% !important;" value="<?php if($dc) echo $dc['applicantAddr']; ?>" placeholder="신청인의 주소를 입력해 주세요." <?php if($dc) echo "data-orig=\"{$dc['applicantAddr']}\""; ?> disabled>
+				<input type="text" name="applicantAddr2" id="applicantAddr2" class="form-control input-sm" style="width:99% !important;" value="<?php if($dc) echo $dc['applicantAddr']; ?>" placeholder="신청인의 주소를 입력해 주세요." <?php if($dc) echo "data-orig=\"{$dc['applicantAddr']}\""; ?>>
 			  </label><br>
 			  <label style="width:120px;">
 				<b>신청일자</b>
@@ -905,7 +905,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 	  <div id="" class="" style="float:left;width:100%;padding:10px 15px;">
 		</div>
 	  <div style="text-align:right;bottom:0px;float:left;width:100%;">
-			 <button type="button" class="btn btn-black btn-sm btn_close" style="margin-right:15px;" onClick="info_close('장기요양 재가서비스 신청인','popup_box5')">돌아가기</button> <button type="button" class="btn btn-black btn-sm" style="margin-right:15px;background:black;"  onClick="applicant_info_chk()">입력완료</button>
+			 <button type="button" class="btn btn-black btn-sm" style="margin-right:15px;" onClick="info_close('장기요양 재가서비스 신청인','popup_box5')">돌아가기</button> <button type="button" class="btn btn-black btn-sm" style="margin-right:15px;background:black;"  onClick="applicant_info_chk()">입력완료</button>
 		</div>
 	</div>
 	
@@ -2032,6 +2032,11 @@ function contract_info_chk(){
 	$("#contract_tel").val($("#contract_tel2").val());
 	$("#contract_addr").val($("#contract_addr2").val());
 	$("#applicantRelation2").val('4');
+	$("#applicantNm2").attr("disabled","true");
+	$("#applicantTel2").attr("disabled","true");
+	$("#applicantBirth2").attr("disabled","true");
+	$("#applicantAddr2").attr("disabled","true");
+	applicant_info_chk();
 	div_close('popup_box3');
 }
 
@@ -2086,6 +2091,17 @@ function applicant_info_chk(){
 	$("#applicantBirth").val($("#applicantBirth2").val());
 	$("#applicantAddr").val($("#applicantAddr2").val());
 	$("#applicantDate").val($("#applicantDate2").val());
+	if($("#applicantRelation2").val() == "1" || $("#applicantRelation2").val() == "2" || $("#applicantRelation2").val() == "3"){//가족,친족,기타 일 경우 대리인 정보를 덮어 씌움
+		$("#contract_sign_type").attr("checked","true");
+		$("#contract_sign_relation").val($("#applicantRelation2").val());
+		$("#contract_sign_relation2").val($("#applicantRelation2").val());
+		$("#contract_sign_name").val($("#applicantNm2").val());
+		$("#contract_sign_name2").val($("#applicantNm2").val());
+		$("#contract_tel").val($("#applicantTel2").val());
+		$("#contract_tel2").val($("#applicantTel2").val());
+		$("#contract_addr").val($("#applicantAddr2").val());
+		$("#contract_addr2").val($("#applicantAddr2").val());
+	}
 	div_close('popup_box5');
 	//save_eform();
 }
@@ -2186,6 +2202,9 @@ $('.btn_close').click(function() {
   $('#popup_box2').hide();
   $('#popup_box2_1').hide();
   $('#popup_box3').hide();
+  $('#popup_box4').hide();
+  $('#popup_box5').hide();
+  $('#popup_box6').hide();
   $('#popup_box7').hide();
   $('#popup_box8').hide();
   $('#popup_box9').hide();

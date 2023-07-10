@@ -189,7 +189,7 @@
         <tr>
           <td>&nbsp;</td>
           <th scope="col" class="center">신청인</th>
-          <td style="font-size: 16px;"><?php if($eform['applicantRelation']=='0'){ echo $eform['penNm']; }else{ echo $eform['applicantNm']; }//02는 공란이라 미출력 ?></td>
+          <td style="font-size: 16px;"><?=$applicantNm//02는 공란이라 미출력 ?></td>
           <td class="sign-desc sign-form" data-id="sign_101_3">(서명 또는 인)</td>
         </tr>
       </tbody>
