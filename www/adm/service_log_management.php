@@ -185,7 +185,7 @@ else if ($type == 'first_order') {
 
   $sql_common = ("FROM (
   
-      SELECT OD.od_time, MIN(OD.od_time), MB.mb_id, MB.mb_giup_bname, MB.mb_giup_bnum, MB.mb_datetime
+      SELECT MIN(OD.od_time) AS od_time, MB.mb_id, MB.mb_giup_bname, MB.mb_giup_bnum, MB.mb_datetime
       FROM g5_shop_order OD
       LEFT JOIN g5_member MB on MB.mb_id=OD.mb_id
       WHERE (OD.od_add_admin = 0)
@@ -211,7 +211,7 @@ else if ($type == 'first_contract') {
 
   $sql_common = ("  FROM (
 
-      SELECT ED.dc_datetime, MIN(ED.dc_datetime), MB.mb_id, MB.mb_giup_bname, MB.mb_giup_bnum, MB.mb_datetime 
+      SELECT MIN(ED.dc_datetime) AS dc_datetime, MB.mb_id, MB.mb_giup_bname, MB.mb_giup_bnum, MB.mb_datetime 
       FROM eform_document ED
       LEFT JOIN g5_member MB on MB.mb_entId=ED.entId
       GROUP BY ED.entId
@@ -236,7 +236,7 @@ else if ($type == 'first_hit') {
 
   $sql_common = ("FROM (
 
-      SELECT RIL.occur_date, MIN(RIL.occur_date), MB.mb_id, MB.mb_giup_bname, MB.mb_giup_bnum, MB.mb_datetime 
+      SELECT MIN(RIL.occur_date) AS occur_date, MB.mb_id, MB.mb_giup_bname, MB.mb_giup_bnum, MB.mb_datetime 
       FROM rep_inquiry_log RIL	
       LEFT JOIN g5_member MB on MB.mb_id=RIL.ent_id
       GROUP BY RIL.ent_id
