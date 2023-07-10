@@ -24,6 +24,10 @@ $query_string = $qstr ? $qstr : '';
     <li><a <?php echo $type=='eform'?'class="anchor_active"':""; ?> href="./service_log_management.php?type=eform&<?php echo $query_string ?>">계약서</a></li>
     <li><a <?php echo $type=='item_msg'?'class="anchor_active"':""; ?> href="./service_log_management.php?type=item_msg&<?php echo $query_string ?>">제안서</a></li>
     <li><a <?php echo $type=='check_itcare'?'class="anchor_active"':""; ?> href="./service_log_management.php?type=check_itcare&<?php echo $query_string ?>">요양정보조회</a></li>
+
+    <li><a <?php echo $type=='first_order'?'class="anchor_active"':""; ?> href="./service_log_management.php?type=first_order&<?php echo $query_string ?>">첫 주문</a></li>
+    <li><a <?php echo $type=='first_contract'?'class="anchor_active"':""; ?> href="./service_log_management.php?type=first_contract&<?php echo $query_string ?>">첫 계약</a></li>
+    <li><a <?php echo $type=='first_hit'?'class="anchor_active"':""; ?> href="./service_log_management.php?type=first_hit&<?php echo $query_string ?>">첫 조회</a></li>
 </ul>
 <script>
 function fvisit_submit(act)
