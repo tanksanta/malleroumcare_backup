@@ -874,25 +874,25 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 				<b>신청인명</b>
 			  </label>
 			  <label style="width:240px;">
-				<input type="text" name="applicantNm2" id="applicantNm2" class="form-control input-sm" style="width:99% !important;" value="<?php if($dc) echo $dc['applicantNm']; ?>" placeholder="신청인 성명을 입력해 주세요." <?php if($dc) echo "data-orig=\"{$dc['applicantNm']}\""; ?>>
+				<input type="text" name="applicantNm2" id="applicantNm2" class="form-control input-sm" style="width:99% !important;" value="<?php if($dc) echo $dc['applicantNm']; ?>" placeholder="신청인 성명을 입력해 주세요." <?php if($dc) echo "data-orig=\"{$dc['applicantNm']}\""; ?> <?=($dc['applicantRelation'] == 0 || $dc['applicantRelation'] == "4")?"disabled":"";?>>
 			  </label><br>
 			  <label style="width:120px;">
 				<b>신청인 전화번호</b>
 			  </label>
 			  <label style="width:240px;">
-				<input type="text" name="applicantTel2" id="applicantTel2" class="form-control input-sm" style="width:99% !important;" value="<?php if($dc) echo $dc['applicantTel']; ?>" placeholder="신청인 전화번호를 입력해 주세요." <?php if($dc) echo "data-orig=\"{$dc['applicantTel']}\""; ?>>
+				<input type="text" name="applicantTel2" id="applicantTel2" class="form-control input-sm" style="width:99% !important;" value="<?php if($dc) echo $dc['applicantTel']; ?>" placeholder="신청인 전화번호를 입력해 주세요." <?php if($dc) echo "data-orig=\"{$dc['applicantTel']}\""; ?> <?=($dc['applicantRelation'] == 0 || $dc['applicantRelation'] == "4")?"disabled":"";?>>
 			  </label><br>
 			  <label style="width:120px;">
 				<b>신청인 생년월일</b>
 			  </label>
 			  <label style="width:240px;">
-				<input type="text" name="applicantBirth2" id="applicantBirth2" class="form-control input-sm" style="width:99% !important;" value="<?php if($dc) echo $dc['applicantBirth']; ?>" placeholder="신청인 생년월일을 입력해 주세요. ex)630319" <?php if($dc) echo "data-orig=\"{$dc['applicantBirth']}\""; ?>>
+				<input type="text" name="applicantBirth2" id="applicantBirth2" class="form-control input-sm" style="width:99% !important;" value="<?php if($dc) echo $dc['applicantBirth']; ?>" placeholder="신청인 생년월일을 입력해 주세요. ex)630319" <?php if($dc) echo "data-orig=\"{$dc['applicantBirth']}\""; ?> <?=($dc['applicantRelation'] == 0 || $dc['applicantRelation'] == "4")?"disabled":"";?>>
 			  </label><br>
 			  <label style="width:120px;">
 				<b>신청인 주소</b>
 			  </label>
 			  <label style="width:240px;">
-				<input type="text" name="applicantAddr2" id="applicantAddr2" class="form-control input-sm" style="width:99% !important;" value="<?php if($dc) echo $dc['applicantAddr']; ?>" placeholder="신청인의 주소를 입력해 주세요." <?php if($dc) echo "data-orig=\"{$dc['applicantAddr']}\""; ?>>
+				<input type="text" name="applicantAddr2" id="applicantAddr2" class="form-control input-sm" style="width:99% !important;" value="<?php if($dc) echo $dc['applicantAddr']; ?>" placeholder="신청인의 주소를 입력해 주세요." <?php if($dc) echo "data-orig=\"{$dc['applicantAddr']}\""; ?> <?=($dc['applicantRelation'] == 0 || $dc['applicantRelation'] == "4")?"disabled":"";?>>
 			  </label><br>
 			  <label style="width:120px;">
 				<b>신청일자</b>
@@ -2131,6 +2131,15 @@ function info_close(div_name,div_id,chk_id){
 		return false;
 	}
 	<?php }else{?>
+		if(div_name == "대리인"){//대리인	
+			if($("#contract_sign_relation2").data("orig") == 0){//기존 대리인 선택이 없을 시
+				$("#"+chk_id).prop("checked", false);
+			}
+		}else if(div_name == "특약사항"){
+			if($("#entConAcc01").val() == ""){
+				$("#"+chk_id).prop("checked", false);//기존 특약사항 정보가 없을 경우
+			}
+		}
 		div_close(div_id);
 	<?php }?>
 }
