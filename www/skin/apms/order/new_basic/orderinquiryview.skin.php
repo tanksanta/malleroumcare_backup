@@ -1377,9 +1377,9 @@ function order_edit(){
 		alert('<?=$_SESSION["ss_manager_name"]?>(<?=$_SESSION["ss_manager_id"]?>)님은 주문/수정권한이 없습니다.\n회원정보_계정관리를 확인해주세요.');
 		return false;
 	}
-	<?php }else{?>
-	location.href = "order_edit.php?od_id=<?=$od_id?>";
 	<?php }?>
+	location.href = "order_edit.php?od_id=<?=$od_id?>";
+
 }
 
 function hide_control(od_id) {
@@ -1389,7 +1389,7 @@ function hide_control(od_id) {
 		alert('<?=$_SESSION["ss_manager_name"]?>(<?=$_SESSION["ss_manager_id"]?>)님은 주문/수정권한이 없습니다.\n회원정보_계정관리를 확인해주세요.');
 		return false;
 	}
-	<?php }else{?>
+	<?php }?>
   
   $.ajax({
       method: "POST",
@@ -1404,7 +1404,7 @@ function hide_control(od_id) {
         location.href = "<?=G5_URL?>/shop/orderinquiry.php";
       }
     });
-<?php }?>
+
 }
 
 $(".popupProdBarNumInfoBtn").click(function(e) {
@@ -1446,11 +1446,11 @@ $(function() {
 		alert('<?=$_SESSION["ss_manager_name"]?>(<?=$_SESSION["ss_manager_id"]?>)님은 주문/수정권한이 없습니다.\n회원정보_계정관리를 확인해주세요.');
 		return false;
 	}
-	<?php }else{?>
+	<?php }?>
 	e.preventDefault();
 
     $("#sod_fin_cancelfrm").toggleClass("collapse");
-	<?php }?>
+
   });
 
   $(".delivery-confirm").click(function() {

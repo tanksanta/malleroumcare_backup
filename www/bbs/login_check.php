@@ -3,6 +3,13 @@ include_once('./_common.php');
 $g5['title'] = "로그인 검사";
 # 210131 이로움 계정검사
 
+$query = "SHOW COLUMNS FROM g5_member WHERE `Field` = 'manager_auth_order';";//업데이트멤버 없을 시 추가
+	$wzres = sql_fetch( $query );
+	if(!$wzres['Field']) {
+		sql_query("ALTER TABLE `g5_member`
+		ADD `manager_auth_order` tinyint(2) NULL DEFAULT '1' COMMENT '직원주문권한' AFTER mb_manager", true);
+}
+
 $check_member = get_member($_POST["mb_id"]);
 
 set_session('ss_manager_mb_id', '');
@@ -362,7 +369,7 @@ recipient_link_clean();
 // 통계등록
 insert_statistics("LOGIN", $member['mb_id'], $member['mb_level'], "로그인", $_SERVER['REMOTE_ADDR']);
 
-if(is_array($mb2) && $mb2["mb_level"] == "4" && $auto_login){
+if(is_array($mb2) && $mb2["mb_type"] == "default" && $auto_login){
 	set_cookie('ck_mb_id', '', 0);
 	set_cookie('ck_auto', '', 0);
 	alert('직원 계정은 자동로그인이 적용되지 않습니다.', G5_URL);
