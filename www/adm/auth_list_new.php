@@ -36,7 +36,7 @@ $sql_select = "
 $colspan = 6;
 
 
-$sql_search = ' where (1) and m.mb_level in (9,10) ';
+$sql_search = ' where (1) and m.mb_level in (9,10) and not (((date(mb_intercept_date) is not null and date(mb_intercept_date) <= date(now()))) or (date(mb_leave_date) is not null and date(mb_leave_date) <= date(now())))';
 
 // 검색어 검색
 if ($search) {
@@ -44,8 +44,8 @@ if ($search) {
 }
 
 if (!$sst) {
-    $sst  = "mb_level";
-    $sod = "desc";
+    $sst  = "mb_name";
+    $sod = "asc";
 }
 
 // sst : 정렬 어떤걸로(생성일자), sod : 오름차순/내림차순(내림차순)
@@ -61,7 +61,7 @@ $sql = "
 $sql_m = "
   {$sql_select}
   {$sql_common}
-   where (1) and m.mb_level in (9,10) 
+   where (1) and m.mb_level in (9,10) and not (((date(mb_intercept_date) is not null and date(mb_intercept_date) <= date(now()))) or (date(mb_leave_date) is not null and date(mb_leave_date) <= date(now())))
   {$sql_group}
   {$sql_order}
 ";
@@ -196,7 +196,7 @@ $result_m = sql_query($sql_m, true);
               <td class="td_stat"><?=$row['mb_nick']?></td> <!-- 닉네임 -->
               <td class="td_numsmall"><?=$row['mb_level']?></td> <!-- 회원권한 -->
               <td class="td_numsmall"><?=$row['cnt']?></td> <!-- 권한메뉴 수 -->
-              <td class="td_send"><?=$row['au_menu']?:"/adm/"?></td> <!-- 최초진입메뉴 -->
+              <td class="td_send"><?php if($row['au_menu']) { $li_menu = $menu['menu'.substr($row['au_menu'],0,3)]; foreach($li_menu as $item) {if($item[0] == $row['au_menu']) echo $item[1];}} else { echo "쇼핑몰관리(기본)"; }?></td> <!-- 최초진입메뉴 -->
           </tr>
 
           <?php
@@ -261,30 +261,11 @@ $result_m = sql_query($sql_m, true);
               <th scope="col">페이지이름</th>
               <th scope="col">권한설정</th>
               <th scope="col">최초진입메뉴로 등록</th>
-              <th scope="col">비고</th>
+              <th scope="col">등록/삭제</th>
           </tr>
           </thead>
           <tbody id="auth_table">
-          <?php
-          for ($i=0; $row=sql_fetch_array($result_menu); $i++) {
-              $bg = 'bg'.($i%2);
-          ?>
-
-          <tr class="<?php echo $bg; ?>">
-              <td class="td_alignc" style="width: 15px;"><?php echo $row['mb_id']; ?></td> <!-- 번호 -->
-              <td class="td_categorysmall"><?php echo $row['mb_name']; ?></td> <!-- 페이지 ID -->
-              <td class="td_confirm"><?=$row['mb_nick']?></td> <!-- 페이지이름 -->
-              <td class="td_imgline"><?=$row['mb_level']?></td> <!-- 권한설정 -->
-              <td class="td_stat"><?=$row['cnt']?></td> <!-- 최초진입메뉴로 등록 -->
-              <td class="td_stat"><?=$row['cp_subject']?></td> <!-- 비고 -->
-          </tr>
-
-          <?php
-          }
-
-          if ($i == 0)
-              echo '<tr><td colspan="'.$colspan.'" class="empty_table">회원을 선택해주세요.</td></tr>';
-          ?>
+          <tr><td colspan="<?=$colspan?>" class="empty_table">회원을 선택해주세요.</td></tr>
           </tbody>
           </table>
       </div>
@@ -300,7 +281,7 @@ var menu_link_list = [];
 var url_href = window.location.href;
 var url = new URL(url_href);
 var url_search = url.searchParams;
-if(url_search != ''){ 
+if(url.search.indexOf("sel_mb_id") > -1){
     // sel_mb_id를 가지고 들어온 링크는 권한 설정 후 리로드된 페이지이기 때문에 해당 아이디의 메뉴 리스트를 열어준다
     var get_id = url_search.get('sel_mb_id');
     var obj_input = {id:url_search.get('sel_mb_id'), in:"reload"}
@@ -309,7 +290,6 @@ if(url_search != ''){
 
 $(function() {
     var a_menu = <?=json_encode($menu)?>;
-    console.log(a_menu);
 
     $(document).on( "click", "#btn_delete", function(){
         $.ajax('ajax.auth_menu.php', {
@@ -364,6 +344,9 @@ $(function() {
                   data: { id : sel_mb_id, menu : [menu_id], status : 'ed' },  // data to submit
                   success: function (data) {
                     alert("변경이 완료되었습니다.");
+                    // 진입메뉴 변경 완료 시, 해당 아이디를  get 파라미터로 넣어 리로드
+                    url.searchParams.set("sel_mb_id", sel_mb_id);
+                    location.href = url;
                   },
                   error: function (jqXhr, textStatus, errorMessage) {
                       var errMSG = typeof(jqXhr['responseJSON']) == "undefined"? "오류가 발생하였습니다. 다시 시도해주세요.":jqXhr['responseJSON']['message'];
@@ -390,6 +373,9 @@ $(function() {
                   data: { id : sel_mb_id, menu : [menu_id], status : 'eu' },  // data to submit
                   success: function (data) {
                     alert("변경이 완료되었습니다.");
+                    // 진입메뉴 변경 완료 시, 해당 아이디를  get 파라미터로 넣어 리로드
+                    url.searchParams.set("sel_mb_id", sel_mb_id);
+                    location.href = url;
                   },
                   error: function (jqXhr, textStatus, errorMessage) {
                       var errMSG = typeof(jqXhr['responseJSON']) == "undefined"? "오류가 발생하였습니다. 다시 시도해주세요.":jqXhr['responseJSON']['message'];
@@ -443,12 +429,16 @@ $(function() {
                         innerHtml += '<td class="td_stat"></td> <!-- 최초진입메뉴로 등록 -->';
                     }
                     var a_tag = m_info.reg=='y'?'<a style="cursor: pointer;color: red;font-weight: bold;" id="btn_delete" data-id="'+menu_cd+'">삭제</a>':'<a style="cursor: pointer; font-weight: bold;" id="btn_write" data-id="'+menu_cd+'">등록</a>';
-                    innerHtml += '<td class="td_stat">'+a_tag+'</td> <!-- 비고 -->';
+                    innerHtml += '<td class="td_stat">'+a_tag+'</td> <!-- 등록/삭제 -->';
                     innerHtml += '</tr>';
 
                     $('#auth_table:last').append(innerHtml);
                   }
               }
+              alert("완료되었습니다");
+              // 권한 복사 완료 시, 해당 아이디를  get 파라미터로 넣어 리로드
+              url.searchParams.set("sel_mb_id", sel_mb_id);
+              location.href = url;
           },
           error: function (jqXhr, textStatus, errorMessage) {
               var errMSG = typeof(jqXhr['responseJSON']) == "undefined"? "오류가 발생하였습니다. 다시 시도해주세요.":jqXhr['responseJSON']['message'];
@@ -459,8 +449,15 @@ $(function() {
     });
 });
 
-function get_auth(f)
-{
+function get_auth(f) {
+    $('#fauthlist tr').each(function () { // 기존에 체크된 관리자가 있다면 배경색 삭제
+        if($(this)[0].style.background != "") { $(this)[0].style.background = ""; }
+    });
+
+    // 선택된 관리자 tr 배경색 추가
+    var sel_td = document.getElementById("fauthlist").querySelector("#"+f.id);
+    if(sel_td != null) sel_td.style.background = "#FF8300";
+
     sel_mb_id = f.id;
     $.ajax('ajax.auth_menu.php', {
           type: 'POST',  // http method
@@ -504,7 +501,7 @@ function get_auth(f)
                         innerHtml += '<td class="td_stat"></td> <!-- 최초진입메뉴로 등록 -->';
                     }
                     var a_tag = m_info.reg=='y'?'<a style="cursor: pointer;color: red;font-weight: bold;" id="btn_delete" data-id="'+menu_cd+'">삭제</a>':'<a style="cursor: pointer; font-weight: bold;" id="btn_write" data-id="'+menu_cd+'">등록</a>';
-                    innerHtml += '<td class="td_stat">'+a_tag+'</td> <!-- 비고 -->';
+                    innerHtml += '<td class="td_stat">'+a_tag+'</td> <!-- 등록/삭제 -->';
                     innerHtml += '</tr>';
 
                     $('#auth_table:last').append(innerHtml);
