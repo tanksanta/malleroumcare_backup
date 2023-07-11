@@ -25,7 +25,7 @@ if($check_member['mb_type'] === 'manager') {
 
   if($mb["mb_level"] == "3" && $mb["mb_type"] == "manager"){//사업소 직원 계정
 	$mb2 = get_member($mb["mb_manager"]);
-	if($mb2["mb_level"] == "4"){//사업소 직원 계정일 경우만 권한 생성
+	if($mb2["mb_type"] == "default"){//사업소 직원 계정일 경우만 권한 생성
 		set_session('ss_manager_auth_order', $mb["manager_auth_order"]);
 		set_session('ss_manager_name', $mb["mb_name"]);
 		set_session('ss_manager_id', $mb["mb_id"]);

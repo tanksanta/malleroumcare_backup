@@ -824,7 +824,7 @@ $(function() {
       </div>
 
       <?php if($isReceiverEdit) { ?>
-      <a href="order_edit.php?od_id=<?=$od_id?>" class="btn_od_edit">주문상품 변경</a>
+      <a href="javascript:order_edit();" class="btn_od_edit">주문상품 변경</a>
       <?php } ?>
 
       <style>
@@ -1370,6 +1370,18 @@ $(function() {
 </style>
 
 <script>
+function order_edit(){
+	<?php if($_SESSION["ss_manager_auth_order"] != ""){?>
+	var manager_auth_order = <?=$_SESSION["ss_manager_auth_order"]?>;
+	if (manager_auth_order == 0) {
+		alert('<?=$_SESSION["ss_manager_name"]?>(<?=$_SESSION["ss_manager_id"]?>)님은 주문/수정권한이 없습니다.\n회원정보_계정관리를 확인해주세요.');
+		return false;
+	}
+	<?php }else{?>
+	location.href = "order_edit.php?od_id=<?=$od_id?>";
+	<?php }?>
+}
+
 function hide_control(od_id) {
   <?php if($_SESSION["ss_manager_auth_order"] != ""){?>
 	var manager_auth_order = <?=$_SESSION["ss_manager_auth_order"]?>;
