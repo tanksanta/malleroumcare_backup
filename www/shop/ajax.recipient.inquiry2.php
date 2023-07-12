@@ -33,7 +33,7 @@ $obj_purchaseHistory->bathingChair = $row["bathingChair"]; //목욕의자
 
 $arr_ph = (array) $obj_purchaseHistory;
 */
-$rem_amount = (!$row["rem_amount"])?16000000:$row["rem_amount"];
+$rem_amount = (!$row["rem_amount"])?1600000:$row["rem_amount"];
 $recipientContractDetail["Result"]["ds_welToolTgtList"][0]["REDUCE_NM"] = $row["type"];
 $recipientContractDetail["Result"]["ds_welToolTgtList"][0]["SBA_CD"] = $row["type"]." ".$row["percent"];
 $recipientContractDetail["Result"]["ds_welToolTgtList"][0]["LTC_RCGT_GRADE_CD"] = str_replace("등급","",$row["grade"]);
