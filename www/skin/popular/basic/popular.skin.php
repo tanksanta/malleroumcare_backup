@@ -14,7 +14,7 @@ add_stylesheet('<link rel="stylesheet" href="'.$popular_skin_url.'/style.css">',
 							if($list[$i]['type'] == 1){//검색으로 ?>					
 							<p class="ht"><a href="javascript:search_tag('<?=G5_SHOP_URL;?>/search.php?sfl=wr_subject&amp;sop=and&amp;stx=<?php echo urlencode($list[$i]['pp_word'])?>','<?=$list[$i]['st_id']?>');">#<?=get_text($list[$i]['pp_word']); ?></a></p> 
 							<?php }else{//링크로?>
-							<p class="ht"><a href="javascript:search_tag('https://www.<?=$list[$i]['link']?>','<?=$list[$i]['st_id']?>')">#<?=get_text($list[$i]['pp_word']); ?></a></p> 
+							<p class="ht"><a href="javascript:search_tag('https://<?=$list[$i]['link']?>','<?=$list[$i]['st_id']?>')">#<?=get_text($list[$i]['pp_word']); ?></a></p> 
 							<?php }?>
 						<?php }else{?>
 						<p class="ht"><a href="<?=G5_SHOP_URL;?>/search.php?sfl=wr_subject&amp;sop=and&amp;stx=<?php echo urlencode($list[$i]['pp_word']) ?>">#<?=get_text($list[$i]['pp_word']); ?></a></p>            
