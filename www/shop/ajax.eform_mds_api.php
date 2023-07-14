@@ -4,18 +4,11 @@ include_once('./_common.php');
 $API_Key64 = base64_encode(G5_MDS_ID.":".G5_MDS_KEY); //API 접속 base64 인코딩 키
 //$client = new \GuzzleHttp\Client();
 
-//$templateId1_1 = "932d23a0-a37a-11ed-aeef-1bb14ef4354c";//기본 템플릿 6p(15/5)
-//$templateId1_2 = "ff3f3790-a38e-11ed-a8f1-9fe09be5e9a1";//기본 템플릿 6p(10/5)
-//$templateId1_3 = "524b22a0-a38f-11ed-a8f1-9fe09be5e9a1";//기본 템플릿 6p(5/5)
-//$templateId2_1 = "8176f0e0-a38f-11ed-a8f1-9fe09be5e9a1";//기본 템플릿 4p(15/5)
-//$templateId2_2 = "bb70b510-a38f-11ed-a8f1-9fe09be5e9a1";//기본 템플릿 4p(10/5)
-//$templateId2_3 = "eef248e0-a38f-11ed-9f87-3f9656f47c97";//기본 템플릿 4p(5/5)
-
-$templateId1_1 = "8ec3dcb0-c782-11ed-8086-9f5a8668dca0";//기본 템플릿 6p(15/5)
-$templateId1_2 = "04923fc0-c7a8-11ed-98a6-0b5b5a81a3a0";//기본 템플릿 6p(10/5)
-$templateId1_3 = "b0c31270-c7ac-11ed-a47c-51e4709569d4";//기본 템플릿 6p(5/5)
-$templateId1_4 = "d434b2c0-c86c-11ed-b2d5-9f64a6f185b7";//기본 템플릿 6p(20/5)
-$templateId1_5 = "4c06e8d0-c855-11ed-9766-e9c41b39ad33";//기본 템플릿 6p(25/5)
+$templateId1_1 = "b9e042d0-1c69-11ee-9861-9d2780240ee3";//기본 템플릿 6p(15/5) b9e042d0-1c69-11ee-9861-9d2780240ee3(사본) 8ec3dcb0-c782-11ed-8086-9f5a8668dca0
+$templateId1_2 = "8a31a570-1c68-11ee-93ed-3d3c2f757ad0";//기본 템플릿 6p(10/5) 8a31a570-1c68-11ee-93ed-3d3c2f757ad0(사본) 04923fc0-c7a8-11ed-98a6-0b5b5a81a3a0
+$templateId1_3 = "02a73be0-1c5b-11ee-8198-6d15ecc3bde1";//기본 템플릿 6p(5/5) 02a73be0-1c5b-11ee-8198-6d15ecc3bde1(사본) b0c31270-c7ac-11ed-a47c-51e4709569d4(원본)
+$templateId1_4 = "a1f1bef0-1c6a-11ee-93ed-3d3c2f757ad0";//기본 템플릿 6p(20/5) a1f1bef0-1c6a-11ee-93ed-3d3c2f757ad0(사본) d434b2c0-c86c-11ed-b2d5-9f64a6f185b7
+$templateId1_5 = "0b1d92f0-1c6b-11ee-93ed-3d3c2f757ad0";//기본 템플릿 6p(25/5) 0b1d92f0-1c6b-11ee-93ed-3d3c2f757ad0(사본) 4c06e8d0-c855-11ed-9766-e9c41b39ad33
 $templateId2_1 = "a7278fc0-c7b1-11ed-ae22-fbb372cc8ea8";//기본 템플릿 4p(15/5)
 $templateId2_2 = "acae5b40-c7b1-11ed-b371-c5dc2902ba05";//기본 템플릿 4p(10/5)
 $templateId2_3 = "b1e9c5e0-c7b1-11ed-98a6-0b5b5a81a3a0";//기본 템플릿 4p(5/5)
@@ -44,14 +37,14 @@ header('Content-type: application/json');
 		$type = "GET";
 		$data = "";
 		$arrResponse2 = get_modusign($API_Key64,$api_url,$type,$data);
-		$dc_id2 = strtoupper($arrResponse2["metadatas"][0]["value"]);
+		$dc_id2 = ($arrResponse2["metadatas"][0]["key"] == "dc_id")? strtoupper($arrResponse2["metadatas"][0]["value"]) : strtoupper($arrResponse2["metadatas"][1]["value"]);
 		$log_dir = $_SERVER["DOCUMENT_ROOT"].'/data/log/';
 		//$log_dir = "/home/root...등의 절대경로 ";
 	    $log_txt = "\r\n";
 		$log_txt .= '(' . date("Y-m-d H:i:s") . ')' .$arrResponse["event"]["type"]. "\r\n";
 		if($arrResponse["event"]["type"] == "document_all_signed"){// 서명완료
 			$sql = "update `eform_document` set dc_sign_datetime=now(),dc_status='3' WHERE dc_id=UNHEX('".$dc_id2."')";
-			$log_txt .= "-- 계약서 ".$dc_id2." 서명 완료\r\n";
+			$log_txt .= "-- 계약서 ".$dc_id2." 서명 완료(".$arrResponse2["metadatas"][0]["value"].")\r\n";
 			sql_query($sql);
 			//if($is_simple_efrom) {
 			  $uuid = $dc_id2; 
@@ -465,7 +458,8 @@ if($_REQUEST["signed"] == "ok"){?>
 	//대리인 발송정보
 	$contract_sign_info = ($_POST["contract_sign"] == "1")? '{"excluded":false,"signingMethod":{"type":"'.$_POST["contract_send"].'","value":"'.$_POST["contract_send_tel"].'"},"signingDuration":525600,"locale":"ko","role":"대리인","name":"대리인","requesterMessage":"['.$row["entNm"].'] 에서 복지용구 공급계약을 요청하였습니다."}': '{"excluded":true,"signingMethod":{"type":"SECURE_LINK","value":"01020000000"},"signingDuration":525600,"locale":"ko","role":"대리인","name":"대리인"}' ;
 	//신청자 발송정보
-	$applicant_sign_info = ($_POST["applicant_sign"] == "1")? '{"excluded":false,"signingMethod":{"type":"'.$_POST["applicant_send"].'","value":"'.$_POST["applicant_send_tel"].'"},"signingDuration":525600,"locale":"ko","role":"신청자","name":"신청자","requesterMessage":"['.$row["entNm"].'] 에서 복지용구 공급계약을 요청하였습니다."}': '{"excluded":true,"signingMethod":{"type":"SECURE_LINK","value":"01030000000"},"signingDuration":525600,"locale":"ko","role":"신청자","name":"신청자"}' ;
+	$applicant_sign_info = '{"excluded":true,"signingMethod":{"type":"SECURE_LINK","value":"01030000000"},"signingDuration":525600,"locale":"ko","role":"신청자","name":"신청자"}' ;//신청자 무조건 서명 무효
+	//($_POST["applicant_sign"] == "1")? '{"excluded":false,"signingMethod":{"type":"'.$_POST["applicant_send"].'","value":"'.$_POST["applicant_send_tel"].'"},"signingDuration":525600,"locale":"ko","role":"신청자","name":"신청자","requesterMessage":"['.$row["entNm"].'] 에서 복지용구 공급계약을 요청하였습니다."}': '{"excluded":true,"signingMethod":{"type":"SECURE_LINK","value":"01030000000"},"signingDuration":525600,"locale":"ko","role":"신청자","name":"신청자"}' ;
 
 	$str = file_get_contents($_SERVER['DOCUMENT_ROOT'].$row["dc_signUrl"]);
 	$stamp = base64_encode($str);
@@ -479,7 +473,7 @@ if($_REQUEST["signed"] == "ok"){?>
 	$pen_Jumin_1 = $pen_Jumin_2 = str_replace(".","",$row["penBirth"]);//수급자생일
 	$pen_tel_1 = $row["penConNum"];//수급자전화번호
 	$pen_addr_1 = $pen_addr_2 = ($row["penAddr"] != "")?"(".$row["penZip"].")".$row["penAddr"].' '.$row["penAddrDtl"]:"";//수급자주소
-	$ent_name_1 = $ent_name_2 = $ent_name_3 = $row["entNm"];//사업소이름
+	$ent_name_1 = $ent_name_2 = $ent_name_3 = $ent_name_4 = $row["entNm"];//사업소이름
 	$ent_entnum_1 = $ent_entnum_2 = $row["entNum"];//사업소기관번호
 	$ent_ceoname_1 = $ent_ceoname_2 = $ent_ceoname_3 = $row["entCeoNm"];//사업소대표이름
 	$contract_name_1 = $contract_name_2 = $contract_name_3 = $contract_name_4 = $row["contract_sign_name"];//대리자명 $contract_name_1:대리자가 있을 경우만
@@ -679,7 +673,8 @@ if($_REQUEST["signed"] == "ok"){?>
 		$it_codeN_1		.=',{"dataLabel":"it_code'.$i.'_1","value":"'.$it_code["all"][$i].'"}'; //아이템제품코드1
 		$it_purchaseynN_1		.=',{"dataLabel":"it_purchaseyn'.$i.'_1","value":"'.$sale_gubun["all"][$i].'"}'; //아이템구매여부1
 		$it_rentynN_1		.=',{"dataLabel":"it_rentyn'.$i.'_1","value":"'.$rant_gubun["all"][$i].'"}'; //아이템대여여부1
-		$it_dateN_1		.=',{"dataLabel":"it_date'.$i.'_1","value":"'.$it_date["all"][$i].'"}'; //아이템계약일1
+		$purchaseInfo = ($sale_gubun["all"][$i] == "")? "" :"\\n(판매일)"; 
+		$it_dateN_1		.=',{"dataLabel":"it_date'.$i.'_1","value":"'.$it_date["all"][$i].$purchaseInfo.'"}'; //아이템계약일1
 		$it_sumprice1_1		.=',{"dataLabel":"it_sumprice'.$i.'_1","value":"'.number_format($it_price["all"][$i]).'"}'; //아이템총액1
 		$ent_nameN_1	.=',{"dataLabel":"ent_name'.$i.'_1","value":"'.$ent_name_1.'"}'; //사업소이름1
 		$ent_entnumN_1	.=',{"dataLabel":"ent_entnum'.$i.'_1","value":"'.$ent_entnum_1.'"}'; //사업소번호1
@@ -716,6 +711,7 @@ if($_REQUEST["signed"] == "ok"){?>
 					,{"dataLabel":"pen_Jumin_2","value":"'.$pen_Jumin_2.'-"}
 					,{"dataLabel":"pen_grade_4","value":"'.$pen_grade_4.'"}
 					,{"dataLabel":"pen_ltmnum_5","value":"'.$pen_ltmnum_5.'"}
+					,{"dataLabel":"ent_name_4","value":"'.$ent_name_4.'"}
 					'.$it_categoryN_1.'
 					'.$it_codeN_1.'
 					'.$it_purchaseynN_1.'
