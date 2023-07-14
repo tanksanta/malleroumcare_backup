@@ -128,7 +128,7 @@
 				  </select></td>
 				<td><input type="text" name="contract_send_tel" id="contract_send_tel" class="form-control input-sm" placeholder="대리인 전화번호 입력" pattern="[0-9]+" oninput="this.value = this.value.replaceAll(/\D/g, '')"><input type="hidden" name="name2" id="name2" value=""></td>
 			</tr>
-			<tr id="applicant_row">
+			<tr id="applicant_row"  style="display:none;">
 				<td><label><input type="checkbox"  name="applicant_sign" id="applicant_sign" >&nbsp;신청인</label></td>
 				<td><select name="applicant_send" id="applicant_send" class="form-control input-sm">
 					<option value="SECURE_LINK" >웹페이지</option>
@@ -176,7 +176,7 @@
 				<td align="center"><span id="stat2">대상아님</span></td>
 				<td align="center"><span id="sign_date2">-</span></td>
 			</tr>
-			<tr id="row3">
+			<tr id="row3" style="display:none;">
 				<td>신청인</td>
 				<td align="center"><span id="gubun3">-</span></td>
 				<td align="center"><span id="stat3">대상아님</span></td>
@@ -254,11 +254,11 @@
 			$("#div").val("new_doc").prop("disabled",false);//신청자
 			$("#sign_penNm").text(data.penNm);
 			if(data.applicantRelation != '0' && data.applicantRelation != '' && data.applicantRelation != '4'){// 신청인이 있을 경우,신청인이 대리인이 아닐경우						
-				$("#applicant_sign").attr("disabled",false);
-				$("#applicant_sign").attr("checked",true);
-				$("#applicant_send").attr("disabled",false);
-				$("#applicant_send_tel").attr("disabled",false);
-				$("#applicant_send_tel").val(data.applicantTel);
+				//$("#applicant_sign").attr("disabled",false);
+				//$("#applicant_sign").attr("checked",true);
+				//$("#applicant_send").attr("disabled",false);
+				//$("#applicant_send_tel").attr("disabled",false);
+				//$("#applicant_send_tel").val(data.applicantTel);
 			}
 			if(data.contract_sign_type == '1'){//대리인이 있을경우
 				$("#contract_sign").attr("disabled",false);
@@ -297,15 +297,40 @@
 			alert("서명 대상자가 선택 되지 않았습니다.\n서명 대상자를 선택 해 주세요.");
 			return false;
 		}		
-		if($("#pen_sign").is(':checked') == true && $("#pen_send_tel").val() == ""){//신청인이 선택 되었을 경우
-			alert("수급자 전화번호를 입력해주세요.");
-			$("#pen_send_tel").focus();
-			return false;
-		}		
-		if($("#contract_sign").is(':checked') == true && $("#contract_send_tel").val() == ""){//신청인이 선택 되었을 경우
-			alert("대리인 전화번호를 입력해주세요.");
-			$("#contract_send_tel").focus();
-			return false;
+		if($("#pen_sign").is(':checked') == true){//신청인이 선택 되었을 경우
+			var pen_tel = true;
+			if($("#pen_send_tel").val() == ""){
+				alert("수급자 전화번호를 입력해주세요.");
+				pen_tel = false;
+			}else if(!$.isNumeric($("#pen_send_tel").val())){
+				alert("수급자 전화번호를 숫자만 입력해주세요.");
+				pen_tel = false;
+			}else if($("#pen_send_tel").val().length < 10){
+				alert("수급자 전화번호를 10자 이상 입력해주세요.");
+				pen_tel = false;
+			}
+			if(pen_tel == false){
+				$("#pen_send_tel").focus();
+				return false;
+			}
+		}
+		
+		if($("#contract_sign").is(':checked') == true){//신청인이 선택 되었을 경우
+			var contract_tel = true;
+			if($("#contract_send_tel").val() == ""){
+				alert("대리인 전화번호를 입력해주세요.");
+				contract_tel = false;
+			}else if(!$.isNumeric($("#contract_send_tel").val())){
+				alert("대리인 전화번호를 숫자만 입력해주세요.");
+				contract_tel = false;
+			}else if($("#contract_send_tel").val().length < 10){
+				alert("대리인 전화번호를 10자 이상 입력해주세요.");
+				contract_tel = false;
+			}
+			if(contract_tel == false){
+				$("#contract_send_tel").focus();
+				return false;
+			}
 		}
 		if($("#applicant_sign").is(':checked') == true && $("#applicant_send_tel").val() == ""){//신청인이 선택 되었을 경우
 			alert("신청인 전화번호를 입력해주세요.");
@@ -409,7 +434,7 @@
 			var sign_bt3 = "";
 			
 			if(data.applicantRelation != '0' && data.applicantRelation != '' && data.applicantRelation != '4'){// 신청인이 있을 경우,신청인이 대리인이 아닐경우						
-				$("#row3").css("background","#ffffff");
+				//$("#row3").css("background","#ffffff");
 				if(data.stat3 == "진행중"){
 					sign_bt3 = (data.gubun3 == "웹페이지")?'<button type="button" class="btn btn-sm btn-black" style="background:green;padding:5px;" onClick="sign_doc(\''+data.doc_id+'\',\''+data.part_id3+'\',\''+dc_id+'\')">진행중</button>':data.stat3;
 				}else{
