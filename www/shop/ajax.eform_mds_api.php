@@ -37,14 +37,14 @@ header('Content-type: application/json');
 		$type = "GET";
 		$data = "";
 		$arrResponse2 = get_modusign($API_Key64,$api_url,$type,$data);
-		$dc_id2 = strtoupper($arrResponse2["metadatas"][0]["value"]);
+		$dc_id2 = ($arrResponse2["metadatas"][0]["key"] == "dc_id")? strtoupper($arrResponse2["metadatas"][0]["value"]) : strtoupper($arrResponse2["metadatas"][1]["value"]);
 		$log_dir = $_SERVER["DOCUMENT_ROOT"].'/data/log/';
 		//$log_dir = "/home/root...등의 절대경로 ";
 	    $log_txt = "\r\n";
 		$log_txt .= '(' . date("Y-m-d H:i:s") . ')' .$arrResponse["event"]["type"]. "\r\n";
 		if($arrResponse["event"]["type"] == "document_all_signed"){// 서명완료
 			$sql = "update `eform_document` set dc_sign_datetime=now(),dc_status='3' WHERE dc_id=UNHEX('".$dc_id2."')";
-			$log_txt .= "-- 계약서 ".$dc_id2." 서명 완료\r\n";
+			$log_txt .= "-- 계약서 ".$dc_id2." 서명 완료(".$arrResponse2["metadatas"][0]["value"].")\r\n";
 			sql_query($sql);
 			//if($is_simple_efrom) {
 			  $uuid = $dc_id2; 
