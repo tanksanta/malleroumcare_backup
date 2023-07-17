@@ -8,7 +8,7 @@ include_once('./_common.php');
 
 */
 
-if($member['mb_type'] !== 'partner')
+if($member['mb_type'] !== 'partner' && !$is_admin)
     json_response(400, '먼저 로그인하세요.');
 
 $barcodes = $_POST['barcode'];
