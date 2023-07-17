@@ -209,8 +209,9 @@ if(preg_match($mobile_agent, $_SERVER['HTTP_USER_AGENT'])){
                 // 23.05.23 - 서원 : 작업중인 메뉴가 리뉴얼작업에 포함되어 상용에 반영됨.
                 //              해당 메뉴 주석 처리 함. (필요시 주석 삭제 처리)
                 //              요청건 : https://www.notion.so/04fc62bf7929455ba4f041a875bdd701?pvs=4
-            /*<a href="#" class="btn eroumcare_btn2" id="prod_control_list" onclick="popCtrlList()" title="제품관리대장" <?php if($mobile_yn=="Mobile") echo 'style="display:none;"'; ?>>제품관리대장</a>*/
+                //23.06.05 - 버튼 재생성 요청건 : https://www.notion.so/_-8c6b675cf2e541d197ffd9eab753aa4b?pvs=4
             ?>
+            <a href="#" class="btn eroumcare_btn2" id="prod_control_list" onclick="popCtrlList()" title="제품관리대장" <?php if($mobile_yn=="Mobile") echo 'style="display:none;"'; ?>>제품관리대장</a>
             <a href="#" class="btn eroumcare_btn2" id="excel_download" title="엑셀다운로드">엑셀다운로드</a>
             <a href="#" class="btn eroumcare_btn2 add_sales_inventory" title="품목추가">품목추가</a>
         </div>
