@@ -89,7 +89,6 @@ var swiper = new Swiper(".eventWrap .eventSwiper", {
     delay: 5000,
     disableOnInteraction: false,
   },
-  loop: true,
   loopAdditionalSlides: 1,
   pagination: {
     el: ".wrap_swiper_navi .swiper-pagination",
