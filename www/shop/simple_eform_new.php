@@ -25,6 +25,15 @@ if(!$wzres['Field']) {
         ", true);
 }
 
+$query = "SHOW COLUMNS FROM eform_document WHERE `Field` = 'pen_guardian_nm';";//보호자명 없을 시 추가
+$wzres = sql_fetch( $query );
+if(!$wzres['Field']) {
+    sql_query("ALTER TABLE `eform_document`
+	ADD `pen_guardian_nm` varchar(255) NULL DEFAULT '' COMMENT '보호자명' AFTER contract_sign_relation,
+	ADD `pen_guardian_tel` varchar(50) NULL DEFAULT '' COMMENT '보호자전화번호' AFTER pen_guardian_nm
+        ", true);
+}
+
 $dc_id = clean_xss_tags($_GET['dc_id']);
 if($dc_id) {
   $dc = sql_fetch("
@@ -203,7 +212,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 	.col-pen-nm1 img {
     display: block;
     position: absolute;
-    top: 8px;
+    top: 5px;
     left: 23px;
 }
 
@@ -410,6 +419,8 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 			  <input type="hidden" name="applicantBirth" id="applicantBirth" value="<?=$dc['applicantBirth']?>" alt="신청인 생년월일">
 			  <input type="hidden" name="applicantAddr" id="applicantAddr" value="<?=$dc['applicantAddr']?>" alt="신청인 주소">
 			  <input type="hidden" name="applicantDate" id="applicantDate" value="<?=($dc['applicantDate']!="")?$dc['applicantDate']:date("Y-m-d");?>" alt="신청일자">
+			  <input type="hidden" name="pen_guardian_nm" id="pen_guardian_nm" value="<?=$dc['pen_guardian_nm']?>" alt="보호자명">
+			  <input type="hidden" name="pen_guardian_tel" id="pen_guardian_tel" value="<?=$dc['pen_guardian_tel']?>" alt="보호자전화번호">
             </label>
 		  </div>          
         </div>
@@ -849,7 +860,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 </div>
 
 <div id="popup_box5" class="popup_box2">
-    <div id="" class="popup_box_con" style="height:340px;margin-top:-170px;">
+    <div id="" class="popup_box_con" style="height:400px;margin-top:-200px;">
 		<div class="form-group">
             <div class="se_sch_hd" style="margin-left:30px;">장기요양 재가서비스 신청인 정보 입력</div>
         </div>
@@ -901,6 +912,21 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 				<img style=" position:absolute; top: 228px; right:30px;cursor:pointer;" src="<?php echo THEMA_URL; ?>/assets/img/btn_top_menu_x.png" onClick="$('#applicantDate2').val('');">
 			  	<input type="text" name="applicantDate2" id="applicantDate2" class="datepicker form-control input-sm" value="<?php if($dc){ echo $dc['applicantDate'];}else{ echo date("Y-m-d");}?>" <?php if($dc) echo "data-orig=\"" . $dc['applicantDate'] . "\""; ?> placeholder="신청일자" style="width:99% !important;display: inline-block;">
 			  </label>
+      </div>
+	  <div id="" style="float:left;width:100%;border-top:1px solid #cccccc;margin-bottom:5px;"></div>
+	  <div id="" style="float:left;width:100%;margin-left:15px;"><?php //===================수급인과의 관계 기타,대리인(기타) 일경우 활성화?>
+			  <label style="width:120px;">
+				<b>보호자명</b>
+			  </label>
+			  <label style="width:240px;">
+				<input type="text" name="pen_guardian_nm2" id="pen_guardian_nm2" class="form-control input-sm" style="width:99% !important;" value="<?php if($dc['applicantRelation'] == "3" || ($dc['applicantRelation'] == "4" && $dc['contract_sign_relation'] == "3")) echo $dc['pen_guardian_nm']; ?>" placeholder="보호자 성명을 입력해 주세요." <?php if($dc) echo "data-orig=\"{$dc['pen_guardian_nm']}\""; ?> <?=($dc['applicantRelation'] == "" || $dc['applicantRelation'] == 0 || $dc['applicantRelation'] == "1" || $dc['applicantRelation'] == "2"   || ($dc['applicantRelation'] == "4" && $dc['contract_sign_relation'] != "3"))?"disabled":"";?>>
+			  </label><br>
+			  <label style="width:120px;">
+				<b>보호자 전화번호</b>
+			  </label>
+			  <label style="width:240px;">
+				<input type="text" name="pen_guardian_tel2" id="pen_guardian_tel2" class="form-control input-sm" style="width:99% !important;" value="<?php if($dc['applicantRelation'] == "3" || ($dc['applicantRelation'] == "4" && $dc['contract_sign_relation'] == "3")) echo $dc['pen_guardian_tel']; ?>" placeholder="보호자 전화번호를 입력해 주세요." <?php if($dc) echo "data-orig=\"{$dc['pen_guardian_tel']}\""; ?> <?=($dc['applicantRelation'] == "" || $dc['applicantRelation'] == 0 || $dc['applicantRelation'] == "1" || $dc['applicantRelation'] == "2"  || ($dc['applicantRelation'] == "4" && $dc['contract_sign_relation'] != "3"))?"disabled":"";?>>
+			  </label><br>
       </div>
 	  <div id="" class="" style="float:left;width:100%;padding:10px 15px;">
 		</div>
@@ -1024,6 +1050,8 @@ function applicantRelation_chg(chg_value){//장기용양 재가서비스 관계 
 		$('#applicantTel2').prop('disabled', true);
 		$('#applicantBirth2').prop('disabled', true); 
 		$('#applicantAddr2').prop('disabled', true);
+		$('#pen_guardian_nm2').prop('disabled', true);
+		$('#pen_guardian__tel2').prop('disabled', true);
 		div_close('popup_box5');
 		btn_contract_click();
 		return false;
@@ -1039,6 +1067,13 @@ function applicantRelation_chg(chg_value){//장기용양 재가서비스 관계 
 		$('#applicantTel2').prop('disabled', false); 
 		$('#applicantBirth2').prop('disabled', false); 
 		$('#applicantAddr2').prop('disabled', false);  
+	}
+	if(chg_value == 3 || (chg_value == 4 && $("#contract_sign_relation2").val() == 3)){//신청인 관계 기타 또는 대리인 기타 일경우 보호자 정보 활성화
+		$('#pen_guardian_nm2').prop('disabled', false);
+		$('#pen_guardian_tel2').prop('disabled', false);
+	}else{
+		$('#pen_guardian_nm2').prop('disabled', true);
+		$('#pen_guardian_tel2').prop('disabled', true);
 	}
 	
 }
@@ -2032,10 +2067,15 @@ function contract_info_chk(){
 	$("#contract_tel").val($("#contract_tel2").val());
 	$("#contract_addr").val($("#contract_addr2").val());
 	$("#applicantRelation2").val('4');
-	$("#applicantNm2").attr("disabled","true");
-	$("#applicantTel2").attr("disabled","true");
-	$("#applicantBirth2").attr("disabled","true");
-	$("#applicantAddr2").attr("disabled","true");
+	$("#applicantNm2").attr("disabled",true);
+	$("#applicantTel2").attr("disabled",true);
+	$("#applicantBirth2").attr("disabled",true);
+	$("#applicantAddr2").attr("disabled",true);
+	if($("#contract_sign_relation2").val() == "3"){//대리인 관계 기타일 경우 보호자 disabled false
+		
+		$("#pen_guardian_nm2").attr("disabled",false);
+		$("#pen_guardian_tel2").attr("disabled",false);
+	}
 	applicant_info_chk();
 	div_close('popup_box3');
 }
@@ -2084,15 +2124,22 @@ function applicant_info_chk(){
 		$("#applicantRelation2").val("4");
 		return false;
 	}
-
 	$("#applicantRelation").val($("#applicantRelation2").val());
 	$("#applicantNm").val($("#applicantNm2").val());
 	$("#applicantTel").val($("#applicantTel2").val());
 	$("#applicantBirth").val($("#applicantBirth2").val());
 	$("#applicantAddr").val($("#applicantAddr2").val());
 	$("#applicantDate").val($("#applicantDate2").val());
+	if($("#applicantRelation2").val() == "3" || ($("#applicantRelation2").val() == "4" && $("#contract_sign_relation2").val() == "3") ){//수급자와의 관계가 기타일 경우,대리인 관계가 기타일 경우
+		$("#pen_guardian_nm").val($("#pen_guardian_nm2").val());
+		$("#pen_guardian_tel").val($("#pen_guardian_tel2").val());
+	}else{
+		$("#pen_guardian_nm2").attr("disabled",true);
+		$("#pen_guardian_tel2").attr("disabled",true);
+	}
+
 	if($("#applicantRelation2").val() == "1" || $("#applicantRelation2").val() == "2" || $("#applicantRelation2").val() == "3"){//가족,친족,기타 일 경우 대리인 정보를 덮어 씌움
-		$("#contract_sign_type").attr("checked","true");
+		$("#contract_sign_type").attr("checked",true);
 		$("#contract_sign_relation").val($("#applicantRelation2").val());
 		$("#contract_sign_relation2").val($("#applicantRelation2").val());
 		$("#contract_sign_name").val($("#applicantNm2").val());
@@ -2119,8 +2166,21 @@ function info_close(div_name,div_id,chk_id){
 			//CKEDITOR.instances.entConAcc01_2.setData("");$('#entConAcc01_save2').prop("checked", false);
 			acc_info_chk()
 		}else{//장기요양 신청인
-			$('#applicantRelation2').val("0");$('#applicantNm2').val(""); $('#applicantTel2').val(""); $('#applicantBirth2').val(""); $('#applicantAddr2').val(""); $('#applicantDate2').val("");
-			$('#applicantRelation').val("0");$('#applicantNm').val(""); $('#applicantTel').val(""); $('#applicantBirth').val(""); $('#applicantAddr').val(""); $('#applicantDate').val("");
+			if($("#contract_sign_type").is(":checked")){//대리자가 선택 되어 있을때
+				$('#applicantRelation2').val("4");
+				$('#applicantRelation').val("4");
+				if($("#contract_sign_relation2").val() == "3"){
+					$("#pen_guardian_nm2").attr("disabled",false);
+					$("#pen_guardian_tel2").attr("disabled",false);
+				}
+			}else{
+				$('#applicantRelation2').val("0");
+				$('#applicantRelation').val("0");
+				$("#pen_guardian_nm2").attr("disabled",true);
+				$("#pen_guardian_tel2").attr("disabled",true);
+			}
+			$('#applicantNm2').val("");$('#applicantTel2').val(""); $('#applicantBirth2').val(""); $('#applicantAddr2').val(""); $('#applicantDate2').val("<?=date('Y-m-d')?>");$("#pen_guardian_nm2").val("");$("#pen_guardian_tel2").val("");
+			$('#applicantNm').val(""); $('#applicantTel').val(""); $('#applicantBirth').val(""); $('#applicantAddr').val(""); $('#applicantDate').val("<?=date('Y-m-d')?>");$("#pen_guardian_nm").val("");$("#pen_guardian_tel").val("");
 			applicant_info_chk();
 		}
 		if(chk_id){
