@@ -128,13 +128,13 @@
 				  </select></td>
 				<td><input type="text" name="contract_send_tel" id="contract_send_tel" class="form-control input-sm" placeholder="대리인 전화번호 입력" pattern="[0-9]+" oninput="this.value = this.value.replaceAll(/\D/g, '')"><input type="hidden" name="name2" id="name2" value=""></td>
 			</tr>
-			<tr id="applicant_row"  style="display:none;">
-				<td><label><input type="checkbox"  name="applicant_sign" id="applicant_sign" >&nbsp;신청인</label></td>
+			<tr id="applicant_row" >
+				<td><label><input type="checkbox"  name="applicant_sign" id="applicant_sign" >&nbsp;보호자</label></td>
 				<td><select name="applicant_send" id="applicant_send" class="form-control input-sm">
 					<option value="SECURE_LINK" >웹페이지</option>
 					<option value="KAKAO" >카카오톡</option>
 				  </select></td>
-				<td><input type="text" name="applicant_send_tel" id="applicant_send_tel" class="form-control input-sm" placeholder="신청인 전화번호 입력" pattern="[0-9]+" oninput="this.value = this.value.replaceAll(/\D/g, '')"><input type="hidden" name="name3" id="name3" value=""></td>
+				<td><input type="text" name="applicant_send_tel" id="applicant_send_tel" class="form-control input-sm" placeholder="보호자 전화번호 입력" pattern="[0-9]+" oninput="this.value = this.value.replaceAll(/\D/g, '')"><input type="hidden" name="name3" id="name3" value=""></td>
 			</tr>
 			
 			</table>
@@ -176,8 +176,8 @@
 				<td align="center"><span id="stat2">대상아님</span></td>
 				<td align="center"><span id="sign_date2">-</span></td>
 			</tr>
-			<tr id="row3" style="display:none;">
-				<td>신청인</td>
+			<tr id="row3">
+				<td>보호자</td>
 				<td align="center"><span id="gubun3">-</span></td>
 				<td align="center"><span id="stat3">대상아님</span></td>
 				<td align="center"><span id="sign_date3">-</span></td>
@@ -253,12 +253,12 @@
 			$("#name3").val(data.applicantNm).prop("disabled",false);//신청자
 			$("#div").val("new_doc").prop("disabled",false);//신청자
 			$("#sign_penNm").text(data.penNm);
-			if(data.applicantRelation != '0' && data.applicantRelation != '' && data.applicantRelation != '4'){// 신청인이 있을 경우,신청인이 대리인이 아닐경우						
-				//$("#applicant_sign").attr("disabled",false);
-				//$("#applicant_sign").attr("checked",true);
-				//$("#applicant_send").attr("disabled",false);
-				//$("#applicant_send_tel").attr("disabled",false);
-				//$("#applicant_send_tel").val(data.applicantTel);
+			if(data.applicantRelation == '3' || (data.applicantRelation == '4' && data.contract_sign_relation == '3')){// 신청인이 기타 이거나 대리인이 기타일 경우						
+				$("#applicant_sign").attr("disabled",false);
+				$("#applicant_sign").attr("checked",true);
+				$("#applicant_send").attr("disabled",false);
+				$("#applicant_send_tel").attr("disabled",false);
+				$("#applicant_send_tel").val(data.pen_guardian_tel);
 			}
 			if(data.contract_sign_type == '1'){//대리인이 있을경우
 				$("#contract_sign").attr("disabled",false);
@@ -305,8 +305,8 @@
 			}else if(!$.isNumeric($("#pen_send_tel").val())){
 				alert("수급자 전화번호를 숫자만 입력해주세요.");
 				pen_tel = false;
-			}else if($("#pen_send_tel").val().length < 10){
-				alert("수급자 전화번호를 10자 이상 입력해주세요.");
+			}else if($("#pen_send_tel").val().length < 10 || $("#pen_send_tel").val().length > 11){
+				alert("수급자 전화번호를 10자 이상, 11자 이하로 입력해주세요.");
 				pen_tel = false;
 			}
 			if(pen_tel == false){
@@ -323,8 +323,8 @@
 			}else if(!$.isNumeric($("#contract_send_tel").val())){
 				alert("대리인 전화번호를 숫자만 입력해주세요.");
 				contract_tel = false;
-			}else if($("#contract_send_tel").val().length < 10){
-				alert("대리인 전화번호를 10자 이상 입력해주세요.");
+			}else if($("#contract_send_tel").val().length < 10 || $("#contract_send_tel").val().length > 11 ){
+				alert("대리인 전화번호를 10자 이상, 11자 이하로 입력해주세요.");
 				contract_tel = false;
 			}
 			if(contract_tel == false){
@@ -332,14 +332,26 @@
 				return false;
 			}
 		}
-		if($("#applicant_sign").is(':checked') == true && $("#applicant_send_tel").val() == ""){//신청인이 선택 되었을 경우
-			alert("신청인 전화번호를 입력해주세요.");
-			$("#applicant_send_tel").focus();
-			return false;
+		if($("#applicant_sign").is(':checked') == true){//신청인이 선택 되었을 경우
+			var applicant_tel = true;
+			if($("#applicant_send_tel").val() == ""){
+				alert("보호자 전화번호를 입력해주세요.");
+				contract_tel = false;
+			}else if(!$.isNumeric($("#applicant_send_tel").val())){
+				alert("보호자 전화번호를 숫자만 입력해주세요.");
+				contract_tel = false;
+			}else if($("#applicant_send_tel").val().length < 10 || $("#applicant_send_tel").val().length > 11 ){
+				alert("보호자 전화번호를 10자 이상, 11자 이하로 입력해주세요.");
+				contract_tel = false;
+			}
+			if(contract_tel == false){
+				$("#applicant_send_tel").focus();
+				return false;
+			}
 		}
 		if($("#pen_send_tel").val() != ""){
 			if($("#applicant_send_tel").val() != "" && $("#pen_send_tel").val() == $("#applicant_send_tel").val()){
-				alert("수급자와 신청인의 전화번호를 다르게 입력해 주세요.");
+				alert("수급자와 보호자의 전화번호를 다르게 입력해 주세요.");
 				$("#applicant_send_tel").val("");
 				$("#applicant_send_tel").focus();
 				return false;
@@ -347,7 +359,7 @@
 		}
 		if($("#contract_send_tel").val() != ""){
 			if($("#applicant_send_tel").val() != "" && $("#contract_send_tel").val() == $("#applicant_send_tel").val()){
-				alert("대리인과 신청인의 전화번호를 다르게 입력해 주세요.");
+				alert("대리인과 보호자의 전화번호를 다르게 입력해 주세요.");
 				$("#applicant_send_tel").val("");
 				$("#applicant_send_tel").focus();
 				return false;
@@ -432,8 +444,7 @@
 			var sign_bt1 = "";
 			var sign_bt2 = "";
 			var sign_bt3 = "";
-			
-			if(data.applicantRelation != '0' && data.applicantRelation != '' && data.applicantRelation != '4'){// 신청인이 있을 경우,신청인이 대리인이 아닐경우						
+			if(data.applicantRelation != '0' && data.applicantRelation != ''){// 신청인이 있을 경우,신청인이 대리인이 아닐경우						
 				//$("#row3").css("background","#ffffff");
 				if(data.stat3 == "진행중"){
 					sign_bt3 = (data.gubun3 == "웹페이지")?'<button type="button" class="btn btn-sm btn-black" style="background:green;padding:5px;" onClick="sign_doc(\''+data.doc_id+'\',\''+data.part_id3+'\',\''+dc_id+'\')">진행중</button>':data.stat3;

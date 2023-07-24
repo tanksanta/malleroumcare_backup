@@ -430,7 +430,12 @@ if ( strcmp($recipientContractDetail['Status'],'OK') != 0)
 //print_r($recipientContractDetail['Result']['ds_welToolTgtHistList'][0]['LTC_MGMT_NO_SEQ']);
 $count = count($recipientContractDetail['Result']['ds_welToolTgtHistList']);// find most recently updated list
 
-$bodies_recipientToolList['Col'] = $recipientContractDetail['Result']['ds_welToolTgtHistList'][$count-1]['LTC_MGMT_NO_SEQ'];
+//$bodies_recipientToolList['Col'] = $recipientContractDetail['Result']['ds_welToolTgtHistList'][$count-1]['LTC_MGMT_NO_SEQ'];
+for($i = 0; $i<$count; $i++){//인정구간 리스트 조회	
+	if(date("Ymd") == $recipientContractDetail['Result']['ds_welToolTgtHistList'][$i]["RCGT_EDA_FR_DT"] || date("Ymd") == $recipientContractDetail['Result']['ds_welToolTgtHistList'][$i]["RCGT_EDA_TO_DT"] || (date("Ymd") > $recipientContractDetail['Result']['ds_welToolTgtHistList'][$i]["RCGT_EDA_FR_DT"] && date("Ymd") < $recipientContractDetail['Result']['ds_welToolTgtHistList'][$i]["RCGT_EDA_TO_DT"])){//현재 날짜가 인정구간 안에 포함 될 때만 추출
+		$bodies_recipientToolList['Col'] = $recipientContractDetail['Result']['ds_welToolTgtHistList'][$i]['LTC_MGMT_NO_SEQ'];
+	}
+}
 
 $response = '';
 

@@ -46,12 +46,21 @@ if($_POST['ltm_chk'] == "1" && $applicantRelation != "0" && $applicantRelation !
 	$applicantBirth			= $_POST['applicantBirth']? clean_xss_tags($_POST['applicantBirth']) :"";//신청인 생년월일
 	$applicantAddr			= $_POST['applicantAddr']? clean_xss_tags($_POST['applicantAddr']) :"";//신청인 주소
 	$applicantTel			= $_POST['applicantTel']? clean_xss_tags($_POST['applicantTel']) :"";//신청인 전화	
+	if(($applicantRelation == "4" && $_POST['contract_sign_relation'] == "3") || $applicantRelation == "3"){//대리자가 기타 이거나 신청인에 수급자와의 관계가 기타일 경우
+		$pen_guardian_nm		= $_POST['pen_guardian_nm']? clean_xss_tags($_POST['pen_guardian_nm']) :"";//보호자명	
+		$pen_guardian_tel		= $_POST['pen_guardian_tel']? clean_xss_tags($_POST['pen_guardian_tel']) :"";//보호자 전화번호	
+	}else{//가족,친족,일경우
+		$pen_guardian_nm		= $_POST['contract_sign_name']? clean_xss_tags($_POST['contract_sign_name']) :"";//보호자명	
+		$pen_guardian_tel		= $_POST['contract_tel']? clean_xss_tags($_POST['contract_tel']) :"";//보호자 전화번호
+	}
 }else{//장기용양급여 신청 아니거나 본인일때
 	$applicantNm			= ""; //신청인명
 	$applicantRelation		= "0";//신청인 관계
 	$applicantBirth			= "";//신청인 생년월일
 	$applicantAddr			= "";//신청인 주소
 	$applicantTel			= "";//신청인 전화
+	$pen_guardian_nm		= "";//보호자명	
+	$pen_guardian_tel		= "";//보호자 전화번호
 }
 $applicantDate			= $_POST['applicantDate']? clean_xss_tags($_POST['applicantDate']) :"";//신청인신청일
 $do_date				= $_POST['do_date']? clean_xss_tags($_POST['do_date']) :"";//계약서 계약일
@@ -143,7 +152,7 @@ if($pen_type != '1') {
     // 신규 수급자인 경우
     $penId = '';
 }
-
+/*
 function calc_rental_price($str_date, $end_date, $price) {
     $rental_price = 0;
 
@@ -211,6 +220,101 @@ function calc_pen_price($penTypeCd, $price) {
 
     return $pen_price;
 }
+*/
+function calc_rental_price($str_date, $end_date, $price,$penTypeCd) {
+    $rental_price = 0;
+	$price22 = array();
+    $str_time = strtotime($str_date);
+    $end_time = strtotime($end_date);
+
+    $year1 = date('Y', $str_time);
+    $year2 = date('Y', $end_time);
+
+    $month1 = date('m', $str_time);
+    $month2 = date('m', $end_time);
+
+	$day1 = date('d', $str_time);
+    $day2 = date('d', $end_time);
+
+    $diff = (($year2 - $year1) * 12) + ($month2 - $month1);
+
+    // 중간달 계산
+    if($diff > 1) {
+        $rental_price1 += ( $price * ($diff - 1) );
+    }
+	echo $rental_price2;
+    
+    if($diff == 0){ //년,월 차이 없이 일만 차이 있을 경우
+		$rental_price2 += (int) (round(
+			$price * (
+				($end_date-$str_date+1)
+				/
+				( date('t', $end_time)*10 )
+			))*10
+		) ;
+	}else{// 마지막 달 계산 
+		$rental_price2 += (int) (round(
+			$price * (
+				date('j', $end_time)
+				/
+				( date('t', $end_time) * 10 )
+			)
+		)) * 10;
+	}
+
+    if($diff > 0) {
+        // 첫째 달 계산
+        $rental_price3 += (int) (round(
+            $price * (
+                ( date('t', $str_time) - date('j', $str_time) + 1 )
+                /
+                ( date('t', $str_time) * 10 )
+            )
+        )) * 10;
+    }
+
+	$rental_price = $rental_price1+$rental_price2+$rental_price3;
+    $price22["calc_rental_price"] = $rental_price;//$rental_price;
+	if($diff == 0){//단기계약
+		$price22["calc_pen_price"] = calc_pen_price(($penTypeCd), ($rental_price2),2);
+	}else{//일반계약
+		$price22["calc_pen_price"] = calc_pen_price(($penTypeCd), $rental_price1+$rental_price2+$rental_price3,1);
+	}
+
+	return $price22;
+}
+
+function calc_pen_price($penTypeCd, $price,$round_floor) {
+	switch($penTypeCd) {
+        case '00':
+            $rate = 15;
+            break;
+        case '01':
+            $rate = 9;
+            break;
+        case '02':
+        case '03':
+            $rate = 6;
+            break;
+        case '04':
+            return 0;
+        default:
+            $rate = 15;
+            break;
+    }
+	
+	if($round_floor == 2){
+		$pen_price =  (int)round(
+			$price * ($rate / 100)/10
+		) * 10;
+	}else{
+		$pen_price =  (int)floor(
+			$price * ($rate/ 100)/10
+		)* 10 ;
+	}
+
+    return $pen_price;
+}
 
 if (!$sealFile_self) { //직인 직접날인이 아니면
     $seal_file = $member['sealFile'];
@@ -271,6 +375,8 @@ if($w == '' || ($_POST['dc_id'] == '' && $w == 'w')) {
 			applicantAddr = '$applicantAddr',
 			applicantTel = '$applicantTel',
 			applicantDate = '$applicantDate',
+			pen_guardian_nm = '$pen_guardian_nm',
+			pen_guardian_tel = '$pen_guardian_tel',
 			do_date = '$do_date',
 			dc_sign_send_datetime = '$dc_sign_send_datetime'
     ";
@@ -371,6 +477,8 @@ if($w == 'u' || $w == 'w') {
 			applicantAddr = '$applicantAddr',
 			applicantTel = '$applicantTel',
 			applicantDate = '$applicantDate',
+			pen_guardian_nm = '$pen_guardian_nm',
+			pen_guardian_tel = '$pen_guardian_tel',
 			do_date = '$do_date',
 			dc_sign_send_datetime = '$dc_sign_send_datetime'
         WHERE
@@ -448,23 +556,30 @@ for($i = 0; $i < count($it_id_arr); $i++) {
     if($it_gubun === '판매') {
         $gubun = '00';
         $it_price = $it['it_cust_price']; // 급여가
+		$it_price_pen = calc_pen_price($penTypeCd, $it_price,1);//본인부담금(추가)
     } else if($it_gubun === '대여') {
         $gubun = '01';
         $str_date = substr($it_date, 0, 10);
+		$str_date = str_replace("-","",$str_date);
         $end_date = substr($it_date, 11, 10);
+		$end_date = str_replace("-","",$end_date);
 
         if(!$str_date || !$end_date) {
             sql_query(" DELETE FROM eform_document WHERE dc_id = UNHEX('$dc_id') ");
             json_response(400, '대여상품의 계약기간을 입력해주세요.');
         }
+		//$it_price = calc_rental_price($str_date, $end_date, $it['it_rental_price']);
+        $price = calc_rental_price($str_date, $end_date, $it['it_rental_price'],$penTypeCd);//(추가)
+		$it_price = $price["calc_rental_price"];//대여가(추가)
+		$it_price_pen = $price["calc_pen_price"];//본인부담금(추가)
 
-        $it_price = calc_rental_price($str_date, $end_date, $it['it_rental_price']);
+        //$it_price = calc_rental_price($str_date, $end_date, $it['it_rental_price']);
     } else {
         continue;
     }
 
     for($x = 0; $x < $it_qty; $x++) {
-        $it_price_pen = calc_pen_price($penTypeCd, $it_price);
+        //$it_price_pen = calc_pen_price($penTypeCd, $it_price);
         $it_price_ent = $it_price - $it_price_pen;
 
         $sql = "
@@ -488,4 +603,3 @@ for($i = 0; $i < count($it_id_arr); $i++) {
 }
 
 json_response(200, 'OK', $dc_id);
-

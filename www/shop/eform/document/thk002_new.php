@@ -197,7 +197,7 @@
       </tr>
       <tr>
         <td colspan="4">
-          수급자와의 관계 : [ <?php echo $eform['contract_sign_type'] == 0 ? '✓' : '&nbsp;';?> ]본인 [ <?php echo $eform['contract_sign_type'] == 1 ? '✓' : '&nbsp;';?> ]가족 [ <?php echo $eform['contract_sign_type'] == 2 ? '✓' : '&nbsp;';?> ]친족 [ <?php echo $eform['contract_sign_type'] == 3 ? '✓' : '&nbsp;';?> ]기타 ( &nbsp; )
+          수급자와의 관계 : [ <?php echo $eform['contract_sign_relation'] == 0 ? '✓' : '&nbsp;';?> ]본인 [ <?php echo $eform['contract_sign_relation'] == 1 ? '✓' : '&nbsp;';?> ]가족 [ <?php echo $eform['contract_sign_relation'] == 2 ? '✓' : '&nbsp;';?> ]친족 [ <?php echo $eform['contract_sign_relation'] == 3 ? '✓' : '&nbsp;';?> ]기타 ( &nbsp; )
         </td>
       </tr>
       <tr>

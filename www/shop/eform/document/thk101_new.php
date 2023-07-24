@@ -54,8 +54,8 @@
     <table class="app-table">
       <colgroup>
         <col style="width: 10%">
-        <col style="width: 10%">
-        <col style="width: 25%">
+        <col style="width: 12%">
+        <col style="width: 24%">
         <col style="width: 10%">
         <col style="width: 20%">
         <col style="width: 10%">
@@ -84,10 +84,10 @@
     <table class="app-table">
       <colgroup>
         <col style="width: 10%">
+        <col style="width: 12%">
+        <col style="width: 34%">
         <col style="width: 10%">
-        <col style="width: 35%">
-        <col style="width: 10%">
-        <col style="width: 35%">
+        <col style="width: 34%">
       </colgroup>
       <tbody>
         <tr>
@@ -148,7 +148,7 @@
         <tr>
           <td>&nbsp;</td>
           <th scope="col" class="right">수급자(또는 보호자):</th>
-          <td style="font-size: 16px;"><?=($eform['contract_sign_type']=='1')?$eform['contract_sign_name']:$eform['penNm']?></td>
+          <td style="font-size: 16px;"><?=($eform['contract_sign_type']=='1')?$eform['pen_guardian_nm']:$eform['penNm']?></td>
           <td class="sign-desc sign-form" data-id="sign_101_2">(서명 또는 인)</td>
         </tr>
         <tr>
