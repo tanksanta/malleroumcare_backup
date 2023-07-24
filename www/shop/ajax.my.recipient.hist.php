@@ -61,7 +61,9 @@ $mapping_list_this = [];
 $CNCL_YN = [];
 if($list_this_hist){
 	for($i=0; $i<sizeof($list_this_hist);$i++){
-		$CNCL_YN[$list_this_hist[$i]['BCD_NO']] = $list_this_hist[$i]['CNCL_YN'];
+		if($list_this_hist[$i]['CNCL_YN'] != "취소"){
+			$CNCL_YN[$list_this_hist[$i]['BCD_NO']] = $list_this_hist[$i]['CNCL_YN'];
+		}
 		if($mapping_list_this[$list_this_hist[$i]['BCD_NO']]){
 			$mapping_item = [];
 			$mapping_item['BCD_NO'] = $list_this_hist[$i]['BCD_NO'];
@@ -245,7 +247,6 @@ if($count > 0){//잔여금액 점검 시작
 	$sql_b2 = "SELECT SUM(TOTAL_PRICE) total_price1	
 	FROM pen_purchase_hist
 	WHERE ENT_ID = '".$member["mb_entId"]."' AND PEN_NM = '".$list_detail['FNM']."' AND PEN_LTM_NUM = '".$list_detail['LTC_MGMT_NO']."' 
-	AND (CNCL_YN = '변경' OR CNCL_YN = '정상')
 	AND ('".date("Ymd")."' BETWEEN PEN_EXPI_ST_DTM AND PEN_EXPI_ED_DTM) ;";
 	$row = sql_fetch($sql_b2);
 	$total_price1 = (!$row["total_price1"])? 0 : $row["total_price1"];
