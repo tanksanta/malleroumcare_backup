@@ -175,7 +175,7 @@ if($header_skin)
                 <a href="<?=G5_URL?>" class="text_under">메인으로</a>
             </div>
             <div class="tableTxt01">
-                휴대폰번호가 변경되었거나 직접 찾기가 힘든 경우<br>고객센터(02-861-9084)로 문의 바랍니다.
+                휴대폰번호가 변경되었거나 직접 찾기가 힘든 경우<br>고객센터(1533-5088)로 문의 바랍니다.
             </div>
         </section>
     </div>
