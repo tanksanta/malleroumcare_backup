@@ -135,6 +135,29 @@ class contractToolSetList {
 	public $loiteringDetection = -1; // 배회 감지기 
 	public $lendRunway = -1; // 경사로(실외용) 
 }
+
+// 23.07.18 : 서원 - 틸코 API 관련 외부 호출 부분 함수 처리(-시작-)
+// 						해당 함수는 NPIA201M01 / NPIA201P01 / NPIA208P01 3가지 항목에 대해서만 사용!!
+function Longtermcare_API($host, $uri, $headers, $data) {
+
+	$oCurl = curl_init();
+	curl_setopt($oCurl, CURLOPT_URL, $host.$uri);
+	curl_setopt($oCurl, CURLOPT_POST, true);
+	curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, true);
+	curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($data));
+	curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
+	curl_setopt($oCurl, CURLOPT_HTTPHEADER, $headers);
+	curl_setopt($oCurl, CURLOPT_CONNECTTIMEOUT, 2); // curl이 첫 응답 시간에 대한 timeout
+	curl_setopt($oCurl, CURLOPT_TIMEOUT, 3); // curl 전체 실행 시간에 대한 timeout
+	
+	$response = curl_exec($oCurl);   
+	curl_close($oCurl);
+    
+	return $response;
+}
+// 23.07.18 : 서원 - 틸코 API 관련 외부 호출 부분 함수 처리(-종료-)
+
+
 // collect Get Data
 $id = $_POST['id'];
 $rn = $_POST['rn'];
@@ -149,8 +172,8 @@ $BusinessNumber = ($member["mb_level"]>8 || $member["mb_ent_num"] == "")?"326230
 $RecipientName= $rn; //'이간난'//$data['rn']
 $RecipientId= $id; //'1612104758';//$data['id'];
 
-//$apiHost   = "https://api.tilko.net/";
-$apiHost   = "http://211.110.140.26/";
+//$apiHost   = "https://api.tilko.net";
+$apiHost   = "http://211.110.140.26";
 $apiKey    = "a55aaf2f84a0477da82bb4572f97babf";
 
 
@@ -228,9 +251,15 @@ $log_txt .= "--  aesCipheredKey: ".$aesCipheredKey."\r\n";
 
 // API URL 설정
 // HELP: https://tilko.dev/Help/Api/POST-api-apiVersion-Longtermcare-NPIA201M01
-$url_recipientContractDetail  = $apiHost . "api/v1.0/Longtermcare/NPIA201M01";
-$url_recipientToolList 		  = $apiHost . "api/v1.0/Longtermcare/NPIA201P01";
-$url_recipientContractHistory	  = $apiHost . "api/v1.0/Longtermcare/NPIA208P01";
+//$url_recipientContractDetail  = $apiHost."/api/v1.0/Longtermcare/NPIA201M01";
+//$url_recipientToolList 		  = $apiHost."/api/v1.0/Longtermcare/NPIA201P01";
+//$url_recipientContractHistory	  = $apiHost."/api/v1.0/Longtermcare/NPIA208P01";
+
+
+// 23.07.18 - 서원 : 기존 코드 주석으로 유지하며 신규 변수 생성.
+$url_recipientContractDetail  = "/api/v1.0/Longtermcare/NPIA201M01";
+$url_recipientToolList 		  = "/api/v1.0/Longtermcare/NPIA201P01";
+$url_recipientContractHistory	  = "/api/v1.0/Longtermcare/NPIA208P01";
 
 
 // 인증서 경로 설정
@@ -241,6 +270,7 @@ $url_recipientContractHistory	  = $apiHost . "api/v1.0/Longtermcare/NPIA208P01";
 $certPw = base64_decode($_SESSION['Pwd']);//"thkc##1301493";
 $PubKey = base64_decode($_SESSION['PubKey']);
 $PriKey = base64_decode($_SESSION['PriKey']);
+
 // API 요청 파라미터 설정
 $headers    = array(
     "Content-Type:"             . "application/json",
@@ -294,26 +324,91 @@ $obj_purchaseHistory = new contractToolSetList();
 
 //print_r($bodies_recipientToolList);
 
-// API 호출
-$curl   = curl_init();
+/*
+	// API 호출
+	$curl   = curl_init();
 
-curl_setopt_array($curl, array(
-    CURLOPT_URL             => $url_recipientContractDetail,
-    CURLOPT_RETURNTRANSFER  => true,
-    CURLOPT_CUSTOMREQUEST   => "POST",
-    CURLOPT_POSTFIELDS      => json_encode($bodies_recipientContractDetail),
-    CURLOPT_HTTPHEADER      => $headers,
-    CURLOPT_VERBOSE         => false,
-    CURLOPT_SSL_VERIFYHOST  => 0,
-    CURLOPT_SSL_VERIFYPEER  => 0,
-	CURLOPT_TIMEOUT => 5
+	curl_setopt_array($curl, array(
+		CURLOPT_URL             => $url_recipientContractDetail,
+		CURLOPT_RETURNTRANSFER  => true,
+		CURLOPT_CUSTOMREQUEST   => "POST",
+		CURLOPT_POSTFIELDS      => json_encode($bodies_recipientContractDetail),
+		CURLOPT_HTTPHEADER      => $headers,
+		CURLOPT_VERBOSE         => false,
+		CURLOPT_SSL_VERIFYHOST  => 0,
+		CURLOPT_SSL_VERIFYPEER  => 0,
+		CURLOPT_TIMEOUT => 5
 
-));
+	));
 
-$response   = curl_exec($curl);
-curl_close($curl);
+	$response   = curl_exec($curl);
+	curl_close($curl);
+*/
 
 //echo "step1";
+
+
+
+// 23.07.18 : 서원 - 요양정보조회 함수 호출 부분에 대한 에러 처리 부분(-시작-).
+//						서버 이상으로 인한 접속불가와 관련된 에러 발생시 다른 순서에 따른 apiHost값을 변경하여 다른 서버에 재 시도.
+//						해당 재시도는 1차-당사서버 / 2차-틸코메인서버 / 3차-틸코서브서버
+try {
+    // 1단계 try-catch 블록
+	$response = Longtermcare_API( $apiHost , $url_recipientContractDetail , $headers , $bodies_recipientContractDetail );
+	if ($response === false) { throw new Exception(''); }
+	
+	// 23.07.18 : 서원 - 리턴 값이 있을 경우 API조회 데이터 확인.
+	$recipientContractDetail = json_decode(substr($response,strpos($response,'{')),TRUE);
+	if ( strcmp($recipientContractDetail['Status'],'OK') != 0) { throw new Exception(''); }
+
+} catch (Exception $e) {
+    // 1단계 try-catch 블록에서 발생한 예외 처리
+	$apiHost = "https://api.tilko.net";
+
+	try {
+		// 2단계 try-catch 블록
+		$response = Longtermcare_API( $apiHost , $url_recipientContractDetail , $headers , $bodies_recipientContractDetail );
+		if ($response === false) { throw new Exception(''); }
+
+		// 23.07.18 : 서원 - 리턴 값이 있을 경우 API조회 데이터 확인.
+		$recipientContractDetail = json_decode(substr($response,strpos($response,'{')),TRUE);
+		if ( strcmp($recipientContractDetail['Status'],'OK') != 0) { throw new Exception(''); }
+
+    } catch (Exception $e) {
+        // 2단계 try-catch 블록에서 발생한 예외 처리
+		$apiHost   = "https://api2.tilko.net";
+
+		try {
+			// 3단계 try-catch 블록
+			$response = Longtermcare_API( $apiHost , $url_recipientContractDetail , $headers , $bodies_recipientContractDetail );
+		} catch (Exception $e) {
+			// 3단계 try-catch 블록에서 발생한 예외 처리
+	
+		}
+    }
+}
+// 23.07.18 : 서원 - 요양정보조회 함수 호출 부분에 대한 에러 처리 부분(-종료-).
+
+
+// 23.07.18 : 서원 - 틸코 서버 host변경 관련 로그기록(-시작-)
+$log_dir = $_SERVER["DOCUMENT_ROOT"].'/data/log/';
+if(!is_dir($log_dir)){//인증서 파일 생성할 폴더 확인 
+	@umask(0);
+	@mkdir($log_dir,0777);
+	//@chmod($upload_dir, 0777);
+}
+
+$log_txt .= "apiHost: = = = = = = = = = = \r\n";
+$log_txt .= "apiHost: ".$apiHost."\r\n";
+$log_txt .= "apiHost: = = = = = = = = = = \r\n";
+
+$log_file = fopen($log_dir . 'log'.date("Ymd").'.txt', 'a');
+fwrite($log_file, $log_txt . "\r\n\r\n");
+fclose($log_file);
+// 23.07.18 : 서원 - 틸코 서버 host변경 관련 로그기록(-종료-)
+
+
+
 
 // 복지용구계약대상자조회
 $recipientContractDetail = json_decode(substr($response,strpos($response,'{')),TRUE);
@@ -335,12 +430,17 @@ if ( strcmp($recipientContractDetail['Status'],'OK') != 0)
 //print_r($recipientContractDetail['Result']['ds_welToolTgtHistList'][0]['LTC_MGMT_NO_SEQ']);
 $count = count($recipientContractDetail['Result']['ds_welToolTgtHistList']);// find most recently updated list
 
-$bodies_recipientToolList['Col'] = $recipientContractDetail['Result']['ds_welToolTgtHistList'][$count-1]['LTC_MGMT_NO_SEQ'];
+//$bodies_recipientToolList['Col'] = $recipientContractDetail['Result']['ds_welToolTgtHistList'][$count-1]['LTC_MGMT_NO_SEQ'];
+for($i = 0; $i<$count; $i++){//인정구간 리스트 조회	
+	if(date("Ymd") == $recipientContractDetail['Result']['ds_welToolTgtHistList'][$i]["RCGT_EDA_FR_DT"] || date("Ymd") == $recipientContractDetail['Result']['ds_welToolTgtHistList'][$i]["RCGT_EDA_TO_DT"] || (date("Ymd") > $recipientContractDetail['Result']['ds_welToolTgtHistList'][$i]["RCGT_EDA_FR_DT"] && date("Ymd") < $recipientContractDetail['Result']['ds_welToolTgtHistList'][$i]["RCGT_EDA_TO_DT"])){//현재 날짜가 인정구간 안에 포함 될 때만 추출
+		$bodies_recipientToolList['Col'] = $recipientContractDetail['Result']['ds_welToolTgtHistList'][$i]['LTC_MGMT_NO_SEQ'];
+	}
+}
 
 $response = '';
 
+/*
 $curl   = curl_init();
-
 curl_setopt_array($curl, array(
     CURLOPT_URL             => $url_recipientToolList,
     CURLOPT_RETURNTRANSFER  => true,
@@ -355,6 +455,12 @@ curl_setopt_array($curl, array(
 
 $response   = curl_exec($curl);
 curl_close($curl);
+*/
+
+
+// 23.07.18 - 서원 : 틸코 API 외부 호출 부분 함수로 변경.
+$response = Longtermcare_API( $apiHost , $url_recipientToolList , $headers , $bodies_recipientToolList );
+
 
 // 복지용구계약대상자조회
 //$recipientToolList = json_decode(substr($response,strpos($response,'{')),TRUE);
@@ -509,8 +615,10 @@ if ($recipientContractDetail['Result']['ds_toolPayLmtList'] != null)
 
 $bodies_recipientContractHistory['StartDate'] = $recipientContractDetail['Result']['ds_toolPayLmtList'][$target_period]['APDT_FR_DT'];
 $bodies_recipientContractHistory['EndDate'] = $recipientContractDetail['Result']['ds_toolPayLmtList'][$target_period]['APDT_TO_DT'];
-$curl   = curl_init();
 
+
+/*
+$curl   = curl_init();
 curl_setopt_array($curl, array(
     CURLOPT_URL             => $url_recipientContractHistory,
     CURLOPT_RETURNTRANSFER  => true,
@@ -522,9 +630,14 @@ curl_setopt_array($curl, array(
     CURLOPT_SSL_VERIFYPEER  => 0,
 		CURLOPT_TIMEOUT => 5
 ));
-
 $response   = curl_exec($curl);
 curl_close($curl);
+*/
+
+
+// 23.07.18 - 서원 : 틸코 API 외부 호출 부분 함수로 변경.
+$response = Longtermcare_API( $apiHost , $url_recipientContractHistory , $headers , $bodies_recipientContractHistory );
+
 
 $recipientContractHistory = json_decode($response,TRUE);
 if ( strcmp($recipientContractHistory['Status'],'OK') != 0)
