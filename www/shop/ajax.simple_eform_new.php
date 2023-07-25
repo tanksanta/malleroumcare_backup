@@ -46,12 +46,21 @@ if($_POST['ltm_chk'] == "1" && $applicantRelation != "0" && $applicantRelation !
 	$applicantBirth			= $_POST['applicantBirth']? clean_xss_tags($_POST['applicantBirth']) :"";//신청인 생년월일
 	$applicantAddr			= $_POST['applicantAddr']? clean_xss_tags($_POST['applicantAddr']) :"";//신청인 주소
 	$applicantTel			= $_POST['applicantTel']? clean_xss_tags($_POST['applicantTel']) :"";//신청인 전화	
+	if(($applicantRelation == "4" && $_POST['contract_sign_relation'] == "3") || $applicantRelation == "3"){//대리자가 기타 이거나 신청인에 수급자와의 관계가 기타일 경우
+		$pen_guardian_nm		= $_POST['pen_guardian_nm']? clean_xss_tags($_POST['pen_guardian_nm']) :"";//보호자명	
+		$pen_guardian_tel		= $_POST['pen_guardian_tel']? clean_xss_tags($_POST['pen_guardian_tel']) :"";//보호자 전화번호	
+	}else{//가족,친족,일경우
+		$pen_guardian_nm		= $_POST['contract_sign_name']? clean_xss_tags($_POST['contract_sign_name']) :"";//보호자명	
+		$pen_guardian_tel		= $_POST['contract_tel']? clean_xss_tags($_POST['contract_tel']) :"";//보호자 전화번호
+	}
 }else{//장기용양급여 신청 아니거나 본인일때
 	$applicantNm			= ""; //신청인명
 	$applicantRelation		= "0";//신청인 관계
 	$applicantBirth			= "";//신청인 생년월일
 	$applicantAddr			= "";//신청인 주소
 	$applicantTel			= "";//신청인 전화
+	$pen_guardian_nm		= "";//보호자명	
+	$pen_guardian_tel		= "";//보호자 전화번호
 }
 $applicantDate			= $_POST['applicantDate']? clean_xss_tags($_POST['applicantDate']) :"";//신청인신청일
 $do_date				= $_POST['do_date']? clean_xss_tags($_POST['do_date']) :"";//계약서 계약일
@@ -366,6 +375,8 @@ if($w == '' || ($_POST['dc_id'] == '' && $w == 'w')) {
 			applicantAddr = '$applicantAddr',
 			applicantTel = '$applicantTel',
 			applicantDate = '$applicantDate',
+			pen_guardian_nm = '$pen_guardian_nm',
+			pen_guardian_tel = '$pen_guardian_tel',
 			do_date = '$do_date',
 			dc_sign_send_datetime = '$dc_sign_send_datetime'
     ";
@@ -466,6 +477,8 @@ if($w == 'u' || $w == 'w') {
 			applicantAddr = '$applicantAddr',
 			applicantTel = '$applicantTel',
 			applicantDate = '$applicantDate',
+			pen_guardian_nm = '$pen_guardian_nm',
+			pen_guardian_tel = '$pen_guardian_tel',
 			do_date = '$do_date',
 			dc_sign_send_datetime = '$dc_sign_send_datetime'
         WHERE

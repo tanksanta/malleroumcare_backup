@@ -4,11 +4,16 @@ include_once('./_common.php');
 $API_Key64 = base64_encode(G5_MDS_ID.":".G5_MDS_KEY); //API 접속 base64 인코딩 키
 //$client = new \GuzzleHttp\Client();
 
-$templateId1_1 = "b9e042d0-1c69-11ee-9861-9d2780240ee3";//기본 템플릿 6p(15/5) b9e042d0-1c69-11ee-9861-9d2780240ee3(사본) 8ec3dcb0-c782-11ed-8086-9f5a8668dca0
-$templateId1_2 = "8a31a570-1c68-11ee-93ed-3d3c2f757ad0";//기본 템플릿 6p(10/5) 8a31a570-1c68-11ee-93ed-3d3c2f757ad0(사본) 04923fc0-c7a8-11ed-98a6-0b5b5a81a3a0
-$templateId1_3 = "02a73be0-1c5b-11ee-8198-6d15ecc3bde1";//기본 템플릿 6p(5/5) 02a73be0-1c5b-11ee-8198-6d15ecc3bde1(사본) b0c31270-c7ac-11ed-a47c-51e4709569d4(원본)
-$templateId1_4 = "a1f1bef0-1c6a-11ee-93ed-3d3c2f757ad0";//기본 템플릿 6p(20/5) a1f1bef0-1c6a-11ee-93ed-3d3c2f757ad0(사본) d434b2c0-c86c-11ed-b2d5-9f64a6f185b7
-$templateId1_5 = "0b1d92f0-1c6b-11ee-93ed-3d3c2f757ad0";//기본 템플릿 6p(25/5) 0b1d92f0-1c6b-11ee-93ed-3d3c2f757ad0(사본) 4c06e8d0-c855-11ed-9766-e9c41b39ad33
+$templateId1_1 = "4ed8cd90-26c8-11ee-8ada-6f993d65feb4";//기본 템플릿 6p(15/5) b9e042d0-1c69-11ee-9861-9d2780240ee3(사본) 8ec3dcb0-c782-11ed-8086-9f5a8668dca0
+$templateId1_1_1 = "08ce3990-26d0-11ee-9bee-f99348c79195";//기본 템플릿 6p(15/5)보호자
+$templateId1_2 = "579f33b0-26c8-11ee-8ada-6f993d65feb4";//기본 템플릿 6p(10/5) 8a31a570-1c68-11ee-93ed-3d3c2f757ad0(사본) 04923fc0-c7a8-11ed-98a6-0b5b5a81a3a0
+$templateId1_2_1 = "b42ba8f0-26cf-11ee-8ada-6f993d65feb4";//기본 템플릿 6p(10/5)보호자
+$templateId1_3 = "6274cac0-26c8-11ee-9bee-f99348c79195";//기본 템플릿 6p(5/5) 02a73be0-1c5b-11ee-8198-6d15ecc3bde1(사본) b0c31270-c7ac-11ed-a47c-51e4709569d4(원본)
+$templateId1_3_1 = "75d393b0-26cf-11ee-8ada-6f993d65feb4";//기본 템플릿 6p(5/5)보호자
+$templateId1_4 = "4748eba0-26c8-11ee-9bee-f99348c79195";//기본 템플릿 6p(20/5) a1f1bef0-1c6a-11ee-93ed-3d3c2f757ad0(사본) d434b2c0-c86c-11ed-b2d5-9f64a6f185b7
+$templateId1_4_1 = "f92a1890-26d1-11ee-8ada-6f993d65feb4";//기본 템플릿 6p(20/5)보호자
+$templateId1_5 = "3bfe2490-26c8-11ee-8ada-6f993d65feb4";//기본 템플릿 6p(25/5) 0b1d92f0-1c6b-11ee-93ed-3d3c2f757ad0(사본) 4c06e8d0-c855-11ed-9766-e9c41b39ad33
+$templateId1_5_1 = "3b59c2b0-26d2-11ee-9bee-f99348c79195";//기본 템플릿 6p(25/5)보호자
 $templateId2_1 = "a7278fc0-c7b1-11ed-ae22-fbb372cc8ea8";//기본 템플릿 4p(15/5)
 $templateId2_2 = "acae5b40-c7b1-11ed-b371-c5dc2902ba05";//기본 템플릿 4p(10/5)
 $templateId2_3 = "b1e9c5e0-c7b1-11ed-98a6-0b5b5a81a3a0";//기본 템플릿 4p(5/5)
@@ -458,9 +463,8 @@ if($_REQUEST["signed"] == "ok"){?>
 	//대리인 발송정보
 	$contract_sign_info = ($_POST["contract_sign"] == "1")? '{"excluded":false,"signingMethod":{"type":"'.$_POST["contract_send"].'","value":"'.$_POST["contract_send_tel"].'"},"signingDuration":525600,"locale":"ko","role":"대리인","name":"대리인","requesterMessage":"['.$row["entNm"].'] 에서 복지용구 공급계약을 요청하였습니다."}': '{"excluded":true,"signingMethod":{"type":"SECURE_LINK","value":"01020000000"},"signingDuration":525600,"locale":"ko","role":"대리인","name":"대리인"}' ;
 	//신청자 발송정보
-	$applicant_sign_info = '{"excluded":true,"signingMethod":{"type":"SECURE_LINK","value":"01030000000"},"signingDuration":525600,"locale":"ko","role":"신청자","name":"신청자"}' ;//신청자 무조건 서명 무효
-	//($_POST["applicant_sign"] == "1")? '{"excluded":false,"signingMethod":{"type":"'.$_POST["applicant_send"].'","value":"'.$_POST["applicant_send_tel"].'"},"signingDuration":525600,"locale":"ko","role":"신청자","name":"신청자","requesterMessage":"['.$row["entNm"].'] 에서 복지용구 공급계약을 요청하였습니다."}': '{"excluded":true,"signingMethod":{"type":"SECURE_LINK","value":"01030000000"},"signingDuration":525600,"locale":"ko","role":"신청자","name":"신청자"}' ;
-
+	$applicant_sign_info = ($_POST["applicant_sign"] == "1")? '{"excluded":false,"signingMethod":{"type":"'.$_POST["applicant_send"].'","value":"'.$_POST["applicant_send_tel"].'"},"signingDuration":525600,"locale":"ko","role":"신청자","name":"신청자","requesterMessage":"['.$row["entNm"].'] 에서 복지용구 공급계약을 요청하였습니다."}': '{"excluded":true,"signingMethod":{"type":"SECURE_LINK","value":"01030000000"},"signingDuration":525600,"locale":"ko","role":"신청자","name":"신청자"}' ;
+	//'{"excluded":true,"signingMethod":{"type":"SECURE_LINK","value":"01030000000"},"signingDuration":525600,"locale":"ko","role":"신청자","name":"신청자"}' ;//신청자 무조건 서명 무효	
 	$str = file_get_contents($_SERVER['DOCUMENT_ROOT'].$row["dc_signUrl"]);
 	$stamp = base64_encode($str);
 	$penTypeCd = $row["penTypeCd"];
@@ -480,11 +484,13 @@ if($_REQUEST["signed"] == "ok"){?>
 	$contract_tel_1 = $contract_tel_2 = $row["contract_tel"];//대리자전화번호 $contract_tel_1:대리자가 있을 경우만
 	$pen_contract_name_1 = "";//대리인&수급자이름
 	$pen_contract_relation_1 = "";//대리인&수급자관계
+	$pen_guardian_nm = "";//보호자명
 	$dc_date_1 = $dc_date_2 = $dc_date_3 = substr($row["do_date"],0,10);
 	$dc_rectype_1 = ($row["penRecTypeCd"] == 01)?"유선":"방문";
 
 	if($row["contract_sign_type"] == "1"){//대리자가 있을 경우
 		$pen_contract_name_1 = $contract_name_1;
+		$pen_guardian_nm = $row["pen_guardian_nm"];//보호자명
 		if($row["contract_sign_relation"] == 1){
 			$pen_contract_relation_1 = "[   ]본인 [ ✓ ]가족 [   ]친족 [   ]기타 (   )";
 			$contract_sign_relation = "가족";
@@ -498,6 +504,7 @@ if($_REQUEST["signed"] == "ok"){?>
 		$contract_relation_1 = $contract_relation_2 = $contract_sign_relation;//대리자 관계 $contract_relation_1:대리자가 있을 경우만
 		$contract_addr_1 =  $row["contract_addr"];
 	}else{//수급자
+		$pen_guardian_nm = $pen_name_1;//보호자명
 		$pen_contract_name_1 = $pen_name_1;
 		$pen_contract_relation_1 = "[ ✓ ]본인 [   ]가족 [   ]친족 [   ]기타 (   )";
 		$pen_addr_1 = $pen_ltmnum_3 = $pen_name_5 = $contract_addr_1 = $contract_tel_2 = $contract_relation_1 = $contract_relation_2 = "";
@@ -682,15 +689,15 @@ if($_REQUEST["signed"] == "ok"){?>
 	if($penTypeCd == "03" || $penTypeCd == "04" ){//의료6%,기초0%
 		$applicant_sign_info2 = ','.$applicant_sign_info;
 		if($count_sale < 6){
-			$temp_doc_id = $templateId1_3;//6p(5/5)
+			$temp_doc_id = ($_POST["applicant_sign"] == "1")? $templateId1_3_1:$templateId1_3;//6p(5/5)
 		}elseif($count_sale < 11){
-			$temp_doc_id = $templateId1_2;//6p(10/5)
+			$temp_doc_id = ($_POST["applicant_sign"] == "1")? $templateId1_2_1:$templateId1_2;//6p(10/5)
 		}elseif($count_sale < 16){
-			$temp_doc_id = $templateId1_1;//6p(15/5)
+			$temp_doc_id = ($_POST["applicant_sign"] == "1")? $templateId1_1_1:$templateId1_1;//6p(15/5)
 		}elseif($count_sale < 21){
-			$temp_doc_id = $templateId1_4;//6p(20/5)
+			$temp_doc_id = ($_POST["applicant_sign"] == "1")? $templateId1_4_1:$templateId1_4;//6p(20/5)
 		}else{
-			$temp_doc_id = $templateId1_5;//6p(25/5)
+			$temp_doc_id = ($_POST["applicant_sign"] == "1")? $templateId1_5_1:$templateId1_5;//6p(25/5)
 		}
 		$gicho_con = ',{"dataLabel":"app_name_1","value":"'.$app_name_1.'"}
 					,{"dataLabel":"app_relation_1","value":"'.$app_relation_1.'"}
@@ -705,7 +712,7 @@ if($_REQUEST["signed"] == "ok"){?>
 					,{"dataLabel":"pen_tel_1","value":"'.$pen_tel_1.'"}
 					,{"dataLabel":"app_app_date_1","value":"'.substr($row["applicantDate"],0,10).'"}
 					,{"dataLabel":"app_name_2","value":"'.$app_name_2.'"}
-					,{"dataLabel":"pen_name_7","value":"'.$pen_contract_name_1.'"}
+					,{"dataLabel":"pen_name_7","value":"'.$pen_guardian_nm.'"}
 					,{"dataLabel":"app_name_3","value":"'.$app_name_3.'"}
 					,{"dataLabel":"pen_name_8","value":"'.$pen_name_8.'"}
 					,{"dataLabel":"pen_Jumin_2","value":"'.$pen_Jumin_2.'-"}
