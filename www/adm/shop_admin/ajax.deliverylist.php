@@ -349,7 +349,27 @@ if ($sel_field == "")  $sel_field = "od_id";
 if ($sort1 == "") $sort1 = "od_id";
 if ($sort2 == "") $sort2 = "desc";
 
-$sql_common = " from (select ct_id as cart_ct_id, od_id as cart_od_id, X.it_name, it_admin_memo, ct_status, ct_move_date, ct_delivery_num, ct_manager, ct_is_direct_delivery, ct_direct_delivery_partner, ct_barcode_insert, ct_barcode_insert_not_approved, ct_qty, io_type, ct_combine_ct_id, ct_is_auto_combined from {$g5['g5_shop_cart_table']} X left join {$g5['g5_shop_item_table']} Y ON Y.it_id = X.it_id ) B
+$sql_common = " from (
+                  select
+                    ct_id as cart_ct_id,
+                    od_id as cart_od_id,
+                    X.it_name,
+                    it_admin_memo,
+                    ct_status,
+                    ct_move_date,
+                    ct_delivery_num,
+                    ct_manager,
+                    ct_is_direct_delivery,
+                    ct_direct_delivery_partner,
+                    ct_barcode_insert,
+                    ct_barcode_insert_not_approved,
+                    ct_qty,
+                    io_type,
+                    ct_combine_ct_id,
+                    ct_is_auto_combined,
+                    Y.it_soldout
+                  from {$g5['g5_shop_cart_table']} X left join {$g5['g5_shop_item_table']} Y ON Y.it_id = X.it_id
+                ) B
                 inner join {$g5['g5_shop_order_table']} A ON B.cart_od_id = A.od_id
                 left join (select mb_id as mb_id_temp, mb_nick, mb_level, mb_manager, mb_type from {$g5['member_table']}) C
                 on A.mb_id = C.mb_id_temp
@@ -382,7 +402,27 @@ if ( $where2 || $where ) {
 }
 $sql_common2 = " from {$g5['g5_shop_order_table']} $sql_search2 ";
 
-$sql = "select count(od_id) as cnt, ct_status, ct_status from (select ct_id as cart_ct_id, od_id as cart_od_id, ct_delivery_num, X.it_name, it_admin_memo, ct_status, ct_manager, ct_is_direct_delivery, ct_direct_delivery_partner, ct_barcode_insert, ct_barcode_insert_not_approved, ct_qty, io_type, ct_combine_ct_id, ct_is_auto_combined from {$g5['g5_shop_cart_table']} X left join {$g5['g5_shop_item_table']} Y ON Y.it_id = X.it_id ) B
+$sql = "select count(od_id) as cnt, ct_status 
+        from (
+          select 
+            ct_id as cart_ct_id,
+            od_id as cart_od_id,
+            ct_delivery_num,
+            X.it_name,
+            it_admin_memo,
+            ct_status,
+            ct_manager,
+            ct_is_direct_delivery,
+            ct_direct_delivery_partner,
+            ct_barcode_insert,
+            ct_barcode_insert_not_approved,
+            ct_qty,
+            io_type,
+            ct_combine_ct_id,
+            ct_is_auto_combined
+          from {$g5['g5_shop_cart_table']} X 
+          left join {$g5['g5_shop_item_table']} Y ON Y.it_id = X.it_id 
+        ) B
         inner join {$g5['g5_shop_order_table']} A ON B.cart_od_id = A.od_id
         left join (select mb_id as mb_id_temp, mb_nick, mb_level, mb_manager, mb_type from {$g5['member_table']}) C
         on A.mb_id = C.mb_id_temp
@@ -500,6 +540,7 @@ foreach($orderlist as $order) {
   $ct_ex_date = $result_ct['ct_ex_date'];      
   $ct_manager = $result_ct['ct_manager'];                                                                          //출고 담당자 아이디
   $prodMemo = $result_ct['prodMemo'];                                                                          //출고 담당자 아이디
+  $ct_it_soldout = $order['it_soldout'];                                                                          //출고 담당자 아이디
 
 
 
@@ -928,11 +969,14 @@ foreach($orderlist as $order) {
     $auto_combined_text = '<span class="combine_done" style="color: #ff6600;">(합포완료)</span>';
   }
 
+
   $ret['data'] .= "
     <tr class=\"tr_{$order['cart_ct_id']} {$class_c1} {$class_c2} order_tr\" data-od-id=\"{$order['od_id']}\" data-href=\"./samhwa_orderform.php?od_id={$order['od_id']}&sub_menu={$sub_menu}\">
-      <td align=\"center\" class=\"check\">
+      <td align=\"left\" class=\"check_SoldOut\">
         <input type=\"checkbox\" name=\"od_id[]\" id=\"check_{$order['cart_ct_id']}\" value=\"{$order['cart_ct_id']}\" accumul_mark=\"Y\">
-        <label for=\"check_{$order['cart_ct_id']}\">&nbsp;</label>
+        <label for=\"check_{$order['cart_ct_id']}\">
+        ".(($now_step=="출고준비")&&$order['it_soldout']?"<span style='font-weight: bold; color:#FF0000;'>품절</span>":"")."
+        </label>
       </td>
       <td align=\"center\" class=\"od_time\">
         {$od_time}
@@ -941,7 +985,9 @@ foreach($orderlist as $order) {
         <div class=\"order_info\">
           <div class=\"goods_info\">
             <div class=\"goods_name\">
+              ".(($now_step=="출고준비")&&$order['it_soldout']?"<span style='color:#FF0000;'>":"")."
               {$ct_it_name}
+              ".(($now_step=="출고준비")&&$order['it_soldout']?"</span>":"")."
             </div>
             <div class=\"goods_ea\">
               {$ct_qty}

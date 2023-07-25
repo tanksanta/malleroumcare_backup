@@ -1715,6 +1715,14 @@ table.list-table-style .drop_multi_sub a:after {
     -moz-user-select: none;
     -webkit-user-select: none;
 }
+#samhwa_order_list_table>div.table.wide-table .check_SoldOut {
+    width:3%;
+    padding-left: 15px;
+    user-select: none;
+    -ms-user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+}
 #samhwa_order_list_table>div.table.wide-table .balhaeng {
     width:3%;
 }
