@@ -3,34 +3,48 @@ include_once('./_common.php');
 
 header('Content-type: application/json');
 
-if($_POST["it_id"] != ""){//이벤트 상품 구매 조회
-	$is_buy = 0;
-	$soldout_ck = 0;
-	$is_buy = 0;
-	$soldout_ck = 0;
-	$sql = "select pt_end from g5_shop_item where it_id='".$_POST["it_id"]."'";
-	$row = sql_fetch($sql);
-	if($row["pt_end"] > 0){	
-		$sql = "SELECT COUNT(a.od_id) as buy_count FROM `g5_shop_order` AS a 
-		INNER JOIN `g5_shop_cart` AS b ON a.od_id = b.od_id AND b.it_id='".$_POST["it_id"]."' AND b.ct_status NOT IN ('주문무효','취소')
-		WHERE a.mb_id = '".$member['mb_id']."'";
-		$row = sql_fetch($sql);
-		if($row["buy_count"] >0 ){// 구매이력 있음
-			$is_buy = 1; 
-		}
-		$sql2 = "SELECT COUNT(a.od_id) as buy_count FROM `g5_shop_order` AS a 
-		INNER JOIN `g5_shop_cart` AS b ON a.od_id = b.od_id AND b.it_id='".$_POST["it_id"]."' AND b.ct_status NOT IN ('주문무효','취소')";
-		$row2 = sql_fetch($sql2);
-		// 상품정보
-		$sql = " select it_stock_qty from {$g5['g5_shop_item_table']} where it_id = '".$_POST["it_id"]."' ";
-		$it_stock = sql_fetch($sql);
-		$soldout_ck = ($it_stock["it_stock_qty"] > $row2["buy_count"])? false : true;
-	}
-	$data["is_buy"] = $is_buy;
-	$data["soldout_ck"] = $soldout_ck;
+$it_id = $_POST["it_id"]; // 23.07.17 : 서원 - 기존 POST 글로벌 변수를 로컬 변수로 변경.
+$ProdPayCode = $_POST["ProdPayCode"]; // 23.07.17 : 서원 - 급여코드 조회를 위한 변수 추가.
 
-	echo json_encode($data);
-	exit;
+// 23.07.17 : 서원 - 이벤트 상품구매 관련 코드 최적화 및 다중 SQL 단일화
+if( $it_id && !$ProdPayCode ){//이벤트 상품 구매 조회
+
+  $is_buy = 0;
+  $soldout_ck = 0;
+
+  // 23.07.17 : 서원 - 상품 정보와 구매 관련 정보를 한 번에 조회합니다.
+  //                    해당 페이지 호출시 3번의 쿼리를 1번 쿼리로 단계 수정.
+  $sql = ("SELECT 
+            g5_shop_item.pt_end,
+            g5_shop_item.it_stock_qty,
+            COUNT(a1.od_id) AS buy_count_user,
+            COUNT(a2.od_id) AS buy_count_total
+          FROM 
+            g5_shop_item
+          LEFT JOIN g5_shop_cart AS a1 ON g5_shop_item.it_id = a1.it_id
+              AND a1.ct_status NOT IN ('주문무효', '취소') 
+              AND a1.mb_id = '{$member['mb_id']}'
+          LEFT JOIN g5_shop_cart AS a2 ON g5_shop_item.it_id = a2.it_id
+              AND a2.ct_status NOT IN ('주문무효', '취소')
+          LEFT JOIN g5_shop_order AS b ON a2.od_id = b.od_id
+          WHERE 
+            g5_shop_item.it_id = '$it_id'
+          GROUP BY 
+            g5_shop_item.pt_end, g5_shop_item.it_stock_qty
+  ");
+  $row = sql_fetch($sql);
+  
+  if ($row["pt_end"] > 0) {
+    $is_buy = ($row["buy_count_user"] > 0) ? 1 : 0;
+    $soldout_ck = ($row["it_stock_qty"] > $row["buy_count_total"]) ? false : true;
+  }
+  
+  $data["is_buy"] = $is_buy;
+  $data["soldout_ck"] = $soldout_ck;
+  
+  echo json_encode($data);
+  exit;
+  
 }
 
 $keyword = str_replace(' ', '', trim($keyword));
