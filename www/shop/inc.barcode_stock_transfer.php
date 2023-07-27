@@ -455,6 +455,7 @@
         $(document).on("change", "#transfer_BarcodeItem", function(e) { 
             $(".Select_listContent option:selected").prop("selected", false);
             $(".Select_listContent").empty();
+            $(".Select_listContent").scrollTop(0);
             updateSelectedCount();
 
             //alert( $(".select_item_itid").val() );
@@ -468,19 +469,23 @@
                 $(".barcode_pages").val(1);
 
                 for (var i = 0; i < BarCode_List.length; i++) {
-                    if (BarCode_List[i].checked_at) {
-                        $('.Select_listContent').append( $("<option>")
-                            .attr("value", BarCode_List[i].bc_id)
-                            .attr("data-itid", $(".select_item_itid").val() )
-                            .attr("data-ioid", $(".input_option_id").val() )
-                            .html(
-                                "<span class='list_barcode'>" + BarCode_List[i].bc_barcode + "</span>" +
-                                "　　　　"+
-                                "<span class='list_insertdt'>["+BarCode_List[i].checked_at+"]</span>"
-                            )
 
-                        );
-                    } 
+                    if (BarCode_List[i].checked_at) {
+                        check_status = '[' + BarCode_List[i].checked_at +']';
+                    } else { 
+                        check_status = '[미확인]';
+                    }
+
+                    $('.Select_listContent').append( $("<option>")
+                        .attr("value", BarCode_List[i].bc_id)
+                        .attr("data-itid", $(".select_item_itid").val() )
+                        .attr("data-ioid", $(".input_option_id").val() )
+                        .html(
+                            "<span class='list_barcode'>" + BarCode_List[i].bc_barcode + "</span>" +
+                            "　　　　"+
+                            "<span class='list_insertdt'>" + check_status + "</span>"
+                        )
+                    );
                 }
                 
                 $("div.selectElement_BarCodeList span.cnt_total").text( $(".Select_listContent option").length +"개");
