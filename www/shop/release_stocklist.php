@@ -254,7 +254,7 @@ $g5["title"] = "재고관리";
       position: fixed;
       top: 0;
       left: 0;
-      z-index: +100 !important;
+      z-index: 99999 !important;
       width: 100%;
       height: 100%;
     }
@@ -268,13 +268,12 @@ $g5["title"] = "재고관리";
     }
 
     #loading img {
-      width: 40%;
+      width: 15%;
     }
 
     #loading p {
       color: #fff;
       position: relative;
-      top: -25px;
     }
     
   </style>

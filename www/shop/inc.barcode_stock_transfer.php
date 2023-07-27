@@ -414,6 +414,8 @@
 
                 // <select> 요소 생성
                 var selectElement = $("<select>").attr("id", "transfer_BarcodeItem");
+                selectElement.on('change', function() { $("#loading").show(); });
+
                 selectElement.append( $("<option>").attr("value", '').text('상품을 선택하세요.') );
 
                 prodpaycodes.forEach(element => {
@@ -453,44 +455,56 @@
 
         // 23.07.19 : 바코드 재고 이동 관련
         $(document).on("change", "#transfer_BarcodeItem", function(e) { 
+            
             $(".Select_listContent option:selected").prop("selected", false);
             $(".Select_listContent").empty();
             $(".Select_listContent").scrollTop(0);
+            $(".barcode_pages").val(1);
+
             updateSelectedCount();
+
+            if( !$(this).val() ) {
+                $("div.selectElement_BarCodeList span.cnt_total").text("0개");
+                $("#loading").hide();
+                return;
+            }
 
             //alert( $(".select_item_itid").val() );
             //alert( $(".input_option_no").val() );
             //alert( $(".input_option_id").val() );
 
-            var BarCode_List = get_ListBarCode( '1', $(".select_item_itid").val(), $(".input_option_id").val() );
-            if ( BarCode_List && BarCode_List.length > 0) {
-                
-                var check_status;                
-                $(".barcode_pages").val(1);
+            $("div.selectElement_BarCodeList span.cnt_total").text( "검색중...");
 
-                for (var i = 0; i < BarCode_List.length; i++) {
+            // 0.25초(250ms) 뒤에 BarCode_List 함수를 실행합니다.
+            setTimeout(function() {
+                var page = device ? '' : 1;                
+                var BarCode_List;
 
-                    if (BarCode_List[i].checked_at) {
-                        check_status = '[' + BarCode_List[i].checked_at +']';
-                    } else { 
-                        check_status = '[미확인]';
+                BarCode_List = get_ListBarCode(page, $(".select_item_itid").val(), $(".input_option_id").val());
+
+                if ( BarCode_List && BarCode_List.length > 0) {
+                    
+                    var check_status;                
+                    $(".barcode_pages").val(1);
+
+                    for (var i = 0; i < BarCode_List.length; i++) {
+
+                        if (BarCode_List[i].checked_at) { check_status = '[' + BarCode_List[i].checked_at +']'; } else { check_status = '[미확인]'; }
+
+                        $('.Select_listContent').append( $("<option>")
+                            .attr("value", BarCode_List[i].bc_id)
+                            .attr("data-itid", $(".select_item_itid").val() )
+                            .attr("data-ioid", $(".input_option_id").val() )
+                            .html( "<span class='list_barcode'>" + BarCode_List[i].bc_barcode + "</span>" + "　　　　"+ "<span class='list_insertdt'>" + check_status + "</span>" )
+                        );
                     }
+                    
+                    $("div.selectElement_BarCodeList span.cnt_total").text( $(".Select_listContent option").length +"개");
 
-                    $('.Select_listContent').append( $("<option>")
-                        .attr("value", BarCode_List[i].bc_id)
-                        .attr("data-itid", $(".select_item_itid").val() )
-                        .attr("data-ioid", $(".input_option_id").val() )
-                        .html(
-                            "<span class='list_barcode'>" + BarCode_List[i].bc_barcode + "</span>" +
-                            "　　　　"+
-                            "<span class='list_insertdt'>" + check_status + "</span>"
-                        )
-                    );
                 }
-                
-                $("div.selectElement_BarCodeList span.cnt_total").text( $(".Select_listContent option").length +"개");
 
-            }
+                $("#loading").hide();
+            }, 250);
             
             $('.selectElement_BarCodeList').css({'display':'block'});
 
@@ -503,7 +517,7 @@
             } else {
                 $('.selectElement_BarCodeList .Select_listContent').css({ 'height': '290px', });
             }
-
+    
         });
 
         $(".ipt_so_sch").on("focus", function() { 
@@ -513,30 +527,36 @@
             $("#popup_BarCodeStock_Transfer .input_option_id").val("");
         });
 
+            
+        $(".Select_listContent").on("change", function() {
+            updateSelectedCount();
+        });
+
         $(".Select_listContent").on("scroll", function() {
+            if( $(".Select_listContent option").length < 1000 ) return;
+
             var element = $(this)[0];
-            if (element.scrollHeight - element.scrollTop === element.clientHeight) {
+
+            if ( ( element.scrollHeight - element.scrollTop ) <= (parseInt(element.clientHeight, 10)+12) ) {
                 // 여기서 끝까지 스크롤 했을 때 원하는 동작을 수행합니다.
-                console.log("끝까지 스크롤 했습니다!");
+                //console.log("끝까지 스크롤 했습니다!");
+
                 var page = parseInt($(".barcode_pages").val(), 10) + 1;
                 var BarCode_List = get_ListBarCode( page, $(".select_item_itid").val(), $(".input_option_id").val() );
                 if ( BarCode_List && BarCode_List.length > 0) {
                     var check_status;
                     $(".barcode_pages").val(page);
                     for (var i = 0; i < BarCode_List.length; i++) {
-                        if (BarCode_List[i].checked_at) {
-                            $('.Select_listContent').append( $("<option>")
-                                .attr("value", BarCode_List[i].bc_id)
-                                .attr("data-itid", $(".select_item_itid").val() )
-                                .attr("data-ioid", $(".input_option_id").val() )
-                                .html(
-                                    "<span class='list_barcode'>" + BarCode_List[i].bc_barcode + "</span>" +
-                                    "　　　　"+
-                                    "<span class='list_insertdt'>["+BarCode_List[i].checked_at+"]</span>"
-                                )
-                            );
+
+                        if (BarCode_List[i].checked_at) { check_status = '[' + BarCode_List[i].checked_at +']'; } else { check_status = '[미확인]'; }
+
+                        $('.Select_listContent').append( $("<option>")
+                            .attr("value", BarCode_List[i].bc_id)
+                            .attr("data-itid", $(".select_item_itid").val() )
+                            .attr("data-ioid", $(".input_option_id").val() )
+                            .html( "<span class='list_barcode'>" + BarCode_List[i].bc_barcode + "</span>" + "　　　　"+ "<span class='list_insertdt'>" + check_status + "</span>" )
+                        );
                             
-                        } 
                     }
 
                     $("div.selectElement_BarCodeList span.cnt_total").text( $(".Select_listContent option").length +"개");
@@ -544,13 +564,10 @@
                 }
 
             }
-        });
-            
-        $(".Select_listContent").on("change", function() {
-            updateSelectedCount();
-        });
-    });
 
+        });
+    
+    });
 </script>
 
 
@@ -604,7 +621,7 @@
                 <div class="title_barcode_cnt_total">전체: <span class="cnt_total">0개</span></div>
                 <div class="title_barcode_cnt_select">선택: <span class="cnt_select">0개</span></div>
             </li>
-            <select  class="Select_listContent" multiple></select>          
+            <select  class="Select_listContent" multiple></select>
             <input type="hidden" class="barcode_pages" />
             </div>
         </div>
