@@ -136,7 +136,22 @@ if (isset($wr_id) && $wr_id) {
     $ss_name = 'ss_view_'.$bo_table.'_'.$wr_id;
     if (!get_session($ss_name))
     {
-        sql_query(" update {$write_table} set wr_hit = wr_hit + 1 where wr_id = '{$wr_id}' ");
+        $query = "SHOW tables LIKE 'g5_board_log'";//게시판 hit 로그 테이블 생성
+		$wzres = sql_num_rows( sql_query($query) );
+		if($wzres < 1) {
+			sql_query("CREATE TABLE `g5_board_log` (
+			  `log_id` int(11) NOT NULL AUTO_INCREMENT,
+			  `bo_table` varchar(255) DEFAULT NULL COMMENT '테이블명',
+			  `wr_id` int(11) DEFAULT NULL COMMENT '게시글id',
+			  `mb_id` varchar(30) DEFAULT NULL COMMENT '작성자id',
+			  `create_time` datetime DEFAULT NULL COMMENT '조회일시',
+			  PRIMARY KEY (`log_id`),
+			  KEY `index` (`bo_table`,`wr_id`,`mb_id`)
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8
+			", true);
+		}
+		sql_query("insert into g5_board_log (bo_table,wr_id,mb_id,create_time) values ('".$bo_table."','".$wr_id."','".$member['mb_id']."',now())");//게시판 hit 로그 insert
+		sql_query(" update {$write_table} set wr_hit = wr_hit + 1 where wr_id = '{$wr_id}' ");
 
         // 자신의 글이면 통과
         if ($write['mb_id'] && $write['mb_id'] === $member['mb_id']) {
