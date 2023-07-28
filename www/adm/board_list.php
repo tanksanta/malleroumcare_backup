@@ -217,7 +217,8 @@ $colspan = 8;
         $one_copy = '<a href="./board_copy.php?bo_table='.$row['bo_table'].'" class="board_copy btn btn_02" target="win_board_copy">복사</a>';
 		$one_search = '<a href="./board_search.php?bo_table='.$row['bo_table'].'" class="btn btn_02" style="background:#555555;" target="win_board_copy">게시판 조회</a>';
 		$one_go = '<a href="/bbs/board.php?bo_table='.$row['bo_table'].'" class="btn btn_02" style="background:#555555;" target="win_board_copy">게시판 바로가기</a>';
-
+		$sql_c = "select count(*) as cnt from g5_write_".$row['bo_table']." where 1";
+		$bo_count_write = sql_fetch($sql_c);
         $bg = 'bg'.($i%2);
     ?>
 
@@ -271,7 +272,7 @@ $colspan = 8;
             <input type="checkbox" name="bo_use_sns[<?php echo $i ?>]" value="1" id="bo_use_sns_<?php echo $i ?>" <?php echo $row['bo_use_sns']?"checked":"" ?>>
         </td>
         <td align="center">
-            <?=number_format($row["bo_count_write"]);?>
+            <?=number_format($bo_count_write["cnt"]);?>
         </td>
 		<td class="td_numsmall">
             <!--label for="bo_use_search_<?php echo $i; ?>" class="sound_only">검색 사용</label>
