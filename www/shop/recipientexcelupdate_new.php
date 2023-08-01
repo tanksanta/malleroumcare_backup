@@ -20,7 +20,12 @@ function parse_birth($ymd) {
 
   return $date->format('Y-m-d');
 }
-
+if($sheetData){// 엑셀 필드 확인용으로 사용
+	if(trim(addslashes($sheetData[1]['A'])) != "수급자정보" || trim(addslashes($sheetData[1]['J'])) != "보호자" || trim(addslashes($sheetData[1]['A'])) != "수급자정보" || trim(addslashes($sheetData[1]['S'])) != "장기요양급여 제공기록지" || trim(addslashes($sheetData[2]['A'])) != "[필수]수급자명" || trim(addslashes($sheetData[2]['E'])) != "[필수]휴대폰" || trim(addslashes($sheetData[2]['F'])) != "일반전화" || trim(addslashes($sheetData[2]['G'])) != "우편번호" || trim(addslashes($sheetData[2]['H'])) != "기본주소" || trim(addslashes($sheetData[2]['I'])) != "상세주소" || trim(addslashes($sheetData[2]['J'])) != "관계" || trim(addslashes($sheetData[2]['K'])) != "보호자명" || trim(addslashes($sheetData[2]['M'])) != "이메일" || trim(addslashes($sheetData[2]['N'])) != "휴대폰" || trim(addslashes($sheetData[2]['O'])) != "일반전화" || trim(addslashes($sheetData[2]['P'])) != "우편번호" || trim(addslashes($sheetData[2]['Q'])) != "기본주소" || trim(addslashes($sheetData[2]['R'])) != "상세주소" || trim(addslashes($sheetData[2]['U'])) != "특이사항"){
+		alert("일괄등록 업로드 파일 입력 형식이 다릅니다.\\n수급자등록용 엑셀파일을 다운받으셔서 업로드 해주시기 바랍니다.","recipientexcel.php");
+		exit;
+	}
+}
 if($sheetData) {
     $inputs = [];
     $num_rows = $spreadsheet->getSheet(0)->getHighestDataRow('A');
