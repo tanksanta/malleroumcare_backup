@@ -117,9 +117,9 @@
 
     <style>
         /* 온라인결제 팝업 */
-        #OnlineBilling_popup { display: none; position: fixed; width: 100%; height: 100%; left: 0; top: 0; z-index:99990; background:rgba(229, 229, 229, 0.5); }
+        #OnlineBilling_popup { display: none; position: fixed; width: 100%; height: 100%; left: 0; top: 0; z-index:99990; background:rgba(0, 0, 0, 0.5); }
         #OnlineBilling_popup iframe { width:600px; height:580px; max-height: 80%; position:absolute; top: 50%; left: 50%; transform:translate(-50%, -50%); background:white; }
-        .OnlineBilling_popup_close { position:absolute; top:15px; right: 15px; color: #000; font-size: 2.5em; cursor:pointer; }
+        .OnlineBilling_popup_close { position:absolute; top:15px; right: 15px; color: #fff; font-size: 2.5em; cursor:pointer; }
 
         /* PG사 팝업 최상단 */
         body.bootpay-open .bootpay-payment-background { z-index: 99991; }

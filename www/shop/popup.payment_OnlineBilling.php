@@ -221,6 +221,16 @@
 </head>
 <body>
     <div class="visual">
+		<div class="hanacardWrap" id="hanacardPopup">           
+                <p><span class="hanacardImg" id="hanacard_close"><a href="#" class="hana_closeBg"><img src="../img/hanacard_btn_close_x.svg" alt="닫기"></a></span>
+                <a href="https://eroumcare.com/bbs/board.php?bo_table=notice&wr_id=176" class="hanacarBtn" target="_top">추가 혜택 확인하기 GO <img src="../img/hanacard_icon_arrow.svg" alt="하나카드"></a>
+                </p>          
+        </div>
+        <script>
+            document.getElementById("hanacard_close").addEventListener("click", function() {
+              document.getElementById("hanacardPopup").style.display = "none";
+            });
+          </script>   
         <div class="visalWrap">
             <!-- title -->
             <div class="headerTitle">
