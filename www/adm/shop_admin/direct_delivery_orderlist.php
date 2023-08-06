@@ -377,6 +377,7 @@ $warehouse_list = get_warehouses();
 	.bg0 {background:#fff}
 	.bg1 {background:#f2f5f9}
 	.bg1 td {border-color:#e9e9e9}
+	.bg2 {background: #F7EEEE;}
 </style>
 <div id="" class="" style="margin:-60px 100px 0px 0px;text-align:right;padding:10px">			
 		<select name="" id="ct_direct_delivery_partner_sb" style="border: 1px solid #dbdde2;border-radius: 0px;width: 150px;height: 33px !important;padding: 0px 13px !important;font-size: 12px; color: #555;">
@@ -409,9 +410,9 @@ $warehouse_list = get_warehouses();
 <input type="hidden" name="reload_submit" id="reload_submit" value="<?=$reload_submit?>">
 <input type="hidden" name="page" id="page" value="">
   <div class="tbl_wrap" style="margin-bottom:-25px;margin-top:30px;">
-		<input type="button" value="상품준비(<?=number_format($count1)?>)" class="<?=($click_status == "준비")?"newbutton3":"newbutton2";?>" onClick="$('#click_status').val('준비');move_staus();" id="click_status1"/>
-		<input type="button" value="출고준비(<?=number_format($count2)?>)" class="<?=($click_status == "출고준비")?"newbutton3":"newbutton2";?>" onClick="$('#click_status').val('출고준비');move_staus();"id="click_status2"/>
-        <input type="button" value="출고완료(<?=number_format($count3)?>)" class="<?=($click_status == "배송")?"newbutton3":"newbutton2";?>" onClick="$('#click_status').val('배송');move_staus();"id="click_status3"/>
+		<input type="button" value="상품준비(<?=number_format($count1)?>)" class="<?=($click_status == "준비")?"newbutton3":"newbutton2";?>" onClick="$('#click_status').val('준비');$('#deadline_it').attr('checked',true);$('#frmsamhwaorderlist').submit();" id="click_status1"/>
+		<input type="button" value="출고준비(<?=number_format($count2)?>)" class="<?=($click_status == "출고준비")?"newbutton3":"newbutton2";?>" onClick="$('#click_status').val('출고준비');$('#od_id1').attr('checked',true);$('#frmsamhwaorderlist').submit();" id="click_status2"/>
+        <input type="button" value="출고완료(<?=number_format($count3)?>)" class="<?=($click_status == "배송")?"newbutton3":"newbutton2";?>" onClick="$('#click_status').val('배송');$('#out_time_partner').attr('checked',true);$('#frmsamhwaorderlist').submit();"id="click_status3"/>
 		<input type="hidden" name="click_status" id="click_status" value="<?=$click_status?>">
   </div>
   <div class="new_form">
@@ -541,12 +542,12 @@ $warehouse_list = get_warehouses();
 		<th scope="col" width="107px;">주문번호</th>
 		<th scope="col" width="170px;">상품명</th>
 		<th scope="col" width="60px;">바코드<br>/수량</th>
+		<th scope="col" width="50px;">급여<br>구분</th>		
+		<th scope="col" width="60px;">배송정보</th>
         <th scope="col" width="110px;">직배송 파트너</th>
 		<th scope="col" width="120px;">수령인</th>
         <th scope="col" width="100px;">수령인 연락처</th>
-		<th scope="col">배송주소</th>
-        <th scope="col" width="50px;">급여<br>구분</th>		
-		<th scope="col" width="60px;">배송정보</th>
+		<th scope="col">배송주소</th>        
 		<th scope="col" width="60px;">단가</th>
 		<!--th scope="col" width="70px;">공급가격</th>
 		<th scope="col" width="60px;">부가세</th-->
@@ -566,6 +567,7 @@ $warehouse_list = get_warehouses();
         $num = $total_count -(($page-1)*$page_rows)- $i ;
 
         $bg = 'bg'.($i%2);
+		$bg = ($order['od_cancel_reason'] != "")? "bg2": $bg;
 		
 		//$mb = get_member($order['ct_direct_delivery_partner']);
 		$ct_direct_delivery_partner_name = ($order['partner_name'] == "")?"미등록": $order['partner_name'];//파트너
@@ -612,12 +614,13 @@ $warehouse_list = get_warehouses();
 		<td align="center"><a href="samhwa_orderform.php?od_id=<?=$order["od_id"];?>&sub_menu=400405" target="_blank"><?=$order["od_id"];//주문번호 ?></a></td>
 		<td align="center"><?=$order["it_name"].(($order["ct_option"] != $order["it_name"])?" [".$order["ct_option"]."]":"");//상품명 ?></td>
 		<td align="center" <?=($order['ct_barcode_insert'] >= $order['ct_qty'] || substr($order["ca_id"],0,2) == "70")?"":"style='color:red;'"; ?>><span  style='cursor:pointer;' onClick="barcode_insert('<?=$order["ct_id"]?>')"><?=(substr($order["ca_id"],0,2) != "70")?$order['ct_barcode_insert']."/".$order['ct_qty']:$order['ct_qty'];//바코드/수량 ?></span></td>
+		<td align="center"><?=(substr($order["ca_id"],0,2) == "70")?"비급여":"급여";//급여구분 ?></td>		
+		<td align="center" <?=($order['ct_combine_ct_id']||$order['ct_delivery_num'])?"":"style='color:red;'";?>><?=($order['ct_combine_ct_id']||$order['ct_delivery_num'])?"입력완료":"미입력";//배송정보 ?></td>
         <td align="center"><?=$ct_direct_delivery_partner_name;//직배송파트너?></td>
 		<td align="center"><?=$order["od_b_name"];//수령인 ?></a></td>
 		<td align="center"><?=$order["od_b_tel"];//연락처 ?></td>
 		<td align="center"><?=$order["od_b_addr1"].(($order["od_b_addr2"]!="")?" ".$order["od_b_addr2"]:"").(($order["od_b_addr3"]!="")?" ".$order["od_b_addr3"]:"");//배송주소 ?></td>
-   		<td align="center"><?=(substr($order["ca_id"],0,2) == "70")?"비급여":"급여";//급여구분 ?></td>		
-		<td align="center" <?=($order['ct_combine_ct_id']||$order['ct_delivery_num'])?"":"style='color:red;'";?>><?=($order['ct_combine_ct_id']||$order['ct_delivery_num'])?"입력완료":"미입력";//배송정보 ?></td>		
+   				
 		<td align="right"><?=number_format($order["opt_price"]);//단가 ?></td>
 		<!--td align="right"><?=number_format($order["basic_price"]);//공급가격?></td>
 		<td align="right"><?=number_format($order["tax_price"]);//부가세 ?></td-->

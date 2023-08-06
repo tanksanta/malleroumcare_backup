@@ -213,7 +213,7 @@ li {
               <?php foreach($delivery_companys as $data){ ?>
               <option value="<?=$data["val"]?>" <?=($row["ct_delivery_company"] == $data["val"]) ? "selected" : ""?>><?=$data["name"]?></option>
               <?php } ?>
-            </select> <input type="text" name="ct_delivery_num_<?=$i?>" id="ct_delivery_num_<?=$i?>" class="frm_input" style="width:50%;padding-left:5px;" value="<?=$row["ct_delivery_num"]?>" placeholder="송장번호 입력"> <input type="button" value="저장" onclick="save_delivery_info('<?=$row["ct_id"]?>','<?=$i?>')" class="btn" style=" background-color:#ff9900;color:#ffffff;font-weight:bold;height:26px;border-radius:3px;width:18.3%;cursor:pointer;"></li>
+            </select> <input type="text" name="ct_delivery_num_<?=$i?>" id="ct_delivery_num_<?=$i?>" class="frm_input" style="width:50%;padding-left:5px;" value="<?=$row["ct_delivery_num"]?>" placeholder="송장번호 입력" onKeyup="this.value=this.value.replace(/[^-,/_0-9]/g,'');"> <input type="button" value="저장" onclick="save_delivery_info('<?=$row["ct_id"]?>','<?=$i?>')" class="btn" style=" background-color:#ff9900;color:#ffffff;font-weight:bold;height:26px;border-radius:3px;width:18.3%;cursor:pointer;"></li>
 				</ul>
 				</div>
 			</div>
