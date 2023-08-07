@@ -90,14 +90,14 @@ var swiper = new Swiper(".eventWrap .eventSwiper", {
     disableOnInteraction: false,
   },
   loop: true,
-  loopAdditionalSlides: 1,
+  loopedSlides: 1,
   pagination: {
-    el: ".wrap_swiper_navi .swiper-pagination",
+    el: ".eventWrap .swiper-pagination",
     clickable: true,
   },
   navigation: {
-    nextEl: ".wrap_swiper_navi .swiper-button-next",
     prevEl: ".wrap_swiper_navi .swiper-button-prev",
+    nextEl: ".wrap_swiper_navi .swiper-button-next",
   },
 });
 
@@ -126,8 +126,8 @@ var swiper = new Swiper(".mySwiper_service", {
 //상단 띠배너 스와이퍼
 var swiper = new Swiper(".mySwiper_band", {
   navigation: {
-    nextEl: ".topBanner_swiper_navi .swiper-button-next",
-    prevEl: ".topBanner_swiper_navi .swiper-button-prev",
+    nextEl: ".topBanner_swiper_navi .swiper-button-prev",
+    prevEl: ".topBanner_swiper_navi .swiper-button-next",
   },
   loop: true,
 });
