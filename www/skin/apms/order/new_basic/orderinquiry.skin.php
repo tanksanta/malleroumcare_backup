@@ -631,24 +631,12 @@ $(function(){
                   </ul>
               </div>
               <div>
-                <?php
-                  $sendData = [];
-                  $sendData["penOrdId"] = $item["ordId"];
-                  $sendData["uuid"] = $item["uuid"];
-                  $sendData["it_id"] = $item["it_id"];
 
-                  $res = get_eroumcare(EROUMCARE_API_ORDER_SELECT_LIST, json_encode($sendData, JSON_UNESCAPED_UNICODE));
-
-                  $result = $res;
-                  $result = $result["data"];
-                  // print_r($item);
-                ?>
-
-                <?php if($item["prodSupYn"] == "N"){ ?>
-                <a href="#" class="btn-03 btn-0 popupProdBarNumInfoBtn" data-id="<?=$row["od_id"]?>" data-ct-id="<?=$item["ct_id"]?>"> 바코드 확인 </a>
-                <?php } else { if( count($prodBarNum_arr)>=1 && ($limit > 0) ) { ?>
-                <a href="#" class="btn-01 btn-0 popupProdBarNumInfoBtn" data-id="<?=$row["od_id"]?>" data-ct-id="<?=$item["ct_id"]?>"><img src="<?=$SKIN_URL?>/image/icon_02.png" alt=""> 바코드 </a>
-                <?php } } ?>
+              <?php if($item["prodSupYn"] == "N"){ ?>
+              <a href="#" class="btn-03 btn-0 popupProdBarNumInfoBtn" data-id="<?=$row["od_id"]?>" data-ct-id="<?=$item["ct_id"]?>"> 바코드 확인 </a>
+              <?php } else { if( count($prodBarNum_arr)>=1 && ($limit > 0) ) { ?>
+              <a href="#" class="btn-01 btn-0 popupProdBarNumInfoBtn" data-id="<?=$row["od_id"]?>" data-ct-id="<?=$item["ct_id"]?>"><img src="<?=$SKIN_URL?>/image/icon_02.png" alt=""> 바코드 </a>
+              <?php } } ?>
 
               <?php if(($item['ct_status'] == '배송' || $item['ct_status'] == '완료') && ($item["prodSupYn"] == "Y")){ ?>
                 <a href="#" class="btn-02 btn-0 popupDeliveryInfoBtn" data-od="<?=$row["od_id"]?>">배송정보</a>
