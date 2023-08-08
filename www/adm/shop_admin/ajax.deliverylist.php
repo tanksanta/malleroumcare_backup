@@ -364,11 +364,16 @@ $sql_common = " from (
                     ct_barcode_insert,
                     ct_barcode_insert_not_approved,
                     ct_qty,
-                    io_type,
+                    X.io_type,
                     ct_combine_ct_id,
                     ct_is_auto_combined,
-                    Y.it_soldout
-                  from {$g5['g5_shop_cart_table']} X left join {$g5['g5_shop_item_table']} Y ON Y.it_id = X.it_id
+                    Y.it_soldout,
+                    Y.it_type1,
+                    O.io_sold_out
+                  from g5_shop_cart X 
+                    left join g5_shop_item Y ON Y.it_id = X.it_id
+                    left join g5_shop_item_option O ON O.it_id = X.it_id AND O.io_id = X.io_id
+
                 ) B
                 inner join {$g5['g5_shop_order_table']} A ON B.cart_od_id = A.od_id
                 left join (select mb_id as mb_id_temp, mb_nick, mb_level, mb_manager, mb_type from {$g5['member_table']}) C
@@ -975,7 +980,7 @@ foreach($orderlist as $order) {
       <td align=\"left\" class=\"check_SoldOut\">
         <input type=\"checkbox\" name=\"od_id[]\" id=\"check_{$order['cart_ct_id']}\" value=\"{$order['cart_ct_id']}\" accumul_mark=\"Y\">
         <label for=\"check_{$order['cart_ct_id']}\">
-        ".(($now_step=="출고준비")&&$order['it_soldout']?"<span style='font-weight: bold; color:#FF0000;'>품절</span>":"")."
+        ".(($now_step=="출고준비")&&($order['it_soldout']||$order['it_type1']||$order['io_sold_out'])?"<span style='font-weight: bold; color:#FF0000;'>품절</span>":"")."
         </label>
       </td>
       <td align=\"center\" class=\"od_time\">
@@ -985,9 +990,9 @@ foreach($orderlist as $order) {
         <div class=\"order_info\">
           <div class=\"goods_info\">
             <div class=\"goods_name\">
-              ".(($now_step=="출고준비")&&$order['it_soldout']?"<span style='color:#FF0000;'>":"")."
+              ".(($now_step=="출고준비")&&($order['it_soldout']||$order['it_type1']||$order['io_sold_out'])?"<span style='color:#FF0000;'>":"")."
               {$ct_it_name}
-              ".(($now_step=="출고준비")&&$order['it_soldout']?"</span>":"")."
+              ".(($now_step=="출고준비")&&($order['it_soldout']||$order['it_type1']||$order['io_sold_out'])?"</span>":"")."
             </div>
             <div class=\"goods_ea\">
               {$ct_qty}
