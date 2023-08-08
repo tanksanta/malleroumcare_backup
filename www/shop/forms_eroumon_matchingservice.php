@@ -142,12 +142,12 @@
         $newRows = array(
             array(
                 ($lastRow),
-                $member['mb_id'],
-                $member['mb_giup_bnum'],
-                $member['mb_giup_bname'],
-                $_POST['Q_bnum'],
-                $_POST['Q_bnm'],
-                $_POST['Q_hp'],
+                " ".$member['mb_id'],
+                " ".$member['mb_giup_bnum']?$member['mb_giup_bnum']:"",
+                " ".$member['mb_giup_bname']?$member['mb_giup_bname']:"",
+                " ".$_POST['Q_bnum'],
+                " ".$_POST['Q_bnm'],
+                " ".$_POST['Q_hp'],
                 date("Y-m-d H:i:s"),
                 $_POST['Q1'],
                 $_POST['Q2'],
@@ -174,7 +174,7 @@
     .f_bold500 { font-weight: 500; }
     .matchingExcel { display: flex; justify-content: end; }
     .matchingExcel a { border-radius: 7px; background: #2FA46C; color: #fff; font-size: 14px; padding: 5px 10px; }
-    .matchingTitle { margin: 40px 0 40px 0; }
+    .matchingTitle { margin: 50px 0 40px 0; }
     .matchingTitle h3 { font-size: 35px; font-weight: 400; text-align: center; }
     .matchingTop { border-radius: 20px; padding: 10px; background: linear-gradient(90deg, #7802E4 0%, #5078DD 100%); display: flex; align-items: center; color: #fff; }
     .matchingTop .matchingImg { width: 55%; padding: 15px 50px; }
@@ -193,8 +193,8 @@
     .matchingQuest { background: #F9F9F9; padding: 10px 0 50px 0; }
     .matchingQuest .QuestTitleWrap { display: flex; flex-direction: column; justify-content: center; padding: 35px 0; }
     .matchingQuest .QuestTitleWrap p { text-align: center; }
-    .matchingQuest .QuestTitleWrap .mQ_title01 { font-size: 35px; padding: 5px 0 10px 0; }
-    .matchingQuest .QuestTitleWrap .mQ_title02 { font-weight: 700; color: #5173DD; }
+    .matchingQuest .QuestTitleWrap .mQ_title01, .matchingResult .mQ_title01 { font-size: 35px; padding: 20px 0 10px 0; line-height:100%; }
+    .matchingQuest .QuestTitleWrap .mQ_title02, .matchingResult .mQ_title02 { font-weight: 700; color: #5173DD; }
     .matchingQuest br, .matchingTitle br { display: none; }
     .matchingQuest .QuestTitleWrap .mQ_title03 { color: #666; font-size: 14px; }
     .QuestBoxWrap { padding: 30px; }
@@ -214,22 +214,26 @@
     .matchingPolicy .policyWrqp .p_text p { margin: 0; }
     .matchingPolicy .policyWrqp .agreeForm { width: 100%; height: 200px; overflow: auto; padding: 0 20px; }
     .matchingPolicy .matchingAgree { display: flex; justify-content: center; }
-    .matchingPolicy .matchingAgree>ul { display: flex; justify-content: space-between; padding: 30px 0 50px 0; width: 30%; }
+    .matchingPolicy .matchingAgree>ul { display: flex; justify-content: space-between; padding: 20px 0 50px 0; width: 30%; }
     .matchingPolicy .matchingAgree ul>li { display: flex; align-items: center; gap: 7px; }
+    .matchingPolicy .matchingAgree ul>li>label { margin: 0px; }
     .matchingBtnWrap { display: flex; justify-content: center; padding: 10px 0; }
-    .matchingBtnWrap a { display: flex; align-items: center; gap: 20px; border-radius: 50px; background: #694AE4; padding: 15px 70px; color: #FFF; font-size: 25px; font-weight: 500; }
+    .matchingBtnWrap a { display: flex; align-items: center; gap: 20px; border-radius: 50px; background: #694AE4; padding: 20px 70px; color: #FFF; font-size: 24px; font-weight: 500; }
     .matchingBtnWrap a:link, .matchingBtnWrap a:visited {	color: #FFF; }
     .matchingBtnWrap a:hover { background: #7D00E5; }
     .matchingBtnWrap p, .matchingQuest p { margin: 0; }
+    .matchingBtnWrap #goHomeButton, .matchingBtnWrap #goBackButton { padding: 15px 70px; }
     .QuestBoxWrap label { margin: 0; }
+
+    .matchingResult .mQ_title01 { font-size: 25px; text-align: center; padding: 20px 0 70px 0; }
+    .matchingResult { border-radius: 20px; background: #F9F9F9; padding: 60px 0; display: flex; flex-direction: column; align-items: center; }
 
     /********** css responsive **********/
     @media (max-width: 1399px) {}
     @media (max-width: 1199px) {}
     @media (max-width: 991px) {}
-
     @media (max-width: 767px) {
-        .matchingTitle { padding: 40px 0 0 0; }
+        .matchingTitle { padding: 0px 0 0 0; }
         .matchingTitle h3 { font-size: 30px; }
         .matchingTop { display: flex; flex-direction: column; padding: 30px 0; }
         .matchingTop .matchingImg { width: 100%; padding: none; margin: 0 0 20px 0; }
@@ -256,9 +260,14 @@
         .matchingPolicy { margin: 20px 0; }
         input.thkc_inputM[type="text"], input.thkc_inputM[type="number"], input.thkc_inputM { width: 100%; }
     }
-
-    @media (max-width: 600px) { .matchingQuest br { display: block; }}
-    @media (max-width: 360px) {}
+    @media (max-width: 600px) { 
+        .QuestBoxWrap ul { padding: 20px 0px; }
+        .matchingQuest br { display: block; }
+        .matchingResult .mQ_title01 { font-size: 20px; letter-spacing: -0.05em; }
+    }
+    @media (max-width: 360px) {
+        .matchingBtnWrap a { font-size: 16px; }
+    }
 </style>
 
 <script>
@@ -343,6 +352,43 @@ $(function() {
             <?php } ?>
             <h3>예비수급자 & 보호자 <br><span class="f_bold700">매칭 서비스 신청서</span></h3>
         </div>
+
+        <?php if( ($_SERVER['REQUEST_URI'] === $_SERVER['PHP_SELF']) && ($_SERVER['REQUEST_METHOD']==="POST") ) { ?>
+
+        <div class="matchingResult"> 
+            <svg xmlns="http://www.w3.org/2000/svg" width="108" height="108" viewBox="0 0 108 108" fill="none">
+                <circle cx="54" cy="54" r="54" fill="#5173DD" fill-opacity="0.1"></circle>
+                <circle cx="54.0001" cy="54.0001" r="35.0714" fill="white" stroke="#5173DD" stroke-width="7"></circle>
+                <path d="M38.4717 51.6254L35.9936 49.1537L31.0503 54.1099L33.5283 56.5815L38.4717 51.6254ZM49.9326 68L47.4609 70.4781L49.9326 72.9434L52.4043 70.4781L49.9326 68ZM33.5283 56.5815L47.4609 70.4781L52.4043 65.5219L38.4717 51.6254L33.5283 56.5815ZM52.4043 70.4781L78.4717 44.4781L73.5283 39.5219L47.4609 65.5219L52.4043 70.4781Z" fill="#5173DD"></path>
+            </svg>     
+                <p class="mQ_title01"><span class="mQ_title02">매칭 서비스 </span>신청이 완료되었습니다.</p>
+            
+            <div class="matchingBtnWrap">
+                <a href="#" id="goHomeButton"><p>확인</p></a>                                          
+            </div>                      
+        </div><br /><br />
+        <?php } else if( $result && is_array($result) ) { ?>            
+
+            <div class="matchingResult"> 
+            <svg xmlns="http://www.w3.org/2000/svg" width="100" height="128" viewBox="0 0 100 128" fill="none">
+                <rect y="0.0551758" width="100" height="127.523" rx="10" fill="#E9ECF7"></rect>
+                <rect x="12.5" y="13.5" width="75" height="103.052" rx="2.5" fill="white" stroke="#5173DD" stroke-width="5"></rect>
+                <rect x="25" y="56" width="50.2199" height="8.36999" rx="2" fill="#E9ECF7"></rect>
+                <path d="M49.717 50.4663C56.7404 50.4663 62.434 44.7656 62.434 37.7334C62.434 30.7012 56.7404 25.0005 49.717 25.0005C42.6936 25.0005 37 30.7012 37 37.7334C37 44.7656 42.6936 50.4663 49.717 50.4663Z" fill="#E9ECF7"></path>
+                <path d="M62.4661 37.6646C62.4661 30.4042 56.3199 24.5736 48.9215 25.0245C42.5975 25.4145 37.4433 30.5235 37.0295 36.8104C36.7881 40.4791 38.1224 43.8294 40.4196 46.2805C40.7592 46.6466 41.2764 46.8005 41.7672 46.6811L41.8123 46.6705C42.2314 46.5723 42.5842 46.2805 42.7566 45.8879C43.5922 44.0178 45.1679 42.5402 47.1124 41.832C47.6005 41.6542 47.6641 40.9964 47.2105 40.7391C45.29 39.6461 44.1493 37.3463 44.847 34.874C45.3138 33.2213 46.6534 31.9109 48.322 31.4652C51.7387 30.5501 54.829 33.0913 54.829 36.3409C54.829 38.211 53.8051 39.8477 52.2851 40.7231C51.8182 40.9911 51.8766 41.6569 52.378 41.8399C54.3171 42.5482 55.8822 44.0204 56.7098 45.8906C56.8822 46.2858 57.2324 46.5723 57.6489 46.6731L57.6886 46.6837C58.1847 46.8031 58.702 46.6439 59.0468 46.2779C61.1637 44.0178 62.4635 40.9964 62.4635 37.6672" fill="#0031C8"></path>
+                <path d="M25.0005 80.7891H75.5367" stroke="#E9ECF7" stroke-width="2.5" stroke-linecap="round"></path>
+                <path d="M25.0005 88.1284H75.5367" stroke="#E9ECF7" stroke-width="2.5" stroke-linecap="round"></path>
+                <path d="M25.0005 95.4683H75.5367" stroke="#E9ECF7" stroke-width="2.5" stroke-linecap="round"></path>
+                <path d="M25.0005 102.808H50.2686" stroke="#E9ECF7" stroke-width="2.5" stroke-linecap="round"></path>
+                </svg>    
+                <p class="mQ_title01"><span class="mQ_title02">매칭 서비스</span>를 이미 신청하셨습니다.</p>
+            
+            <div class="matchingBtnWrap">
+                <a href="#" id="goBackButton"><p>확인</p></a>                                          
+            </div>                      
+        </div><br /><br />
+        <?php } else { ?>
+        
         <div class="matchingTop">
             <div class="matchingImg">
                 <?php
@@ -361,32 +407,6 @@ $(function() {
                 </ul>
             </div>
         </div>
-
-        <?php if( ($_SERVER['REQUEST_URI'] === $_SERVER['PHP_SELF']) && ($_SERVER['REQUEST_METHOD']==="POST") ) { ?>
-        <div class="matchingkeyInput">
-            <br /><br />
-            <h3>매칭서비스동의 신청이 완료 되었습니다.</h3>
-            <br /><br />
-        </div>
-        <div class="matchingBtnWrap">
-            <a href="#" id="goHomeButton">
-                <p>메인으로</p>
-                <p><svg width="13" height="22" viewBox="0 0 13 22" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L11 11L1 21" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></p>
-            </a>
-        </div><br /><br />
-        <?php } else if( $result && is_array($result) ) { ?>
-        <div class="matchingkeyInput">
-            <br /><br />
-            <h3>매칭서비스에 [ 동의 ] 신청이 되어 있습니다.</h3>
-            <br /><br />
-        </div>
-        <div class="matchingBtnWrap">
-            <a href="#" id="goBackButton">
-                <p>뒤로가기</p>
-                <p><svg width="13" height="22" viewBox="0 0 13 22" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L11 11L1 21" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></p>
-            </a>
-        </div><br /><br />
-        <?php } else { ?>
 
         <div class="matchingkeyInput">
             <h4>상담을 위한 <span class="f_bold700">간단 정보</span>를 입력해주세요!</h4>
@@ -505,7 +525,7 @@ $(function() {
             <div class="matchingBtnWrap">
                 <a href="#" id="submitLink">
                     <p>매칭 서비스 신청하기</p>
-                    <p><svg width="13" height="22" viewBox="0 0 13 22" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L11 11L1 21" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></p>
+                    <p><svg width="10" height="18" viewBox="0 0 13 22" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L11 11L1 21" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></p>
                 </a>                    
             </div>                  
         </div>
