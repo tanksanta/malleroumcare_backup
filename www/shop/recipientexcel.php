@@ -3,7 +3,7 @@ $sub_menu = '400300';
 include_once('../common.php');
 ?>
 <link rel="stylesheet" href="<?=G5_URL;?>/skin/admin/new/css/admin.css">
-
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
 <style>
 	.excelBtn { background-color: #333; color: #FFF; font-weight: bold; padding: 5px 15px; display: inline-block; }
 </style>
@@ -24,7 +24,7 @@ include_once('../common.php');
         </p>
     </div>
 
-    <form name="fitemexcel" method="post" action="./recipientexcelupdate_new.php" enctype="MULTIPART/FORM-DATA" autocomplete="off">
+    <form name="fitemexcel" id="fitemexcel" method="post" action="./recipientexcelupdate_new.php" enctype="MULTIPART/FORM-DATA" autocomplete="off" onsubmit="chk_file();">
 
     <div id="excelfile_upload">
         <label for="excelfile">파일선택</label>
@@ -32,14 +32,31 @@ include_once('../common.php');
     </div>
 
     <div class="win_btn btn_confirm">
-        <input type="submit" value="수급자 엑셀파일 등록" class="btn_submit btn">
+        <input type="button" value="수급자 엑셀파일 등록" class="btn_submit btn"  onClick="chk_file();">
         <button type="button" onclick="window.close();" class="btn_close btn">닫기</button>
     </div>
 
     </form>
 
 </div>
+<script>
+	function chk_file(){
+		var fileVal = $("#excelfile").val();
 
+		if( fileVal != "" ){
+			var ext = fileVal.split('.').pop().toLowerCase(); //확장자분리
+			//아래 확장자가 있는지 체크
+			if($.inArray(ext, ['xlsx']) == -1){
+			  alert('xlsx 파일만 업로드 할수 있습니다.');
+			  return false;
+			}
+		}else{
+			alert('업로드할 파일을 선택해 주세요.');
+			return false;
+		}
+		document.fitemexcel.submit();
+	}
+</script>
 <?php
 include_once(G5_PATH.'/tail.sub.php');
 ?>
