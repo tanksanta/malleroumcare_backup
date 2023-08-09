@@ -242,8 +242,8 @@ $row = sql_fetch($sql);
         <!--<div class="list-more m_off"><a href="#" id="btn_multi_submit">수급자선택</a></div>-->
       </div>
       <div class="table-wrap">
-        <div class="tit_area">
-          <h3>보유 재고</h3>
+        <div class="tit_area" style="height:45px;">
+          <h2 style="width:150px;float:left;margin-top:15px;font-weight: 500;">보유 재고</h2>
 
           <form action="">
             <input type="hidden" name="prodId" value="<?=$_GET['prodId']?>">
