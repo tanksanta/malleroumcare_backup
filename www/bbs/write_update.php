@@ -433,7 +433,14 @@ if ($w == '' || $w == 'r') {
     if (get_session('ss_bo_table') != $_POST['bo_table'] || get_session('ss_wr_id') != $_POST['wr_id']) {
         alert('올바른 방법으로 수정하여 주십시오.', G5_BBS_URL.'/board.php?bo_table='.$bo_table);
     }
-
+	
+	$query = "SHOW COLUMNS FROM `{$write_table}` WHERE `Field` = 'wr_update';";//수정날짜 확인
+	$wzres = sql_fetch( $query );
+	if(!$wzres['Field']) {
+		sql_query(" ALTER TABLE `{$write_table}` ADD `wr_update` datetime NOT NULL default '0000-00-00 00:00:00' AFTER `wr_datetime`", false);
+		sql_query(" ALTER TABLE `{$write_table}` ADD `wr_update_mb_id` varchar(20) NULL default '' AFTER `wr_update`", false);
+	}
+	
     $return_url = './board.php?bo_table='.$bo_table.'&amp;wr_id='.$wr_id;
 
     if ($is_admin === 'super') // 최고관리자 통과
@@ -510,6 +517,8 @@ if ($w == '' || $w == 'r') {
                      wr_name = '{$wr_name}',
                      wr_email = '{$wr_email}',
                      wr_homepage = '{$wr_homepage}',
+					 wr_update = '".G5_TIME_YMDHIS."',
+					 wr_update_mb_id = '{$member['mb_id']}',
                      wr_1 = '{$wr_1}',
                      wr_2 = '{$wr_2}',
                      wr_3 = '{$wr_3}',
