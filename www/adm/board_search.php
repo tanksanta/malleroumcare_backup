@@ -69,7 +69,7 @@ $union = "";
 while($row_b = sql_fetch_array($result_b)){
 	$union = ($i == 0)?"":" UNION ";
 
-	$sql_common .= $union."(SELECT '".$row_b["bo_table"]."' as bo_table,a.wr_id,a.wr_subject,a.mb_id,a.wr_update
+	$sql_common .= $union."(SELECT '".$row_b["bo_table"]."' as bo_table,a.wr_id,a.wr_subject,a.mb_id
 ,(SELECT mb_name FROM g5_member WHERE mb_id=a.mb_id) AS mb_name
 ,a.as_update,a.wr_datetime,a.wr_hit
 ,(SELECT COUNT(*) FROM (SELECT mb_id,wr_id FROM g5_board_log WHERE bo_table='".$row_b["bo_table"]."' GROUP BY mb_id) AS m WHERE m.wr_id=a.wr_id) AS log_cnt
@@ -298,7 +298,7 @@ while( $row = sql_fetch_array($result) ) {
 		<td align="center"><a href="/bbs/board.php?bo_table=<?=$row["bo_table"];//테이블명 ?>&wr_id=<?=$row['wr_id'];//wr_id ?>" target="_blank"><?=$row["wr_subject"];//제목 ?></a></td>
 		<td align="center"><?=$row["mb_name"];//글쓴이(닉네임) ?></td>
 		<td align="center"><?=$row["mb_id"];//회원아이디 ?></td>
-		<td align="center"><?=($row['wr_update'] == "0000-00-00 00:00:00")?"":$row['wr_update'];//수정일 ?></td>
+		<td align="center"><?=($row['as_update'] == "0000-00-00 00:00:00")?"":$row['as_update'];//수정일 ?></td>
 		<td align="center"><?=$row["wr_datetime"];//생성일 ?></td>
 		<td align="center"><?=number_format($row["wr_hit"]);//조회수 ?></a></td>
 		<td align="center"><a href="board_search_log.php?bo_table=<?=$bo_table?>&search_select=wr_id&search_tag=<?=$row['wr_id']?>" target="_blank"><?=number_format($row["log_cnt"]);//조회사용자?></a></td>
