@@ -158,6 +158,11 @@ if(!isset($mb['mb_email_certify2'])) {
     sql_query(" ALTER TABLE {$g5['member_table']} ADD `mb_email_certify2` varchar(255) NOT NULL DEFAULT '' AFTER `mb_email_certify` ", false);
 }
 
+// 파트너 출하 창고 필드추가
+if(!isset($mb['mb_partner_default_warehouse'])) {
+    sql_query(" ALTER TABLE {$g5['member_table']} ADD `mb_partner_default_warehouse` varchar(255) NOT NULL DEFAULT '' AFTER `mb_partner_file3` ", false);
+}
+
 if ($mb['mb_intercept_date']) $g5['title'] = "차단된 ";
 else $g5['title'] .= "";
 $g5['title'] .= '회원 '.$html_title;
@@ -930,6 +935,26 @@ this.form.mb_intercept_date.value=this.form.mb_intercept_date.defaultValue; }">
         </th>
         <td colspan="3">
             <input type="text" name="mb_partner_date" value="<?php echo $mb['mb_partner_date'] ?>" id="mb_partner_date" class="frm_input datepicker" size="30" maxlength="20">
+        </td>
+    </tr>
+	<tr>
+        <th scope="row">
+            <label for="mb_partner_default_warehouse">위탁 출하 창고</label>
+        </th>
+        <td colspan="3">
+			 <select class="frm_input" name="mb_partner_default_warehouse" id="mb_partner_default_warehouse" style="width:217px;">
+            <?php
+			$warehouse_list = get_warehouses();
+            $default_warehouse_select="";
+            $default_warehouse_select .= '<option value="">출하창고 선택</option>';
+            foreach($warehouse_list as $warehouse) {
+				$selected = ($mb['mb_partner_default_warehouse'] == $warehouse)? "selected" : "";
+                $default_warehouse_select .='<option value="'.$warehouse.'" '.$selected.'>'.$warehouse.'</option>';
+            }
+            echo $default_warehouse_select;
+            ?>
+        </select>
+            <!--input type="text" name="mb_partner_default_warehouse" value="<?php echo $mb['mb_partner_default_warehouse'] ?>" id="mb_partner_default_warehouse" class="frm_input datepicker" size="30" maxlength="20"-->
         </td>
     </tr>
 <!--    <tr>
