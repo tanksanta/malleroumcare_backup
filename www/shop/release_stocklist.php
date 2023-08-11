@@ -18,7 +18,10 @@ $g5["title"] = "재고관리";
   <script src="/js/barcode_utils.js"></script>
   <link type="text/css" rel="stylesheet" href="/thema/eroumcare/assets/css/font.css">
   <link type="text/css" rel="stylesheet" href="/js/font-awesome/css/font-awesome.min.css">
-  <link rel="stylesheet" href="<?php echo G5_CSS_URL ?>/flex.css">
+  <link rel="stylesheet" href="<?=G5_CSS_URL ?>/flex.css">
+
+  <link rel="stylesheet" href="<?=G5_CSS_URL ?>/jquery.flexdatalist.css">
+  <script src="<?=G5_JS_URL ?>/jquery.flexdatalist.js"></script>
 
   <style>
     * {
@@ -251,7 +254,7 @@ $g5["title"] = "재고관리";
       position: fixed;
       top: 0;
       left: 0;
-      z-index: +100 !important;
+      z-index: 99999 !important;
       width: 100%;
       height: 100%;
     }
@@ -273,7 +276,7 @@ $g5["title"] = "재고관리";
       position: relative;
       top: -25px;
     }
-
+    
   </style>
 </head>
 
@@ -290,47 +293,60 @@ $g5["title"] = "재고관리";
 </div>
 
 <?php
-$sql = "
-  SELECT
-    count(*) AS cnt
-  FROM
-    (SELECT
-        it_id,
-        it_name,
-        it_use
-      FROM g5_shop_item i) AS a
-  LEFT JOIN (SELECT * FROM g5_shop_item_option WHERE io_type = '0' AND io_use = '1') AS b ON (a.it_id = b.it_id)
-";
-$item_count = sql_fetch($sql)['cnt'];
 
-$use_warehouse_where_sql = get_use_warehouse_where_sql();
-$sql = "
-  SELECT
-    (SUM(ws_qty) - SUM(ws_scheduled_qty)) AS ws_qty
-  FROM
-    warehouse_stock
-  WHERE
-    ws_del_yn = 'N' {$use_warehouse_where_sql}
-";
-$stock_count = sql_fetch($sql)['ws_qty'];
+  $sql = (" SELECT
+              count(*) AS cnt
+            FROM
+              ( SELECT
+                  it_id,
+                  it_name,
+                  it_use
+                FROM 
+                  g5_shop_item i
+              ) AS a
+            LEFT JOIN (
+              SELECT * 
+              FROM 
+                g5_shop_item_option 
+              WHERE
+                io_type = '0' AND io_use = '1'
+            ) AS b ON (a.it_id = b.it_id)
+  ");
+  $item_count = sql_fetch($sql)['cnt'];
+  $use_warehouse_where_sql = get_use_warehouse_where_sql();
 
-$sql = "
-  SELECT count(*) AS cnt
-  FROM g5_cart_barcode
-  WHERE bc_del_yn = 'N'
-";
-$barcode_count = sql_fetch($sql)['cnt'];
+
+  $sql = (" SELECT
+              (SUM(ws_qty) - SUM(ws_scheduled_qty)) AS ws_qty
+            FROM
+              warehouse_stock
+            WHERE
+              ws_del_yn = 'N' {$use_warehouse_where_sql}
+  ");
+  $stock_count = sql_fetch($sql)['ws_qty'];
+
+
+  $sql = (" SELECT count(*) AS cnt
+            FROM 
+              g5_cart_barcode
+            WHERE 
+              bc_del_yn = 'N'
+  ");
+  $barcode_count = sql_fetch($sql)['cnt'];
+
 ?>
 
 <div id="popupBody">
   <div id="searchForm">
     <div class="searchFormTop flex-row justify-space-between">
-      <div style="width: 70%">
+    <div style="width: 70%">
         상품 : <?php echo $item_count ?>개<br/>보유 : <?php echo $stock_count ?>개 (바코드 <?php echo $barcode_count ?>개)
       </div>
-      <a href="javascript:open_invoice_scan();" class="barcodeSearch nativeDeliveryPopupOpenBtn" style="width: 30%">
-        주문찾기
-        <img src="/img/bacod_img.png">
+      <a href="javascript:BarCodeStock_Transfer(true);" class="barcodeSearch" style="width: 120px;text-align:center;">
+        바코드<br />재고이동
+      </a>
+      <a href="javascript:open_invoice_scan();" class="barcodeSearch nativeDeliveryPopupOpenBtn" style="width: 150px">
+        주문찾기 <img src="/img/bacod_img.png">
       </a>
     </div>
 
@@ -505,9 +521,17 @@ if (!$member['mb_id']) {
 
   }
 
-  // 23.06.14 : input 엔터값 적용
-  $(document).on("keyup", "#search_text", function(e) { if (e.key === 'Enter') { $("#searchSubmitBtn").click(); } });
+  $(function() {
+
+    // 23.06.14 : input 엔터값 적용
+    $(document).on("keyup", "#search_text", function(e) { if (e.key === 'Enter') { $("#searchSubmitBtn").click(); } });
+
+  });
+
 </script>
+
+
+<?php include_once( G5_PATH . '/shop/inc.barcode_stock_transfer.php'); ?>
 
 <?php include_once( G5_PATH . '/shop/open_barcode.php'); ?>
 </body>
