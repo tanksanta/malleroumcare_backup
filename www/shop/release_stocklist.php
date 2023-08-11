@@ -268,13 +268,12 @@ $g5["title"] = "재고관리";
     }
 
     #loading img {
-      width: 40%;
+      width: 15%;
     }
 
     #loading p {
       color: #fff;
       position: relative;
-      top: -25px;
     }
     
   </style>
