@@ -9,9 +9,11 @@ if($auth_check)
 if($_POST['ct_id'] && $_POST['ct_direct_delivery_partner']) {
 
     if($_POST['ct_direct_delivery_partner'] == '미지정') {
-        $ct_direct_delivery_partner = '';
+        $ct_direct_delivery_partner = '';//미지정이 아닌 위탁 해제
+		$ct_is_direct_delivery = "0";//위탁 해제
     } else {
         $ct_direct_delivery_partner = $_POST['ct_direct_delivery_partner'];
+		$ct_is_direct_delivery = "1";//위탁 설정
     }
 
     if(is_array($_POST['ct_id'])) {
@@ -20,7 +22,7 @@ if($_POST['ct_id'] && $_POST['ct_direct_delivery_partner']) {
                 update
                     g5_shop_cart
                 set
-                    ct_is_direct_delivery = '1',
+                    ct_is_direct_delivery = '$ct_is_direct_delivery',
                     ct_direct_delivery_partner = '$ct_direct_delivery_partner'
                 where
                     ct_id = '$ct_id'
