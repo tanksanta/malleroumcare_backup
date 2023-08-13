@@ -212,7 +212,7 @@
     .matchingPolicy .policyWrqp { border-radius: 5px; border: 1px solid #E7E7E7; background: #F7F7F7; padding: 30px 20px; font-size: 14px; }
     .matchingPolicy .policyWrqp .p_text { color: #666; }
     .matchingPolicy .policyWrqp .p_text p { margin: 0; }
-    .matchingPolicy .policyWrqp .agreeForm { width: 100%; height: 200px; overflow: auto; padding: 0 20px; }
+    .matchingPolicy .policyWrqp .agreeForm { width: 100%; padding: 0 20px; }
     .matchingPolicy .matchingAgree { display: flex; justify-content: center; }
     .matchingPolicy .matchingAgree>ul { display: flex; justify-content: space-between; padding: 20px 0 50px 0; width: 30%; }
     .matchingPolicy .matchingAgree ul>li { display: flex; align-items: center; gap: 7px; }
