@@ -53,7 +53,9 @@ $sql = " select C.it_id,
                 I.ProdPayCode as prodPayCode,
                 I.it_delivery_cnt,
                 I.it_delivery_price,
-                I.it_option_subject
+                I.it_option_subject,
+				I.it_default_warehouse,
+				I.it_direct_delivery_partner
           from {$g5['g5_shop_cart_table']} C
           left join {$g5['g5_shop_item_table']} I on C.it_id = I.it_id
           where od_id = '$tmp_cart_id'
@@ -64,7 +66,15 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
   if($row['ct_is_direct_delivery'] > 0) {
     array_push($it_direct_delivery, $row);
   }
-
+  // 출하창고
+    $ct_warehouse = '검단창고';
+    if($row['it_default_warehouse']) {
+      $ct_warehouse = $row['it_default_warehouse'];
+    }
+	if($row['it_direct_delivery_partner'] != ""){//직배송 파트너가 있을 경우 파트너 계정에 설정되어 있는 출하창고 등록
+		$partner = get_member($row['it_direct_delivery_partner']);
+		$ct_warehouse = ($partner["mb_partner_default_warehouse"] != "" )? $partner["mb_partner_default_warehouse"] : $ct_warehouse;
+	}
   # 옵션값 가져오기
   $prodColor = $prodSize = $prodOption = '';
   $prodOptions = [];
@@ -323,7 +333,9 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
             `ct_edi_chk`            =   '".$r_ss['ct_edi_chk']."',
             `ct_edi_price`          =   '".$r_ss['ct_edi_price']."',
             `ct_edi_ea`             =   '".$r_ss['ct_edi_ea']."',
-            `ct_combine_ct_id`      =   '".$r_ss['ct_combine_ct_id']."'
+            `ct_combine_ct_id`      =   '".$r_ss['ct_combine_ct_id']."',
+			`ct_warehouse`          =   '".$ct_warehouse."',
+			`ct_direct_delivery_partner`          =   '".$row['it_direct_delivery_partner']."'
         )";
         sql_query($sql_stock_insert);
         $new_ct_id = sql_insert_id();

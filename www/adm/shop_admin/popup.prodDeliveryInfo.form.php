@@ -334,7 +334,7 @@ $partners = get_partner_members();
               </label>
             </td>
             <td style="text-align:center;">
-              <select name="ct_warehouse_<?=$options[$k]["ct_id"]?>" class="frm_input ct_warehouse">
+              <select name="ct_warehouse_<?=$options[$k]["ct_id"]?>" id="ct_warehouse_<?=$options[$k]["ct_id"]?>" class="frm_input ct_warehouse">
                 <?php
                 foreach($warehouse_list as $warehouse) {
                   echo '<option value="'.$warehouse.'" '.get_selected($options[$k]["ct_warehouse"], $warehouse).'>'.$warehouse.'</option>';
@@ -363,6 +363,7 @@ $partners = get_partner_members();
                 class="frm_input"
                 style="width: 100px"
                 data-ct-id="<?=$options[$k]["ct_id"]?>"
+				onChange="select_wh('<?=$options[$k]["ct_id"]?>',this.value,'<?=$options[$k]["it_id"]?>')";
               >
                 <option value="">파트너선택</option>
                 <?php foreach($partners as $partner) { ?>
@@ -404,6 +405,23 @@ $partners = get_partner_members();
 </div>
 
 <script type="text/javascript">
+	function select_wh(ct_id,partner,it_id){
+		$.ajax({
+          method: 'POST',
+          url: './ajax.ct_warehouse.php',
+          data: {
+            partner: partner,
+            it_id: it_id,
+          }
+        }).done(function (data) {
+          // return false;
+          if (data.ct_wh != '') {
+            $("#ct_warehouse_"+ct_id).val(data.ct_wh);//지정 출하창고 선택
+          }else{
+			$("#ct_warehouse_"+ct_id).val("");//지정 출하창고 없음
+		  }
+        });
+	}
   $(function() {
     // 박스 가격 계산
     $(".ct_delivery_cnt").change(function(){

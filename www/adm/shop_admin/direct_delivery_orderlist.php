@@ -383,7 +383,7 @@ $warehouse_list = get_warehouses();
 		<select name="" id="ct_direct_delivery_partner_sb" style="border: 1px solid #dbdde2;border-radius: 0px;width: 150px;height: 33px !important;padding: 0px 13px !important;font-size: 12px; color: #555;">
             <option value="">위탁(직배송) 선택</option>
             <?php
-            $sql_p = "SELECT * FROM g5_member WHERE mb_type = 'partner' and mb_partner_auth = 1 and mb_level='5' and mb_partner_type like '%직배송%'";
+            $sql_p = "SELECT * FROM g5_member WHERE mb_type = 'partner' and mb_partner_auth = 1 and mb_level='5' and mb_partner_type like '%직배송%' order by mb_name ASC";
 			$result_p = sql_query($sql_p);
 			while($partner = sql_fetch_array($result_p)) {?>
             <option value="<?=$partner['mb_id']?>"><?=$partner['mb_name']?></option>
