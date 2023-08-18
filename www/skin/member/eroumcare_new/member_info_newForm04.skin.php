@@ -37,7 +37,7 @@
 
             <style type="text/css">
                 .popup_box { display: none; position: fixed; width: 100%; height: 100%; left: 0; top: 0; z-index: 9999; background: rgba(0, 0, 0, 0.8); }
-                .popup_box_con { background: #ffffff; z-index: 99999; height:325px; width: 405px; margin: 20% 35%;}
+                .popup_box_con { background: #ffffff; z-index: 99999; height:325px; width: 405px; margin: 20% auto;}
 
                 #sign-pad { position: relative; background-color: #fff; width: 100%; height: 78%; }
                 #sign-pad canvas { position: absolute; z-index: 9999; width: 95%; margin: 0px 10px; }
@@ -168,8 +168,8 @@
                     <div id="sign-pad" style="float:left;width:100%">
                         <canvas id="myCanvas" width="390px" height="220px" style="touch-action: none; top: 10px; left: 0px; width: 390px; height: 220px;"></canvas><div id="sign-back" style="top: 10px; left: 0px; width: 390px; height: 220px;">이곳에 사인해주세요.</div>
                     </div>
-                    <div style="text-align:right;bottom:0px;float:left;width:100%;">
-                        <button type="button" class="btn btn-black btn-sm btn_close" onClick="clearCanvas()">돌아가기</button> <button type="button" id="btn-sign-submit" class="btn btn-black btn-sm ;" style="margin-right:15px;background:black;" >등록하기</button>
+                    <div style="text-align:center;bottom:0px;float:left;width:100%;">
+                        <button type="button" class="btn btn-black btn-sm btn_close" onClick="clearCanvas()">돌아가기</button> <button type="button" id="btn-sign-submit" class="btn btn-black btn-sm ;" style="background:black;" >등록하기</button>
                     </div>
                 </div>
             </div>
