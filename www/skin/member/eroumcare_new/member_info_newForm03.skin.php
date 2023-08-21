@@ -166,7 +166,7 @@
                                             <div class="flex-box thkc_dfc">
                                                 <label for="zip" class="thkc_blind">주소 찾기</label>
                                                 <input class="thkc_input" id="addr_zip" name="addr_zip" placeholder="22850" readonly="readonly" maxlength="14" value="" type="text" autocomplete="off" />
-                                                <a href="javascript:void(0);" class="thkc_btn_bbs win_zip_find" onclick="win_zip('addr_info', 'addr_zip', 'addr1', 'addr2', 'addr3', 'jibeon'); $('#daum_juso_pageaddr_zip').css('width','110%');" id="">주소 찾기</a>
+                                                <a href="javascript:void(0);" class="thkc_btn_bbs win_zip_find" onclick="win_zip2('addr_info', 'addr_zip', 'addr1', 'addr2', 'addr3', 'jibeon'); $('#daum_juso_pageaddr_zip').css('width','100%');" id="">주소 찾기</a>
                                             </div>
                                         </div>
                                         <div title="기본주소">
@@ -224,13 +224,15 @@
 
                 
                 $('.thkc_joinWrap .thkc_tableWrap .thkc_btnWrap_03 .cancel').click(function () {
-                    $(".thkc_popUpWrap").hide();
+                    $('.close_daum_juso').trigger('click');
+					$(".thkc_popUpWrap").hide();
                     $(".thkc_popOverlay").hide();
                     document.body.classList.remove("stop-scroll");
                 });
                 
 
                 function addr_more_add() {
+					$('.close_daum_juso').trigger('click');
                     if(!confirm("신규 배송지를 등록 하시겠습니까?")) { return; }
 
                     if( !$(".thkc_popUpWrap #addr_tel1").val() || !$(".thkc_popUpWrap #addr_tel2").val() || !$(".thkc_popUpWrap #addr_tel3").val() ) {
@@ -321,6 +323,7 @@
                     $(".thkc_popOverlay").show();
                 }
                 function confirm_modify( key ) {
+					$('.close_daum_juso').trigger('click');
                     if(!confirm("배송지를 정보를 수정 하시겠습니까?")) { return; }
 
                     if( !$(".thkc_popUpWrap #addr_tel1").val() || !$(".thkc_popUpWrap #addr_tel2").val() || !$(".thkc_popUpWrap #addr_tel3").val() ) {
@@ -383,5 +386,117 @@
                         error: function(e) {}
                     });
                 }
+
+				/**
+				 * 우편번호 창
+				 **/
+				var win_zip2 = function (
+				  frm_name,
+				  frm_zip,
+				  frm_addr1,
+				  frm_addr2,
+				  frm_addr3,
+				  frm_jibeon
+				) {
+				  if(window.innerWidth > 589){
+					win_zip('addr_info', 'addr_zip', 'addr1', 'addr2', 'addr3', 'jibeon'); $('#daum_juso_pageaddr_zip').css('width','100%');
+					return false;
+				  }
+				  
+				  if (typeof daum === 'undefined') {
+					alert(aslang[20]); //다음 우편번호 postcode.v2.js 파일이 로드되지 않았습니다.
+					return false;
+				  }
+
+				  var zip_case = 0; //0이면 레이어, 1이면 페이지에 끼워 넣기, 2이면 새창
+
+				  var complete_fn = function (data) {
+					// 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+
+					// 각 주소의 노출 규칙에 따라 주소를 조합한다.
+					// 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+					var fullAddr = ''; // 최종 주소 변수
+					var extraAddr = ''; // 조합형 주소 변수
+
+					// 사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
+					/*
+						if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
+							fullAddr = data.roadAddress;
+
+						} else { // 사용자가 지번 주소를 선택했을 경우(J)
+							fullAddr = data.jibunAddress;
+						}
+						*/
+
+					// 무조건 도로명 선택
+					data.userSelectedType = 'R';
+					fullAddr = data.roadAddress;
+
+					// 사용자가 선택한 주소가 도로명 타입일때 조합한다.
+					if (data.userSelectedType === 'R') {
+					  //법정동명이 있을 경우 추가한다.
+					  if (data.bname !== '') {
+						extraAddr += data.bname;
+					  }
+					  // 건물명이 있을 경우 추가한다.
+					  if (data.buildingName !== '') {
+						extraAddr +=
+						  extraAddr !== '' ? ', ' + data.buildingName : data.buildingName;
+					  }
+					  // 조합형주소의 유무에 따라 양쪽에 괄호를 추가하여 최종 주소를 만든다.
+					  extraAddr = extraAddr !== '' ? ' (' + extraAddr + ')' : '';
+					}
+
+					// 우편번호와 주소 정보를 해당 필드에 넣고, 커서를 상세주소 필드로 이동한다.
+					var of = document[frm_name];
+
+					of[frm_zip].value = data.zonecode;
+
+					of[frm_addr1].value = fullAddr;
+					//of[frm_addr3].value = extraAddr;
+					of[frm_addr2].value = extraAddr;
+					// of[frm_addr3].value = data.jibunAddress; // 지번주소를 3에 넣는다
+
+					if (of[frm_jibeon] !== undefined) {
+					  of[frm_jibeon].value = data.userSelectedType;
+					}
+
+					setTimeout(function () {
+					  of[frm_addr2].focus();
+					}, 100);
+				  };				  
+					  //iframe을 이용하여 레이어 띄우기
+					  var rayer_id = 'daum_juso_rayer' + frm_zip,
+						element_layer = document.getElementById(rayer_id);
+					  if (element_layer == null) {
+						element_layer = document.createElement('div');
+						element_layer.setAttribute('id', rayer_id);
+						element_layer.style.cssText =
+						  'display:none;border:1px solid;position:fixed;width:300px;height:460px;left:50%;margin-left:-150px;top:50%;margin-top:-235px;overflow:hidden;-webkit-overflow-scrolling:touch;z-index:10000';
+						element_layer.innerHTML =
+						  '<img src="//i1.daumcdn.net/localimg/localimages/07/postcode/320/close.png" id="btnCloseLayer" style="cursor:pointer;position:absolute;right:-3px;top:-3px;z-index:1" class="close_daum_juso" alt="닫기 버튼">';
+						document.body.appendChild(element_layer);
+						jQuery('#' + rayer_id)
+						  .off('click', '.close_daum_juso')
+						  .on('click', '.close_daum_juso', function (e) {
+							e.preventDefault();
+							jQuery(this).parent().hide();
+						  });
+					  }
+
+					  new daum.Postcode({
+						oncomplete: function (data) {
+						  complete_fn(data);
+						  // iframe을 넣은 element를 안보이게 한다.
+						  element_layer.style.display = 'none';
+						},
+						maxSuggestItems: g5_is_mobile ? 6 : 10,
+						width: '100%',
+						height: '100%',
+					  }).embed(element_layer);
+
+					  // iframe을 넣은 element를 보이게 한다.
+					  element_layer.style.display = 'block';
+				};
 
             </script>
