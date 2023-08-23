@@ -603,12 +603,14 @@ input[type="number"]::-webkit-inner-spin-button {
                 let rem_amount = 1600000;
                 let today = new Date();
                 let st_date, ed_date;
+				let applydtm
                 if(rep_list['ds_toolPayLmtList'] != null && rep_list['ds_toolPayLmtList'].length>0){
                   for(var i =0; i< rep_list['ds_toolPayLmtList'].length;i++){                    
                     st_date = new Date(rep_list['ds_toolPayLmtList'][i]['APDT_FR_DT'].substr(0,4)+'-'+rep_list['ds_toolPayLmtList'][i]['APDT_FR_DT'].substr(4,2)+'-'+rep_list['ds_toolPayLmtList'][i]['APDT_FR_DT'].substr(6,2)+" 00:00:00" );//new Date(setDate(rep_list['ds_toolPayLmtList'][i]['APDT_FR_DT']));
                     ed_date = new Date(rep_list['ds_toolPayLmtList'][i]['APDT_TO_DT'].substr(0,4)+'-'+rep_list['ds_toolPayLmtList'][i]['APDT_TO_DT'].substr(4,2)+'-'+rep_list['ds_toolPayLmtList'][i]['APDT_TO_DT'].substr(6,2)+" 23:59:59");//new Date(setDate(rep_list['ds_toolPayLmtList'][i]['APDT_TO_DT']));
                     if(st_date < today && ed_date > today){
                       rem_amount = rep_list['ds_toolPayLmtList'][i]['REMN_AMT'];
+					  applydtm = rep_list['ds_toolPayLmtList'][i]['APDT_FR_DT'].substr(0,4)+'-'+rep_list['ds_toolPayLmtList'][i]['APDT_FR_DT'].substr(4,2)+'-'+rep_list['ds_toolPayLmtList'][i]['APDT_FR_DT'].substr(6,2)+" ~ "+rep_list['ds_toolPayLmtList'][i]['APDT_TO_DT'].substr(0,4)+'-'+rep_list['ds_toolPayLmtList'][i]['APDT_TO_DT'].substr(4,2)+'-'+rep_list['ds_toolPayLmtList'][i]['APDT_TO_DT'].substr(6,2);
                       break;
                     }
                   }
@@ -644,7 +646,7 @@ input[type="number"]::-webkit-inner-spin-button {
                         grade: rep_info['LTC_RCGT_GRADE_CD']+"등급",
                         type: rep_info['REDUCE_NM'],
                         percent: penPayRate,
-                        penApplyDtm: st_date.toISOString().split('T')[0]+' ~ '+ed_date.toISOString().split('T')[0],
+                        penApplyDtm: applydtm,
                         penExpiDtm: rep_info['RCGT_EDA_DT'],
                         rem_amount: rem_amount,
                         item_data:  JSON.parse(data['data']['recipientPurchaseRecord'])
