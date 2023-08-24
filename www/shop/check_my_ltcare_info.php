@@ -603,7 +603,7 @@ input[type="number"]::-webkit-inner-spin-button {
                 let rem_amount = 1600000;
                 let today = new Date();
                 let st_date, ed_date;
-				let applydtm
+				let applydtm;
                 if(rep_list['ds_toolPayLmtList'] != null && rep_list['ds_toolPayLmtList'].length>0){
                   for(var i =0; i< rep_list['ds_toolPayLmtList'].length;i++){                    
                     st_date = new Date(rep_list['ds_toolPayLmtList'][i]['APDT_FR_DT'].substr(0,4)+'-'+rep_list['ds_toolPayLmtList'][i]['APDT_FR_DT'].substr(4,2)+'-'+rep_list['ds_toolPayLmtList'][i]['APDT_FR_DT'].substr(6,2)+" 00:00:00" );//new Date(setDate(rep_list['ds_toolPayLmtList'][i]['APDT_FR_DT']));
