@@ -1758,8 +1758,10 @@ function get_partner_members($partner_type = null) {
     WHERE
       mb_type = 'partner' and
       mb_partner_auth = 1 and
-      mb_partner_date >= NOW()
+      mb_level='5'
+	  #and mb_partner_date >= NOW()
       {$partner_type_where}
+	  order by mb_name ASC
   ";
 
   $result = sql_query($sql);

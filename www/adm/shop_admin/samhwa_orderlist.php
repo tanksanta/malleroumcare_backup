@@ -128,7 +128,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
             <?php
             //출고담당자 select
             $ct_direct_delivery_partner_select="";
-            $partners = get_partner_members();
+            $partners = get_partner_members('직배송');
             $ct_direct_delivery_partner_select .= '<option value="">위탁(직배송) 선택</option>';
             $ct_direct_delivery_partner_select .= '<option value="미지정">미지정</option>';
             foreach($partners as $partner) {
