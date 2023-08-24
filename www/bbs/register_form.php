@@ -173,6 +173,16 @@ $readonly = ($w=='u') ? 'readonly' : '';
 $agree  = preg_replace('#[^0-9]#', '', $agree);
 $agree2 = preg_replace('#[^0-9]#', '', $agree2);
 
+
+// 23.08.09 - 서원 : 이용약관 DB 데이터 가져옴.
+$_data = sql_fetch(" select * from g5_content where co_id = 'provision' ");
+$_provision = conv_content($_data['co_content'], $_data['co_html'], $_data['co_tag_filter_use']);
+
+// 23.08.09 - 서원 : 개인정보처리방침 DB 데이터 가져옴.
+$_data = sql_fetch(" select * from g5_content where co_id = 'privacy' ");
+$_privacy = conv_content($_data['co_content'], $_data['co_html'], $_data['co_tag_filter_use']);
+
+
 // add_javascript('js 구문', 출력순서); 숫자가 작을 수록 먼저 출력됨
 if ($config['cf_use_addr'])
   add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
