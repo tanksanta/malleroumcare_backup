@@ -360,7 +360,7 @@ $(function() {
     ?>
   </div>
 
-  <section class="tab-wrap tab-2 on">
+  <section class="tab-wrap tab-2 on" style="display:inline;">
     <?php if( ( $od["od_type"] != '1' ) && $od["od_penId"] ) { ?>
     <div class="detail-price pc_none tablet_block">
       <h5>수급자 정보</h5>
@@ -441,6 +441,272 @@ $(function() {
       </div>
     </div>
     <?php } ?>
+	<div class="detail-price" style="float: right;">
+      <?php if( ( $od["od_type"] != '1' ) && $od["od_penId"]) { ?>
+      <h5 class="m_none tablet_none">수급자 정보</h5>
+      <div class="all-info all-info2 m_none tablet_none">
+        <ul>
+          <li>
+            <ul class="eform-tab">
+              <li class="eform-tab-head">공급계약서</li>
+              <li class="eform-tab-desc">수급자 주문시 간편하게 작성하는 온라인 계약</li>
+              <li class="eform-tab-links">
+                <?php if(!$eform["dc_id"] || $eform["dc_status"] == '0') { // 계약서 생성 전 ?>
+                <a href="#" class="linkEformWrite eform-tab-link" data-od="<?=$od["od_id"]?>">계약서 생성</a>
+                <?php } else if ($eform['dc_status'] == '1') { // 계약서 생성 후 & 작성 전 ?>
+                <div class="eform-tab-flexbox">
+                  <a href="#" class="linkEformSign eform-tab-link half" data-od="<?=$od["od_id"]?>">계약서 작성</a>
+                  <a href="#" class="linkEformEdit eform-tab-link half white" data-od="<?=$od["od_id"]?>">내용변경</a>
+                </div>
+                <?php } else if ($eform['dc_status'] == '2' || $eform['dc_status'] == '3') { // 계약서 작성 완료 ?>
+                <a href="#" class="linkEformView eform-tab-link white" data-od="<?=$od["od_id"]?>">계약서 다운로드</a>
+                <?php } ?>
+              </li>
+              <?php if ($eform['dc_send_sms'] === '1') { ?>
+              <li style="margin-top:5px">
+                * <?php echo $eform['penConNum']; ?> 번호로 계약서 전송 완료
+              </li>
+              <?php } ?>
+            </ul>
+          </li>
+          <li>
+            <div>
+              <b>수급자명</b>
+              <span><?=($od["od_penNm"]) ? $od["od_penNm"] : "-"?></span>
+            </div>
+          </li>
+          <li>
+            <div>
+              <b>인정등급</b>
+              <span><?=($od["od_penTypeNm"]) ? $od["od_penTypeNm"] : "-"?></span>
+            </div>
+          </li>
+          <li>
+            <div>
+              <b>장기요양번호</b>
+              <span><?=($od["od_penLtmNum"]) ? $od["od_penLtmNum"] : "-"?></span>
+            </div>
+          </li>
+          <li>
+            <div>
+              <b>유효기간</b>
+              <span><?=($od["od_penExpiDtm"]) ? $od["od_penExpiDtm"] : "-"?></span>
+            </div>
+          </li>
+          <li>
+            <div>
+              <b>적용기간</b>
+              <span><?=($od["od_penAppEdDtm"]) ? $od["od_penAppEdDtm"] : "-"?></span>
+            </div>
+          </li>
+          <li>
+            <div>
+              <b>전화번호</b>
+              <span><?=($od["od_penConPnum"]) ? $od["od_penConPnum"] : "-"?></span>
+            </div>
+          </li>
+          <li>
+            <div>
+              <b>휴대폰</b>
+              <span><?=($od["od_penConNum"]) ? $od["od_penConNum"] : "-"?></span>
+            </div>
+          </li>
+          <li>
+            <div>
+              <b>주소</b>
+              <span><?=($od["od_penAddr"]) ? $od["od_penAddr"] : "-"?></span>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <?php } ?>
+
+      <h5>결제정보</h5>
+      <div class="all-info all-info2">
+        <ul>
+          <li>
+            <div>
+              <b>주문번호</b>
+              <span><?=$od["od_id"]?></span>
+            </div>
+          </li>
+          <li>
+            <div>
+              <b>주문일시</b>
+              <span><?=$od["od_time"]?></span>
+            </div>
+          </li>
+          <?php if($od["od_stock_insert_yn"] == "N") { ?>
+          <li>
+            <div>
+              <b>결제방식</b>
+              <span><?php echo ($easy_pay_name ? $easy_pay_name.'('.$od['od_settle_case'].')' : check_pay_name_replace($od['od_settle_case']) ); ?></span>
+            </div>
+          </li>
+          <li>
+            <div>
+              <b>매출증빙</b>
+              <span><?php echo $typereceipt['name']; ?>
+                <?php echo $typereceipt['ot_bnum'] ? '( ' . $typereceipt['ot_bnum'] : ''; ?>
+                <?php echo $typereceipt['ot_bnum'] ? ')': ''; ?></span>
+            </div>
+          </li>
+          <?php } ?>
+        </ul>
+      </div>
+
+      <div class="all-info">
+        <ul>
+          <li>
+            <div>
+              <b>주문금액</b>
+              <span><?=number_format($tot_price - $od["od_send_cost"] - $od['od_send_cost2'])?> 원</span>
+            </div>
+          </li>
+          <?php if($od['od_coupon'] > 0) { ?>
+          <li>
+            <div>
+              <b>쿠폰할인</b>
+              <span><?php echo number_format($od['od_coupon']); ?> 원</span>
+            </div>
+          </li>
+          <?php } ?>
+
+          <?php if($od['od_receipt_point'] > 0) { ?>
+          <li>
+            <div>
+              <b>포인트결제</b>
+              <span><?php echo number_format($od['od_receipt_point']); ?> 원</span>
+            </div>
+          </li>
+          <?php } ?>
+
+          <?php if ($od['od_cart_discount'] > 0) { ?>
+          <!--
+          <li>
+            <div>
+              <b>할인금액</b>
+              <span><?php echo number_format($od['od_cart_discount']); ?> 원</span>
+            </div>
+          </li>
+          -->
+          <?php } ?>
+
+          <?php if ($od['od_cart_discount2'] > 0) { ?>
+          <li>
+            <div>
+              <b>추가할인금액</b>
+              <span><?php echo number_format($od['od_cart_discount2']); ?> 원</span>
+            </div>
+          </li>
+          <?php } ?>
+          <?php if ($od['od_send_cost2'] > 0) { ?>
+          <li>
+            <div>
+              <b>추가배송비</b>
+              <span><?php echo number_format($od['od_send_cost2']); ?> 원</span>
+            </div>
+          </li>
+          <?php } ?>
+          <li>
+            <div>
+              <b>배송비</b>
+              <span><?php echo number_format($od['od_send_cost']); ?> 원</span>
+            </div>
+          </li>
+          <?php if($od['od_sales_discount']) { ?>
+          <li>
+            <div>
+              <b>매출할인</b>
+              <span>- <?php echo number_format($od['od_sales_discount']); ?> 원</span>
+            </div>
+          </li>
+          <?php } ?>
+        </ul>
+        <?php 
+        // $total_price = $tot_price - $od['od_cart_discount'] - $od['od_cart_discount2'] ;
+        $total_price = $tot_price - $od['od_cart_discount2'] - $od['od_sales_discount'];
+        ?>
+        <div class="all-info-price">
+          <b>합계금액</b>
+          <span><?php echo number_format($total_price); ?> 원</span>
+        </div>
+      </div>
+
+      <div class="pay-btn2">
+        <?php if($od["od_stock_insert_yn"] == "N" && $deliveryItem) { ?>
+        <button type="button" id="send_statement"><img src="<?=$SKIN_URL?>/image/icon_24.png" alt=""> 거래명세서 출력</button>
+        <?php } ?>
+
+        <?php if ($cancel_price == 0) { // 취소한 내역이 없다면
+          $type = 0;
+          if ($custom_cancel)
+            $type = 1;
+          if ($pay_complete_cancel || $preparation_cancel)
+            $type = 2;
+
+          // $btn_name = "주문 취소하기";
+          // $action_url = "./orderinquirycancel.php";
+          // $to = "";
+
+          $sql = "select *
+                  from g5_shop_order_cancel_request
+                  where od_id = '{$od['od_id']}' and approved = 0";
+
+          $cancel_request_row = sql_fetch($sql);
+
+          $sql = "select * from g5_shop_cart where od_id = '{$od['od_id']}'";
+          $sql_result = sql_query($sql);
+          $flag=true;
+          while ($row = sql_fetch_array($sql_result)) {
+              if($row['ct_status'] !=="준비") $flag= false;
+          }
+
+          if ($flag) {
+            $action_url = "./orderinquirycancelrequest.php";
+            $btn_name = "취소 요청하기";
+            $to = "cancel";
+          }
+        ?>
+        <?php 
+          if($od["od_stock_insert_yn"] !== "Y"&&$flag&&!$cancel_request_row['od_id']) {
+            if($od["od_type"] == "0") { ?>          
+        <a href="#" id="cancel_btn" type="button" data-toggle="collapse" href="#sod_fin_cancelfrm" aria-expanded="false" aria-controls="sod_fin_cancelfrm"><?php echo $btn_name ?></a>
+            <?php } ?>
+        <div class="h15"></div>
+        <div id="sod_fin_cancelfrm" class="collapse">
+          <div class="well">
+            <form class="form" role="form" method="post" action="<?php echo $action_url ?>"
+              onsubmit="return fcancel_check(this);">
+              <input type="hidden" name="od_id" value="<?php echo $od['od_id']; ?>">
+              <input type="hidden" name="token" value="<?php echo $token; ?>">
+              <input type="hidden" name="type" value="<?php echo $type ?>">
+              <input type="hidden" name="to" value="<?php echo $to ?>">
+              <div class="input-group input-group-sm">
+                <!--<span class="input-group-addon">사유</span>-->
+                <select name="request_reason_type" class="form-control"
+                  style="display: table-cell; width: 100px; margin-right: 10px;">
+                  <option value="단순변심">단순변심</option>
+                  <option value="제품파손">제품파손</option>
+                  <option value="제품하자">제품하자</option>
+                  <option value="오주문">오주문</option>
+                  <option value="오배송">오배송</option>
+                  <option value="A/S">A/S</option>
+                  <option value="기타">기타</option>
+                </select>
+                <input type="text" name="cancel_memo" id="cancel_memo" required class="form-control input-sm" size="40"
+                  maxlength="100" style="width: calc(100% - 110px); float: none;">
+                <span class="input-group-btn">
+                  <button type="submit" class="btn btn-black btn-sm">확인</button>
+                </span>
+              </div>
+            </form>
+          </div>
+        </div>
+        <?php } ?>
+        <?php } ?>
+      </div>
+    </div>
     <div class="detail-wrap">
       <div class="name-top<?=($od["recipient_yn"] == "N") ? " gray" : ""?>">
         <div>
@@ -624,7 +890,9 @@ $(function() {
             </div>
           </div>
         <?php } ?>
+      </div>
       <?php } ?>
+      
 
       <h4>상품 정보</h4>
       <div class="info-wrap">
@@ -1021,274 +1289,9 @@ $(function() {
         <p>*해당 주문을 숨김처리하면 주문내역에 노출되지 않습니다.<br>*숨김처리는 주문취소가 되지 않습니다.</p>
       </div>
       <?php } ?>
-    </div>
-
-    <div class="detail-price">
-      <?php if( ( $od["od_type"] != '1' ) && $od["od_penId"]) { ?>
-      <h5 class="m_none tablet_none">수급자 정보</h5>
-      <div class="all-info all-info2 m_none tablet_none">
-        <ul>
-          <li>
-            <ul class="eform-tab">
-              <li class="eform-tab-head">공급계약서</li>
-              <li class="eform-tab-desc">수급자 주문시 간편하게 작성하는 온라인 계약</li>
-              <li class="eform-tab-links">
-                <?php if(!$eform["dc_id"] || $eform["dc_status"] == '0') { // 계약서 생성 전 ?>
-                <a href="#" class="linkEformWrite eform-tab-link" data-od="<?=$od["od_id"]?>">계약서 생성</a>
-                <?php } else if ($eform['dc_status'] == '1') { // 계약서 생성 후 & 작성 전 ?>
-                <div class="eform-tab-flexbox">
-                  <a href="#" class="linkEformSign eform-tab-link half" data-od="<?=$od["od_id"]?>">계약서 작성</a>
-                  <a href="#" class="linkEformEdit eform-tab-link half white" data-od="<?=$od["od_id"]?>">내용변경</a>
-                </div>
-                <?php } else if ($eform['dc_status'] == '2' || $eform['dc_status'] == '3') { // 계약서 작성 완료 ?>
-                <a href="#" class="linkEformView eform-tab-link white" data-od="<?=$od["od_id"]?>">계약서 다운로드</a>
-                <?php } ?>
-              </li>
-              <?php if ($eform['dc_send_sms'] === '1') { ?>
-              <li style="margin-top:5px">
-                * <?php echo $eform['penConNum']; ?> 번호로 계약서 전송 완료
-              </li>
-              <?php } ?>
-            </ul>
-          </li>
-          <li>
-            <div>
-              <b>수급자명</b>
-              <span><?=($od["od_penNm"]) ? $od["od_penNm"] : "-"?></span>
-            </div>
-          </li>
-          <li>
-            <div>
-              <b>인정등급</b>
-              <span><?=($od["od_penTypeNm"]) ? $od["od_penTypeNm"] : "-"?></span>
-            </div>
-          </li>
-          <li>
-            <div>
-              <b>장기요양번호</b>
-              <span><?=($od["od_penLtmNum"]) ? $od["od_penLtmNum"] : "-"?></span>
-            </div>
-          </li>
-          <li>
-            <div>
-              <b>유효기간</b>
-              <span><?=($od["od_penExpiDtm"]) ? $od["od_penExpiDtm"] : "-"?></span>
-            </div>
-          </li>
-          <li>
-            <div>
-              <b>적용기간</b>
-              <span><?=($od["od_penAppEdDtm"]) ? $od["od_penAppEdDtm"] : "-"?></span>
-            </div>
-          </li>
-          <li>
-            <div>
-              <b>전화번호</b>
-              <span><?=($od["od_penConPnum"]) ? $od["od_penConPnum"] : "-"?></span>
-            </div>
-          </li>
-          <li>
-            <div>
-              <b>휴대폰</b>
-              <span><?=($od["od_penConNum"]) ? $od["od_penConNum"] : "-"?></span>
-            </div>
-          </li>
-          <li>
-            <div>
-              <b>주소</b>
-              <span><?=($od["od_penAddr"]) ? $od["od_penAddr"] : "-"?></span>
-            </div>
-          </li>
-        </ul>
-      </div>
-      <?php } ?>
-
-      <h5>결제정보</h5>
-      <div class="all-info all-info2">
-        <ul>
-          <li>
-            <div>
-              <b>주문번호</b>
-              <span><?=$od["od_id"]?></span>
-            </div>
-          </li>
-          <li>
-            <div>
-              <b>주문일시</b>
-              <span><?=$od["od_time"]?></span>
-            </div>
-          </li>
-          <?php if($od["od_stock_insert_yn"] == "N") { ?>
-          <li>
-            <div>
-              <b>결제방식</b>
-              <span><?php echo ($easy_pay_name ? $easy_pay_name.'('.$od['od_settle_case'].')' : check_pay_name_replace($od['od_settle_case']) ); ?></span>
-            </div>
-          </li>
-          <li>
-            <div>
-              <b>매출증빙</b>
-              <span><?php echo $typereceipt['name']; ?>
-                <?php echo $typereceipt['ot_bnum'] ? '( ' . $typereceipt['ot_bnum'] : ''; ?>
-                <?php echo $typereceipt['ot_bnum'] ? ')': ''; ?></span>
-            </div>
-          </li>
-          <?php } ?>
-        </ul>
       </div>
 
-      <div class="all-info">
-        <ul>
-          <li>
-            <div>
-              <b>주문금액</b>
-              <span><?=number_format($tot_price - $od["od_send_cost"] - $od['od_send_cost2'])?> 원</span>
-            </div>
-          </li>
-          <?php if($od['od_coupon'] > 0) { ?>
-          <li>
-            <div>
-              <b>쿠폰할인</b>
-              <span><?php echo number_format($od['od_coupon']); ?> 원</span>
-            </div>
-          </li>
-          <?php } ?>
-
-          <?php if($od['od_receipt_point'] > 0) { ?>
-          <li>
-            <div>
-              <b>포인트결제</b>
-              <span><?php echo number_format($od['od_receipt_point']); ?> 원</span>
-            </div>
-          </li>
-          <?php } ?>
-
-          <?php if ($od['od_cart_discount'] > 0) { ?>
-          <!--
-          <li>
-            <div>
-              <b>할인금액</b>
-              <span><?php echo number_format($od['od_cart_discount']); ?> 원</span>
-            </div>
-          </li>
-          -->
-          <?php } ?>
-
-          <?php if ($od['od_cart_discount2'] > 0) { ?>
-          <li>
-            <div>
-              <b>추가할인금액</b>
-              <span><?php echo number_format($od['od_cart_discount2']); ?> 원</span>
-            </div>
-          </li>
-          <?php } ?>
-          <?php if ($od['od_send_cost2'] > 0) { ?>
-          <li>
-            <div>
-              <b>추가배송비</b>
-              <span><?php echo number_format($od['od_send_cost2']); ?> 원</span>
-            </div>
-          </li>
-          <?php } ?>
-          <li>
-            <div>
-              <b>배송비</b>
-              <span><?php echo number_format($od['od_send_cost']); ?> 원</span>
-            </div>
-          </li>
-          <?php if($od['od_sales_discount']) { ?>
-          <li>
-            <div>
-              <b>매출할인</b>
-              <span>- <?php echo number_format($od['od_sales_discount']); ?> 원</span>
-            </div>
-          </li>
-          <?php } ?>
-        </ul>
-        <?php 
-        // $total_price = $tot_price - $od['od_cart_discount'] - $od['od_cart_discount2'] ;
-        $total_price = $tot_price - $od['od_cart_discount2'] - $od['od_sales_discount'];
-        ?>
-        <div class="all-info-price">
-          <b>합계금액</b>
-          <span><?php echo number_format($total_price); ?> 원</span>
-        </div>
-      </div>
-
-      <div class="pay-btn2">
-        <?php if($od["od_stock_insert_yn"] == "N" && $deliveryItem) { ?>
-        <button type="button" id="send_statement"><img src="<?=$SKIN_URL?>/image/icon_24.png" alt=""> 거래명세서 출력</button>
-        <?php } ?>
-
-        <?php if ($cancel_price == 0) { // 취소한 내역이 없다면
-          $type = 0;
-          if ($custom_cancel)
-            $type = 1;
-          if ($pay_complete_cancel || $preparation_cancel)
-            $type = 2;
-
-          // $btn_name = "주문 취소하기";
-          // $action_url = "./orderinquirycancel.php";
-          // $to = "";
-
-          $sql = "select *
-                  from g5_shop_order_cancel_request
-                  where od_id = '{$od['od_id']}' and approved = 0";
-
-          $cancel_request_row = sql_fetch($sql);
-
-          $sql = "select * from g5_shop_cart where od_id = '{$od['od_id']}'";
-          $sql_result = sql_query($sql);
-          $flag=true;
-          while ($row = sql_fetch_array($sql_result)) {
-              if($row['ct_status'] !=="준비") $flag= false;
-          }
-
-          if ($flag) {
-            $action_url = "./orderinquirycancelrequest.php";
-            $btn_name = "취소 요청하기";
-            $to = "cancel";
-          }
-        ?>
-        <?php 
-          if($od["od_stock_insert_yn"] !== "Y"&&$flag&&!$cancel_request_row['od_id']) {
-            if($od["od_type"] == "0") { ?>          
-        <a href="#" id="cancel_btn" type="button" data-toggle="collapse" href="#sod_fin_cancelfrm" aria-expanded="false" aria-controls="sod_fin_cancelfrm"><?php echo $btn_name ?></a>
-            <?php } ?>
-        <div class="h15"></div>
-        <div id="sod_fin_cancelfrm" class="collapse">
-          <div class="well">
-            <form class="form" role="form" method="post" action="<?php echo $action_url ?>"
-              onsubmit="return fcancel_check(this);">
-              <input type="hidden" name="od_id" value="<?php echo $od['od_id']; ?>">
-              <input type="hidden" name="token" value="<?php echo $token; ?>">
-              <input type="hidden" name="type" value="<?php echo $type ?>">
-              <input type="hidden" name="to" value="<?php echo $to ?>">
-              <div class="input-group input-group-sm">
-                <!--<span class="input-group-addon">사유</span>-->
-                <select name="request_reason_type" class="form-control"
-                  style="display: table-cell; width: 100px; margin-right: 10px;">
-                  <option value="단순변심">단순변심</option>
-                  <option value="제품파손">제품파손</option>
-                  <option value="제품하자">제품하자</option>
-                  <option value="오주문">오주문</option>
-                  <option value="오배송">오배송</option>
-                  <option value="A/S">A/S</option>
-                  <option value="기타">기타</option>
-                </select>
-                <input type="text" name="cancel_memo" id="cancel_memo" required class="form-control input-sm" size="40"
-                  maxlength="100" style="width: calc(100% - 110px); float: none;">
-                <span class="input-group-btn">
-                  <button type="submit" class="btn btn-black btn-sm">확인</button>
-                </span>
-              </div>
-            </form>
-          </div>
-        </div>
-        <?php } ?>
-        <?php } ?>
-      </div>
-    </div>
+    
   </section>
 </section>
 
@@ -1388,8 +1391,7 @@ function hide_control(od_id) {
 		return false;
 	}
 	<?php }?>
-
-
+  
   $.ajax({
       method: "POST",
       url: "./ajax.hide_control.php",
