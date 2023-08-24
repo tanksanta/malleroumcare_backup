@@ -2,20 +2,20 @@
 // $sub_menu = '400400';
 include_once('./_common.php');
 //랜덤값 생성
-function GenerateString($length)  
-{  
-    $characters  = "0123456789";  
-    $characters .= "abcdefghijklmnopqrstuvwxyz";  
-    $characters .= "ABCDEFGHIJKLMNOPQRSTUVWXYZ";  
-    $characters .= "_";  
-    $string_generated = "";  
-    $nmr_loops = $length;  
-    while ($nmr_loops--)  
-    {  
+function GenerateString($length)
+{
+    $characters  = "0123456789";
+    $characters .= "abcdefghijklmnopqrstuvwxyz";
+    $characters .= "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    $characters .= "_";
+    $string_generated = "";
+    $nmr_loops = $length;
+    while ($nmr_loops--)
+    {
       $string_generated .= $characters[mt_rand(0, strlen($characters) - 1)];
-    }  
-    return $string_generated;  
-}  
+    }
+    return $string_generated;
+}
 
 // auth_check($auth[$sub_menu], "w");
 
@@ -179,7 +179,7 @@ for($i=0; $i<count($it_ids); $i++) {
   $ct_select = 1;
   $ct_select_time = G5_TIME_YMDHIS;
   $sw_direct = 0;
-  
+
   for($k=0;$k< 1;$k++) {
     $io_id = preg_replace(G5_OPTION_ID_FILTER, '', $_POST['io_id'][$i]);
     $io_type = preg_replace('#[^01]#', '', 0);
@@ -209,7 +209,7 @@ for($i=0; $i<count($it_ids); $i++) {
     // $io_price = (int)$_POST['it_price'][$i];
     $io_price = 0;
     $io_thezone = $opt_list[$io_type][$io_id]['io_thezone'];
-    
+
     $ct_qty = $_POST['qty'][$i];
     $ct_qty = (int)preg_replace("/[^\d]/","", $ct_qty);
     // $it_price = $it['it_price'];
@@ -305,6 +305,10 @@ for($i=0; $i<count($it_ids); $i++) {
     if($it['it_default_warehouse']) {
       $ct_warehouse = $it['it_default_warehouse'];
     }
+	if($it['it_direct_delivery_partner'] != ""){//직배송 파트너가 있을 경우 파트너 계정에 설정되어 있는 출하창고 등록
+		$partner = get_member($it['it_direct_delivery_partner']);
+		$ct_warehouse = ($partner["mb_partner_default_warehouse"] != "" )? $partner["mb_partner_default_warehouse"] : $ct_warehouse;
+	}
 
     // 비유통상품 가격
     if($it['prodSupYn'] == 'N') {
@@ -515,7 +519,7 @@ if ($od['od_penId']) {
     'usrId' => $od_member['mb_id'],
     'penOrdId' => $od["ordId"],
   ));
-  
+
   // 새 주문 생성
   $sendData["penOrdId"] = $od["ordId"];
   $sendData["uuid"] = $od["uuid"];
@@ -563,7 +567,7 @@ if ($od['od_penId']) {
   curl_close($oCurl);
 }
 
-        
+
 //결과 값
 if ($res["errorYN"] == "N") {
   //성공시 ct_id에 업로드
@@ -640,7 +644,7 @@ for($k=0; $k < count($result_again); $k++){
 }
 
 //바코드 od_prodBarNum_insert, order total 조정
-$sql = "UPDATE `g5_shop_order` SET 
+$sql = "UPDATE `g5_shop_order` SET
     `od_prodBarNum_insert` = ".$count_b.",
     `od_prodBarNum_total` = ".count($result_again)."
 WHERE `od_id` = '".$od_id."'";
@@ -653,7 +657,7 @@ sql_query($sql);
 <link rel="stylesheet" href="<?php echo G5_ADMIN_URL; ?>/css/popup.css">
 <script type="text/javascript" src="<?php echo G5_JS_URL ?>/datetime_components/jquery.min.js"></script>
 </head>
-<script>  
+<script>
 $(function() {
   alert('완료되었습니다.');
   try{

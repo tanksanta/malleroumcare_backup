@@ -295,7 +295,15 @@ for ($i = 0; $i < count($it_id_arr); $i++) {
 
     // 임시조치: 할인금액 마이너스면 0으로 초기화
     if ($ct_discount < 0) $ct_discount = 0;
-
+	// 출하창고
+    $ct_warehouse = '검단창고';
+    if($it['it_default_warehouse']) {
+      $ct_warehouse = $it['it_default_warehouse'];
+    }
+	if($it['it_direct_delivery_partner'] != ""){//직배송 파트너가 있을 경우 파트너 계정에 설정되어 있는 출하창고 등록
+		$partner = get_member($it['it_direct_delivery_partner']);
+		$ct_warehouse = ($partner["mb_partner_default_warehouse"] != "" )? $partner["mb_partner_default_warehouse"] : $ct_warehouse;
+	}
 
     $sql = " INSERT INTO {$g5['g5_shop_cart_table']}
         ( od_id,
@@ -385,7 +393,7 @@ for ($i = 0; $i < count($it_id_arr); $i++) {
         '{$it['it_direct_delivery_price']}',
         '$prodMemo',
         '{$it['prodSupYn']}',
-        '{$it['it_default_warehouse']}'
+        '{$ct_warehouse}'
     )
     ";
 

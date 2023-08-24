@@ -538,6 +538,10 @@ for($i = 0; $i < count($it_id_arr); $i++) {
         if($it['it_default_warehouse']) {
             $ct_warehouse = $it['it_default_warehouse'];
         }
+		if($it['it_direct_delivery_partner'] != ""){//직배송 파트너가 있을 경우 파트너 계정에 설정되어 있는 출하창고 등록
+			$partner = get_member($it['it_direct_delivery_partner']);
+			$ct_warehouse = ($partner["mb_partner_default_warehouse"] != "" )? $partner["mb_partner_default_warehouse"] : $ct_warehouse;
+		}
 
         $uid = uuidv4();
 
