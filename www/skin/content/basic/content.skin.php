@@ -27,6 +27,9 @@ if($co['co_id'] == "privacy" || $co['co_id'] == "provision"){?>
 
 </style>
 <?php
+	if($member["mb_id"] == ""){
+		echo "<div style='padding:0px 10% 0px 10%;'>";
+	}
 	$sql = "select * from {$g5['content_table']} where co_id like '".$co['co_id']."_%' order by co_id DESC";
 	$result = sql_query($sql);
 
@@ -52,7 +55,7 @@ if($co['co_id'] == "privacy" || $co['co_id'] == "provision"){?>
 
 </article>
 <div id="popup_box2" class="popup_box2 list_box">    
-	<div id="" class="popup_box_con" style="height:800px;margin-top:-400px;width:60%;margin-left:-30%;left:50%;top:50%; ">	
+	<div id="" class="popup_box_con" style="height:700px;margin-top:-350px;width:60%;margin-left:-30%;left:50%;top:50%; ">	
 	
 	<header>	
         <h3 id="co_subject" style="margin-top:0px;float:left"></h3>
@@ -60,11 +63,15 @@ if($co['co_id'] == "privacy" || $co['co_id'] == "provision"){?>
 		<button type="button" class="btn btn-black btn-sm btn_close">닫기</button>
 	</div>
     </header>
-    <div id="ctt_con2" style="height:730px;overflow:auto;padding:10px 15px 0px 0px;margin-right:-18px"></div>	
+    <div id="ctt_con2" style="height:630px;overflow:auto;padding:10px 15px 0px 0px;margin-right:-18px"></div>	
 	</div>	
 </div>
 <?php
-if($co['co_id'] == "privacy" || $co['co_id'] == "provision"){?>
+if($co['co_id'] == "privacy" || $co['co_id'] == "provision"){
+	if($member["mb_id"] == ""){
+		echo "</div>";
+	}
+	?>
 <script>
 	function show_hist(){
 		$("#co_subject").text("");
