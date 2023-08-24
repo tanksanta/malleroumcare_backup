@@ -14,8 +14,8 @@ if ( !partner_daegi() ) {
 <div id="wait_partner" style="margin: 100px 0;">
 
     <h1>파트너 승인 대기중 입니다.</h1>
-    <div style="list-style: none; margin: 0 auto; padding: 0; width: 550px;">
-        <li class="" style="color: #868686; padding: 10px 15px; border: 1px solid #e1e1e1; background-color: white; letter-spacing: -1px; font-weight: bold; text-align:center; margin: 0px 210px;">
+    <div style="list-style: none; margin: 0 auto; padding: 0; width: 100%;">
+        <li class="" style="color: #868686; padding: 10px 15px; border: 1px solid #e1e1e1; background-color: white; letter-spacing: -1px; font-weight: bold; text-align:center; width:150px; left:50%;position:relative;margin-left:-75px;">
             <a href="<?=G5_BBS_URL;?>/logout.php">로그아웃</a>
         </li>
     </div>
@@ -43,7 +43,7 @@ if ( !partner_daegi() ) {
 -->
     <p style="height: 100px;"></p>
 
-    <div class="left_csWrap" style="list-style: none; margin: 0 auto; padding: 0; width: 550px;">
+    <div class="left_csWrap" style="list-style: none; margin: 0 auto; padding: 0; width:100%;text-align:center;">
         <div class="csTitle" style="text-align:center;">이로움 고객센터</div>
         <div class="csCall" style="text-align:center; font-size: 30px; font-weight: 500; color: #FF6B00;">1533-5088</div>
     </div>
