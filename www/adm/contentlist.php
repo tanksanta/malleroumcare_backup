@@ -114,13 +114,13 @@ $result = sql_query($sql);
 </div>
 <div id="popup_box2" class="popup_box2 list_box">
     
-	<div id="" class="popup_box_con" style="height:600px;margin-top:-300px;width:50%;left:50%;top:50%;margin-left:-25%;">
+	<div id="" class="popup_box_con" style="height:700px;margin-top:-350px;width:50%;left:50%;top:50%;margin-left:-25%;">
 	
 	<header>
         <div style="width:100%;border-bottom:1px solid #a5a5a5;font-weight:bold;font-size:18px;padding:0px 0px 10px 0px;margin-bottom:5px;"><span id="co_id"></span>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<span id="co_subject"></span></div>
     </header>
 
-    <div id="ctt_con" style="height:480px;overflow:auto; text-align:center;">
+    <div id="ctt_con" style="height:580px;overflow:auto; text-align:center;">
         
     </div>
 	<div style="text-align:center;top:0px;width:100%;border-top:1px solid #a5a5a5;padding:13px 0px 0px 0px;">
