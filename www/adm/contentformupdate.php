@@ -12,7 +12,7 @@ else
 
 check_admin_token();
 
-if ($w == "" || $w == "u")
+if ($w == "" || $w == "u" || $w == "d")
 {
     if(preg_match("/[^a-z0-9_]/i", $co_id)) alert("ID 는 영문자, 숫자, _ 만 가능합니다.");
 
@@ -90,9 +90,14 @@ $sql_common = " co_include_head     = '$co_include_head',
 if ($w == "")
 {
     $row = $co_row;
-    if ($row['co_id'])
-        alert("이미 같은 ID로 등록된 내용이 있습니다.");
-
+    if ($row['co_id']){
+		if($co_id == "privacy" || $co_id == "provision"){//개인정보 또는 서비스 이용약관 일경우 기존 co_id 변경
+			$sql1 = "update {$g5['content_table']} set co_id = '".$co_id."_".date("Ymd")."',co_subject='".$co_subject."(".date("Y-m-d")." 이전)' where co_id='".$co_id."'";
+			sql_query($sql1);
+		}else{
+			alert("이미 같은 ID로 등록된 내용이 있습니다.");
+		}
+	}
     $sql = " insert {$g5['content_table']}
                 set co_id = '$co_id',
                     $sql_common ";
@@ -112,6 +117,10 @@ else if ($w == "d")
 
     $sql = " delete from {$g5['content_table']} where co_id = '$co_id' ";
     sql_query($sql);
+	if($co_id == "privacy" || $co_id == "provision"){//개인정보나 이용약관 일때 최근 데이터를 실사용으로 변경
+		$sql = "update {$g5['content_table']} set co_id='".$co_id."',co_subject='".$co_row["co_subject"]."' where co_id=(SELECT MAX(co_id) FROM `g5_content` WHERE co_id LIKE '".$co_id."_%')";
+		sql_query($sql);
+	}
 }
 
 if(function_exists('get_admin_captcha_by'))
@@ -140,6 +149,6 @@ if ($w == "" || $w == "u")
 }
 else
 {
-    goto_url("./contentlist.php");
+    goto_url("./contentlist.php?co_id=".$co_id."&amp;co_subject=".$co_row["co_subject"]);
 }
 ?>

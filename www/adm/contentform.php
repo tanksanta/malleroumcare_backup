@@ -77,13 +77,13 @@ include_once (G5_ADMIN_PATH.'/admin.head.php');
         <th scope="row"><label for="co_id">ID</label></th>
         <td>
             <?php echo help('20자 이내의 영문자, 숫자, _ 만 가능합니다.'); ?>
-            <input type="text" value="<?php echo $co['co_id']; ?>" name="co_id" id ="co_id" required <?php echo $readonly; ?> class="required <?php echo $readonly; ?> frm_input" size="20" maxlength="20">
+            <input type="text" value="<?php echo ($co_id2 == "")?$co['co_id']:$co_id2; ?>" name="co_id" id ="co_id" required <?php echo $readonly; ?> class="required <?php echo $readonly; ?> frm_input" size="20" maxlength="20" <?php if($co_id2 != ""){?>readonly<?php }?>>
             <?php if ($w == 'u') { ?><a href="<?php echo G5_BBS_URL; ?>/content.php?co_id=<?php echo $co_id; ?>" class="btn_frmline">내용확인</a><?php } ?>
         </td>
     </tr>
     <tr>
         <th scope="row"><label for="co_subject">제목</label></th>
-        <td><input type="text" name="co_subject" value="<?php echo htmlspecialchars2($co['co_subject']); ?>" id="co_subject" required class="frm_input required" size="90"></td>
+        <td><input type="text" name="co_subject" value="<?php echo ($co_id2 == "")?htmlspecialchars2($co['co_subject']):htmlspecialchars2($co_subject2); ?>" id="co_subject" required class="frm_input required" size="90"></td>
     </tr>
     <tr>
         <th scope="row">내용</th>
@@ -201,7 +201,8 @@ include_once (G5_ADMIN_PATH.'/admin.head.php');
 </div>
 
 <div class="btn_fixed_top">
-    <a href="./contentlist.php" class="btn btn_02">목록</a>
+    <a href="./contentlist.php<?=(strpos($co_id,"privacy") !== false || strpos($co_id2,"privacy") !== false || strpos($co_id,"provision") !== false || strpos($co_id2,"provision") !== false)? "?co_id=".((
+	$co_id != "")?$co_id:$co_id2) :"";?>" class="btn btn_02">목록</a>
     <input type="submit" value="확인" class="btn btn_submit" accesskey="s">
 </div>
 

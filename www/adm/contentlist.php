@@ -33,7 +33,7 @@ if(!sql_query(" DESCRIBE {$g5['content_table']} ", false)) {
 $g5['title'] = '내용관리';
 include_once (G5_ADMIN_PATH.'/admin.head.php');
 
-$sql_common = " from {$g5['content_table']} ";
+$sql_common = " from {$g5['content_table']} where co_id not like 'privacy_%' and co_id not like 'provision_%'";
 
 // 테이블의 전체 레코드수만 얻음
 $sql = " select count(*) as cnt " . $sql_common;
@@ -48,7 +48,25 @@ $from_record = ($page - 1) * $rows; // 시작 열을 구함
 $sql = "select * $sql_common order by co_id limit $from_record, {$config['cf_page_rows']} ";
 $result = sql_query($sql);
 ?>
+<style>
+	.popup_box2 {
+		display: none;
+		position: fixed;
+		width: 100%;
+		height: 100%;
+		left: 0;
+		top: 0;
+		z-index: 9999;
+		background: rgba(0, 0, 0, 0.5);		
+	}
+	.popup_box_con {
+		padding:20px;
+		position: relative;
+		background: #ffffff;
+		z-index: 99999;
+	}
 
+</style>
 <div class="local_ov01 local_ov">
     <?php if ($page > 1) {?><a href="<?php echo $_SERVER['SCRIPT_NAME']; ?>">처음으로</a><?php } ?>
     <span class="btn_ov01"><span class="ov_txt">전체 내용</span><span class="ov_num"> <?php echo $total_count; ?>건</span></span>
@@ -76,9 +94,13 @@ $result = sql_query($sql);
         <td class="td_id"><?php echo $row['co_id']; ?></td>
         <td class="td_left"><?php echo htmlspecialchars2($row['co_subject']); ?></td>
         <td class="td_mng td_mng_l">
+		<?php if(strpos($row['co_id'],"privacy") === false && strpos($row['co_id'],"provision") === false){?>
             <a href="./contentform.php?w=u&amp;co_id=<?php echo $row['co_id']; ?>" class="btn btn_03"><span class="sound_only"><?php echo htmlspecialchars2($row['co_subject']); ?> </span>수정</a>
             <a href="<?php echo G5_BBS_URL; ?>/content.php?co_id=<?php echo $row['co_id']; ?>" class="btn btn_02"><span class="sound_only"><?php echo htmlspecialchars2($row['co_subject']); ?> </span> 보기</a>
             <a href="./contentformupdate.php?w=d&amp;co_id=<?php echo $row['co_id']; ?>" onclick="return delete_confirm(this);" class="btn btn_02"><span class="sound_only"><?php echo htmlspecialchars2($row['co_subject']); ?> </span>삭제</a>
+		<?php }else{?>			
+            <a href="javascript:show_hist('<?=$row['co_id']?>','<?=$row['co_subject']?>');" class="btn btn_02"><span class="sound_only"><?php echo htmlspecialchars2($row['co_subject']); ?> </span> 보기</a>            
+		<?php }?>
         </td>
     </tr>
     <?php
@@ -90,7 +112,86 @@ $result = sql_query($sql);
     </tbody>
     </table>
 </div>
+<div id="popup_box2" class="popup_box2 list_box">
+    
+	<div id="" class="popup_box_con" style="height:600px;margin-top:-300px;width:50%;left:50%;top:50%;margin-left:-25%;">
+	
+	<header>
+        <div style="width:100%;border-bottom:1px solid #a5a5a5;font-weight:bold;font-size:18px;padding:0px 0px 10px 0px;margin-bottom:5px;"><span id="co_id"></span>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<span id="co_subject"></span></div>
+    </header>
 
+    <div id="ctt_con" style="height:480px;overflow:auto; text-align:center;">
+        
+    </div>
+	<div style="text-align:center;top:0px;width:100%;border-top:1px solid #a5a5a5;padding:13px 0px 0px 0px;">
+		<button type="button" class="btn btn_01 btn_close" onClick="add_content();">추가</button>
+		<button type="button" class="btn btn-black btn_close">닫기</button>
+		<input type="hidden" id="co_id2" value="">
+		<input type="hidden" id="co_subject2" value="">
+	</div>
+	</div>
+</div>
+<script>
+	$(function(){
+		<?php if($_REQUEST["co_id"] != ""){?>
+			//show_hist('<?=$_REQUEST["co_id"]?>','');
+		<?php }?>
+	});
+	function show_hist(id,subject){
+		$("#ctt_con").html("");
+		$("#co_id").text(id);
+		$("#co_id2").val(id);
+		$("#co_subject2").val(subject);
+		$("#co_subject").text(subject);
+		$.ajax({
+		  method: 'POST',
+		  url: './ajax.content_hist.php',
+		  data: {
+			co_id: id
+		  },
+		}).done(function (data) {
+		  // return false;
+		  if (data.msg != "") {
+			alert(data.msg);
+		  }
+		  if (data.result === 'success') {
+			if(data.co_subject != ""){
+				$("#co_subject2").val(data.co_subject);
+				$("#co_subject").text(data.co_subject);
+			}
+			var cont_html = "<table style='border:1px solid #ddd'>";
+			cont_html += "<thead>";
+			cont_html += "<tr>";
+			cont_html += "	<th scope='col'>ID</th>";
+			cont_html += "	<th scope='col'>제목</th>";
+			cont_html += "	<th scope='col'>관리</th>";
+			cont_html += "</tr>";
+			cont_html += "</thead>";
+			var button = "";
+			for(var i = 0; i < data.rows.length; i++){
+				if(i == 0 && data.rows.length > 1){
+					button = "<a href='./contentform.php?w=u&amp;co_id="+data.rows[i]["co_id"]+"' class='btn btn_03 btn-sm'>수정</a> <a href='<?php echo G5_BBS_URL; ?>/content.php?co_id="+data.rows[i]["co_id"]+"' target='_blank' class='btn btn_02 btn-sm'>보기</a> <a href='./contentformupdate.php?w=d&amp;co_id="+data.rows[i]["co_id"]+"' onclick='return delete_confirm(this);'  class='btn btn_02 btn-sm'>삭제</a>";
+				}else{
+					button = "<a href='./contentform.php?w=u&amp;co_id="+data.rows[i]["co_id"]+"' class='btn btn_03 btn-sm'>수정</a> <a href='<?php echo G5_BBS_URL; ?>/content.php?co_id="+data.rows[i]["co_id"]+"' target='_blank' class='btn btn_02 btn-sm'>보기</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+				}
+				cont_html += "<tr><td class='td_left'>"+data.rows[i]["co_id"]+"</td><td class='td_left'>"+ data.rows[i]["co_subject"]+"</td><td class='td_mng td_mng_l'>"+button+"</td></tr>";
+			}
+			cont_html += "</table>";
+			$("#ctt_con").html(cont_html);
+		  }
+		});
+		
+		$('body').addClass('modal-open');		
+		$('#popup_box2').show();
+	}
+	$('.btn_close').click(function() {			
+		$('body').removeClass('modal-open');
+		$('#popup_box2').hide();
+	});
+	function add_content(){
+		location.href = "./contentform.php?co_id2="+$("#co_id2").val()+"&co_subject2="+$("#co_subject2").val();
+	}
+</script>
 <?php echo get_paging(G5_IS_MOBILE ? $config['cf_mobile_pages'] : $config['cf_write_pages'], $page, $total_page, "{$_SERVER['SCRIPT_NAME']}?$qstr&amp;page="); ?>
 
 <?php
