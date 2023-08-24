@@ -454,7 +454,7 @@
       $opt_price = $it['ct_price'] + $it['io_price'];
 
     if($opt_price)
-      $price_d = ($opt_price*$it["ct_qty"]-$it['ct_discount'])/$it["ct_qty"];
+      $price_d = ($opt_price*$it["ct_qty"]-$it['ct_discount']);
     else
       $price_d = 0;
 
@@ -464,11 +464,11 @@
     $price_d_p ="";
     $price_d_s ="";
     if($it_taxInfo['it_taxInfo']=="영세"){
-      $price_d_p = $price_d*$it['ct_qty'];
+      $price_d_p = $price_d;
       $price_d_s = "0";
     }else{
-      $price_d_p = round(($price_d ? $price_d : 0) / 1.1) * $it['ct_qty']; // 공급가액
-      $price_d_s = round(($price_d ? $price_d : 0) / 1.1 / 10) * $it['ct_qty']; // 부가세
+      $price_d_p = round(($price_d ? $price_d : 0) / 1.1) ; // 공급가액
+      $price_d_s = round(($price_d ? $price_d : 0) / 1.1 / 10); // 부가세
     }
 
     $it_name = $it["it_name"];
