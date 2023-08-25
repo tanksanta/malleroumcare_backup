@@ -499,7 +499,9 @@ if ($_SESSION['ss_mb_id'] && $member = get_member($_SESSION['ss_mb_id'])) {
                         (!$config['cf_use_email_certify'] || preg_match('/[1-9]/', $row['mb_email_certify'])) ) {
                         // 세션에 회원아이디를 저장하여 로그인으로 간주
                         set_session('ss_mb_id', $tmp_mb_id);
-
+						// 통계등록
+						$member = get_member($tmp_mb_id);
+						insert_statistics("LOGIN", $member['mb_id'], $member['mb_level'], "로그인", $_SERVER['REMOTE_ADDR']);
                         // 로그인시 구매모드로 설정
                         @setcookie('viewType', 'adm', time() + 86400 * 3650, "/");
 
