@@ -10,7 +10,7 @@
 .nav-justified{margin:5px 0 !important ;}
 
 /* Item Head */
-.item-head {   border: 0px currentColor; border-image: none; margin:30px 0; width:100%; }
+.item-head {   border: 0px currentColor; border-image: none; margin:0px; width:100%; }
 .item-head h1 { font-weight:bold; padding:0 !important; border: 0px currentColor; border-image: none; color: rgb(59, 62, 67); line-height: 30px; font-size: 18px; letter-spacing:-1px; margin:0px; margin-bottom:10px; }
 .item-head ul.item-buy-btn { padding:0px; margin:0px; list-style:none; position: relative; margin:0px -3px; }
 .item-head ul.item-buy-btn li { float:left; padding:3px; }
