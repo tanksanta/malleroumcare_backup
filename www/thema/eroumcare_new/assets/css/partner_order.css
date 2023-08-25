@@ -91,6 +91,7 @@
   border-bottom: 1px solid #DDDDDD;
   margin-top: 20px;
   margin-bottom: 40px;
+  clear: both;
 }
 
 #partner-order .btn_od_edit {
@@ -452,7 +453,7 @@
   }
 
   #partner-order .item-list li .item-info-wrap {
-    width: calc(100% - 10% - 114px);
+    width: calc(100% - 35% - 114px);
     font-size: 14px;
   }
 
@@ -461,10 +462,8 @@
   }
 
   #partner-order .item-list li .delivery-wrap {
-    width: 50%;
+    width: 110px;
     text-align: left;
-    padding-left: 40px;
-    margin-top: 10px;
     font-weight: 700;
   }
 
@@ -495,5 +494,17 @@
 
   #partner-order .delivery-status-title {
     margin-top: 15px !important;
+  }
+}
+
+
+@media (max-width: 700px) {
+  #partner-order .item-list li .item-info-wrap {
+    width: calc(100% - 10% - 114px);
+  }
+
+  #partner-order .item-list li .delivery-wrap {
+    width: 100%;
+    text-align: center;
   }
 }
