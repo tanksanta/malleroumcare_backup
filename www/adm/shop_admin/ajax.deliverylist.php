@@ -978,7 +978,7 @@ foreach($orderlist as $order) {
   $ret['data'] .= "
     <tr class=\"tr_{$order['cart_ct_id']} {$class_c1} {$class_c2} order_tr\" data-od-id=\"{$order['od_id']}\" data-href=\"./samhwa_orderform.php?od_id={$order['od_id']}&sub_menu={$sub_menu}\">
       <td align=\"left\" class=\"check_SoldOut\">
-        <input type=\"checkbox\" name=\"od_id[]\" id=\"check_{$order['cart_ct_id']}\" value=\"{$order['cart_ct_id']}\" accumul_mark=\"Y\">
+        <input type=\"checkbox\" name=\"od_id[]\" id=\"check_{$order['cart_ct_id']}\" value=\"{$order['cart_ct_id']}\" accumul_mark=\"Y\" data-delivery-company=\"{$delivery_company}\">
         <label for=\"check_{$order['cart_ct_id']}\">
         ".(($now_step=="출고준비")&&($order['it_soldout']||$order['it_type1']||$order['io_sold_out'])?"<span style='font-weight: bold; color:#FF0000;'>품절</span>":"")."
         </label>
