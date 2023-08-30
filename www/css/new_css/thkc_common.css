@@ -185,6 +185,25 @@ iframe {width: 100%;}
 #thkc_pageTop .btn_top img {height: 20px; } 
 
 
+a.thkc_btnManual{
+    border-radius: 5px;
+    border: 1px solid #FF9013;
+    color: #FF6B00;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: -0.49px;
+    height: 30px;
+    display: inline-flex;
+    padding: 0px 15px;
+    justify-content: center;
+    align-items: center; 
+    margin: 0 0 0 15px;   
+}
+a.thkc_btnManual:hover{
+    background: rgba(255, 144, 19, 0.10);
+}
+
+
 /********** css responsive **********/
 @media (max-width: 1399px) {
 .thkc_container,

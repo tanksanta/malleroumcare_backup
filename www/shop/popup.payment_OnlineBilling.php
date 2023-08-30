@@ -282,8 +282,11 @@
                             <div class="btn03">청구 금액 없음</div>
                         <?php } ?>
                         <?php } ?>
-
                         </div>
+                        
+                    </div>
+                    <div class="billBtnWrapM">
+                        <a href="javascript:void(0);" onclick="window.open('<?=G5_DATA_URL;?>/file/이로움_스마트_서비스_05_간편결제_하기.pdf');" class="thkc_btnManual">간편결제 메뉴얼</a>
                     </div>                    
                 </div>
                 <!-- 이전 결제 내역 -->

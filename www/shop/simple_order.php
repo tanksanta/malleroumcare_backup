@@ -21,7 +21,7 @@ add_javascript(G5_POSTCODE_JS, 0);
 
 <section class="wrap">
 <input type="hidden" name="checkUnload" id="checkUnload" value="0">
-  <div class="sub_section_tit">간편 주문서 신청</div>
+  <div class="sub_section_tit">간편 주문서 신청 <a href="javascript:void(0);" onclick="window.open('<?=G5_DATA_URL;?>/file/이로움_스마트_서비스_04_간편_주문서_작성.pdf');" class="thkc_btnManual">매뉴얼 확인하기</a></div>
   <div class="inner">
   <form id="simple_order" name="forderform" class="form-horizontal" action="orderformupdate.php" method="post" onsubmit="return form_submit(this);" onkeydown="if(event.keyCode==13) return false;">
       <input type="hidden" name="org_od_price" value="0">

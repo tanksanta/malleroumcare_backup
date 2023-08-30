@@ -647,7 +647,7 @@ function form_check(act) {
       신규 수급자(<?=get_text($links[0]['rl_pen_name'])?>) 추천되었습니다.
     </div>
     <?php } ?>
-    수급자 관리
+    수급자 관리 <a href="javascript:void(0);" onclick="window.open('<?=G5_DATA_URL;?>/file/이로움_스마트_서비스_01_수급자_관리_조회.pdf');" class="thkc_btnManual">매뉴얼 확인하기</a>
     <div class="page_rows">
         <!-- <select name="orderby" id="orderby">
             <option value="it_id" <?php echo $orderby == 'it_id' || !$orderby ? 'selected' : ''; ?>>최근등록순 정렬</option>

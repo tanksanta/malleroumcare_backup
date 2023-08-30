@@ -68,7 +68,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 </style>
 <!-- 내용 -->
 <section class="wrap">
-  <div class="sub_section_tit">계약서 관리</div>
+  <div class="sub_section_tit">계약서 관리 <a href="javascript:void(0);" onclick="window.open('<?=G5_DATA_URL;?>/file/이로움_스마트_서비스_03_간편_계약서_및_비대면_서명.pdf');" class="thkc_btnManual">매뉴얼 확인하기</a></div>
   <div class="inner">
     <div class="list_box" style="display: none;">
       <div class="point_box">

@@ -147,7 +147,7 @@ function agreement_confirm(a){
         </div>
     </div>
 <section class="wrap">
-  <div class="sub_section_tit">간편 제안서 작성</div>
+  <div class="sub_section_tit">간편 제안서 작성 <a href="javascript:void(0);" onclick="window.open('<?=G5_DATA_URL;?>/file/이로움_스마트_서비스_02_간편_제안서_작성.pdf');" class="thkc_btnManual">매뉴얼 확인하기</a></div>
   <div class="inner">
 
     <form id="form_item_msg" action="item_msg_update.php" method="POST" class="form-horizontal" onsubmit="return false;">
