@@ -455,10 +455,10 @@
       $rows[] = [ 
         preg_replace("/[^0-9\-]*/s", "",$od["od_b_tel"]),//수화주전화1
 		preg_replace("/[^0-9\-]*/s", "",$od["od_b_hp"]),//수화주전화2
-        mb_substr($od["od_b_name"],0,10,"utf-8"),//수화주명
-		$it['addr'],//주소
+        getSubstring($od["od_b_name"],30),//수화주명 30byte
+		getSubstring($it['addr'],100),//주소 100byte 
         $it['ct_qty'],//수량
-        mb_substr($it["it_name"],0,5,"utf-8"), //픔명
+        getSubstring($it["it_name"],20), //품명 20byte
         "박스",//포장
 		"현불",//운임
 		"택배",//운송상품
@@ -470,10 +470,43 @@
 		"0",//운임
 		"0",//도착제비용
 		"",//총운임
-		mb_substr($od_memo,-25)		
+		getSubstring($od_memo,-50)// 특이사항 뒤에서부터 50byte		
       ];    
       $i++;
   }
+function getSubstring($str, $length){
+    $str = trim($str);
+
+    if (strlen($str) <= abs($length))
+        return $str;
+
+    $strArr = preg_split("//u", $str, -1, PREG_SPLIT_NO_EMPTY);
+    if($length < 0){
+		$strArr2 = array_reverse($strArr);
+	}else{
+		$strArr2 = $strArr;
+	}
+	$cutStr = '';
+    foreach ($strArr2 as $s) {
+        $len1 = preg_match("/[\xE0-\xFF][\x80-\xFF][\x80-\xFF]/", $s)?2:1;
+        $len2 += $len1;
+
+        if ($len2 > abs($length))
+            break;
+        else
+            $cutStr .= $s;
+    }
+	if($length < 0){
+		$strArr = preg_split("//u", $cutStr, -1, PREG_SPLIT_NO_EMPTY);
+		$strArr2 = array_reverse($strArr);
+		foreach ($strArr2 as $s) {
+			$cutStr2 .= $s;
+		}
+		return $cutStr2;
+	}else{
+		return $cutStr;
+	}
+}
 
   $headers = array("수화주전화1", "수화주전화2", "수화주명", "주소", "수량", "품명", "포장", "운임", "운송상품", "우편번호", "도착영업소", "발화주명", "발화주전화번호", "발종제비용", "운임", "도착제비용","총운임","특기사항");
   $data = array_merge(array($headers), $rows);
