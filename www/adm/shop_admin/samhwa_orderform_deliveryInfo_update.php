@@ -43,6 +43,7 @@ try {
     $ct_it_name = $_POST["ct_it_name_{$ct_id}"];
     $ct_delivery_company = $_POST["ct_delivery_company_{$ct_id}"];
     $ct_delivery_num = $_POST["ct_delivery_num_{$ct_id}"];
+	$ct_delivery_box_type = $_POST["box_size_option_{$ct_id}"];
     if (is_array($ct_delivery_num)) {
       $n_ct_delivery_num = array();
       foreach($ct_delivery_num as $delivery_num) {
@@ -109,6 +110,7 @@ try {
           ct_delivery_num = '{$ct_delivery_num}',
           ct_delivery_cnt = '{$ct_delivery_cnt}',
           ct_delivery_price = '{$ct_delivery_price}',
+		  ct_delivery_box_type = '{$ct_delivery_box_type}',
           ct_edi_result = 0,
           ct_warehouse = '{$ct_warehouse}',
           ct_is_direct_delivery = '{$ct_is_direct_delivery}',

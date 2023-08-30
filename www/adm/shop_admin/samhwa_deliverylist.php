@@ -147,6 +147,8 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
     <button id="ct_warehouse_all">출하창고 선택변경</button>
 
     <button id="deliveryExcelDownloadBtn">주문다운로드</button>
+	<button id="CJExcelDownloadBtn">CJ엑셀다운로드</button>
+	<button id="DSExcelDownloadBtn">DS엑셀다운로드</button>
     <button id="delivery_edi_send_all">로젠 EDI 선택 전송</button>
     <button id="delivery_edi_send_all" data-type="resend">로젠 EDI 재전송</button>
     <button id="delivery_edi_return_all">송장리턴</button>
@@ -770,6 +772,138 @@ $( document ).ready(function() {
 
     var queryString = $.param(formdata);
     var href = "./delivery.excel.list.php";
+    
+    $('#loading_excel').show();
+
+    excel_downloader = $.fileDownload(href, {
+      httpMethod: "POST",
+      data: queryString
+    })
+    .always(function() {
+      $('#loading_excel').hide();
+    });
+    
+    return false;
+  });
+
+  /* 20230825 CJ엑셀다운로드 */
+  $("#CJExcelDownloadBtn").click(function(){
+    var od_id = [];
+	var delivery_company = 0;
+    var item = $("input[name='od_id[]']:checked");
+    for(var i = 0; i < item.length; i++) {
+      od_id.push($(item[i]).val());
+	  if($(item[i]).data('delivery-company') != "대한통운"){
+		  delivery_company = 1;
+	  }
+    }
+	
+    if(!od_id.length) {
+		alert('선택한 주문이 없습니다.');
+		return false;
+    }
+	if(delivery_company != 0){
+		alert('선택한 주문 배송정보에 대한통운이 아닌 주문상품이 있습니다.');
+		return false;
+	}
+	
+    var formdata = $.extend({}, {
+      click_status: od_status,
+      od_step: od_step,
+      page: page,
+      sub_menu: sub_menu,
+      last_step: last_step,
+      od_id: od_id
+    },$('#frmsamhwaorderlist').serializeObject());
+
+    // form object rename
+    formdata['od_settle_case'] = formdata['od_settle_case[]']; // Assign new key
+    delete formdata['od_settle_case[]']; // Delete old key
+
+    if (formdata['od_status[]'] != undefined) {
+      formdata['od_status'] = formdata['od_status[]']; // Assign new key
+      delete formdata['od_status[]']; // Delete old key
+    }
+
+    formdata['od_openmarket'] = formdata['od_openmarket[]']; // Assign new key
+    delete formdata['od_openmarket[]']; // Delete old key
+
+    formdata['add_admin'] = formdata['add_admin']; // Assign new key
+    // delete formdata['add_admin[]']; // Delete old key
+
+    formdata['od_important'] = formdata['od_important']; // Assign new key
+    // delete formdata['od_important[]']; // Delete old key
+
+    formdata["od_recipient"] = "<?=$_GET["od_recipient"]?>";
+
+    var queryString = $.param(formdata);
+    var href = "./delivery_cj.excel.list.php";
+    
+    $('#loading_excel').show();
+
+    excel_downloader = $.fileDownload(href, {
+      httpMethod: "POST",
+      data: queryString
+    })
+    .always(function() {
+      $('#loading_excel').hide();
+    });
+    return false;
+  });
+
+  /* 20230825 DS엑셀다운로드 */
+  $("#DSExcelDownloadBtn").click(function(){
+    var od_id = [];
+	var delivery_company = 0;
+    var item = $("input[name='od_id[]']:checked");
+    for(var i = 0; i < item.length; i++) {
+      od_id.push($(item[i]).val());
+	  if($(item[i]).data('delivery-company') != "대신택배"){
+		  delivery_company = 1;
+	  }
+    }
+
+    if(!od_id.length) {
+      alert('선택한 주문이 없습니다.');
+	  return false;
+    }
+
+	if(delivery_company != 0){
+		alert('선택한 주문 배송정보에 대신택배가 아닌 주문상품이 있습니다.');
+		return false;
+	}
+
+    var formdata = $.extend({}, {
+      click_status: od_status,
+      od_step: od_step,
+      page: page,
+      sub_menu: sub_menu,
+      last_step: last_step,
+      od_id: od_id
+    },$('#frmsamhwaorderlist').serializeObject());
+
+    // form object rename
+    formdata['od_settle_case'] = formdata['od_settle_case[]']; // Assign new key
+    delete formdata['od_settle_case[]']; // Delete old key
+
+    if (formdata['od_status[]'] != undefined) {
+      formdata['od_status'] = formdata['od_status[]']; // Assign new key
+      delete formdata['od_status[]']; // Delete old key
+    }
+
+    formdata['od_openmarket'] = formdata['od_openmarket[]']; // Assign new key
+    delete formdata['od_openmarket[]']; // Delete old key
+
+    formdata['add_admin'] = formdata['add_admin']; // Assign new key
+    // delete formdata['add_admin[]']; // Delete old key
+
+    formdata['od_important'] = formdata['od_important']; // Assign new key
+    // delete formdata['od_important[]']; // Delete old key
+
+    formdata["od_recipient"] = "<?=$_GET["od_recipient"]?>";
+
+    var queryString = $.param(formdata);
+    var href = "./delivery_ds.excel.list.php";
     
     $('#loading_excel').show();
 

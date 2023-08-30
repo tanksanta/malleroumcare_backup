@@ -264,13 +264,29 @@ $partners = get_partner_members();
                     echo '<input type="text" value="' . $delivery_num . '" class="frm_input" name="' . $input_name . '">';
                   }
               ?>
-                <select class="box_size_option" name="box_size_option" style="width: 100%">
+                <select class="box_size_option" name="box_size_option_<?=$options[$k]["ct_id"]?>" style="width: 100%">
                   <option value="A" <?php echo $options[$k]["ct_delivery_box_type"] == 'A' ? 'selected' : ''  ?> >A(~100cm ~10kg)</option>
                   <option value="B" <?php echo $options[$k]["ct_delivery_box_type"] == 'B' ? 'selected' : ''  ?> >B(~120cm ~15kg)</option>
                   <option value="C" <?php echo $options[$k]["ct_delivery_box_type"] == 'C' ? 'selected' : '' ?> >C(~140cm ~20kg)</option>
                   <option value="D" <?php echo $options[$k]["ct_delivery_box_type"] == 'D' ? 'selected' : '' ?> >D(~160cm ~25kg)</option>
                   <option value="E" <?php echo $options[$k]["ct_delivery_box_type"] == 'E' ? 'selected' : '' ?> >E(~180cm ~28kg)</option>
                   <option value="F" <?php echo $options[$k]["ct_delivery_box_type"] == 'F' ? 'selected' : '' ?> >F(~200cm ~30kg)</option>
+                </select>
+              <?php
+                }
+              ?>
+				<?php
+                if ($options[$k]['ct_delivery_company'] == 'cjlogistics') {
+                  
+              ?>
+                <select class="box_size_option" name="box_size_option_<?=$options[$k]["ct_id"]?>" style="width: 100%">
+                  <option value="극소" <?php echo $options[$k]["ct_delivery_box_type"] == '극소' ? 'selected' : ''  ?> >극소</option>
+                  <option value="소" <?php echo $options[$k]["ct_delivery_box_type"] == '소' ? 'selected' : ''  ?> >소</option>
+                  <option value="중" <?php echo $options[$k]["ct_delivery_box_type"] == '중' || $options[$k]["ct_delivery_box_type"] == '' ? 'selected' : '' ?> >중</option>
+                  <option value="대1" <?php echo $options[$k]["ct_delivery_box_type"] == '대1' ? 'selected' : '' ?> >대1</option>
+                  <option value="대2" <?php echo $options[$k]["ct_delivery_box_type"] == '대2' ? 'selected' : '' ?> >대2</option>
+                  <option value="이형" <?php echo $options[$k]["ct_delivery_box_type"] == '이형' ? 'selected' : '' ?> >이형</option>
+				  <option value="취급제한" <?php echo $options[$k]["ct_delivery_box_type"] == '취급제한' ? 'selected' : '' ?> >취급제한</option>
                 </select>
               <?php
                 }
@@ -445,7 +461,8 @@ $partners = get_partner_members();
     // 택배사 변경 
     $("select[id='select_delivery_company']").change(function() {
       var ct_id = $(this).attr('data-ct-id');
-      if (this.value === 'lotteglogis') {
+      $('#td_delivery_num_' + ct_id).children().not(':first').remove();
+	  if (this.value === 'lotteglogis') {
         var box_cnt = $('input[name=ct_delivery_cnt_' + ct_id + ']').val();
         var html = '';
         html += '<input type="text" value="" class="frm_input" name="">';
@@ -456,7 +473,7 @@ $partners = get_partner_members();
         }
 
         var boxSizeSelectHtml = '';
-        boxSizeSelectHtml += '<select class="box_size_option" name="box_size_option" style="width: 100%">';
+        boxSizeSelectHtml += '<select class="box_size_option" name="box_size_option_'+$(this).closest('tr').find('.td_delivery_num').data('ct_id')+' style="width: 100%">';
         boxSizeSelectHtml += '  <option value="A">A(~100cm ~10kg)</option>';
         boxSizeSelectHtml += '  <option value="B">B(~120cm ~15kg)</option>';
         boxSizeSelectHtml += '  <option value="C">C(~140cm ~20kg)</option>';
@@ -473,6 +490,30 @@ $partners = get_partner_members();
         }
 
         $('.lotte_api_send').show();
+      }else if (this.value === 'cjlogistics') {//대한통운 선택 시 박스타입 선택 노출
+
+        var boxSizeSelectHtml = '';
+        boxSizeSelectHtml += '<select class="box_size_option" name="box_size_option_'+$(this).closest('tr').find('.td_delivery_num').data('ct_id')+'" style="width: 100%">';
+        boxSizeSelectHtml += '  <option value="극소">극소</option>';
+        boxSizeSelectHtml += '  <option value="소">소</option>';
+        boxSizeSelectHtml += '  <option value="중">중</option>';
+        boxSizeSelectHtml += '  <option value="대1">대1</option>';
+        boxSizeSelectHtml += '  <option value="대2">대2</option>';
+        boxSizeSelectHtml += '  <option value="이형">이형</option>';
+		boxSizeSelectHtml += '  <option value="취급제한">취급제한</option>';
+        boxSizeSelectHtml += '</select>';
+
+        $('#td_delivery_num_' + ct_id).append(boxSizeSelectHtml);
+
+        var boxType = $(this).closest('tr').find('.td_delivery_num').data('box_type');
+        if (boxType) {
+          $(this).closest('tr').find('.box_size_option').val(boxType);
+        }else{
+		  $(this).closest('tr').find('.box_size_option').val("중");
+		}
+   
+
+        
       } else {
         var children = $('#td_delivery_num_' + ct_id).children().length;
         if (children > 1) {

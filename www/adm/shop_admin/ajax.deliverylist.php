@@ -715,7 +715,12 @@ foreach($orderlist as $order) {
     $delivery_company="";
     $ct_delivery_num="";
 
-    //직배송
+    foreach($delivery_companys as $data){ 
+        if($result_ct['ct_delivery_company'] == $data["val"] ){
+            $delivery_company2=$data["name"];
+        }
+	}
+	//직배송
     if($result_ct['ct_is_direct_delivery']){
         $deliveryCntBtnWord = '입력완료(직배송)';
         $class_c2 = 'complete2 ';
@@ -731,6 +736,7 @@ foreach($orderlist as $order) {
         foreach($delivery_companys as $data){ 
             if($result_ctd['ct_delivery_company'] == $data["val"] ){
                 $delivery_company=$data["name"];
+				$delivery_company2=$data["name"];
             }
         }
 
@@ -751,6 +757,7 @@ foreach($orderlist as $order) {
         foreach($delivery_companys as $data){ 
             if($result_ct['ct_delivery_company'] == $data["val"] ){
                 $delivery_company=$data["name"];
+				$delivery_company2=$data["name"];
             }
         }
         $ct_delivery_num=$result_ct['ct_delivery_num'];
@@ -760,7 +767,7 @@ foreach($orderlist as $order) {
         $deliveryCntBtnStatus = ' disable ';
     }
 
-  }
+  }  
 
   $important2_class = $order['od_important2'] ? 'on' : '';
 
@@ -978,7 +985,7 @@ foreach($orderlist as $order) {
   $ret['data'] .= "
     <tr class=\"tr_{$order['cart_ct_id']} {$class_c1} {$class_c2} order_tr\" data-od-id=\"{$order['od_id']}\" data-href=\"./samhwa_orderform.php?od_id={$order['od_id']}&sub_menu={$sub_menu}\">
       <td align=\"left\" class=\"check_SoldOut\">
-        <input type=\"checkbox\" name=\"od_id[]\" id=\"check_{$order['cart_ct_id']}\" value=\"{$order['cart_ct_id']}\" accumul_mark=\"Y\">
+        <input type=\"checkbox\" name=\"od_id[]\" id=\"check_{$order['cart_ct_id']}\" value=\"{$order['cart_ct_id']}\" accumul_mark=\"Y\" data-delivery-company=\"{$delivery_company2}\">
         <label for=\"check_{$order['cart_ct_id']}\">
         ".(($now_step=="출고준비")&&($order['it_soldout']||$order['it_type1']||$order['io_sold_out'])?"<span style='font-weight: bold; color:#FF0000;'>품절</span>":"")."
         </label>
