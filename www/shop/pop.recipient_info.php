@@ -161,10 +161,11 @@ if($member["cert_data_ref"] != ""){
 
 <html>
 <head>
-    <meta name="viewport" content="initial-scale=1.0,user-scalable=yes,maximum-scale=2,width=device-width" /><meta http-equiv="imagetoolbar" content="no">
+    <meta name="viewport" content="initial-scale=1.0,user-scalable=yes,maximum-scale=1,width=device-width" /><meta http-equiv="imagetoolbar" content="no">
     <title>요양정보</title>
     <link rel="stylesheet" href="<?php echo G5_ADMIN_URL; ?>/css/popup.css?v=<?php echo time(); ?>">
     <script src="<?php echo G5_JS_URL ?>/jquery-1.11.3.min.js"></script>
+    <script src="<?php echo G5_JS_URL ?>/common.js"></script>
 </head>
 <style>
 .admin_popup {
@@ -177,7 +178,15 @@ if($member["cert_data_ref"] != ""){
     height:3px;margin: auto; display:inline-block;
     margin-top: 0.5%; margin-bottom: 0.5%;
 }
-.head {width: 100%; height: 30%; padding-top: 6%;}
+.head {
+    width: 100%;  padding-top: 4%;    
+    <?php
+        // 23.09.05 : 서원 - 기존 엘리먼트에 하드코딩 되어있던 부분을 CSS 단위로 끌어올림.
+        //                     검색 조건 화면과 일반 조회 화면에서의 높이 차이를 엘리먼트에서 동작하지 않도록 CSS 단으로 조건문 처리함.
+        //                     검색 조건화면에서 엘리먼트에 하드코딩되어 css 제어가 불가능 함에 따라 해당 코드를 이쪽으로 옮겨옴. (추후 css 관련 정리 필요한듯!) 
+        if($page_type == "search"){ echo("height: 27%;"); } else { echo("height: 30%;"); }
+    ?>
+}
 .head .rep_amount {
     width: 44%; height: 50%; margin: auto;
     float: left; border: #ddd 2px solid;
@@ -299,8 +308,12 @@ if($member["cert_data_ref"] != ""){
 </style>
 <input type="hidden" id="rem_amount2">
 <input type="hidden" id="used_amount2">
+
 <div id="pop_add_item" class="admin_popup">
-    <div class="head" <?php if($page_type == "search"){?>style="height:27%;"<?php }?>>
+    <?php if($page_type == "search" && $_GET['penNm'] ){?><input type="button" value="간편제안" onclick="window.parent.location.href='<?=G5_SHOP_URL?>/item_msg_write.php?tmp_recipient_nm=<?=$_GET['penNm']?>';" id="" class="topbutton_go_msg" style="float:right; margin-top:5px;"><?php }?>
+    <?php if($page_type == "search"){?><input type="button" value="인쇄" onclick="go_prints();" id="" class="topbutton_go_print" style="float:right; margin-top:5px; margin-right:5px;"><?php }?>
+
+    <div class="head">
         <p class="head-title"><!-- <span class = "rep_common"><?php echo "홍길동(L1234567890)";?></span><span>님의 요양정보</span> --></p>
         <div class="rep_amount">
             <p style="color: #ee0000;"><span>급여 잔액 : </span><span class = "rem_amount">1,600,000원</span></p>
@@ -2004,5 +2017,25 @@ if($member["cert_data_ref"] != ""){
 		return cnt;
 	}
 
+    <?php 
+        // 23.09.05 : 서원 - 검색 조건 화면에서만 해당코드가 보이도록 처리함.
+        //                      해당 페이지에 기능이 많아 특정 조건에서만 자바스크립트가 처리되도록 처리함.
+        if($page_type == "search"){
+    ?>
+    function go_prints(){
+        var style = document.createElement('style');
+            style.setAttribute('media', 'print');
+            style.textContent = `
+                body { transform: scale(0.9); }
+                .admin_popup { padding-left: 5%; padding-right: 5%; }
+                .contents td { font-size: 16px; padding: 0.4% 0%; }                
+                .head { height: 16%; padding-top: 2%; }
+                .sub_title { padding-top: 0.8%; }
+                .topbutton_go_msg, .topbutton_go_print, #pen_info_update { display: none; }
+            `;
+        document.head.appendChild(style);
+        samhwaprint($('html').html());
+    }
+    <?php } ?>
 </script>
 </html>
