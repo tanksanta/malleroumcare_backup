@@ -616,6 +616,8 @@ $log_txt .= $json_string."\r\n";
 								$_array_item[$i]["item_opt_id"][$j]["io_id"] = base64_encode($row_o["io_id"]);//상품옵션ID
 							$returnArray["_array_item"][$i]["item_opt_id"][$j]["io_qty"] = $row_o["io_stock_qty"];
 								$_array_item[$i]["item_opt_id"][$j]["io_qty"] = base64_encode($row_o["io_stock_qty"]);//상품옵션ID
+							$returnArray["_array_item"][$i]["item_opt_id"][$j]["io_sold_out"] = $row_o["io_sold_out"];
+								$_array_item[$i]["item_opt_id"][$j]["io_sold_out"] = base64_encode($row_o["io_sold_out"]);//상품옵션일시품절 0:사용안함,1:사용함
 							$j++;
 						}
 					//}
