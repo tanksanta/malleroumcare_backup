@@ -581,6 +581,8 @@ $log_txt .= $json_string."\r\n";
 		if(is_array($post_data["_array_item"]) && $post_data["_array_item"][0]["ProdPayCode"] != ""){//누락 데이터가 없을 경우
 			//상품 조회
 			$error_stat = false;
+			$_array_item = array();
+			$returnArray = array();
 			for($i = 0; $i < count($post_data["_array_item"]); $i++ ){
 				$returnArray["_array_item"][$i]["item_id"] = $item_id[$i] = base64_decode($post_data["_array_item"][$i]["item_id"]);//상품 아이디
 				$returnArray["_array_item"][$i]["ProdPayCode"] = $ProdPayCode[$i] = base64_decode($post_data["_array_item"][$i]["ProdPayCode"]);//상품 급여코드
@@ -593,6 +595,7 @@ $log_txt .= $json_string."\r\n";
 					$error_stat = true;
 					$code = "413";
 					$msg = $ProdPayCode[$i]." 해당 제품 정보가 없습니다.";
+					$_array_item[$i] = array();
 					$data = $returnArray;
 				}else{
 					//if($item_opt_id[$i] != ""){//옵션상품 조회
@@ -615,7 +618,7 @@ $log_txt .= $json_string."\r\n";
 							$returnArray["_array_item"][$i]["item_opt_id"][$j]["io_id"] = $row_o["io_id"];
 								$_array_item[$i]["item_opt_id"][$j]["io_id"] = base64_encode($row_o["io_id"]);//상품옵션ID
 							$returnArray["_array_item"][$i]["item_opt_id"][$j]["io_qty"] = $row_o["io_stock_qty"];
-								$_array_item[$i]["item_opt_id"][$j]["io_qty"] = base64_encode($row_o["io_stock_qty"]);//상품옵션ID
+								$_array_item[$i]["item_opt_id"][$j]["io_qty"] = base64_encode($row_o["io_stock_qty"]);//상품옵션수량
 							$returnArray["_array_item"][$i]["item_opt_id"][$j]["io_sold_out"] = $row_o["io_sold_out"];
 								$_array_item[$i]["item_opt_id"][$j]["io_sold_out"] = base64_encode($row_o["io_sold_out"]);//상품옵션일시품절 0:사용안함,1:사용함
 							$j++;
