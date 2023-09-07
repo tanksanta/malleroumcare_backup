@@ -146,8 +146,8 @@
             array(
                 ($lastRow),
                 " ".$member['mb_id'],
-                " ".$member['mb_giup_bnum']?$member['mb_giup_bnum']:"",
-                " ".$member['mb_giup_bname']?$member['mb_giup_bname']:"",
+                " ".($member['mb_giup_bnum']?$member['mb_giup_bnum']:" "),
+                " ".($member['mb_giup_bname']?$member['mb_giup_bname']:" "),
                 " ".$_POST['Q_bnum'],
                 " ".$_POST['Q_bnm'],
                 " ".$_POST['Q_hp'],
