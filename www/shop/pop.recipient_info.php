@@ -310,8 +310,8 @@ if($member["cert_data_ref"] != ""){
 <input type="hidden" id="used_amount2">
 
 <div id="pop_add_item" class="admin_popup">
-    <?php if($page_type == "search" && $_GET['penNm'] ){?><input type="button" value="간편제안" onclick="window.parent.location.href='<?=G5_SHOP_URL?>/item_msg_write.php?tmp_recipient_nm=<?=$_GET['penNm']?>';" id="" class="topbutton_go_msg" style="float:right; margin-top:5px;"><?php }?>
-    <?php if($page_type == "search"){?><input type="button" value="인쇄" onclick="go_prints();" id="" class="topbutton_go_print" style="float:right; margin-top:5px; margin-right:5px;"><?php }?>
+    <input type="button" value="간편제안" onclick="window.parent.location.href='<?=G5_SHOP_URL?>/item_msg_write.php?tmp_recipient_nm=<?=$_GET['penNm']?><?php if($page_type != "search"){ echo("&pen_id=".$_GET['id']);  } ?>';" id="" class="topbutton_go_msg" style="float:right; margin-top:5px;">
+    <input type="button" value="인쇄" onclick="go_prints();" id="" class="topbutton_go_print" style="float:right; margin-top:5px; margin-right:5px;">
 
     <div class="head">
         <p class="head-title"><!-- <span class = "rep_common"><?php echo "홍길동(L1234567890)";?></span><span>님의 요양정보</span> --></p>
@@ -2017,11 +2017,6 @@ if($member["cert_data_ref"] != ""){
 		return cnt;
 	}
 
-    <?php 
-        // 23.09.05 : 서원 - 검색 조건 화면에서만 해당코드가 보이도록 처리함.
-        //                      해당 페이지에 기능이 많아 특정 조건에서만 자바스크립트가 처리되도록 처리함.
-        if($page_type == "search"){
-    ?>
     function go_prints(){
         var style = document.createElement('style');
             style.setAttribute('media', 'print');
@@ -2036,6 +2031,6 @@ if($member["cert_data_ref"] != ""){
         document.head.appendChild(style);
         samhwaprint($('html').html());
     }
-    <?php } ?>
+
 </script>
 </html>

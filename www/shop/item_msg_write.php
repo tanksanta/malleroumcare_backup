@@ -28,6 +28,7 @@ if(in_array($member['mb_id'], ['hula1202', 'joabokji'])) {
 $w = get_search_string($_GET['w']);
 $ms_id = get_search_string($_GET['ms_id']);
 $show_expected = get_search_string($_GET['show_expected']);
+$pen_id = get_search_string($_GET['pen_id']);
 $tmp_recipient_nm = get_search_string($_GET['tmp_recipient_nm']);
 
 if($w && $ms_id) {
@@ -538,8 +539,23 @@ function save_item_msg(no_items) {
   <?php
     // 23.09.05 : 서원 - 영업팀 최현식과장 요청건으로 간편조회된 수급자 이름을 해당 페이지(pop.recipient_info.php)에서 넘겨 받아 전화번호만 입력 하능하도록 하며,
     //                    수급자이름(tmp_recipient_nm) 값이 존재하면 아래 코드가 동작하며, 포커스는 휴대폰 입력 input박스로 이동한다.
-    //                    https://www.notion.so/9f92174ceb174045938790517379ffb3?pvs=4
-    if( $_GET['tmp_recipient_nm'] && $tmp_recipient_nm == $_GET['tmp_recipient_nm'] ) {
+    if( $_GET['tmp_recipient_nm'] && $_GET['pen_id'] && $tmp_recipient_nm == $_GET['tmp_recipient_nm'] && $pen_id == $_GET['pen_id'] ) {
+
+      $res = get_eroumcare(EROUMCARE_API_RECIPIENT_SELECTLIST, array( 'usrId' => $member['mb_id'], 'entId' => $member['mb_entId'], 'penId' => $pen_id ));
+      $data = $res['data'][0];
+      echo("
+      setTimeout(function() { 
+        select_pen(
+          {
+            penId: '" . $data['penId'] . "', penNm: '" . $data['penNm'] . "', penLtmNum: '" . $data['penLtmNum'] . "',            
+            penConNum: '" . $data['penConNum'] . "', penRecGraCd: '" . $data['penRecGraCd'] . "', penRecGraNm: '" . $data['penRecGraNm'] . "',            
+            penTypeCd: '" . $data['penTypeCd'] . "', penTypeNm: '" . $data['penTypeNm'] . "', penBirth: '" . $data['penBirth'] . "', penGender: '" . $data['penGender'] . "',
+          }
+        );
+      }, 95);
+      setTimeout(function() { $('" . ( ($data['penConNum'])?".ipt_im_sch":"#ms_pen_hp" ) . "').focus();  }, 150);
+      ");
+    } else if( $_GET['tmp_recipient_nm'] && $tmp_recipient_nm == $_GET['tmp_recipient_nm'] ) {
       echo("
         $('#pen_type_0').prop('checked', true);
         $('#ms_pen_nm').val('".$tmp_recipient_nm."');
