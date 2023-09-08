@@ -793,7 +793,7 @@ $( document ).ready(function() {
     var item = $("input[name='od_id[]']:checked");
     for(var i = 0; i < item.length; i++) {
       od_id.push($(item[i]).val());
-	  if($("#delivery_company_"+$(item[i]).val()).val() != "대한통운"){
+	  if($(item[i]).data('delivery-company') != "대한통운"){
 		  delivery_company = 1;
 	  }
     }
@@ -858,7 +858,7 @@ $( document ).ready(function() {
     var item = $("input[name='od_id[]']:checked");
     for(var i = 0; i < item.length; i++) {
       od_id.push($(item[i]).val());
-	  if($("#delivery_company_"+$(item[i]).val()).val() != "대신택배"){
+	  if($(item[i]).data('delivery-company') != "대신택배"){
 		  delivery_company = 1;
 	  }
     }
