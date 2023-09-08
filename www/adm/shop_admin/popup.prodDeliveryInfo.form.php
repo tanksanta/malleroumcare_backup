@@ -625,9 +625,11 @@ $partners = get_partner_members();
               if(row['status'] === 'disable') {
                 $tr.addClass('complete2');
                 $tr.find('a.deliveryCntBtn').addClass('disable').text(row['text']);
+				$tr.find('#delivery_company_'+row['ct_id']).val(row['text2']);
               } else {
                 $tr.removeClass('complete2');
                 $tr.find('a.deliveryCntBtn').removeClass('disable').text(row['text']);
+				$tr.find('#delivery_company_'+row['ct_id']).val(row['text2']);
               }
             }
           } else {
