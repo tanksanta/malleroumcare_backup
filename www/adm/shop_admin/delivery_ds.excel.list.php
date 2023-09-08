@@ -454,7 +454,7 @@
 	  $od_memo = $it["it_name_qty"].$od["od_memo"];
       $rows[] = [ 
         preg_replace("/[^0-9\-]*/s", "",$od["od_b_tel"]),//수화주전화1
-		(($od["od_b_hp"] != "")? preg_replace("/[^0-9\-]*/s", "",$od["od_b_hp"]):preg_replace("/[^0-9\-]*/s", "",$od["od_b_tel"]))),//수화주전화2
+		(($od["od_b_hp"] != "")? preg_replace("/[^0-9\-]*/s", "",$od["od_b_hp"]):preg_replace("/[^0-9\-]*/s", "",$od["od_b_tel"])),//수화주전화2
         getSubstring($od["od_b_name"],30),//수화주명 30byte
 		getSubstring($it['addr'],100),//주소 100byte 
         $it['ct_qty'],//수량
