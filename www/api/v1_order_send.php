@@ -621,6 +621,8 @@ $log_txt .= $json_string."\r\n";
 								$_array_item[$i]["item_opt_id"][$j]["io_qty"] = base64_encode($row_o["io_stock_qty"]);//상품옵션수량
 							$returnArray["_array_item"][$i]["item_opt_id"][$j]["io_sold_out"] = $row_o["io_sold_out"];
 								$_array_item[$i]["item_opt_id"][$j]["io_sold_out"] = base64_encode($row_o["io_sold_out"]);//상품옵션일시품절 0:사용안함,1:사용함
+							$returnArray["_array_item"][$i]["item_opt_id"][$j]["io_thezone"] = $row_o["io_thezone"];
+								$_array_item[$i]["item_opt_id"][$j]["io_thezone"] = base64_encode($row_o["io_thezone"]);//품목코드(이카운트코드)
 							$j++;
 						}
 					//}
