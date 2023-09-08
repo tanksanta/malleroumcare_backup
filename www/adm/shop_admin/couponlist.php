@@ -554,7 +554,7 @@ $qstr = "type={$type}&amp;cp_expiration={$cp_expiration}&amp;sel_cp_method={$sel
 
 
         <tr class="<?php echo $bg; ?>">
-            <td class="cp_index td_numsmall"><?=($total_count-($page-1)*15)-$i;?></td> <!-- 인덱스 -->
+            <td class="cp_index td_numsmall"><?=($total_count-($page-1)*$rows)-$i;?></td> <!-- 인덱스 -->
             <td class="cp_id td_category1"><?php echo $row['cp_id']; ?></td> <!-- 쿠폰ID -->
             <td class="cp_user_id td_category3"><?php echo $row['coupon_user_id']; ?></td> <!-- 쿠폰받은 회원 ID -->
             <td class="cp_user_name td_type td_center"><?php echo $row['coupon_user_name']; ?></td> <!-- 쿠폰받은 회원 이름 -->
