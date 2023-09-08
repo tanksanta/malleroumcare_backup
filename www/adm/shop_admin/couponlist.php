@@ -113,6 +113,12 @@ if ($sel_field) {
   }
 }
 
+// 초기 3개월 범위 적용
+if (!$fr_date && !$to_date&&!$search_yn) {
+    $fr_date = date("Y-m-d", strtotime("-3 month"));
+    $to_date = date("Y-m-d");
+}
+
 // 날짜 검색
 if ($fr_date || $to_date) {
   switch ($date_searching_option) {
@@ -127,6 +133,10 @@ if ($fr_date || $to_date) {
     case '2' : // 사용가능기간
       $sql_fr_date = $fr_date?" date_format(c.cp_end, '%Y-%m-%d') >= date_format('{$fr_date}', '%Y-%m-%d') " :"";
       $sql_to_date = $to_date?" date_format(c.cp_start, '%Y-%m-%d') <= date_format('{$to_date}', '%Y-%m-%d') " :"";
+      break;
+	default : //생성일자
+	  $sql_fr_date = $fr_date?" date_format(c.cp_datetime, '%Y-%m-%d') >= date_format('{$fr_date}', '%Y-%m-%d') " :"";
+      $sql_to_date = $to_date?" date_format(c.cp_datetime, '%Y-%m-%d') <= date_format('{$to_date}', '%Y-%m-%d') " :"";
       break;
   }
   if($fr_date && $to_date) {
@@ -184,11 +194,7 @@ $sql = "
 ";
 $result = sql_query($sql, true);
 
-// 초기 3개월 범위 적용
-if (!$fr_date && !$to_date&&!$search_yn) {
-    $fr_date = date("Y-m-d", strtotime("-3 month"));
-    $to_date = date("Y-m-d");
-}
+
 
 // 기간 구분 초기화
 if(!$date_searching_option) $date_searching_option = '0';
@@ -554,7 +560,7 @@ $qstr = "type={$type}&amp;cp_expiration={$cp_expiration}&amp;sel_cp_method={$sel
 
 
         <tr class="<?php echo $bg; ?>">
-            <td class="cp_index td_numsmall"><?=($total_count-($page-1)*15)-$i;?></td> <!-- 인덱스 -->
+            <td class="cp_index td_numsmall"><?=($total_count-($page-1)*$rows)-$i;?></td> <!-- 인덱스 -->
             <td class="cp_id td_category1"><?php echo $row['cp_id']; ?></td> <!-- 쿠폰ID -->
             <td class="cp_user_id td_category3"><?php echo $row['coupon_user_id']; ?></td> <!-- 쿠폰받은 회원 ID -->
             <td class="cp_user_name td_type td_center"><?php echo $row['coupon_user_name']; ?></td> <!-- 쿠폰받은 회원 이름 -->
