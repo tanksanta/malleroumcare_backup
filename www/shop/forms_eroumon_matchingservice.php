@@ -85,14 +85,17 @@
             // 엑셀 데이터 검색
             for ($row = 2; $row <= $highestRow; $row++) {
                 // 현재 행 데이터 가져오기
-                $rowData = $sheet->rangeToArray('A' . $row . ':M' . $row, NULL, TRUE, FALSE)[0];
+                $rowData = $sheet->rangeToArray('B' . $row . ':C' . $row, NULL, TRUE, FALSE)[0];
 
                 // 현재 행 데이터에서 단어 검색
                 foreach ($rowData as $cellValue) {
                     if (strpos($cellValue, $searchWord) !== false) {
                         // 검색 결과를 배열에 추가 (현재 행의 데이터 전체를 저장)
-                        $result = $rowData;
-                        break; // 한 행에서 최초로 검색 단어를 발견하면 다음 행으로 넘어갑니다.
+                        
+                        if( trim($cellValue) == $searchWord ) { // 23.09.11 : 서원 - 아이디 체크 부분 버그 수정.
+                            $result = $rowData;
+                            break; // 한 행에서 최초로 검색 단어를 발견하면 다음 행으로 넘어갑니다.
+                       }
                     }
                 }
             }
