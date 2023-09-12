@@ -293,7 +293,7 @@ if(preg_match($mobile_agent, $_SERVER['HTTP_USER_AGENT'])){
                         $sql = 'SELECT  `it_taxInfo`, `it_img1`, `it_cust_price` FROM `g5_shop_item` WHERE `it_id`="'.$prodId.'"';
 						$row = sql_fetch($sql);
                         $sql2 = "SELECT sum(ct_qty) as cnt FROM g5_shop_cart 
-                            WHERE it_id = '{$prodId}' AND mb_id = '{$member['mb_id']}' 
+                            WHERE it_id = '{$prodId}' AND mb_id = '{$member['mb_id']}' AND od_del_yn = 'N'
                             AND (ct_status = '주문' OR ct_status = '입금' OR ct_status = '준비' OR ct_status = '출고준비');";
                         $row2 = sql_fetch($sql2);
 						//추가

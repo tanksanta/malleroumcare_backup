@@ -282,8 +282,8 @@ $row = sql_fetch($sql);
           <?php
           $sql_list = [];
           $sql = "SELECT sum(ct_qty) as cnt FROM g5_shop_cart
-              WHERE it_id = '{$_GET['prodId']}' AND mb_id = '{$member['mb_id']}'
-              AND (ct_status = '주문' OR ct_status = '입금' OR ct_status = '준비' OR ct_status = '출고준비' OR ct_status = '배송');";
+              WHERE it_id = '{$_GET['prodId']}' AND mb_id = '{$member['mb_id']}' AND od_del_yn = 'N'
+              AND (ct_status = '주문' OR ct_status = '입금' OR ct_status = '준비' OR ct_status = '출고준비');";
           $sql_result = sql_fetch($sql);
           if ($sql_result['cnt'] > 0) {
             // $option = str_replace("색상:", "", $row['ct_option']);
