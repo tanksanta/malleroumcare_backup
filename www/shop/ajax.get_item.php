@@ -66,7 +66,7 @@ if($eform) {
   $prodsupyn_sql = '';
 }
 */
-$nonReimbursement = $eform!=1 ?" OR a.ca_id LIKE '70%'":"";
+$nonReimbursement = $eform!=1 ?" OR a.ca_id LIKE '70%' OR a.ca_id LIKE '80%'":"";
 $prodsupyn_sql = $eform!=1 ?" AND a.prodSupYn = 'Y' ":"";
 
 $sql = "
@@ -116,6 +116,7 @@ $sql = "
     it_type9,
     it_type10,
     it_type11,
+	it_type12,
     it_expected_warehousing_date
   FROM
     {$g5['g5_shop_item_table']} a
@@ -164,6 +165,7 @@ while ( $row = sql_fetch_array($result) ) {
   $gubun_text = '판매';
   if($gubun == '01') $gubun_text = '대여';
   else if($gubun == '02') $gubun_text = '비급여';
+  else if($gubun == '03') $gubun_text = '보장구';
 
   $row['gubun'] = $gubun_text;
 

@@ -620,6 +620,9 @@ $(function() {
                     <?php if(substr($item[$i]["ca_id"], 0, 2) == 20) { ?>
                     <i class="icon02">대여</i>
                     <?php } ?>
+			  		<?php if(substr($item[$i]["ca_id"], 0, 2) == 80) { ?>
+                    <i class="icon03">보장구</i>
+                    <?php } ?>
                     <?php if(is_benefit_item($item[$i])) { ?>
                     <i class="icon03">비급여</i>
                     <?php } ?>

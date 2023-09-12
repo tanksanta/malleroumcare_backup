@@ -137,7 +137,7 @@ if (gettype($ct_delivery_saved) == 'string' && $ct_delivery_saved !== '') {
   }
 }
 
-// 급여, 비급여
+// 급여, 비급여, 보장구
 $gubun_text = "전체";
 if (gettype($gubun) == 'string' && $gubun !== '') {  
   if ($gubun == '10'){
@@ -146,6 +146,9 @@ if (gettype($gubun) == 'string' && $gubun !== '') {
   }else if ($gubun == '70'){
     $where[] = " ( substring(ca_id,1,2) = '70' ) ";
 	$gubun_text = "비급여";
+  }else if ($gubun == '80'){
+    $where[] = " ( substring(ca_id,1,2) = '80' ) ";
+	$gubun_text = "보장구";
   }
 }
 

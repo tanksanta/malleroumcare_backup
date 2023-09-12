@@ -150,6 +150,7 @@ include_once($skin_path.'/search.skin.form.php');
   $gubun_text = '판매';
   if($gubun == '01') $gubun_text = '대여';
   else if($gubun == '02') $gubun_text = '비급여';
+  else if($gubun == '03') $gubun_text = '보장구';
 	?>
 		<li class="<?=$list[$i]["it_id"]?>" data-ca="<?=substr($list[$i]["ca_id"], 0, 2)?>">
 			<a class="it_link" href="<?=$list[$i]["href"]?>">
@@ -269,6 +270,7 @@ include_once($skin_path.'/search.skin.form.php');
         <?php if($list[$i]['it_type9']){ ?><p class="p_box" style="border:1px solid <?=$default['de_it_type9_color']?>; color:<?=$default['de_it_type9_color']?>;"><?=$default['de_it_type9_name']?></p><?php } ?>
         <?php if($list[$i]['it_type10'] || $soldout_ck){ ?><p class="p_box" style="border:1px solid <?=$default['de_it_type10_color']?>; color:<?=$default['de_it_type10_color']?>;"><?=$default['de_it_type10_name']?></p><?php } ?>
         <?php if($list[$i]['it_type11']){ ?><p class="p_box" style="border:1px solid <?=$default['de_it_type11_color']?>; color:<?=$default['de_it_type11_color']?>;"><?=substr($list[$i]['it_deadline'],0,5)." ".$default['de_it_type11_name']?></p><?php } ?>
+		<?php if($list[$i]['it_type12']){ ?><p class="p_box" style="border:1px solid <?=$default['de_it_type12_color']?>; color:<?=$default['de_it_type12_color']?>;"><?=$default['de_it_type12_name']?></p><?php } ?>
 			</div>
         <?php
         $tag_list = apms_get_text($list[$i]['pt_tag']);

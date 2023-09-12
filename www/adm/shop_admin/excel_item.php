@@ -70,6 +70,7 @@
         //급여구분
         switch (substr($row['ca_id'],0,2)) {
             case '70': $ca_id="비급여"; break;
+			case '80': $ca_id="보장구"; break;
             default:  $ca_id="급여"; break;
         }
 

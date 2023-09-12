@@ -131,6 +131,8 @@ if (gettype($gubun) == 'string' && $gubun !== '') {
     $where[] = " ( substring(ca_id,1,2) = '10' or substring(ca_id,1,2) = '20' ) ";
   else if ($gubun == '70')
     $where[] = " ( substring(ca_id,1,2) = '70' ) ";
+  else if ($gubun == '80')
+    $where[] = " ( substring(ca_id,1,2) = '80' ) ";
   $qstr .= "&amp;gubun=".$gubun;
 }
 
@@ -448,6 +450,7 @@ $warehouse_list = get_warehouses();
             <option value="">전체</option>
             <option value="10" <?php echo get_selected($gubun, '10'); ?>>급여</option>
             <option value="70" <?php echo get_selected($gubun, '70'); ?>>비급여</option>
+			<option value="80" <?php echo get_selected($gubun, '80'); ?>>보장구</option>
 			</select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	
 			위탁엑셀다운로드&nbsp;&nbsp;
             <select name="ct_is_delivery_excel_downloaded" id="ct_is_delivery_excel_downloaded">
@@ -614,7 +617,7 @@ $warehouse_list = get_warehouses();
 		<td align="center"><a href="samhwa_orderform.php?od_id=<?=$order["od_id"];?>&sub_menu=400405" target="_blank"><?=$order["od_id"];//주문번호 ?></a></td>
 		<td align="center"><?=$order["it_name"].(($order["ct_option"] != $order["it_name"])?" [".$order["ct_option"]."]":"");//상품명 ?></td>
 		<td align="center" <?=($order['ct_barcode_insert'] >= $order['ct_qty'] || substr($order["ca_id"],0,2) == "70")?"":"style='color:red;'"; ?>><span  style='cursor:pointer;' onClick="barcode_insert('<?=$order["ct_id"]?>')"><?=(substr($order["ca_id"],0,2) != "70")?$order['ct_barcode_insert']."/".$order['ct_qty']:$order['ct_qty'];//바코드/수량 ?></span></td>
-		<td align="center"><?=(substr($order["ca_id"],0,2) == "70")?"비급여":"급여";//급여구분 ?></td>		
+		<td align="center"><?=(substr($order["ca_id"],0,2) == "70")?"비급여":(substr($order["ca_id"],0,2) == "80")?"보장구":"급여";//급여구분 ?></td>		
 		<td align="center" <?=($order['ct_combine_ct_id']||$order['ct_delivery_num'])?"":"style='color:red;'";?>><?=($order['ct_combine_ct_id']||$order['ct_delivery_num'])?"입력완료":"미입력";//배송정보 ?></td>
         <td align="center"><?=$ct_direct_delivery_partner_name;//직배송파트너?></td>
 		<td align="center"><?=$order["od_b_name"];//수령인 ?></a></td>

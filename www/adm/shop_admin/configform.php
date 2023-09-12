@@ -1370,6 +1370,12 @@ if( function_exists('pg_setting_check') ){
                 &nbsp;&nbsp;&nbsp;
                 <label for="it_type11_color">Color:</label>
                 <input type="text" name="it_type11_color" value="<?php echo $default['de_it_type11_color']; ?>" id="it_type11_color" class="frm_input" size="20" placeholder="태그11 색상">
+				<br/>
+                <label for="it_type12_name">Name:</label>
+                <input type="text" name="it_type12_name" value="<?php echo $default['de_it_type12_name']; ?>" id="it_type12_name" class="frm_input" size="20" placeholder="태그12 이름">
+				&nbsp;&nbsp;&nbsp;
+                <label for="it_type12_color">Color:</label>
+                <input type="text" name="it_type12_color" value="<?php echo $default['de_it_type12_color']; ?>" id="it_type12_color" class="frm_input" size="20" placeholder="태그12 색상">
             </td>
         </tr>
         <tr>

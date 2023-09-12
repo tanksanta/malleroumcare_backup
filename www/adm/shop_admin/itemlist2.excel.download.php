@@ -66,6 +66,9 @@ if($_REQUEST["gubun"] != ""){//급여구분
 	if($_REQUEST["gubun"] == "70"){//비급여
 		$sql_search .= " AND a.ca_id like '70%' ";
 		$gubun_text = "비급여";
+	}elseif($_REQUEST["gubun"] == "80"){//보장구
+		$sql_search .= " AND a.ca_id like '80%' ";
+		$gubun_text = "보장구";
 	}else{//급여
 		$sql_search .= " AND (a.ca_id like '10%' or a.ca_id like '20%') ";
 		$gubun_text = "급여";
@@ -215,7 +218,7 @@ while ($row = sql_fetch_array($result)) {
 		}
 		$mb = get_member($row['it_direct_delivery_partner']);
 		$prodSupYn =($row["prodSupYn"] == "Y") ? "유통" : "비유통";
-		$ca_id = (substr($row["ca_id"],0,2) == "70")?"비급여":"급여";
+		$ca_id = (substr($row["ca_id"],0,2) == "70")?"비급여":(substr($row["ca_id"],0,2) == "80")?"보장구":"급여";
 		$it_is_direct_delivery =($row["it_is_direct_delivery"] == 0)?"":"Y";
   $data[] = [
     $num,

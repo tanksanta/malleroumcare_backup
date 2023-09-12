@@ -679,14 +679,13 @@ if($od["od_b_tel"]) {
           //$(ul).find('li').eq(i).find('.notall').val( (parseInt( li_val )+p_num) );
 
           if( (_check==="Y") ) {
-            p_num++;
-            // 연번 입력
+            p_num++; // 연번 입력
             $(ul).find('li').eq(i).find('.notall').val( (parseInt( li_val )+p_num) );
           } else {
             
             // 비어 있는 칸에만 연번 입력
             if( !$(ul).find('li').eq(i).find('.notall').val() ) {
-              p_num++;
+              p_num++; // 연번 입력
               $(ul).find('li').eq(i).find('.notall').val( (parseInt( li_val )+p_num) );
             }
           }
@@ -702,7 +701,6 @@ if($od["od_b_tel"]) {
             } else {
 
               if( confirm("정확하지 않은 바코드 정보가 존재 합니다.\n바코드값: " + $(ul).find('li').eq(i).find('.notall').val() + "\n해당 필드의 바코드 정보를 덮어쓰기 하시겠습니까?") ) {
-                p_num++;
                 $(ul).find('li').eq(i).find('.notall').val( (parseInt( li_val )+p_num) );
               }
               

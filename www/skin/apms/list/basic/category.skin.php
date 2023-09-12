@@ -91,7 +91,7 @@ $list_page = $_SERVER['SCRIPT_NAME'].'?ca_id='.$ca_id.$ca_sub_url.$sort_url.$sup
 $list_sort_href = './list.php?ca_id='.$ca_id.$ca_sub_url.$sup_url.$q_url.$it_type_url.'&sort=';
 
 // 비급여 체크
-$isBenefit = substr($ca_id, 0, 2) == '70' ? true : false;
+$isBenefit = (substr($ca_id, 0, 2) == '70' || substr($ca_id, 0, 2) == '80') ? true : false;
 ?>
 <div class="sub_section_tit">
   <a href="<?php echo G5_SHOP_URL; ?>/list.php?ca_id=<?php echo $one_cate_result['ca_id']; ?>">
@@ -189,7 +189,7 @@ $(function() {
 			<div class="cate_head">기타설정</div>
 			<div class="cate_body">
         <?php
-        for($i = 1; $i <= 10; $i++) {
+        for($i = 1; $i <= 12; $i++) {
           if($default['de_it_type'.$i.'_name']) {
             echo '<a href="'.$ca_url.$ca_sub_url.$sort_url.$sup_url.$q_url.(in_array($i, $it_type) ? make_it_type_url(array_diff($it_type, [$i])) : '&it_type%5B%5D='.$i).'"'.(in_array($i, $it_type) ? ' class="active"' : '').'>';
             echo $default['de_it_type'.$i.'_name'];

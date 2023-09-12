@@ -55,6 +55,8 @@ if($_REQUEST["prodSupYn"] != ""){//유통구분
 if($_REQUEST["gubun"] != ""){//급여구분
 	if($_REQUEST["gubun"] == "70"){//비급여
 		$sql_search .= " AND a.ca_id like '70%' ";
+	}elseif($_REQUEST["gubun"] == "80"){//보장구
+		$sql_search .= " AND a.ca_id like '80%' ";
 	}else{//급여
 		$sql_search .= " AND (a.ca_id like '10%' or a.ca_id like '20%') ";
 	}
@@ -237,6 +239,7 @@ $warehouse_list = get_warehouses();
             <option value="">전체</option>
             <option value="10" <?php echo get_selected($gubun, '10'); ?>>급여</option>
             <option value="70" <?php echo get_selected($gubun, '70'); ?>>비급여</option>
+			<option value="80" <?php echo get_selected($gubun, '80'); ?>>보장구</option>
           </select>
         </td>
 		<td width="135">
@@ -391,7 +394,7 @@ $warehouse_list = get_warehouses();
     <tr class="<?php echo $bg; ?>">
         <td align="center"><?=$row["it_id"];//상품ID ?></td>
         <td align="center"><?=($row["prodSupYn"] == "Y") ? "유통" : "비유통";//유통유무?></td>
-		<td align="center"><?=(substr($row["ca_id"],0,2) == "70")?"비급여":"급여";//급여유무 ?></a></td>
+		<td align="center"><?=(substr($row["ca_id"],0,2) == "70")?"비급여":(substr($row["ca_id"],0,2) == "80")?"보장구":"급여";//급여유무 ?></a></td>
 		<td align="center"><?=$row["it_thezone2"];//상품코드 ?></td>
 		<td align="center"><?=$row["ca_name"];//카테고리 ?></td>
    		<td align="center"><?=$row["it_name"];//상품명 ?></td>
@@ -405,7 +408,7 @@ $warehouse_list = get_warehouses();
 		<td align="center"><?=($row["it_deadline"] == "00:00:00")?"":substr($row["it_deadline"],0,5);//주문마감시간 ?></td>
 		<td align="center"><?=substr($row["it_time"],0,10);//상품등록일자 ?></td>
 		<td align="center"><?=$row["it_update_time2"];//상품수정일자 ?></td>
-		<td align="center"><a href="javascript:;" onClick="go_edit('<?=$row["it_id"];//수정 ?>','<?=($row["prodSupYn"] == "Y") ? "유통" : "비유통";//유통유무?>','<?=(substr($row["ca_id"],0,2) == "70")?"비급여":"급여";//급여유무 ?>','<?=$row["it_name"];//상품명 ?>','<?=$row["it_is_direct_delivery"]?>','<?=$row["it_direct_delivery_partner"];//회원ID ?>','<?=($row["it_deadline"] == "00:00:00")?"":$row["it_deadline"];//주문마감시간 ?>','<?=$row["it_default_warehouse"];//출하창고 ?>','<?=$row["it_admin_memo"];//관리자메모 ?>')"><font color="blue">수정</font></a></td>
+		<td align="center"><a href="javascript:;" onClick="go_edit('<?=$row["it_id"];//수정 ?>','<?=($row["prodSupYn"] == "Y") ? "유통" : "비유통";//유통유무?>','<?=(substr($row["ca_id"],0,2) == "70")?"비급여":(substr($row["ca_id"],0,2) == "80")?"보장구":"급여";//급여유무 ?>','<?=$row["it_name"];//상품명 ?>','<?=$row["it_is_direct_delivery"]?>','<?=$row["it_direct_delivery_partner"];//회원ID ?>','<?=($row["it_deadline"] == "00:00:00")?"":$row["it_deadline"];//주문마감시간 ?>','<?=$row["it_default_warehouse"];//출하창고 ?>','<?=$row["it_admin_memo"];//관리자메모 ?>')"><font color="blue">수정</font></a></td>
 		<td align="center"><a href="itemform.php?w=u&it_id=<?=$row["it_id"]?>" target="_blank"><font color="blue">수정</font></a></td>
     </tr>
     <?php

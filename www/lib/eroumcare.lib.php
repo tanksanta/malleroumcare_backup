@@ -646,7 +646,8 @@ $rental_product_cate_table = array(
 $cate_gubun_table = array(
 	'10' => '00', /* 판매 */
 	'20' => '01', /* 대여 */
-	'70' => '02' /* 비급여 */
+	'70' => '02', /* 비급여 */
+	'80' => '03' /* 보장구 */
 );
 
 $recipient_link_state = array(
