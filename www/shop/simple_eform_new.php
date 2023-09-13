@@ -219,7 +219,8 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 </style>
 <section class="wrap">
   <div class="sub_section_tit" style="border-bottom:1px solid #aaaaaa;">
-    간편 계약서 작성 <a href="javascript:void(0);" onclick="window.open('<?=G5_DATA_URL;?>/file/이로움_스마트_서비스_03_간편_계약서_및_비대면_서명.pdf');" class="thkc_btnManual">매뉴얼 확인하기</a>
+    <?php /* 23.09.13 : 서원 - 스마트 서비스 매뉴얼 추가 */?>
+    간편 계약서 작성 <a href="javascript:void(0);" onclick="window.open('<?=G5_DATA_URL;?>/file/이로움_스마트_서비스_03_간편_계약서_및_비대면_서명.pdf');" class="thkc_btnManual">사용방법 확인하기</a>
     <div class="r_btn_area2">
       <a href="/shop/electronic_manage_new.php" class="btn eroumcare_btn2">목록보기</a>
 	  <a href="javascript:dc_view();" id="dc_view" class="btn eroumcare_btn2 btn-black" disabled>미리보기</a>

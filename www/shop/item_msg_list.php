@@ -88,7 +88,8 @@ add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/item_msg.c
 ?>
 
 <section class="wrap">
-  <div class="sub_section_tit">간편 제안서</div>
+  <?php /* 23.09.13 : 서원 - 스마트 서비스 매뉴얼 추가 */?>
+  <div class="sub_section_tit">간편 제안서 <a href="javascript:void(0);" onclick="window.open('<?=G5_DATA_URL;?>/file/이로움_스마트_서비스_02_간편_제안서_작성.pdf');" class="thkc_btnManual">사용방법 확인하기</a></div>
   <div class="inner">
     <div class="im_desc_wr">
       <a href="item_msg_write.php" class="btn_im_send active">상품 제안서 작성하기</a>
