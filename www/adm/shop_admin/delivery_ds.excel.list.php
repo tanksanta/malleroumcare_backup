@@ -375,7 +375,7 @@
   $ct_items = [];
   $combine_ct_items = [];
   for($ii = 0; $ii < count($ct_ids); $ii++) {
-
+	$ct_id = "";
     $it = sql_fetch("
       SELECT cart.*, item.it_thezone2
       FROM g5_shop_cart as cart
@@ -423,6 +423,7 @@
         array_push($ct_items, $it);
     }
     else {
+		$it['ct_id'] = $it['ct_combine_ct_id'];
         array_push($combine_ct_items, $it);
     }
   }
@@ -464,7 +465,7 @@
 		"택배",//운송상품
 		$it['zip'],//우편번호
 		"",//도착영업소
-		"티에이치케이컴퍼니",//발화주명
+		"티에이치케이컴퍼니-".$it['ct_id'],//발화주명:ct_id
 		"1533-5088",//발화주전화번호
 		"0",//발종제비용
 		"0",//운임
@@ -511,7 +512,7 @@ function getSubstring($str, $length){
   $headers = array("수화주전화1", "수화주전화2", "수화주명", "주소", "수량", "품명", "포장", "운임", "운송상품", "우편번호", "도착영업소", "발화주명", "발화주전화번호", "발종제비용", "운임", "도착제비용","총운임","특기사항");
   $data = array_merge(array($headers), $rows);
     
-  $widths  = array(15, 15, 30, 50, 10, 30, 10, 10, 10, 10, 10, 30, 15, 10, 10, 10, 10, 60);
+  $widths  = array(15, 15, 30, 50, 10, 30, 10, 10, 10, 10, 10, 50, 15, 10, 10, 10, 10, 60);
   $header_bgcolor = 'FFABCDEF';
   $last_char = column_char(count($headers) - 1);
 
