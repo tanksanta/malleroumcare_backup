@@ -107,6 +107,25 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
 .popModal label { display: inline-block; max-width: 100%; margin-bottom: 5px; font-weight: 700; }
 .popModal input[type=file] { display: block; }
 .popModal .help-block { padding: 0; display: block; margin-top: 5px; margin-bottom: 10px; color: #737373; }
+
+.popup_box2 {
+		display: none;
+		position: fixed;
+		width: 100%;
+		height: 100%;
+		left: 0;
+		top: 0;
+		z-index: 9999;
+		background: rgba(0, 0, 0, 0.8);		
+	}
+
+	.popup_box_con {
+		padding:20px;
+		position: relative;
+		background: #ffffff;
+		z-index: 99999;
+		margin-left:-206px;
+	}
 </style>
 
 <script src="<?php echo G5_ADMIN_URL; ?>/shop_admin/js/orderlist.js?ver=<?php echo time(); ?>"></script>
@@ -149,6 +168,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
     <button id="deliveryExcelDownloadBtn">주문다운로드</button>
 	<button id="CJExcelDownloadBtn">CJ엑셀다운로드</button>
 	<button id="DSExcelDownloadBtn">DS엑셀다운로드</button>
+	<button id="edi_upload_Btn" onClick="edi_upload()">운송장업로드</button>
     <button id="delivery_edi_send_all">로젠 EDI 선택 전송</button>
     <button id="delivery_edi_send_all" data-type="resend">로젠 EDI 재전송</button>
     <button id="delivery_edi_return_all">송장리턴</button>
@@ -185,6 +205,29 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
     <img src="/shop/img/loading.gif" alt="loading">
     <button onclick="cancelExcelDownload();" class="btn_cancel_excel">취소</button>
   </div>
+</div>
+
+<div id="popup_box3" class="popup_box2">
+    <div id="" class="popup_box_con" style="height:230px;margin-top:-115px;margin-left:-150px;width:300px;left:50%;top:50%;border-radius:10px;">
+		<div style="top:0px;width:100%;border-bottom:1px solid #333333;height:25px;">
+		<span class="" style="float:left;font-weight:bold;font-size:14px;">운송장 업로드</span>
+		<span style="float:right;cursor:pointer;" onClick="edi_close()" title="돌아가기" >Ⅹ</span>
+		</div>
+<form method="post" id="uploadForm" enctype="multipart/form-data">
+		<div class="form-group" style="margin-top:30px;">
+			택배사 선택&nbsp;&nbsp;:&nbsp;&nbsp;
+			<select name="edi_company" class="sb1" style="width:150px;margin-top:-5px;">
+				<option value="대한통운">대한통운</option>
+				<option value="대신택배">대신택배</option>
+			</select><br><br>
+			<input type="file" name="edi_file" id="edi_file">			
+        </div>	
+		<div style="margin-top:30px;text-align:center;border-top:1px solid #333333;height:40px;padding-top:10px;">
+			<input type="button" value="등록" onclick="upload()" style="height:30px;line-height:30px !important;padding: 0 13px;vertical-align: top;font-weight: bold;letter-spacing: -1px;background-color: white;border: 1px solid #b5b5b5;color: black !important;">
+        </div>
+</form>
+	</div>
+	
 </div>
 
 <form name="frmsamhwaorderlist" id="frmsamhwaorderlist">
@@ -577,6 +620,48 @@ function cancelExcelDownload() {
     excel_downloader.abort();
   }
   $('#loading_excel').hide();
+}
+
+function edi_upload(){//운송장업로드팝업
+	$('body').addClass('modal-open');
+	$('#popup_box3').show();
+}
+
+function edi_close(){
+	$('#popup_box3').hide();
+	$('body').removeClass('modal-open');
+}
+
+function upload() {//edi_file 업로드
+  const edi_file = $("#edi_file")[0];
+  // 파일을 여러개 선택할 수 있으므로 files 라는 객체에 담긴다.
+  console.log("edi_file: ", edi_file.files)
+
+  if(edi_file.files.length === 0){
+    alert("파일은 선택해주세요");
+    return;
+  }
+
+  const formData = new FormData(document.getElementById("uploadForm"));
+
+  $.ajax({
+    type:"POST",
+    url: "ajax.edi_excel_upload.php",
+    cache: false,
+    processData: false,
+    contentType: false,
+    data: formData,
+	dataType: 'json'
+  })
+  .done(function(data) {
+    alert(data.message);
+    window.location.reload();
+  })
+  .fail(function($xhr) {
+    var data = $xhr.responseJSON;
+    alert(data && data.message);
+	$("#edi_file").val("");
+  });
 }
 
 $( document ).ready(function() {

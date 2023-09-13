@@ -375,7 +375,7 @@
   $ct_items = [];
   $combine_ct_items = [];
   for($ii = 0; $ii < count($ct_ids); $ii++) {
-
+	$ct_id = "";
     $it = sql_fetch("
       SELECT cart.*, item.it_thezone2
       FROM g5_shop_cart as cart
@@ -423,6 +423,7 @@
         array_push($ct_items, $it);
     }
     else {
+		$it['ct_id'] = $it['ct_combine_ct_id'];
         array_push($combine_ct_items, $it);
     }
   }
@@ -457,7 +458,7 @@
 		$it['addr'],//받는분주소
 		(($od["od_b_tel"] != "")? preg_replace("/[^0-9\-]*/s", "",$od["od_b_tel"]):preg_replace("/[^0-9\-]*/s", "",$od["od_b_hp"])),//받는분전화번호
 		$it['it_name_qty'],//내품명
-		(($od["od_memo"] != "")?' '.$od["od_memo"] : " 빠른 배송 부탁드립니다."),//배송메세지1
+		(($od["od_memo"] != "")?' '.$od["od_memo"] : " 빠른 배송 부탁드립니다.")."-".$it['ct_id'],//배송메세지1|ct_id
         $it["ct_delivery_cnt"], //박스수량
 		$it["ct_delivery_box_type"], //박스타입
       ];    
@@ -467,7 +468,7 @@
   $headers = array("받는분성명", "받는분주소(전체, 분할)", "받는분전화번호", "내품명", "배송메세지1", "박스수량", "박스타입");
   $data = array_merge(array($headers), $rows);
     
-  $widths  = array(20, 50, 20, 50, 40, 15, 15);
+  $widths  = array(20, 50, 20, 50, 60, 15, 15);
   $header_bgcolor = 'FFABCDEF';
   $last_char = column_char(count($headers) - 1);
 
