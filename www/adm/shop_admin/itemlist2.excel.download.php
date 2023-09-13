@@ -218,7 +218,7 @@ while ($row = sql_fetch_array($result)) {
 		}
 		$mb = get_member($row['it_direct_delivery_partner']);
 		$prodSupYn =($row["prodSupYn"] == "Y") ? "유통" : "비유통";
-		$ca_id = (substr($row["ca_id"],0,2) == "70")?"비급여":(substr($row["ca_id"],0,2) == "80")?"보장구":"급여";
+		$ca_id = (substr($row["ca_id"],0,2) == "70")?"비급여":((substr($row["ca_id"],0,2) == "80")?"보장구":"급여");
 		$it_is_direct_delivery =($row["it_is_direct_delivery"] == 0)?"":"Y";
   $data[] = [
     $num,

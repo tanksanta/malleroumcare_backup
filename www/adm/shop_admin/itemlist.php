@@ -89,7 +89,7 @@ else {
 
 // 상품태그
 $it_type_where = [];
-for($i = 1; $i <= 11; $i++) {
+for($i = 1; $i <= 12; $i++) {
   $it_type = 'it_type'.$i;
   if($_GET[$it_type]) {
     $it_type_where[] = " {$it_type} = 1 ";
