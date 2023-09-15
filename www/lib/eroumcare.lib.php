@@ -143,7 +143,10 @@ function get_carts_by_od_id($od_id, $delivery_yn = null, $where = null, $order_b
 					a.ct_is_direct_delivery,
           a.ct_send_direct_delivery,
           a.ct_send_direct_delivery_fax,
-          a.ct_send_direct_delivery_email
+          a.ct_send_direct_delivery_email,
+          b.it_use_short_barcode,
+          b.prodassistingdevicescode,
+          ( SELECT io_use_short_barcode FROM g5_shop_item_option AS o WHERE o.it_id = a.it_id AND o.io_id = a.io_id ) AS io_use_short_barcode
 			  from {$g5['g5_shop_cart_table']} a left join {$g5['g5_shop_item_table']} b on ( a.it_id = b.it_id )
 			  where a.od_id = '$od_id'
 			  $delivery_where
