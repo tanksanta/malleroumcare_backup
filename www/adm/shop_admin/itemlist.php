@@ -7,6 +7,31 @@ auth_check($auth[$sub_menu], "r");
 $g5['title'] = '상품관리';
 include_once (G5_ADMIN_PATH.'/admin.head.php');
 
+//상품 태그 추가 it_type12 보장구
+  $append_col = [];
+  // 쇼핑몰 설정값 가져오기 전에 추가로 들어간 컬럼이 있는지 확인
+  $sql_check_de = "show columns from g5_shop_default where field in ('de_it_type12_name');";
+  $res_check_de = sql_query($sql_check_de);
+  $sql_check_it = "show columns from g5_shop_item where field in ('it_type12');";
+  $res_check_it = sql_query($sql_check_it);
+
+  if(sql_num_rows($res_check_de) == 0){
+    $append_col[] = "alter table g5_shop_default add column de_it_type12_color varchar(20) default '' after de_it_type11_color;";
+    $append_col[] = "alter table g5_shop_default add column de_it_type12_name varchar(20) default '' after de_it_type11_color;";
+    $append_col[] = "update g5_shop_default set de_it_type12_name = '보장구', de_it_type12_color = '#996600';";
+  }
+  if(sql_num_rows($res_check_it) == 0){
+    $append_col[] = "alter table g5_shop_item add column it_type12 tinyint(4) default 0 COMMENT '상품태그12(1선택,0미선택)' after it_deadline;";
+	$append_col[] = "alter table g5_shop_item add column prodassistingdevicescode varchar(30) default '' COMMENT '장애인보장구바코드' after it_use_short_barcode;";
+  }
+
+  if(count($append_col)>0){
+    foreach($append_col as $value) {
+      sql_query($value);
+    }
+  } 
+
+
 // 분류
 $ca_list  = '<option value="">선택</option>'.PHP_EOL;
 $sql = " select * from {$g5['g5_shop_category_table']} ";
@@ -64,7 +89,7 @@ else {
 
 // 상품태그
 $it_type_where = [];
-for($i = 1; $i <= 11; $i++) {
+for($i = 1; $i <= 12; $i++) {
   $it_type = 'it_type'.$i;
   if($_GET[$it_type]) {
     $it_type_where[] = " {$it_type} = 1 ";
@@ -195,7 +220,7 @@ $flist = apms_form(1,0);
         <span style="display:inline-block; border:1px solid <?=$default['de_it_type5_color']?>;color:<?=$default['de_it_type5_color']?>"><?=$default['de_it_type5_name']?></span>
       </label>
       <?php
-      for($i = 6; $i <= 11; $i++) {
+      for($i = 6; $i <= 12; $i++) {
         $cur_it_type = 'it_type' . $i;
         if($default['de_'. $cur_it_type .'_name']) {
       ?>
@@ -440,7 +465,7 @@ $flist = apms_form(1,0);
             <input type="checkbox" name="it_type5[<?php echo $i; ?>]" value="1" <?php echo ($row['it_type5'] ? "checked" : ""); ?> id="it_type5_<?php echo $i; ?>">
             <label for="it_type5_<?php echo $i; ?>"><span style="border:1px solid <?php echo $default['de_it_type5_color']; ?>;color:<?php echo $default['de_it_type5_color']; ?>"><?php echo $default['de_it_type5_name']; ?></span></label>
             <?php
-            for($x = 6; $x <= 11; $x++) {
+            for($x = 6; $x <= 12; $x++) {
               $cur_it_type = 'it_type' . $x;
               if($default['de_'. $cur_it_type .'_name']) {
             ?>

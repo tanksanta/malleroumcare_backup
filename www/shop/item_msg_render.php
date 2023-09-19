@@ -8,13 +8,14 @@ foreach($items as $item) {
   $gubun = $cate_gubun_table[substr($it["ca_id"], 0, 2)];
   if($gubun == '01') $gubun = '대여';
   else if($gubun == '02') $gubun = '비급여';
+  else if($gubun == '03') $gubun = '보장구';
   else $gubun = '판매';
 
   $it['gubun'] = $gubun;
 
   $list[] = $it;
 
-  if($gubun != '비급여')
+  if($gubun != '비급여' && $gubun != '보장구')
     $total += $it['it_cust_price'];
 }
 
@@ -48,7 +49,7 @@ foreach($rec_arr as $wr_id) {
     <div class="im_sum_row im_flex">
       <div>
       <p class="im_sum_name"><?="{$it['it_name']} ({$it['gubun']})"?></p>
-      <?php if($it['gubun'] != '비급여') { ?>
+      <?php if($it['gubun'] != '비급여' && $it['gubun'] != '보장구') { ?>
       <p class="personal-price">
         ※ 본인부담금 <span>15%(<?=number_format($it["it_cust_price"] * 0.15)?>원)</span>, <span>9%(<?=number_format($it["it_cust_price"] * 0.09)?>원)</span>, <span>6%(<?=number_format($it["it_cust_price"] * 0.06)?>원)</span>
       </p>
@@ -81,7 +82,7 @@ foreach($rec_arr as $wr_id) {
           <p class="it_price">
             급여가 : <?php echo number_format($it["it_cust_price"]); ?>원
           </p>
-          <?php if($it['gubun'] != '비급여') { ?>
+          <?php if($it['gubun'] != '비급여'  && $it['gubun'] != '보장구') { ?>
           <p class="personal-price">
             ※ 본인부담금 <span>15%(<?=number_format($it["it_cust_price"] * 0.15)?>원)</span>, <span>9%(<?=number_format($it["it_cust_price"] * 0.09)?>원)</span>, <span>6%(<?=number_format($it["it_cust_price"] * 0.06)?>원)</span>
           </p>

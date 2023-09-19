@@ -14,10 +14,10 @@ $sql_search = "";
 // 유통/비유통/비급여 제품 검색
 if($no_option == 'nonReimbursement'){ // 간편 계약서에서 검색 시 : 유통+비유통+급여
     $sql_search .= " $where (a.ca_id LIKE '10%' OR a.ca_id LIKE '20%') ";
-}else { // 이외의 검색(간편 주문서 + 주문 변경 + 간편제안서) : 유통+급여+비급여
+}else { // 이외의 검색(간편 주문서 + 주문 변경 + 간편제안서) : 유통+급여+비급여+보장구
     $sql_search .= " $where prodSupYn = 'Y' ";
     $where = " and ";
-    $sql_search .= " $where (a.ca_id LIKE '10%' OR a.ca_id LIKE '20%' OR a.ca_id LIKE '70%') ";
+    $sql_search .= " $where (a.ca_id LIKE '10%' OR a.ca_id LIKE '20%' OR a.ca_id LIKE '70%' OR a.ca_id LIKE '80%') ";
 }
 
 $where = " and ";
@@ -39,7 +39,7 @@ if ($sca != "") {
     $sql_search .= " $where (a.ca_id like '$sca%' or a.ca_id2 like '$sca%' or a.ca_id3 like '$sca%') ";
 }
 
-$sql_search .= " $where (a.ca_id LIKE '10%' OR a.ca_id LIKE '20%' OR a.ca_id LIKE '70%') ";
+$sql_search .= " $where (a.ca_id LIKE '10%' OR a.ca_id LIKE '20%' OR a.ca_id LIKE '70%' OR a.ca_id LIKE '80%') ";
 $sql_search .= " $where a.it_id NOT IN ('PRO2021072200013', 'PRO2021072200012') "; // 체험상품 제외
 $sql_search .= " $where a.it_name NOT LIKE 'test%' "; // 테스트 상품 제외
 $sql_search .= " $where a.it_use = 1 "; // 판매 상품
@@ -107,7 +107,7 @@ $cate_70 = [];
 
 // 간편 계약서 검색시 비급여 카테고리 숨기기
 $sql = $no_option != 'nonReimbursement'
-    ?" select * from g5_shop_category where (ca_id LIKE '10%' OR ca_id LIKE '20%' OR ca_id LIKE '70%') and length(ca_id) = 4 order by ca_id asc "
+    ?" select * from g5_shop_category where (ca_id LIKE '10%' OR ca_id LIKE '20%' OR ca_id LIKE '70%' OR ca_id LIKE '80%') and length(ca_id) = 4 order by ca_id asc "
     :" select * from g5_shop_category where (ca_id LIKE '10%' OR ca_id LIKE '20%') and length(ca_id) = 4 order by ca_id asc ";
 $cate_result = sql_query($sql);
 
@@ -122,6 +122,9 @@ if($ca_id) {
             break;
         case '70':
             $cate_text .= ' / 비급여품목';
+            break;
+		 case '80':
+            $cate_text .= ' / 보장구품목';
             break;
     }
 }
@@ -146,6 +149,12 @@ while($cate = sql_fetch_array($cate_result)) {
             break;
         case '70':
             $cate_70[] = [
+                'ca_id' => $cate['ca_id'],
+                'ca_name' => $cate['ca_name']
+            ];
+            break;
+		case '80':
+            $cate_80[] = [
                 'ca_id' => $cate['ca_id'],
                 'ca_name' => $cate['ca_name']
             ];
@@ -247,6 +256,7 @@ while($cate = sql_fetch_array($cate_result)) {
         }
         ?>
     </div>
+
     <?php
     // 간편 계약서 검색시 비급여 카테고리 숨기기
     if($no_option != 'nonReimbursement') {
@@ -254,6 +264,13 @@ while($cate = sql_fetch_array($cate_result)) {
         $class = $ca_id == '70' ? 'class="active"' : '';
         echo '<a href="?no_option={$no_option}&ca_id=70"' . $class . '>비급여품목</a>';
         foreach ($cate_70 as $cate) {
+            echo "<a href=\"?no_option={$no_option}&ca_id={$cate['ca_id']}\"" . ($ca_id == $cate['ca_id'] ? ' class="active"' : '') . ">{$cate['ca_name']}</a>";
+        }
+        echo '</div>';
+		echo '<div class="cate">';
+        $class = $ca_id == '80' ? 'class="active"' : '';
+        echo '<a href="?no_option={$no_option}&ca_id=80"' . $class . '>보장구품목</a>';
+        foreach ($cate_80 as $cate) {
             echo "<a href=\"?no_option={$no_option}&ca_id={$cate['ca_id']}\"" . ($ca_id == $cate['ca_id'] ? ' class="active"' : '') . ">{$cate['ca_name']}</a>";
         }
         echo '</div>';
@@ -288,6 +305,12 @@ while($cate = sql_fetch_array($cate_result)) {
             <option value="70" <?=get_selected($ca_id, '70')?>>비급여품목</option>
             <?php
             foreach($cate_70 as $cate) {
+                echo "<option value=\"{$cate['ca_id']}\"" . get_selected($ca_id, $cate['ca_id']) . ">&nbsp;&nbsp;&nbsp;{$cate['ca_name']}</option>";
+            }
+            ?>
+			<option value="80" <?=get_selected($ca_id, '80')?>>보장구품목</option>
+            <?php
+            foreach($cate_80 as $cate) {
                 echo "<option value=\"{$cate['ca_id']}\"" . get_selected($ca_id, $cate['ca_id']) . ">&nbsp;&nbsp;&nbsp;{$cate['ca_name']}</option>";
             }
             ?>
@@ -329,6 +352,7 @@ while($cate = sql_fetch_array($cate_result)) {
                     $gubun_text = '판매';
                     if($gubun == '01') $gubun_text = '대여';
                     else if($gubun == '02') $gubun_text = '비급여';
+					else if($gubun == '03') $gubun_text = '보장구';
 
                     $row['gubun'] = $gubun_text;
                 ?>

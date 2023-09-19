@@ -76,6 +76,7 @@ $sql  = " select it_id,
                  it_type9,
                  it_type10,
                  it_type11,
+				 it_type12,
 				 ca_id,
 				 pt_it,
 				 pt_id
@@ -154,7 +155,7 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
         <th scope="col"><?php echo subject_sort_link("it_type4", $qstr, 1); ?><?=$default['de_it_type4_name']?></a></th>
         <th scope="col"><?php echo subject_sort_link("it_type5", $qstr, 1); ?><?=$default['de_it_type5_name']?></a></th>
         <?php
-        for($x = 6; $x <= 10; $x++) {
+        for($x = 6; $x <= 12; $x++) {
             $cur_it_type = 'it_type' . $x;
             if($default['de_' . $cur_it_type . '_name']) {
                 echo '<th scope="col">' . subject_sort_link($cur_it_type, $qstr, 1) . $default['de_' . $cur_it_type . '_name'] . '</a></th>';
@@ -203,7 +204,7 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
             <input type="checkbox" name="it_type5[<?php echo $i; ?>]" value="1" id="type5_<?php echo $i; ?>" <?php echo ($row['it_type5'] ? 'checked' : ''); ?>>
         </td>
         <?php
-        for($x = 6; $x <= 10; $x++) {
+        for($x = 6; $x <= 12; $x++) {
             $cur_it_type = 'it_type' . $x;
             if($default['de_' . $cur_it_type . '_name']) {
                 echo '<td class="td_chk2">';

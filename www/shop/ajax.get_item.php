@@ -50,6 +50,15 @@ if( $it_id && !$ProdPayCode ){//이벤트 상품 구매 조회
 $keyword = str_replace(' ', '', trim($keyword));
 $eform = $_GET['eform'];
 
+
+// 22.12.07 : 서원 - 검색어가 없을 경우 DB전체 검색되던 부분 중단 처리.
+if( !$keyword ) {
+  $rows = [];
+  echo json_encode($rows);
+  exit();
+}
+
+
 /*
 $prodsupyn_sql = " AND a.prodSupYn = 'Y' ";
 if($eform) {
@@ -57,7 +66,7 @@ if($eform) {
   $prodsupyn_sql = '';
 }
 */
-$nonReimbursement = $eform!=1 ?" OR a.ca_id LIKE '70%'":"";
+$nonReimbursement = $eform!=1 ?" OR a.ca_id LIKE '70%' OR a.ca_id LIKE '80%'":"";
 $prodsupyn_sql = $eform!=1 ?" AND a.prodSupYn = 'Y' ":"";
 
 $sql = "
@@ -107,6 +116,7 @@ $sql = "
     it_type9,
     it_type10,
     it_type11,
+	it_type12,
     it_expected_warehousing_date
   FROM
     {$g5['g5_shop_item_table']} a
@@ -155,6 +165,7 @@ while ( $row = sql_fetch_array($result) ) {
   $gubun_text = '판매';
   if($gubun == '01') $gubun_text = '대여';
   else if($gubun == '02') $gubun_text = '비급여';
+  else if($gubun == '03') $gubun_text = '보장구';
 
   $row['gubun'] = $gubun_text;
 

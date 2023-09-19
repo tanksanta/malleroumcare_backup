@@ -104,19 +104,28 @@
 
         <!-- GNB -->
         <header class="thkc_container">
+			<!-- 메인메뉴 스와이프 좌/우 화살표 Start-->
+	            <div class="mainMenu_swiper_navi main_swiper_navi">
+	                <div class="swiper-button-next"></div>
+	                <div class="swiper-button-prev"></div>
+	            </div>
+            <!-- 메인메뉴 스와이프 좌/우 화살표 End-->
             <nav class="thkc_nav">
                 <div class="menuWrap">
 
                     <!-- 상단로고 -->
                     <h1 class="logo"><a href="<?=G5_URL;?>"><img src="<?=G5_IMG_URL;?>/new_common/thkc_logo_gnb.svg" alt="로고"></a></h1>
                     <div class="menuWrap02<?=(($member['mb_type']=="partner" )?(" main_menu_partner"):(""))?>">
-
+						<div class="swiper mySwiper_menu">
                         <!-- 상단 대 메뉴 -->
-                        <ul class="main_menu">
-                            <li><a href="/shop/list.php?ca_id=10">급여상품(판매)</a></li>
-                            <li><a href="/shop/list.php?ca_id=20">급여상품(대여)</a></li>
-                            <li><a href="/shop/list.php?ca_id=70">비급여상품</a></li>
+  						<ul class="main_menu  swiper-wrapper">
+                            <li class="swiper-slide swiper-slide_m"><a href="/shop/list.php?ca_id=10">급여상품(판매)</a></li>
+                            <li class="swiper-slide swiper-slide_m" id="first_swiper"><a href="/shop/list.php?ca_id=20">급여상품(대여)</a></li>
+                            <li class="swiper-slide swiper-slide_m"><a href="/shop/list.php?ca_id=70">비급여상품</a></li>
+							<li class="swiper-slide swiper-slide_m" id="last_swiper"><a href="/shop/list.php?ca_id=80">장애인보장구</a></li>
                         </ul>
+						<div class="spWrap"><div class="swiper-pagination"></div></div>
+						</div>
 
                         <!-- 모바일 토글버튼 -->
                         <div class="toggle">
@@ -184,6 +193,39 @@
 
             return true;
         }
+		var swiper = new Swiper(".menuWrap02 .mySwiper_menu", {
+  slidesPerView: 1,
+      spaceBetween: 5,
+      //pagination: {
+      //  el: ".swiper-pagination",
+      //  clickable: true,
+        //dynamicBullets: true,//추가 또는 삭제 할지도....        
+      //},
+      //slidesPerView: "auto",
+      //autoplay: {
+      //  delay: 4000,
+      //  disableOnInteraction: false,
+      //},
+	  navigation: {   // 버튼
+          nextEl: ".mainMenu_swiper_navi .swiper-button-next",
+          prevEl: ".mainMenu_swiper_navi .swiper-button-prev",
+        },
+      breakpoints: {
+        240: {
+          slidesPerView: 2,
+          spaceBetween: 1,
+        },
+        378: {
+          slidesPerView: 3,
+          spaceBetween: 1,
+        },
+        540: {
+          slidesPerView: 4,
+          spaceBetween: 1,
+        }
+      },
+  
+});
     </script>
 
     <?php

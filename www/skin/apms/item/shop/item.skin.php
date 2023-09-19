@@ -328,16 +328,21 @@ if ($it['ca_id']) {
           <tbody>
             <tr>
               <th scope="row">
-                <?php if(!is_benefit_item($it)) { ?>
-                급여가(정가)
-                <?php } else { ?>
+                <?php if(!is_benefit_item($it)) { 
+					if(substr($it['ca_id'],0,2) == "80"){
+						echo "보장구 급여가";                   
+					  }else{?>
+                  급여가(정가)
+                  <?php 
+					  }
+				  } else { ?>
                 정가
                 <?php } ?>
               </th>
               <td>
                 <?php echo display_price($it['it_cust_price']); ?>
                 
-                <?php if(!is_benefit_item($it)) { ?>
+                <?php if(!is_benefit_item($it) && substr($it['ca_id'],0,2) != "80") { ?>
                 <p class="personal-price">
                   ※ 본인부담금 15%(<?=number_format($it["it_cust_price"] * 0.15)?>원), 9%(<?=number_format($it["it_cust_price"] * 0.09)?>원), 6%(<?=number_format($it["it_cust_price"] * 0.06)?>원)
                 </p>
@@ -687,6 +692,7 @@ if ($it['ca_id']) {
           <?php if($it['it_type10'] || $is_soldout){ ?><p class="p_box" style="border:1px solid <?=$default['de_it_type10_color']?>; color:<?=$default['de_it_type10_color']?>;"><?=$default['de_it_type10_name']?></p><?php } ?>
           <?php if($it['it_type11']){ ?><p class="p_box" style="border:1px solid <?=$default['de_it_type11_color']?>; color:<?=$default['de_it_type11_color']?>;"><?=substr($it['it_deadline'],0,5)." ".$default['de_it_type11_name']?></p><?php } ?>
           <?php if($it['it_10_subj'] == 'rental'){ ?><p class="p_box" style="border:1px solid red; background-color: red; color:white;"><a href="<?=$it['it_10']?>">렌탈</a></p><?php } ?>
+		  <?php if($it['it_type12']){ ?><p class="p_box" style="border:1px solid <?=$default['de_it_type12_color']?>; color:<?=$default['de_it_type12_color']?>;"><?=$default['de_it_type12_name']?></p><?php } ?>
         </div>
       </div>
 
@@ -725,16 +731,23 @@ if ($it['ca_id']) {
             <tbody>
               <tr>
                 <th scope="row">
-                  <?php if(!is_benefit_item($it)) { ?>
+                  <?php if(!is_benefit_item($it)) { 
+					  if(substr($it['ca_id'],0,2) == "80"){
+						echo "보장구 급여가";                   
+					  }else{?>
                   급여가(정가)
-                  <?php } else { ?>
-                  정가
-                  <?php } ?>
+                  <?php 
+					  }
+					} else { 
+					  
+						echo "정가";
+	
+					}?>
                 </th>
                 <td>
                   <?php echo display_price($it['it_cust_price']); ?>
                   
-                  <?php if(!is_benefit_item($it)) { ?>
+                  <?php if(!is_benefit_item($it) && substr($it['ca_id'],0,2) != "80") { ?>
                   <p class="personal-price">
                     ※ 본인부담금 15%(<?=number_format($it["it_cust_price"] * 0.15)?>원), 9%(<?=number_format($it["it_cust_price"] * 0.09)?>원), 6%(<?=number_format($it["it_cust_price"] * 0.06)?>원)
                   </p>

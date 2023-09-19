@@ -535,6 +535,7 @@ $sql_common = "
   it_type9            = '$it_type9',
   it_type10           = '$it_type10',
   it_type11           = '$it_type11',
+  it_type12           = '$it_type12',
   it_deadline           = '$it_deadline',
   it_basic            = '$it_basic',
   it_explan           = '$it_explan',
@@ -720,6 +721,7 @@ $sql_common = "
   it_standard = '$it_standard',
   it_show_partner_search = '$it_show_partner_search',
   it_use_short_barcode = '$it_use_short_barcode',
+  prodassistingdevicescode = '$prodassistingdevicescode',
   it_even_odd = '$it_even_odd',
   it_even_odd_price = '$it_even_odd_price',
   
@@ -1036,7 +1038,7 @@ if(is_checked('chk_ca_it_skin'))                $ca_fields .= " , it_skin = '$it
 if(is_checked('chk_ca_it_mobile_skin'))         $ca_fields .= " , it_mobile_skin = '$it_mobile_skin' ";
 if(is_checked('chk_ca_it_basic'))               $ca_fields .= " , it_basic = '$it_basic' ";
 if(is_checked('chk_ca_it_order'))               $ca_fields .= " , it_order = '$it_order' ";
-if(is_checked('chk_ca_it_type'))                $ca_fields .= " , it_type1 = '$it_type1', it_type2 = '$it_type2', it_type3 = '$it_type3', it_type4 = '$it_type4', it_type5 = '$it_type5', it_type6 = '$it_type6', it_type7 = '$it_type7', it_type8 = '$it_type8', it_type9 = '$it_type9', it_type10 = '$it_type10', it_type11 = '$it_type11' ";
+if(is_checked('chk_ca_it_type'))                $ca_fields .= " , it_type1 = '$it_type1', it_type2 = '$it_type2', it_type3 = '$it_type3', it_type4 = '$it_type4', it_type5 = '$it_type5', it_type6 = '$it_type6', it_type7 = '$it_type7', it_type8 = '$it_type8', it_type9 = '$it_type9', it_type10 = '$it_type10', it_type11 = '$it_type11', it_type12 = '$it_type12', it_deadline = '$it_deadline' ";
 if(is_checked('chk_ca_it_maker'))               $ca_fields .= " , it_maker = '$it_maker' ";
 if(is_checked('chk_ca_it_origin'))              $ca_fields .= " , it_origin = '$it_origin' ";
 if(is_checked('chk_ca_it_brand'))               $ca_fields .= " , it_brand = '$it_brand' ";
@@ -1048,6 +1050,7 @@ if(is_checked('chk_ca_it_use'))                 $ca_fields .= " , it_use = '$it_
 if(is_checked('chk_ca_it_use_partner'))         $ca_fields .= " , it_use_partner = '$it_use_partner' ";
 if(is_checked('chk_ca_it_show_partner_search'))         $ca_fields .= " , it_show_partner_search = '$it_show_partner_search' ";
 if(is_checked('chk_ca_it_use_short_barcode'))         $ca_fields .= " , it_use_short_barcode = '$it_use_short_barcode' ";
+if(is_checked('chk_ca_prodassistingdevicescode'))         $ca_fields .= " , prodassistingdevicescode = '$prodassistingdevicescode' ";
 if(is_checked('chk_ca_it_use_custom_order'))    $ca_fields .= " , it_use_custom_order = '$it_use_custom_order' ";
 if(is_checked('chk_ca_it_nocoupon'))            $ca_fields .= " , it_nocoupon = '$it_nocoupon' ";
 if(is_checked('chk_ca_it_soldout'))             $ca_fields .= " , it_soldout = '$it_soldout' ";
@@ -1108,7 +1111,7 @@ if(is_checked('chk_all_it_skin'))                $all_fields .= " , it_skin = '$
 if(is_checked('chk_all_it_mobile_skin'))         $all_fields .= " , it_mobile_skin = '$it_mobile_skin' ";
 if(is_checked('chk_all_it_basic'))               $all_fields .= " , it_basic = '$it_basic' ";
 if(is_checked('chk_all_it_order'))               $all_fields .= " , it_order = '$it_order' ";
-if(is_checked('chk_all_it_type'))                $all_fields .= " , it_type1 = '$it_type1', it_type2 = '$it_type2', it_type3 = '$it_type3', it_type4 = '$it_type4', it_type5 = '$it_type5', it_type6 = '$it_type6', it_type7 = '$it_type7', it_type8 = '$it_type8', it_type9 = '$it_type9', it_type10 = '$it_type10', it_type11 = '$it_type11' ";
+if(is_checked('chk_all_it_type'))                $all_fields .= " , it_type1 = '$it_type1', it_type2 = '$it_type2', it_type3 = '$it_type3', it_type4 = '$it_type4', it_type5 = '$it_type5', it_type6 = '$it_type6', it_type7 = '$it_type7', it_type8 = '$it_type8', it_type9 = '$it_type9', it_type10 = '$it_type10', it_type11 = '$it_type11', it_type12 = '$it_type12', it_deadline = '$it_deadline' ";
 if(is_checked('chk_all_it_maker'))               $all_fields .= " , it_maker = '$it_maker' ";
 if(is_checked('chk_all_it_origin'))              $all_fields .= " , it_origin = '$it_origin' ";
 if(is_checked('chk_all_it_brand'))               $all_fields .= " , it_brand = '$it_brand' ";
@@ -1118,8 +1121,9 @@ if(is_checked('chk_all_it_sell_email'))          $all_fields .= " , it_sell_emai
 if(is_checked('chk_all_it_tel_inq'))             $all_fields .= " , it_tel_inq = '$it_tel_inq' ";
 if(is_checked('chk_all_it_use'))                 $all_fields .= " , it_use = '$it_use' ";
 if(is_checked('chk_all_it_use_partner'))         $all_fields .= " , it_use_partner = '$it_use_partner' ";
-if(is_checked('chk_ca_it_show_partner_search'))         $all_fields .= " , it_show_partner_search = '$it_show_partner_search' ";
-if(is_checked('chk_ca_it_use_short_barcode'))         $ca_fields .= " , it_use_short_barcode = '$it_use_short_barcode' ";
+if(is_checked('chk_all_it_show_partner_search'))         $all_fields .= " , it_show_partner_search = '$it_show_partner_search' ";
+if(is_checked('chk_all_it_use_short_barcode'))         $all_fields .= " , it_use_short_barcode = '$it_use_short_barcode' ";
+if(is_checked('chk_all_prodassistingdevicescode'))         $all_fields .= " , prodassistingdevicescode = '$prodassistingdevicescode' ";
 if(is_checked('chk_all_it_use_custom_order'))    $all_fields .= " , it_use_custom_order = '$it_use_custom_order' ";
 if(is_checked('chk_all_it_nocoupon'))            $all_fields .= " , it_nocoupon = '$it_nocoupon' ";
 if(is_checked('chk_all_it_soldout'))             $all_fields .= " , it_soldout = '$it_soldout' ";

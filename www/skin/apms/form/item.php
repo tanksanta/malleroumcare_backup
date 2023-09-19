@@ -260,6 +260,12 @@ $warehouse_list = get_warehouses();
             <input type="checkbox" name="it_use_short_barcode" value="1" id="it_use_short_barcode" <?php echo ($it['it_use_short_barcode']) ? "checked" : ""; ?>> 바코드 8자리 사용(보장구)
           </td>
         </tr>
+		<tr>
+          <th scope="row"><label for="prodassistingdevicescode">장애인 보장구 제품코드</label></th>
+          <td>
+            <input type="text" name="prodassistingdevicescode" value="<?php echo get_text($it['prodassistingdevicescode']); ?>" id="prodassistingdevicescode" class="frm_input sl"><br>장애인 보장구의 제품 바코드 중 앞 17자리를 입력하세요.
+          </td>
+        </tr>
         <tr>
           <th scope="row"><label for="supId">공급자 아이디</label></th>
           <td>
@@ -306,7 +312,7 @@ $warehouse_list = get_warehouses();
             <input type="checkbox" name="it_type5" value="1" <?php echo ($it['it_type5'] ? "checked" : ""); ?> id="it_type5">
             <label for="it_type5"><span style="color:<?php echo $default['de_it_type5_color']; ?>"><?php echo $default['de_it_type5_name']; ?></span></label>
             <?php
-            for($x = 6; $x <= 11; $x ++) {
+            for($x = 6; $x <= 12; $x ++) {
               $cur_it_type = 'it_type' . $x;
               if($default['de_'. $cur_it_type .'_name']) {
             ?>

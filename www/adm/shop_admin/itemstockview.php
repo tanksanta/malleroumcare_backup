@@ -18,6 +18,7 @@ $gubun = $cate_gubun_table[substr($it['ca_id'], 0, 2)];
 $gubun_text = '판매';
 if($gubun == '01') $gubun_text = '대여';
 else if($gubun == '02') $gubun_text = '비급여';
+else if($gubun == '03') $gubun_text = '보장구';
 
 $option_sql = "SELECT *
   FROM

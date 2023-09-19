@@ -46,6 +46,7 @@ $sql = "
     it_type9,
     it_type10,
     it_type11,
+	it_type12,
     it_expected_warehousing_date
   FROM
     {$g5['g5_shop_item_table']} a
@@ -61,7 +62,8 @@ $sql = "
     (
       a.ca_id LIKE '10%' OR
       a.ca_id LIKE '20%' OR
-      a.ca_id LIKE '70%'
+	  a.ca_id LIKE '70%' OR
+      a.ca_id LIKE '80%'
     )
     AND a.it_id NOT IN ('PRO2021072200013', 'PRO2021072200012') -- 체험상품 제외
     AND a.it_name NOT LIKE 'test%' -- 테스트상품 제외
@@ -94,6 +96,7 @@ while ( $row = sql_fetch_array($result) ) {
   $gubun_text = '판매';
   if($gubun == '01') $gubun_text = '대여';
   else if($gubun == '02') $gubun_text = '비급여';
+  else if($gubun == '03') $gubun_text = '보장구';
 
   $row['gubun'] = $gubun_text;
 

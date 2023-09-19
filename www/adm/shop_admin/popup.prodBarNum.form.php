@@ -325,6 +325,7 @@ if($od["od_b_tel"]) {
     .imfomation_box div .li_box .folding_box > .inputbox > li .padding0 {
       padding-left:0px;
     }
+    .barcode_infotext { padding-left:75px; text-align: left; }
   </style>
 
   <?php if ($is_admin != 'super') { ?>
@@ -381,6 +382,14 @@ if($od["od_b_tel"]) {
     <ul class="imfomation_box" id="imfomation_box">
       <?php
       for($i = 0; $i < count($carts); $i++) {
+
+        #바코드 8자리 사용여부
+        $use_short_barcode = 'N';
+        if ($carts[$i]['io_use_short_barcode']) { 
+          $use_short_barcode = 'Y'; 
+        } else {
+          if ($carts[$i]['it_use_short_barcode']) { $use_short_barcode = 'Y'; }
+        }
 
         # 요청사항
         $prodMemo = "";
@@ -492,6 +501,7 @@ if($od["od_b_tel"]) {
                     └ 미 재고 바코드 관리자 권한으로 승인됨
                   </div>
                 </div>
+
                 <div class="barcode_approve_wrapper_del <?=(($options[$k]["ct_qty"] >= 2)?"":"padding0")?>">
                   └ 출고된 바코드 사업소에서 !!삭제!! 처리됨
                 </div>
@@ -499,9 +509,14 @@ if($od["od_b_tel"]) {
               <?php $prodListCnt++; } ?>
             </ul>
 
+            <?php if ($use_short_barcode == 'Y') { ?>
+            <p class="barcode_infotext"><span style="">* 장애인보조기기 바코드(<img class="" src="<?=G5_IMG_URL;?>/icon_nhis.png" style="width:clamp(12px, 2.5vw, 14px);" alt="장애인보조기기">) 입력가능 품목 입니다.</span></p>
+            <input style="margin-left:10px;" type="hidden" name="it_use_short_barcode" value="<?=$use_short_barcode?>" id="it_use_short_barcode" data-it-id="<?=$carts[$i]['it_id']; ?>" <?php echo ($use_short_barcode == 'Y') ? "checked" : ""; ?>>
+            <?php } ?>
+
             <p class="barcode_warning">
               <span style="color: red">(주의)</span> 재고가 없는 바코드가 있습니다. 관리자 승인 시 정상 등록 됩니다.
-            </p>
+            </p>            
 
             <div class="barcode_block <?php echo in_array($options[$k]['ct_status'], ['배송', '완료']) ? 'active' : '' ?>">
               <div class="flex-row justify-center align-center" style="width: 100%; height: 100%">
@@ -662,6 +677,7 @@ if($od["od_b_tel"]) {
         var li_last = $(ul).find('li').last().index();
         var p_num = 0;
 
+
         if(li_val.length !== 12){
             alert('바코드 12자리를 입력해주세요.');
             return false;
@@ -679,14 +695,13 @@ if($od["od_b_tel"]) {
           //$(ul).find('li').eq(i).find('.notall').val( (parseInt( li_val )+p_num) );
 
           if( (_check==="Y") ) {
-            p_num++;
-            // 연번 입력
+            p_num++; // 연번 입력
             $(ul).find('li').eq(i).find('.notall').val( (parseInt( li_val )+p_num) );
           } else {
             
             // 비어 있는 칸에만 연번 입력
             if( !$(ul).find('li').eq(i).find('.notall').val() ) {
-              p_num++;
+              p_num++; // 연번 입력
               $(ul).find('li').eq(i).find('.notall').val( (parseInt( li_val )+p_num) );
             }
           }
@@ -702,7 +717,6 @@ if($od["od_b_tel"]) {
             } else {
 
               if( confirm("정확하지 않은 바코드 정보가 존재 합니다.\n바코드값: " + $(ul).find('li').eq(i).find('.notall').val() + "\n해당 필드의 바코드 정보를 덮어쓰기 하시겠습니까?") ) {
-                p_num++;
                 $(ul).find('li').eq(i).find('.notall').val( (parseInt( li_val )+p_num) );
               }
               
@@ -1301,7 +1315,11 @@ if($od["od_b_tel"]) {
         }
       });
       if (flag) {
-        alert('바코드는 12자리를 입력해주세요.');
+        
+        short_barcode = $("#it_use_short_barcode").val();
+        if( short_barcode === "Y" ) { alert('바코드는 12자리를 입력해주세요.\n장애인보조기기 바코드의 경우 앞에 0000를 붙여주세요.\n\n예) 0000 + 장애인보조기기 바코드 8자리\n     ==> 000012345678'); } 
+        else { alert('바코드는 12자리를 입력해주세요.'); }
+
         loading_barnumsave = false;
         return false;
       }

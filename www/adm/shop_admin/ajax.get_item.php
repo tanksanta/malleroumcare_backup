@@ -53,7 +53,8 @@ $sql = "SELECT
       (
         a.ca_id LIKE '10%' OR
         a.ca_id LIKE '20%' OR
-        a.ca_id LIKE '70%'
+		a.ca_id LIKE '70%' OR
+        a.ca_id LIKE '80%' 
       )
       AND prodSupYn = 'Y'
 ";
@@ -82,6 +83,7 @@ while ( $row = sql_fetch_array($result) ) {
   $gubun_text = '판매';
   if($gubun == '01') $gubun_text = '대여';
   else if($gubun == '02') $gubun_text = '비급여';
+  else if($gubun == '03') $gubun_text = '보장구';
 
   $row['gubun'] = $gubun_text;
 

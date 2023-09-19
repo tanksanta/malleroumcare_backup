@@ -63,7 +63,7 @@ function get_modusign($API_Key64,$api_url,$type,$data=false) {
 	curl_close($ch);
 
 	$arrResponse = json_decode($result,true);
-
+    
 	return $arrResponse;
 }
 
@@ -143,7 +143,10 @@ function get_carts_by_od_id($od_id, $delivery_yn = null, $where = null, $order_b
 					a.ct_is_direct_delivery,
           a.ct_send_direct_delivery,
           a.ct_send_direct_delivery_fax,
-          a.ct_send_direct_delivery_email
+          a.ct_send_direct_delivery_email,
+          b.it_use_short_barcode,
+          b.prodassistingdevicescode,
+          ( SELECT io_use_short_barcode FROM g5_shop_item_option AS o WHERE o.it_id = a.it_id AND o.io_id = a.io_id ) AS io_use_short_barcode
 			  from {$g5['g5_shop_cart_table']} a left join {$g5['g5_shop_item_table']} b on ( a.it_id = b.it_id )
 			  where a.od_id = '$od_id'
 			  $delivery_where
@@ -532,7 +535,7 @@ function valid_recipient_input($data, $is_spare = false, $valid_exist_input_only
       }
     }
   }
-	 if($data['penExpiStDtm']) {
+	if($data['penExpiStDtm']) {
 		if(!_recipient_preg_match($data, 'penExpiStDtm')) {
 			return '유효기간(시작일)을 확인해주세요.';
 		}
@@ -646,7 +649,8 @@ $rental_product_cate_table = array(
 $cate_gubun_table = array(
 	'10' => '00', /* 판매 */
 	'20' => '01', /* 대여 */
-	'70' => '02' /* 비급여 */
+	'70' => '02', /* 비급여 */
+	'80' => '03' /* 보장구 */
 );
 
 $recipient_link_state = array(
@@ -1757,8 +1761,8 @@ function get_partner_members($partner_type = null) {
       g5_member
     WHERE
       mb_type = 'partner' and
-      mb_partner_auth = 1 and
-      mb_level='5'
+      mb_partner_auth = 1 
+	  and mb_level='5'
 	  #and mb_partner_date >= NOW()
       {$partner_type_where}
 	  order by mb_name ASC
@@ -2805,27 +2809,26 @@ function get_updated_date_recipient($ltmNum) {
  * 작성자 : 임근석
  * 작성일자 : 2022-11-02
  * 마지막 수정자 : 임근석
- * 마지막 수정일자 : 2022-11-14
+ * 마지막 수정일자 : 2023-01-12
  * 설명 : 특정 설치파트너 소속의 매니저 목록 조회
  * @param string $partner_mb_id
- * @param string $mb_type
- * @return mixed 
+ * @return mixed
  */
-function get_partner_member_list_by_partner_mb_id($partner_mb_id, $mb_type) {
+function get_partner_member_list_by_partner_mb_id($partner_mb_id) {
   $sql = "SELECT * FROM `g5_member` WHERE mb_id = '$partner_mb_id';";
   $members_str = '{"members":{"all":"전체",';
   $mb_type = "";
   $result = sql_query($sql);
 
   while ($res_item = sql_fetch_array($result)) {
-      $mb_type = $res_item['mb_type'];
+    $mb_type = $res_item['mb_type'];
   }
 
   $sql = "SELECT * FROM `g5_member` WHERE mb_manager = '$partner_mb_id';";
   $result = sql_query($sql);
 
   while ($res_item = sql_fetch_array($result)) {
-      $members_str.= '"'.$res_item['mb_id'].'":"'.$res_item['mb_name'].'",';
+    $members_str.= '"'.$res_item['mb_id'].'":"'.$res_item['mb_name'].'",';
   }
   $members_str.= "}";
   $members_str = str_replace(',}', '}', $members_str);
@@ -2840,7 +2843,7 @@ function get_partner_member_list_by_partner_mb_id($partner_mb_id, $mb_type) {
  * 마지막 수정일자 : 2022-11-23
  * 설명 : 설치파트너 목록 조회
  * @param string $mb_type
- * @return mixed 
+ * @return mixed
  */
 function get_partner_list($mb_type) {
   $sql = "SELECT DISTINCT g5_member.mb_id, g5_member.mb_name
@@ -2874,7 +2877,7 @@ function get_partner_member_list_by_ent_mb_id_and_partner_mb_id($ent_md_id) {
   $sql = "SELECT * FROM g5_member WHERE mb_id = '$ent_md_id';";
   $result = sql_fetch($sql);
   $mb_type = $result['mb_type'];
-  
+
   $manager_str = '{"members":{"all":"전체",';
 
   $sql = "SELECT DISTINCT od_b_name, od_b_hp FROM partner_inst_sts WHERE od_mb_id = '$ent_md_id' AND status != '주문' AND status != '주문무효';";
@@ -2895,12 +2898,12 @@ function get_partner_member_list_by_ent_mb_id_and_partner_mb_id($ent_md_id) {
  * 마지막 수정일자 : 2022-11-28
  * 설명 : 설치파트너 매니저 설치 일정 생성 여부 확인
  * @param integer $od_id
- * @return boolean 
+ * @return boolean
  */
 function exit_partner_install_schedule($od_id) {
   $sql = "SELECT id FROM partner_inst_sts WHERE od_id = $od_id;";
   $result = sql_query($sql);
-  $sql = "SELECT ct_id FROM g5_shop_cart WHERE od_id = $od_id AND (ct_status = '출고준비' OR ct_status = '완료');";
+  $sql = "SELECT ct_id FROM g5_shop_cart WHERE od_id = $od_id AND (ct_status = '출고준비' OR ct_status = '완료') AND ct_is_direct_delivery = '2';";
   $result_cart = sql_query($sql);
   return mysqli_num_rows($result) == mysqli_num_rows($result_cart) && mysqli_num_rows($result) > 0;
 }
@@ -2914,7 +2917,7 @@ function exit_partner_install_schedule($od_id) {
  * @param string $partner_manager_mb_id
  * @param string $delivery_date 포맷 : YYYY-MM-DD
  * @param string $delivery_datetime 포맷 : hh:mm
- * @return boolean 
+ * @return boolean
  */
 function duplicate_partner_install_schedule($partner_manager_mb_id, $delivery_date, $delivery_datetime) {
   $sql = "SELECT 
@@ -2935,7 +2938,7 @@ function duplicate_partner_install_schedule($partner_manager_mb_id, $delivery_da
  * 설명 : 설치파트너 매니저 설치 불가일 중복 확인
  * @param string $partner_manager_mb_id
  * @param string $delivery_date 포맷 : YYYY-MM-DD
- * @return boolean 
+ * @return boolean
  */
 function duplicate_partner_deny_schedule($partner_manager_mb_id, $delivery_date) {
   $sql = "SELECT 
@@ -2951,7 +2954,7 @@ function duplicate_partner_deny_schedule($partner_manager_mb_id, $delivery_date)
  * 작성자 : 임근석
  * 작성일자 : 2022-11-02
  * 마지막 수정자 : 임근석
- * 마지막 수정일자 : 2022-12-27
+ * 마지막 수정일자 : 2023-01-12
  * 설명 : 설치파트너 매니저 설치 일정 생성
  * @param integer $od_id
  * @return boolean
@@ -2975,14 +2978,11 @@ function create_partner_install_schedule($od_id) {
   LEFT JOIN g5_shop_order AS od ON ct.od_id = od.od_id
   LEFT JOIN g5_member AS mb ON mb.mb_id = od.mb_id
   WHERE od.od_id = $od_id AND 
-  ct.ct_is_direct_delivery != 0 AND -- ct_is_direct_delivery(0:배송,1:직배송,2:설치)
+  ct.ct_is_direct_delivery = 2 AND -- ct_is_direct_delivery(0:배송,1:직배송,2:설치)
+  (od.od_status != '주문무효' AND od.od_status != '취소') AND
   (ct.ct_status = '준비' OR ct.ct_status = '출고준비' OR ct.ct_status = '완료' OR ct.ct_status = '배송');";
   $cart_result = sql_query($sql);
   if (mysqli_num_rows($cart_result) < 1) return false;
-
-  if (strlen($delivery_datetime) <= 2) {
-    $delivery_datetime .= ":00";
-  }
 
   $sql = "INSERT INTO `partner_inst_sts` 
   (
@@ -2999,9 +2999,8 @@ function create_partner_install_schedule($od_id) {
     prodMemo
   ) VALUES ";
   while ($cart = sql_fetch_array($cart_result)) {
-    if ($cart["ct_is_direct_delivery"] == '2') {
-      if ($cart["ct_status"] == '완료') {
-        $sql = $sql."('완료',"
+    if ($cart["ct_status"] == '완료') {
+      $sql = $sql."('완료',"
         ."'".$cart["ct_id"]."',"
         ."'".$cart["it_name"]."',"
         ."'".$cart["od_id"]."',"
@@ -3012,21 +3011,18 @@ function create_partner_install_schedule($od_id) {
         ."'".$cart["od_b_addr1"]."',"
         ."'".$cart["od_b_addr2"]."',"
         ."'".$cart["prodMemo"]."'),";
-      } else {
-        $sql = $sql."('준비',"
-        ."'".$cart["ct_id"]."',"
-        ."'".$cart["it_name"]."',"
-        ."'".$cart["od_id"]."',"
-        ."'".$cart["mb_id"]."',"
-        ."'".$cart["mb_entNm"]."',"
-        ."'".$cart["od_b_name"]."',"
-        ."'".$cart["od_b_hp"]."',"
-        ."'".$cart["od_b_addr1"]."',"
-        ."'".$cart["od_b_addr2"]."',"
-        ."'".$cart["prodMemo"]."'),";
-      }
     } else {
-      return true;
+      $sql = $sql."('준비',"
+        ."'".$cart["ct_id"]."',"
+        ."'".$cart["it_name"]."',"
+        ."'".$cart["od_id"]."',"
+        ."'".$cart["mb_id"]."',"
+        ."'".$cart["mb_entNm"]."',"
+        ."'".$cart["od_b_name"]."',"
+        ."'".$cart["od_b_hp"]."',"
+        ."'".$cart["od_b_addr1"]."',"
+        ."'".$cart["od_b_addr2"]."',"
+        ."'".$cart["prodMemo"]."'),";
     }
   }
   $sql = substr($sql, 0, -1).";";
@@ -3041,7 +3037,7 @@ function create_partner_install_schedule($od_id) {
  * 설명 : 설치파트너 매니저 설치 일정 상태 수정
  * @param integer $ct_id
  * @param string $status 출고준비|출고완료|취소|주문무효|완료
- * @return boolean 
+ * @return boolean
  */
 function update_partner_install_schedule_status_by_ct_id($ct_id, $status) {
   $sql = "UPDATE `partner_inst_sts` SET status = '$status' WHERE ct_id = $ct_id";
@@ -3096,7 +3092,7 @@ function update_partner_install_schedule_status_by_ct_id_array($ct_id, $status) 
  * @param integer $ct_id
  * @param string $delivery_date 포맷 : YYYY-MM-DD
  * @param string $delivery_datetime 포맷 : hh:mm
- * @return boolean 
+ * @return boolean
  */
 function update_partner_install_schedule_delivery_date_and_delivery_datetime_by_ct_id($ct_id, $delivery_date, $delivery_datetime) {
   if (strlen($delivery_datetime) <= 2) {
@@ -3116,13 +3112,13 @@ function update_partner_install_schedule_delivery_date_and_delivery_datetime_by_
  * 설명 : 설치파트너 매니저 일정 담당자 지정
  * @param integer $od_id
  * @param string $partner_manager_mb_id
- * @return boolean 
+ * @return boolean
  */
 function update_partner_install_schedule_partner_by_ct_id($ct_id, $partner_manager_mb_id) {
   $sql = "SELECT mb_id, mb_name, mb_manager FROM g5_member WHERE mb_id = '$partner_manager_mb_id';";
   $partner = sql_fetch($sql);
   if ($partner == null) return false;
-  
+
   $sql = "UPDATE `partner_inst_sts` SET partner_mb_id = '".$partner["mb_manager"]."', partner_manager_mb_id = '".$partner["mb_id"]."', partner_manager_mb_name = '".$partner["mb_name"]."' WHERE ct_id = $ct_id;";
   return sql_query($sql);
 }
@@ -3131,31 +3127,31 @@ function update_partner_install_schedule_partner_by_ct_id($ct_id, $partner_manag
  * 작성자 : 임근석
  * 작성일자 : 2022-11-28
  * 마지막 수정자 : 임근석
- * 마지막 수정일자 : 2022-12-31
+ * 마지막 수정일자 : 2023-01-12
  * 설명 : 일정 수정 사항 및 삭제 내역 체크
- * @param string $mb_id
- * @param string $member
  * @return mixed
  */
-function validate_schedule($mb_id, $member) {
+function validate_schedule() {
   # 개수 체크
   $sql = "SELECT DISTINCT od_id FROM `partner_inst_sts`;";
   $result = sql_query($sql);
   while ($item = sql_fetch_array($result)) {
     $sql = "SELECT 
     s.od_id, 
-    group_concat(s.ct_id ORDER BY s.ct_id ASC) AS `ct_concat` 
+    group_concat(DISTINCT s.ct_id ORDER BY s.ct_id ASC) AS `ct_concat` 
     FROM `partner_inst_sts` AS `s` 
     LEFT JOIN `g5_shop_cart` AS `ct` ON ct.od_id = s.od_id 
     WHERE s.od_id = '".$item['od_id']."' 
+    AND ct.ct_is_direct_delivery = 2
     GROUP BY od_id;";
     $compare_a = sql_fetch($sql);
-  
+
     $sql = "SELECT 
     ct.od_id, 
-    group_concat(ct.ct_id ORDER BY ct.ct_id ASC) AS `ct_concat` 
+    group_concat(DISTINCT ct.ct_id ORDER BY ct.ct_id ASC) AS `ct_concat` 
     FROM `g5_shop_cart` AS ct
     WHERE ct.od_id = '".$item['od_id']."' 
+    AND ct.ct_is_direct_delivery = 2
     GROUP BY od_id;";
     $compare_b = sql_fetch($sql);
     if ($compare_a['ct_concat'] != $compare_b['ct_concat']) {
@@ -3164,9 +3160,8 @@ function validate_schedule($mb_id, $member) {
       create_partner_install_schedule($item['od_id']);
     }
   }
-  
-  # 관리자 계정
-    $sql = "SELECT 
+
+  $sql = "SELECT 
   `s`.id AS `s_id`, 
   
   `s`.status AS `s_status`, 
@@ -3175,7 +3170,6 @@ function validate_schedule($mb_id, $member) {
   `s`.prodMemo AS `s_prodMemo`, 
   `s`.ct_id AS `s_ct_id`, 
   `s`.it_name AS `s_it_name`, 
-
   `s`.od_id AS `s_od_id`, 
   `s`.od_mb_id AS `s_od_mb_id`, 
   `s`.od_mb_ent_name AS `s_od_mb_ent_name`, 
@@ -3183,12 +3177,10 @@ function validate_schedule($mb_id, $member) {
   `s`.od_b_hp AS `s_od_b_hp`, 
   `s`.od_b_addr1 AS `s_od_b_addr1`, 
   `s`.od_b_addr2 AS `s_od_b_addr2`, 
-
   `s`.partner_mb_id AS `s_partner_mb_id`, 
   
   `s`.partner_manager_mb_id AS `s_partner_manager_mb_id`, 
   `s`.partner_manager_mb_name AS `s_partner_manager_mb_name`, 
-
   `ct`.ct_status AS `ct_status`, 
   DATE_FORMAT(`ct`.ct_direct_delivery_date, '%Y-%m-%d') AS `ct_delivery_date`, 
   DATE_FORMAT(`ct`.ct_direct_delivery_date, '%H:%i') AS `ct_delivery_datetime`, 
@@ -3203,9 +3195,7 @@ function validate_schedule($mb_id, $member) {
   `od`.od_b_name AS `od_od_b_name`, 
   `od`.od_b_addr1 AS `od_od_b_addr1`, 
   `od`.od_b_addr2 AS `od_od_b_addr2`, 
-
   `p_mb`.mb_id AS `p_mb_partner_mb_id`, 
-
   `m_mb`.mb_id AS `m_mb_partner_manager_mb_id`, 
   `m_mb`.mb_name AS `m_mb_partner_manager_mb_name` 
   FROM `partner_inst_sts` AS `s` 
@@ -3217,10 +3207,13 @@ function validate_schedule($mb_id, $member) {
   WHERE `ct`.ct_is_direct_delivery = 2;";
   $result = sql_query($sql);
   while ($item = sql_fetch_array($result)) {
-    if ($item["s_status"] != '완료' && $item["ct_status"] == '완료' && $item["s_status"] != $item["ct_status"]) {
+    if ($item["s_status"] != '완료' && ($item["ct_status"] == '완료') && $item["s_status"] != $item["ct_status"]) {
       $sql = "UPDATE `partner_inst_sts` SET status = '완료' WHERE id = ".$item['s_id'].";";
       sql_query($sql);
-    } else if (($item["ct_status"] == "준비" || $item["ct_status"] == "출고준비" || $item["ct_status"] == "배송") && $item["s_status"] != "준비") {
+    } else if ($item["ct_status"] == "배송" && $item["s_status"] == "준비") {
+      $sql = "UPDATE `partner_inst_sts` SET status = '배송' WHERE id = ".$item['s_id'].";";
+      sql_query($sql);
+    } else if (($item["ct_status"] == "준비" || $item["ct_status"] == "출고준비") && $item["s_status"] != "준비") {
       $sql = "UPDATE `partner_inst_sts` SET status = '준비' WHERE id = ".$item['s_id'].";";
       sql_query($sql);
     }
@@ -3272,18 +3265,18 @@ function validate_schedule($mb_id, $member) {
       $sql = "UPDATE `partner_inst_sts` SET od_b_addr2 = '".$item['od_od_b_addr2']."' WHERE id = ".$item['s_id'].";";
       sql_query($sql);
     }
-    if ($item["s_partner_mb_id"] != $item["p_mb_partner_mb_id"] || $item["s_partner_mb_id"] == null) {
-      $sql = "UPDATE `partner_inst_sts` SET partner_mb_id = '".$item['p_mb_partner_mb_id']."' WHERE id = ".$item['s_id'].";";
-      sql_query($sql);
-    }
-    if ($item["s_partner_manager_mb_id"] != $item["m_mb_partner_manager_mb_id"] || $item["s_partner_manager_mb_id"] == null) {
-      $sql = "UPDATE `partner_inst_sts` SET partner_manager_mb_id = '".$item['m_mb_partner_manager_mb_id']."' WHERE id = ".$item['s_id'].";";
-      sql_query($sql);
-    }
-    if ($item["s_partner_manager_mb_name"] != $item["m_mb_partner_manager_mb_name"] || $item["s_partner_manager_mb_name"] == null) {
-      $sql = "UPDATE `partner_inst_sts` SET partner_manager_mb_name = '".$item['m_mb_partner_manager_mb_name']."' WHERE id = ".$item['s_id'].";";
-      sql_query($sql);
-    }
+//    if ($item["s_partner_mb_id"] != $item["p_mb_partner_mb_id"] || $item["s_partner_mb_id"] == null) {
+//      $sql = "UPDATE `partner_inst_sts` SET partner_mb_id = '".$item['p_mb_partner_mb_id']."' WHERE id = ".$item['s_id'].";";
+//      sql_query($sql);
+//    }
+//    if ($item["s_partner_manager_mb_id"] != $item["m_mb_partner_manager_mb_id"] || $item["s_partner_manager_mb_id"] == null) {
+//      $sql = "UPDATE `partner_inst_sts` SET partner_manager_mb_id = '".$item['m_mb_partner_manager_mb_id']."' WHERE id = ".$item['s_id'].";";
+//      sql_query($sql);
+//    }
+//    if ($item["s_partner_manager_mb_name"] != $item["m_mb_partner_manager_mb_name"] || $item["s_partner_manager_mb_name"] == null) {
+//      $sql = "UPDATE `partner_inst_sts` SET partner_manager_mb_name = '".$item['m_mb_partner_manager_mb_name']."' WHERE id = ".$item['s_id'].";";
+//      sql_query($sql);
+//    }
   }
 }
 
@@ -3291,8 +3284,8 @@ function validate_schedule($mb_id, $member) {
  * 작성자 : 임근석
  * 작성일자 : 2022-11-14
  * 마지막 수정자 : 임근석
- * 마지막 수정일자 : 2022-12-30
- * 설명 : 사업소 기준으로 설치파트너 매니저 일정 
+ * 마지막 수정일자 : 2023-01-25
+ * 설명 : 사업소 기준으로 설치파트너 매니저 일정
  * @param string $member
  * @return mixed
  */
@@ -3307,7 +3300,7 @@ function get_partner_schedule_by_mb_id($member) {
     s.it_name, 
     s.partner_manager_mb_id, 
     s.partner_manager_mb_name, 
-    mb.mb_hp, 
+    mb.mb_tel, 
     s.od_mb_id, 
     s.od_b_name, 
     s.od_b_hp, 
@@ -3320,7 +3313,7 @@ function get_partner_schedule_by_mb_id($member) {
   WHERE od_mb_id = '$od_mb_id' 
   AND delivery_date != '' 
   AND delivery_datetime != '' 
-  AND (status = '준비' OR status = '완료');";
+  AND (status = '준비' OR status = '완료' OR status = '배송');";
 
   $result = sql_query($sql);
   $return_list = [];
@@ -3333,7 +3326,7 @@ function get_partner_schedule_by_mb_id($member) {
       'ct_qty' => $res_item['ct_qty'],
       'it_name' => $res_item['it_name'],
       'partner_mb_id' => '',
-      'partner_hp' => $res_item['mb_hp'],
+      'partner_manager_hp' => $res_item['mb_tel'],
       'partner_manager_mb_id' => $res_item['partner_manager_mb_id'],
       'partner_manager_mb_name' => $res_item['partner_manager_mb_name'],
       'od_mb_id' => $res_item['od_mb_id'],
@@ -3342,37 +3335,8 @@ function get_partner_schedule_by_mb_id($member) {
       'od_b_addr1' => $res_item['od_b_addr1'],
       'od_b_addr2' => $res_item['od_b_addr2'],
       'prodMemo' => $res_item['prodMemo'],
-      'type' => 'schedule',
-  ));
-  }
-  $sql = "SELECT 
-    ds.deny_date, 
-    ds.partner_mb_id, 
-    m.mb_id, 
-    m.mb_name
-  FROM `partner_manager_deny_schedule` AS ds
-  LEFT JOIN g5_member AS m ON m.mb_id = ds.partner_manager_mb_id
-  WHERE ds.partner_mb_id = '$partner_mb_id';";
-  $result = sql_query($sql);
-  while ($res_item = sql_fetch_array($result)) {
-    array_push($return_list, array(
-      'status' => '',
-      'delivery_date' => $res_item['deny_date'],
-      'delivery_datetime' => '',
-      'od_id' => '',
-      'it_name' => '',
-      'partner_mb_id' => $res_item['partner_mb_id'],
-      'partner_hp' => '',
-      'partner_manager_mb_id' => $res_item['mb_id'],
-      'partner_manager_mb_name' => $res_item['mb_name'],
-      'od_mb_id' => '',
-      'od_b_name' => '',
-      'od_b_hp' => '',
-      'od_b_addr1' => '',
-      'od_b_addr2' => '',
-      'prodMemo' => '',
-      'type' => 'deny_schedule',
-  ));
+      'type' => 'schedule'
+    ));
   }
   return $return_list;
 }
@@ -3381,7 +3345,7 @@ function get_partner_schedule_by_mb_id($member) {
  * 작성자 : 임근석
  * 작성일자 : 2022-11-02
  * 마지막 수정자 : 임근석
- * 마지막 수정일자 : 2023-01-02
+ * 마지막 수정일자 : 2023-01-25
  * 설명 : 설치파트너 & 설치파트너 매니저 & 관리자 계정으로 설치 일정 조회
  * @param string $member
  * @return mixed
@@ -3402,7 +3366,7 @@ function get_partner_schedule_by_partner_mb_id($member) {
       m.mb_manager AS 'partner_mb_id', 
       s.partner_manager_mb_id, 
       s.partner_manager_mb_name, 
-      mb.mb_hp, 
+      mb.mb_tel, 
       s.od_mb_id, 
       s.od_mb_ent_name, 
       s.od_b_name, 
@@ -3416,7 +3380,7 @@ function get_partner_schedule_by_partner_mb_id($member) {
     LEFT JOIN `g5_member` AS mb ON mb.mb_id = s.partner_mb_id 
     WHERE delivery_date != '' 
     AND delivery_datetime != '' 
-    AND (status = '준비' OR status = '완료');";
+    AND (status = '준비' OR status = '완료' OR status = '배송');";
   } else if($mb_type == 'manager') {
     // 설치파트너 매니저 계정
     $sql = "SELECT 
@@ -3429,7 +3393,7 @@ function get_partner_schedule_by_partner_mb_id($member) {
       m.mb_manager AS 'partner_mb_id', 
       s.partner_manager_mb_id, 
       s.partner_manager_mb_name, 
-      mb.mb_hp, 
+      mb.mb_tel, 
       s.od_mb_id, 
       s.od_mb_ent_name, 
       s.od_b_name, 
@@ -3444,7 +3408,7 @@ function get_partner_schedule_by_partner_mb_id($member) {
     WHERE partner_manager_mb_id = '$mb_id' 
     AND delivery_date != '' 
     AND delivery_datetime != '' 
-    AND (status = '준비' OR status = '완료');";
+    AND (status = '준비' OR status = '완료' OR status = '배송');";
   } else {
     // 설치파트너 계정
     $sql = "SELECT 
@@ -3457,7 +3421,7 @@ function get_partner_schedule_by_partner_mb_id($member) {
       m.mb_manager AS 'partner_mb_id', 
       s.partner_manager_mb_id, 
       s.partner_manager_mb_name, 
-      mb.mb_hp, 
+      m.mb_tel, 
       s.od_mb_id, 
       s.od_mb_ent_name, 
       s.od_b_name, 
@@ -3472,7 +3436,7 @@ function get_partner_schedule_by_partner_mb_id($member) {
     WHERE partner_mb_id = '$mb_id' 
     AND delivery_date != '' 
     AND delivery_datetime != '' 
-    AND (status = '준비' OR status = '완료');";
+    AND (status = '준비' OR status = '완료' OR status = '배송');";
   }
   $result = sql_query($sql);
   $return_list = [];
@@ -3485,7 +3449,7 @@ function get_partner_schedule_by_partner_mb_id($member) {
       'ct_qty' => $res_item['ct_qty'],
       'it_name' => $res_item['it_name'],
       'partner_mb_id' => $res_item['partner_mb_id'],
-      'partner_hp' => $res_item['mb_hp'],
+      'partner_manager_hp' => $res_item['mb_tel'],
       'partner_manager_mb_id' => $res_item['partner_manager_mb_id'],
       'partner_manager_mb_name' => $res_item['partner_manager_mb_name'],
       'od_mb_id' => $res_item['od_mb_id'],
@@ -3494,8 +3458,8 @@ function get_partner_schedule_by_partner_mb_id($member) {
       'od_b_addr1' => $res_item['od_b_addr1'],
       'od_b_addr2' => $res_item['od_b_addr2'],
       'prodMemo' => $res_item['prodMemo'],
-      'type' => 'schedule',
-   ));
+      'type' => 'schedule'
+    ));
   }
   if ($mb_type == "manager") {
     $sql = "SELECT 
@@ -3526,7 +3490,7 @@ function get_partner_schedule_by_partner_mb_id($member) {
       'ct_qty' => '',
       'it_name' => '',
       'partner_mb_id' => $res_item['partner_mb_id'],
-      'partner_mb_hp' => '', 
+      'partner_mb_hp' => '',
       'partner_manager_mb_id' => $res_item['mb_id'],
       'partner_manager_mb_name' => $res_item['mb_name'],
       'od_mb_id' => '',
@@ -3535,8 +3499,8 @@ function get_partner_schedule_by_partner_mb_id($member) {
       'od_b_addr1' => '',
       'od_b_addr2' => '',
       'prodMemo' => '',
-      'type' => 'deny_schedule',
-   ));
+      'type' => 'deny_schedule'
+    ));
   }
   return $return_list;
 }
@@ -3550,7 +3514,7 @@ function get_partner_schedule_by_partner_mb_id($member) {
  * @param string $partner_mb_id : 설치파트너 mb_id
  * @param string $partner_manager_mb_id : 설치파트너 매니저 mb_id
  * @param string[] $schedules : 설치 불가 일정 array 예시: ["2022-10-01", "2022-10-23"]
- * @return boolean|mixed 
+ * @return boolean
  */
 function bulk_partner_deny_schedule($partner_mb_id, $partner_manager_mb_id, $schedules) {
   if (count($schedules) > 0) {
@@ -3591,7 +3555,7 @@ function bulk_partner_deny_schedule($partner_mb_id, $partner_manager_mb_id, $sch
  * @param string $partner_mb_id : 설치파트너 mb_id
  * @param string $partner_manager_mb_id : 설치파트너 매니저 mb_id
  * @param string $deny_date : 설치 불가 일정
- * @return boolean 
+ * @return boolean
  */
 function delete_partner_deny_schedule($partner_mb_id, $partner_manager_mb_id, $deny_date) {
   $sql = "SELECT id FROM `partner_manager_deny_schedule` WHERE partner_mb_id = '$partner_mb_id' AND partner_manager_mb_id = '$partner_manager_mb_id' AND deny_date = '$deny_date';";
@@ -3612,12 +3576,12 @@ function delete_partner_deny_schedule($partner_mb_id, $partner_manager_mb_id, $d
  * 작성자 : 박서원
  * 작성일자 : 2022-12-06
  * 마지막 수정자 : 박서원
- * 마지막 수정일자 : 2022-12-07
+ * 마지막 수정일자 : 2023-02-02
  * 설명 : 각상품별 배송비 타입에 따른 계산 방식 단일화
  * @param string $it_id : 아이템 아이디
  * @param string $qty : 수량
  * @param string $_price : 상품가격
- * @return int
+ * @return Array (상품아이디, 배송정책타입, 배송비)
  *
  */
 function get_item_delivery_cost( $it_id, $qty, $_price=0 ) {
@@ -3627,9 +3591,11 @@ function get_item_delivery_cost( $it_id, $qty, $_price=0 ) {
   global $default;  
 
   $_result = array();
+  $_cost_title = "";
   $_cost = 0;
   $_cost_limit = explode(";",$default['de_send_cost_limit']);
   $_cost_list = explode(";",$default['de_send_cost_list']);  
+
 
   $_item = sql_fetch("
     SELECT it_price, it_sc_type, it_sc_method, it_sc_price, it_sc_minimum, it_sc_qty, it_even_odd, it_even_odd_price
@@ -3644,12 +3610,14 @@ function get_item_delivery_cost( $it_id, $qty, $_price=0 ) {
   if( $_item['it_sc_type'] == 1 ) {
     // (기본) 무료 배송
     // = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+    $_cost_title = "무료";
 
   }  
   else if( $_item['it_sc_type'] == 2 ) {
     // (기본) 조건부 무료 배송(X) X - X - X - X - X - X - X - X - X
     // 22.12.07 : 서원 - 플랫폼팀 요청에 의해 해당 기능 사용중지 처리
     // = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+    $_cost_title = "조건부";
 
     if( (int)$_price < (int)$_item['it_sc_minimum'] ) {
       $_cost = $_item['it_sc_price'];
@@ -3661,18 +3629,21 @@ function get_item_delivery_cost( $it_id, $qty, $_price=0 ) {
     // (기본) 유료 배송(X) X - X - X - X - X - X - X - X - X - X
     // 22.12.07 : 서원 - 플랫폼팀 요청에 의해 해당 기능 사용중지 처리
     // = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+    $_cost_title = "유료";
 
     $_cost = ( $_item['it_sc_price'] );
   }    
   else if( $_item['it_sc_type'] == 4 ) {
     // (별도) 수량별 유료 배송
     // = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+    $_cost_title = "수량별(" . $_item['it_sc_qty'] . ")";
 
     $_cost = ( $_item['it_sc_price'] * ceil($qty / $_item['it_sc_qty']) ) ;
   }   
   else if( $_item['it_sc_type'] == 5 ) {
     // (별도) 홀수/짝수 배송
     // = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+    $_cost_title = "홀수/짝수(" . (($_item['it_even_odd'])?"홀":"짝") . ")";
 
     if( ($_item['it_even_odd'] == 0) && ($qty > 0) && (($qty % 2) === 1) ) {
       // 홀수
@@ -3685,6 +3656,7 @@ function get_item_delivery_cost( $it_id, $qty, $_price=0 ) {
   else if( $_item['it_sc_type'] == 6 ) {
     // (별도) 포장수량 무료 배송
     // = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+    $_cost_title = "포장수량(" . $_item['it_sc_qty'] . ")";
 
     if( $qty % $_item['it_sc_qty'] ) {
       $_cost = $_item['it_sc_price'];
@@ -3693,6 +3665,7 @@ function get_item_delivery_cost( $it_id, $qty, $_price=0 ) {
   else {
     // (기본) 쇼핑몰 기본 설정
     // = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+    $_cost_title = "쇼핑몰기본설정";
 
     foreach($_cost_limit as $key => $val) {
       if( (int)$_price < (int)$_cost_limit[$key] ) { 
@@ -3705,6 +3678,8 @@ function get_item_delivery_cost( $it_id, $qty, $_price=0 ) {
   
   $_result = array(
     "it_id" => $it_id,
+    "sc_type" => $_item['it_sc_type'],
+    "cost_title" => $_cost_title,
     "cost" => (int)$_cost
   );
 
@@ -3763,7 +3738,7 @@ function security_iv() {
 * 마지막 수정일자 : 2022-12-16
 * 설명 : 암호화
 * @param string $msg : 메시지
-* @param string $key : 암호화 키값
+* @param string $key : 암호화 키값 
 * @param string $Iv : Initial Vector
 * @return string : encryption
 * 사용 : $result = encryption_AES256( 평문텍스트, security_key(), security_iv() );
@@ -3895,6 +3870,35 @@ function Masking_Name($str) {
   return $_result;
 }
 
+
+/*
+*
+* 작성자 : 박서원
+* 작성일자 : 2022-12-20
+* 마지막 수정자 : 박서원
+* 마지막 수정일자 : 2022-12-20
+* 설명 : 문자열 커스텀 마스킹
+* @param string $str : 문자열
+* @return string : 이로움장기요양기관통*****템
+* 사용 : $result = Masking_Custom( "이로움장기요양기관통합관리시스템", 10 , 5 );
+* 
+*/
+function Masking_Custom($str, $start, $len) {
+  $_result = "";
+  $strlen = mb_strlen($str, 'utf-8');
+
+  $head = mb_substr($str, 0, $start, 'utf-8');  
+  $tail = mb_substr($str, ($start+$len), ($strlen-($start+$len)), 'utf-8');
+  
+  $masking = mb_substr($str, $start, $len, 'utf-8');  
+  $strlen = mb_strlen($masking, 'utf-8');
+  $masking = implode('', array_fill(0, $strlen, '*'));
+
+  $_result = $head . $masking . $tail;
+  
+  return $_result;
+}
+
 /*
 *
 * 작성자 : 황현지
@@ -3930,32 +3934,4 @@ function chk_itType_deadline(){
   } else {
     return "already exist.";
   }
-}
-
-/*
-*
-* 작성자 : 박서원
-* 작성일자 : 2022-12-20
-* 마지막 수정자 : 박서원
-* 마지막 수정일자 : 2022-12-20
-* 설명 : 문자열 커스텀 마스킹
-* @param string $str : 문자열
-* @return string : 이로움장기요양기관통*****템
-* 사용 : $result = Masking_Custom( "이로움장기요양기관통합관리시스템", 10 , 5 );
-* 
-*/
-function Masking_Custom($str, $start, $len) {
-  $_result = "";
-  $strlen = mb_strlen($str, 'utf-8');
-
-  $head = mb_substr($str, 0, $start, 'utf-8');  
-  $tail = mb_substr($str, ($start+$len), ($strlen-($start+$len)), 'utf-8');
-  
-  $masking = mb_substr($str, $start, $len, 'utf-8');  
-  $strlen = mb_strlen($masking, 'utf-8');
-  $masking = implode('', array_fill(0, $strlen, '*'));
-
-  $_result = $head . $masking . $tail;
-  
-  return $_result;
 }

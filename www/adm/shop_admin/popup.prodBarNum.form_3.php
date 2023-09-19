@@ -1,6 +1,17 @@
 <?php
 include_once("./_common.php");
 
+
+/*
+ 
+  해당 파일은 물류팀의 PDA 전용 페이지를위한 파일로 바코드(키보드엣지방식) 정보 저장하기 위한 파일.
+  이 파일과 관련된 파일은 \www\adm\shop_admin\popup.prodBarNum.form.php 파일로 입력 방식이 비슷하나, 관련 파일은 수기(수동)입력을 허용하는 포괄입력 화면.
+
+  해당화면의 실제 바코드값이 전달되어 오기 까지는 www\shop\open_barcode.php 파일을 사용함.
+
+*/
+
+
 $g5["title"] = "주문 내역 바코드 수정";
 // include_once(G5_ADMIN_PATH."/admin.head.php");
 
@@ -40,6 +51,7 @@ $sql = " SELECT a.ct_id,
           b.it_name,
           b.it_use_short_barcode,
           b.prodpaycode,
+          b.prodassistingdevicescode,
           ( SELECT io_use_short_barcode FROM g5_shop_item_option AS o WHERE o.it_id = a.it_id AND o.io_id = a.io_id ) AS io_use_short_barcode
 			  FROM {$g5['g5_shop_cart_table']} a 
         LEFT JOIN {$g5['g5_shop_item_table']} b on ( a.it_id = b.it_id )
@@ -65,7 +77,6 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
       $combine_it_name .= "({$row['ct_option']})";
     }
   }
-
   $sto_imsi .= $row['stoId'];
 }
 
@@ -103,7 +114,7 @@ if($od["od_b_tel"]) {
   <link rel="stylesheet" href="<?php echo G5_CSS_URL ?>/flex.css">
 
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); outline: none; }
+    * { margin: 0; padding: 0; box-sizing: border-box; outline: none; }
     html, body { width: 100%; font-family: "Noto Sans KR", sans-serif; }
     body { padding-top: 60px; padding-bottom: 70px; }
     a { text-decoration: none; color: inherit; }
@@ -146,6 +157,7 @@ if($od["od_b_tel"]) {
     .imfomation_box .li_box .li_box_line1 .p1{ width:100%; color:#000; text-align:left; box-sizing: border-box; display: table; table-layout: fixed; }
     .imfomation_box .li_box .li_box_line1 .p1 > span { height: 100%; display: table-cell; vertical-align: middle; }
     .imfomation_box .li_box .li_box_line1 .p1 .span1{ font-size: 18px; word-break: keep-all; width: 60%; }
+
     /* .imfomation_box .li_box .li_box_line1 .p1 .span1{ font-size: 18px; overflow:hidden;text-overflow:ellipsis;white-space:nowrap; font-weight: bold; } */
     .imfomation_box .li_box .li_box_line1 .p1 .span2{ width: 120px; font-size:14px; text-align: right; }
     .imfomation_box .li_box .li_box_line1 .p1 .span2 img{ width: 13px; margin-left: 15px; vertical-align: middle; top: -1px; }
@@ -155,6 +167,7 @@ if($od["od_b_tel"]) {
     .imfomation_box .li_box .li_box_line1 .p1 .span3 label { color: #000; }
     .imfomation_box .li_box .li_box_line1 .p1 .span3 input { vertical-align:middle; }
     .imfomation_box .li_box .li_box_line1 .cartProdMemo { width: 100%; font-size: 13px; margin-top: 2px; text-align: left; color: #FF690F; }
+
     /* display:none; */
     .imfomation_box .li_box .folding_box{text-align: center; vertical-align:middle; width:100%; padding-top: 10px; display:none; box-sizing: border-box; }
     .imfomation_box .li_box .folding_box > span { display: block; width: 100%; }
@@ -166,9 +179,11 @@ if($od["od_b_tel"]) {
     .imfomation_box .li_box .folding_box > .inputbox > li > .frm_input::placeholder { font-size: 16px; color: #AAA; }
 
     .imfomation_box .li_box .folding_box > .inputbox > li > .btn_bacod { position: absolute; width: 30px; right: 50px; top: 11px; z-index: 2; cursor: pointer; }
-    .imfomation_box .li_box .folding_box > .inputbox > li > .btn_pda { position: absolute; width: 35px; right: 1px; top: 7px; z-index: 2; cursor: pointer; }
+    .imfomation_box .li_box .folding_box > .inputbox > li > .btn_pda { position: absolute; width: 28px; right: 2px; top: 3px; z-index: 2; cursor: pointer; }
     
+    /*
     .imfomation_box .li_box .folding_box > .inputbox > li > img { position: absolute; width: 30px; right: 15px; top: 11px; z-index: 2; cursor: pointer; }
+    */
     .imfomation_box .li_box .folding_box > .inputbox > li > i { position: absolute; right: 38px; top: 17px; z-index: 2; font-size: 19px; color: #FF6105; opacity: 0; }
     .imfomation_box .li_box .folding_box > .inputbox > li > i.active { opacity: 1; }
     .imfomation_box .li_box .folding_box > .inputbox > li > .overlap { position: absolute; right: 35px; top: 15px; z-index: 2; font-size: 14px; color: #DC3333; opacity: 0; font-weight: bold; }
@@ -180,10 +195,7 @@ if($od["od_b_tel"]) {
 
     .imfomation_box .li_box .folding_box .barNumCustomSubmitBtn{float:left;margin-left:10px;color:#fff;font-size:15px;background-color:#494949; border:0px;border-radius: 6px;width:18%; height:30px; font-weight: bold; }
     .imfomation_box .li_box .folding_box .barNumGuideOpenBtn{float:left; position: relative; margin-left:10px; width:25px; cursor: pointer; top: 5px; }
-    .imfomation_box .li_box .folding_box .notall{
-      margin-bottom:5px;font-size:20px;text-align:left;height:50px;width:90%; border-radius: 6px; background-color:#fff;  color:#666666; border:0px; ; border: 1px solid #c0c0c0;;
-    }
-
+    .imfomation_box .li_box .folding_box .notall{ margin-bottom:5px;font-size:20px;text-align:left;height:50px;width:90%; border-radius: 6px; background-color:#fff;  color:#666666; border:0px; ; border: 1px solid #c0c0c0; }
 
     .imfomation_box .li_box .deliveryInfoWrap { width: 100%; position: relative; background-color: #F1F1F1; border-radius: 5px; padding: 10px; margin-top: 15px; }
     .imfomation_box .li_box .deliveryInfoWrap:after { display: block; content: ''; clear: both; }
@@ -200,64 +212,19 @@ if($od["od_b_tel"]) {
 
 
     /* 바코드 순차입력 버튼 */
-    .imfomation_box .li_box .folding_box > .inputbox > li > .barcode_add {
-      width:35px;
-      height:35px;
-      position: absolute;
-      top: 8px;
-      right: 80px;
-      display:none;
-    }
+    .imfomation_box .li_box .folding_box > .inputbox > li > .barcode_add { width:35px; height:35px; position: absolute; top: 8px; right: 65px; cursor: pointer; display:none; }
 
-    .barcode_block {
-      display: none;
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.25);
-      color: #fff;
-      font-size: 18px;
-      font-weight: bold;
-      z-index: 8;
-      cursor: default;
-    }
+    .barcode_block { display: none; position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.25); color: #fff; font-size: 18px; font-weight: bold; z-index: 8; cursor: default; }
+    .barcode_block.active { display: block;    }
 
-    .barcode_block.active {
-      display: block;
-    }
-
-    .excel_btn {
-      display: inline-block;
-      margin-top: 10px;
-      color: #fff;
-      font-size: 17px;
-      background-color: #494949;
-      border: 0px;
-      border-radius: 6px;
-      width: 18%;
-      height: 50px;
-      font-weight: bold;
-      text-align: center;
-      line-height: 50px;
-    }
-
-    .imfomation_box .li_box .folding_box > .inputbox > li .barcode_icon.type5 {
-      position: absolute;
-      width: 20px;
-      right: 38px;
-      top: 17px;
-      z-index: 2;
-      opacity: 0;
-    }
-
+    .imfomation_box .li_box .folding_box > .inputbox > li .barcode_icon.type5 { position: absolute; width: 20px; right: 38px; top: 17px; z-index: 2; opacity: 0; }
     .imfomation_box .li_box .folding_box > .inputbox > li .barcode_icon.type5.active { opacity: 1; }
-    
 
-    .barcode_warning { display: none; font-size: 14px; text-align: left; padding: 10px 5px; }
-    .barcode_infotext { font-size: 14px; text-align: left; padding: 10px 5px; }
+    .imfomation_box .li_box .folding_box > .inputbox > li .barcode_icon.type6 { position: absolute; width: 20px; right: 38px; top: 15px; z-index: 2; opacity: 0; }
+    .imfomation_box .li_box .folding_box > .inputbox > li .barcode_icon.type6.active { opacity: 1; }    
 
+    .barcode_warning { display: none; text-align: left; padding: 2px; font-size: clamp(12px, 2.5vw, 14px);  }
+    .barcode_infotext { text-align: left; padding: 2px; font-size: clamp(12px, 2.5vw, 14px); }
 
     #barcodeHistory { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1000; }
     #barcodeHistory .mask { background: rgba(0, 0, 0, 0.7); width: 100%; height: 100%; position: absolute; }
@@ -270,12 +237,12 @@ if($od["od_b_tel"]) {
     #barcodeHistory .historyContent li .subtitle { font-size: 13px; }
     #barcodeHistory .historyContent li .title { font-size: 17px; }
  
-
     #order_log { padding: 20px; }
     #order_log .title { font-size: 18px; margin-bottom: 15px; }
     #order_log .logs { font-size: 14px; }
     #order_log .logs .row { margin-bottom: 7px; display: inline-block; }
     #order_log .logs .log_datetime { margin-right: 10px; }
+
   </style>
 </head>
 
@@ -311,7 +278,6 @@ if($od["od_b_tel"]) {
         <span><?=$od["od_b_addr1"]?> <?=$od["od_b_addr2"]?></span>
       </p>
     </div>
-  <!--<a href="./popup.prodBarNum.form.excel.php?od_id=<?=$od_id?>" class="excel_btn">엑셀다운로드</a>-->
 
   </div>
 
@@ -377,11 +343,6 @@ if($od["od_b_tel"]) {
                 <?php } ?>
                 <!-- 수량 -->
                 <?php echo " ({$carts[$i]["ct_qty"]}개)"; ?>
-                <?php if ($use_short_barcode == 'Y') { ?>
-                  <label for="it_use_short_barcode" id="it_use_short_barcode_label">
-                  <input style="margin-left:10px;" type="checkbox" name="it_use_short_barcode" value="1" id="it_use_short_barcode" data-it-id="<?php echo $carts[$i]['it_id']; ?>" <?php echo ($use_short_barcode == 'Y') ? "checked" : ""; ?>> 바코드 8자리
-                </label>
-                <?php } ?>
               </span>
               <?php if ($gubun != '02' && $carts[$i]['io_type'] == 0) { ?>
               <span class="span2">
@@ -425,29 +386,28 @@ if($od["od_b_tel"]) {
           <?php if ($gubun != '02') { ?>
           <div class="folding_box id_<?php echo $carts[$i]['ct_id']; ?>" data-id="<?php echo $carts[$i]['ct_id']; ?>">
             <?php if ($carts[$i]["ct_qty"] >= 2) { ?>
-            <!--
-            <span>
-            <input type="text" class="all frm_input" placeholder="일괄 등록수식 입력">
-            <button type="button" class="barNumCustomSubmitBtn">등록</button>
-            <img src="<?php echo G5_IMG_URL?>/ask_btn.png" alt="" class="barNumGuideOpenBtn" onclick="showPopup(true)">
-            </span>
-            -->
-            <?php } ?>
+
+              <?php } ?>
             <ul class="inputbox">
               <?php for ($b = 0; $b< count($stoId_v); $b++) { ?>
               <li>
                 <input type="number" maxlength="12" oninput="maxLengthCheck(this)" value="<?=$prodList[$b]["prodBarNum"]?>" class="notall frm_input frm_input_<?=$prodListCnt?> required prodBarNumItem_<?=$prodList[$prodListCnt]["penStaSeq"]?> <?=$stoId_v[$b]?>" placeholder="바코드를 입력하세요." data-frm-no="<?=$prodListCnt?>" data-it-id="<?php echo $carts[$i]['it_id']; ?>">
-                <img src="<?php echo G5_IMG_URL?>/bacod_add_img.png" class="barcode_add">
+                <img src="<?=G5_IMG_URL;?>/bacod_add_img.png" class="barcode_add">
                 <i class="fa fa-check"></i>
                 <span class="overlap">중복</span>
-                <img class="barcode_icon type5" src="/img/barcode_icon_3.png" alt="등록불가 (미보유재고)">
-                <img src="<?php echo G5_IMG_URL?>/btn_pda.png" class="nativePopupOpenBtn btn_pda" data-type="pda" data-code="<?=$b?>" data-ct-id="<?php echo $carts[$i]['ct_id']; ?>" data-it-id="<?php echo $carts[$i]['it_id']; ?>" data-pd-code="<?php echo $carts[$i]['prodpaycode']; ?>">
+                <img class="barcode_icon type5" src="<?=G5_IMG_URL;?>/barcode_icon_3.png" alt="등록불가 (미보유재고)">
+                <img class="barcode_icon type6" src="<?=G5_IMG_URL;?>/icon_nhis.png" alt="장애인보조기기">
+                <img src="<?=G5_IMG_URL;?>/btn_pda.png?ver=0" class="nativePopupOpenBtn btn_pda" data-type="pda" data-code="<?=$b?>" data-ct-id="<?php echo $carts[$i]['ct_id']; ?>" data-it-id="<?php echo $carts[$i]['it_id']; ?>" data-pd-code="<?php echo $carts[$i]['prodpaycode']; ?>" data-adp-code="<?php echo $carts[$i]['prodassistingdevicescode']; ?>">
               </li>
               <?php $prodListCnt++; } ?>
             </ul>
 
-            <p class="barcode_warning"><span style="color: red">(주의)</span> 재고가 없는 바코드가 있습니다. 관리자 승인 시 정상 등록 됩니다.</p>
+            <p class="barcode_warning"><span style="color: red">(주의)</span>재고가 없는 바코드가 있습니다. 관리자 승인 시 정상 등록 됩니다.</p>
             <p class="barcode_infotext"><span style="">* 입력된 바코드를 더블 클릭하면 수정 가능 합니다.</span></p>
+            <?php if ($use_short_barcode == 'Y') { ?>
+              <p class="barcode_infotext"><span style="">* 장애인보조기기 바코드(<img class="" src="<?=G5_IMG_URL;?>/icon_nhis.png" style="width:clamp(12px, 2.5vw, 14px);" alt="장애인보조기기">) 입력가능 품목 입니다.</span></p>
+              <input style="margin-left:10px;" type="hidden" name="it_use_short_barcode" value="<?=$use_short_barcode?>" id="it_use_short_barcode" data-it-id="<?=$carts[$i]['it_id']; ?>" <?php echo ($use_short_barcode == 'Y') ? "checked" : ""; ?>>
+            <?php } ?>
             
             <div class="barcode_block <?php echo in_array($carts[$i]['ct_status'], ['배송', '완료']) ? 'active' : '' ?>">
               <div class="flex-row justify-center " style="width: 100%; height: 100%; padding-top:10px;">
@@ -479,54 +439,24 @@ if($od["od_b_tel"]) {
     </ul>
   </form>
 
-  <div id="order_log">
-    <p class="title">기록</p>
-    <?php
+
+  <?php
 
     $result = sql_query("SELECT * FROM `g5_shop_order_admin_log` WHERE `od_id` = '{$od_id}' AND `ol_content` NOT LIKE '이카운트 엑셀%' ORDER BY ol_no DESC");
-
     $logs = array();
-    while($row = sql_fetch_array($result)) {
-      $logs[] = $row;
-    }
+    while($row = sql_fetch_array($result)) { $logs[] = $row; }
 
-    ?>
+  ?>
+  <div id="order_log">
+    <p class="title">기록</p>
     <div class="logs">
       <?php
-      foreach($logs as $log) {
-        $log_mb = get_member($log['mb_id']);
-        echo '<span class="row"><span class="log_datetime">'.$log['ol_datetime'] . '</span>(' . $log_mb['mb_name'] . ' 매니저) ' . $log['ol_content'] . '</span><br/>';
-      }
-      if (!count($logs)) {
-        echo '기록이 없습니다.';
-      }
+        foreach($logs as $log) {
+          $log_mb = get_member($log['mb_id']);
+          echo '<span class="row"><span class="log_datetime">'.$log['ol_datetime'] . '</span>(' . $log_mb['mb_name'] . ' 매니저) ' . $log['ol_content'] . '</span><br/>';
+        }
+        if (!count($logs)) { echo '기록이 없습니다.'; }
       ?>
-    </div>
-  </div>
-
-  <!-- 팝업 -->
-  <div id="popup" class="hide">
-    <div class="content">
-    <p>
-      바코드 일괄등록<br><br>
-      1. 공동된 숫자 이후 꺽쇠(^)를 입력하세요<br>
-      2. 하이픈(-)을 이용해 연속한 숫자를 입력할 수 있습니다.<br>
-      3. 콤마(,)를 이용해 연속하지 않은 숫자를 입력할 수 있습니다.<br><br>
-
-      예시1) 2012000^1-3 입력시 <br>
-      20120001, 20120002, 20120003이 일괄등록 됩니다.<br><br>
-
-      예시2) 2012000^1,3,5 입력시<br>
-      20120001, 20120003, 20120005가 일괄등록 됩니다.<br><br>
-
-      <!-- 공통된 문자/숫자를 앞에 부여 후 반복되는 숫자를 입력합니다.<br><br>
-      예시) 010101^3,4,5-10- 010101은 공동문자/숫자입니다.<br><br>
-      - ^이후는 자동으로 입력하기 위한 내용입니다.<br>
-      -    “숫자 입력 후 콤마(,)”를 입력하면 독립 숫자가 입력됩니다.<br>
-      - 5-10이라고 입력하면5부터10까지 순차적으로 입력됩니다.<br>
-      - 00-20으로 시작 숫자가00인 경우2자리 숫자로 입력됩니다 -->
-    </p>
-    <button class="closepop" onclick="closePopup()">닫기</button>
     </div>
   </div>
 
@@ -545,14 +475,6 @@ if($od["od_b_tel"]) {
       </div>
       <div class="content">
         <ul>
-          <li>
-            <p class="subtitle">2022-01-01 13:11 홍길동 담당자</p>
-            <p class="title">상품 출고 (NO 222222)</p>
-          </li>
-          <li>
-            <p class="subtitle">2022-01-01 13:11 홍길동 담당자</p>
-            <p class="title">상품 출고 (NO 222222)</p>
-          </li>
           <li>
             <p class="subtitle">2022-01-01 13:11 홍길동 담당자</p>
             <p class="title">상품 출고 (NO 222222)</p>
@@ -577,14 +499,12 @@ if($od["od_b_tel"]) {
     $(".hide_area").hide();
 
 
-
-
     $(document).on('keyup', '.notall', function () {
       var last_index = $(this).closest('ul').find('li').last().index();
       var this_index = $(this).closest('li').index();
 
       $(this).closest('ul').find('.barcode_add').hide();
-      if(last_index !== this_index && $(this).val().length == 12) {        
+      if( (last_index !== this_index) && ($(this).val().length == 12) && ($(this).val().substr(0,4) != "0000") ) {
           $(this).closest('li').find('.barcode_add').show();
       }
 
@@ -595,25 +515,25 @@ if($od["od_b_tel"]) {
 
     
     $.fn.setCursorPosition = function(position) {
-  if (this.length === 0) return this;
-  return this.each(function() {
-    if (typeof position !== "number") return;
-    if (this.setSelectionRange && this.type !== "number") {
-      this.setSelectionRange(position, position);
-    }
-  });
-};
+      if (this.length === 0) return this;
+      return this.each(function() {
+        if (typeof position !== "number") return;
+        if (this.setSelectionRange && this.type !== "number") {
+          this.setSelectionRange(position, position);
+        }
+      });
+    };
 
 
 
     $(".notall").dblclick(function() {
+
       if(!confirm("해당 바코드를 다시 스캔 하시겠습니까?\n\n[확인]: 다시 스캔\n[취소]: 수동 입력")) {
         // 수동 입력
         
         $(this).attr("readonly",false);       
         $(this).css({ "background-color": "#fff" });
         $(this).closest('li').find(".nativePopupOpenBtn.btn_pda").show();
-       
 
         var value = $(this).val();
         var len = value.length;
@@ -628,31 +548,37 @@ if($od["od_b_tel"]) {
           input.value = temp;
           //input.setSelectionRange(len, len);
         }
-
         
+        return;
+
       } else {
         // 다시스캔
         $(this).val("");
         $(this).css({ "background-color": "#fff" });
-        $(this).closest('li').find('i').removeClass("active");
-        $(this).closest('li').find('.overlap').removeClass("active");
-        $(this).closest('li').find('.type5').removeClass("active");         
+        $(this).closest('li').find('i, .overlap, .type5, .type6').removeClass("active");
         $(this).closest('li').find('.barcode_add').hide();
         $(this).closest('li').find(".nativePopupOpenBtn.btn_pda").show();
         $(this).closest('li').find('.nativePopupOpenBtn.btn_pda').click();        
       }
+      
+      return;
+
     });
+
 
 
     $('.notall').focus(function(){
 
-        var last_index = $(this).closest('ul').find('li').last().index();
-        var this_index = $(this).closest('li').index();
+      var last_index = $(this).closest('ul').find('li').last().index();
+      var this_index = $(this).closest('li').index();
 
-        $(this).closest('ul').find('.barcode_add').hide();
-        if(last_index !== this_index && $(this).val().length == 12) {
-            $(this).closest('li').find('.barcode_add').show();
-        }
+      $(this).closest('ul').find('.barcode_add').hide();
+      if( (last_index !== this_index) && ($(this).val().length == 12) && ($(this).val().substr(0,4) != "0000") ) {
+          $(this).closest('li').find('.barcode_add').show();
+      }
+      
+      return;
+      
     });
     
 
@@ -664,36 +590,49 @@ if($od["od_b_tel"]) {
       var li_last = $(ul).find('li').last().index();
       var p_num = 0;
 
-      if(li_val.length !== 12){
-          alert("바코드 12자리를 입력해주세요.");
-          return false;
+      if(li_val.length != 12){
+          alert("바코드 12자리를 입력해주세요."); return false;
       }     
 
-      for(var i = li_num+1; i<=li_last; i++){
+      if( li_val.substr(0,4) === "0000" ) {
+        alert("장애인 보조기기는 연속 버코드 입력이 불가능 합니다."); return false;
+      }
+
+      for( var i = li_num+1; i<=li_last; i++ ){
         p_num++;
+
         $(ul).find('li').eq(i).find('.notall').prop('readonly', false);
-        $(ul).find('li').eq(i).find('.notall').val( (parseInt( li_val )+p_num) );
+        $(ul).find('li').eq(i).find('.notall').val( (parseInt( li_val )+p_num) );        
+
 
         // 연속 번호로 12자리 이상을 입력할 수 없음.
-        if( $(ul).find('li').eq(i).find('.notall').val().length !== 12) {
+        if( $(ul).find('li').eq(i).find('.notall').val().length != 12) {
 
           if( $(ul).find('li').eq(i).find('.notall').val().length > 12 ) {
-            alert("12자리 이상의 연속 번호는 적용할 수 없습니다.\n연속 적용하려는 바코드를 확인해주세요.");
-            return false;
+            alert("12자리 이상의 연속 번호는 적용할 수 없습니다.\n연속 적용하려는 바코드를 확인해주세요."); return false;
           } else {
 
             if( confirm("정확하지 않은 바코드 정보가 존재 합니다.\n바코드값: " + $(ul).find('li').eq(i).find('.notall').val() + "\n해당 필드의 바코드 정보를 덮어쓰기 하시겠습니까?") ) {
               p_num++;
+              $(ul).find('li').eq(i).find('.notall').prop('readonly', false);
               $(ul).find('li').eq(i).find('.notall').val( (parseInt( li_val )+p_num) );
+              $(ul).find('li').find('.type6').removeClass("active");
+            } else {              
+              $(ul).find('li').eq(i).find('.notall').val("");
             }
             
           }
+
+        } else {
 
         }
         
       }
 
       notallLengthCheck();
+      
+      return;
+
     });
 
 
@@ -701,11 +640,10 @@ if($od["od_b_tel"]) {
   function notallLengthCheck() {
     var $foldingBox = $('.folding_box');
 
-    //$(".imfomation_box .li_box .folding_box > .inputbox > li > i").removeClass("active");
-    //$(".imfomation_box .li_box .folding_box > .inputbox > li > .overlap").removeClass("active");
     $foldingBox.find("i").removeClass("active");
     $foldingBox.find(".overlap").removeClass("active");
 
+    
     $foldingBox.each(function() {
 
       var $item = $(this).find('.notall');
@@ -720,27 +658,28 @@ if($od["od_b_tel"]) {
         if( !barcode ) { return true; }
 
         var maxlength = parseInt($cur.attr("maxlength"));
-        var it_id = $cur.attr("data-it-id");
-
-
-        $("input[name='it_use_short_barcode']").each(function(item) {
-          if ($(this).attr("data-it-id") == it_id && $(this).is(":checked")) {
-            maxlength = 8;
-          }
-        });
-
         var length = barcode.length;
+        
         if(length < maxlength && length) {
           $cur.addClass("active");
         }
 
-        if(length == maxlength && /^-?\d+$/.test(barcode)) { //숫자만 입력되었는지 체크 로직 추가 211103
-          $cur.parent().find("i").addClass("active");
+        if( (length == maxlength) && (/^-?\d+$/.test(barcode)) ) { //숫자만 입력되었는지 체크 로직 추가 211103
+          $cur.parent().find("i").addClass("active");          
           $cur.parent().find(".nativePopupOpenBtn.btn_pda").hide();
 
           if( !dataTable[barcode] ) { dataTable[barcode] = []; }
           dataTable[barcode].push(i);
         }
+
+        if( (barcode.substr(0,4) != "0000") ) {          
+          $cur.parent().find(".barcode_add").show();
+        } else {          
+          $cur.parent().find(".barcode_add").hide();
+          $cur.parent().find('.fa-check').removeClass('active');
+          $cur.parent().find(".nativePopupOpenBtn.btn_pda").hide();
+        }
+
 
       });
 
@@ -752,7 +691,7 @@ if($od["od_b_tel"]) {
         if(val.length > 1) {
           for(var j = 0; j < val.length; j++) {
             var idx = val[j];
-            $($item[idx]).parent().find("i, .type5").removeClass("active");
+            $($item[idx]).parent().find("i, .barcode_icon.type5, .barcode_icon.type6").removeClass("active");
             $($item[idx]).parent().find(".overlap").addClass("active");
           }
         }
@@ -764,6 +703,8 @@ if($od["od_b_tel"]) {
 
     });
 
+    return;
+
   }
 
 
@@ -771,20 +712,27 @@ if($od["od_b_tel"]) {
     var barcodeArr = [];
 
     $('.folding_box.id_' + ct_id + ' li').each(function () {
-      if( ($(this).find('.frm_input').val().length === 12)&&($(this).find('.frm_input').prop("readonly") == false) ) {
-          if( ($(this).find('.frm_input').val().length === 12) ) {
-          barcodeArr.push({
-            ct_id: ct_id,
-            index: $(this).index(),
-            barcode: $(this).find('.frm_input').val(),
-          });
-        }
+      if( 
+        ($(this).find('.frm_input').val().length === 12) 
+        && ($(this).find('.frm_input').prop("readonly") == false) 
+        && !($(this).find('.frm_input').val().substr(0,4) === "0000" ) 
+      ) {
+
+        barcodeArr.push({
+          ct_id: ct_id,
+          index: $(this).index(),
+          barcode: $(this).find('.frm_input').val(),
+        });
+
+      } else { 
+        if( ($(this).find('.frm_input').val().substr(0,4) === "0000") && ($(this).find('.frm_input').val().length === 12) ) { 
+          if( !$(this).find(".overlap.active").length ) { $(this).find('.barcode_icon.type6').addClass('active'); }
+          $(this).find('.frm_input').attr("readonly",true).css({ "background-color": "#f1f1f1" });
+        } 
       }
     })
 
     if (barcodeArr.length > 0) {
-      //$('.folding_box.id_' + ct_id + ' .barcode_icon.type5').removeClass('active');
-      //$('.folding_box.id_' + ct_id + ' .barcode_warning').hide();
 
       $.ajax({
         url: './ajax.barcode_validate_bulk.php',
@@ -802,6 +750,7 @@ if($od["od_b_tel"]) {
         var activeCount = 0;
 
         result.data.barcodeArr.forEach(function (_this) {
+
           if( _this.status === '미보유재고' ) {
             target.eq(_this.index).find('.fa-check').removeClass('active');
             target.eq(_this.index).find('.barcode_icon.type5').addClass('active');
@@ -813,9 +762,7 @@ if($od["od_b_tel"]) {
 
         });
 
-        if (activeCount > 0) {
-          $('.folding_box.id_' + ct_id + ' .barcode_warning').show();
-        }
+        if (activeCount > 0) { $('.folding_box.id_' + ct_id + ' .barcode_warning').show(); }
 
       })
       .fail(function($xhr) {
@@ -826,9 +773,7 @@ if($od["od_b_tel"]) {
         if( data.data.barcodeArr ){
           
           var _arrayBarcode = [];
-          data.data.barcodeArr.forEach(function (_this) {
-            _arrayBarcode[_this.index] = _this.status;
-          });
+          data.data.barcodeArr.forEach(function (_this) { _arrayBarcode[_this.index] = _this.status; });
 
           console.log(_arrayBarcode);
           setTimeout(function() {
@@ -846,8 +791,7 @@ if($od["od_b_tel"]) {
                 $(this).find('.frm_input').prop('readonly', false);
                 $(this).find('.frm_input').css({ "background-color": "#fff" });
 
-                $(this).find('.fa-check').removeClass('active');
-                $(this).find('.barcode_icon.type5').removeClass('active');
+                $(this).find('.fa-check, .barcode_icon.type5, .barcode_icon.type6').removeClass('active');
                 $(this).find('.frm_input').val("");
 
               } else if( _arrayBarcode[activeCount] && _arrayBarcode[activeCount] === "정상" ){
@@ -869,8 +813,7 @@ if($od["od_b_tel"]) {
               $(this).find('.frm_input').prop('readonly', false);
               $(this).find('.frm_input').css({ "background-color": "#fff" });
 
-              $(this).find('.fa-check').removeClass('active');
-              $(this).find('.barcode_icon.type5').removeClass('active');
+              $(this).find('.fa-check, .barcode_icon.type5, .barcode_icon.type6').removeClass('active');
               $(this).find('.frm_input').val("");
 
             });
@@ -972,6 +915,8 @@ if($od["od_b_tel"]) {
   var cur_ct_id = null;
   var cur_it_id = null;
   var cur_pdcode = null;
+  var cur_adpcode = null;
+  var cur_it_use_short_barcode = null;
 
   /* 기종체크 */
   var deviceUserAgent = navigator.userAgent.toLowerCase();
@@ -1252,7 +1197,8 @@ if($od["od_b_tel"]) {
       cur_ct_id = $(this).data('ct-id');
       cur_it_id = $(this).data('it-id');
       cur_pdcode = $(this).data('pd-code');
-
+      cur_adpcode = $(this).data('adp-code');
+      cur_it_use_short_barcode = $(this).closest(".folding_box").find("#it_use_short_barcode").val();
 
       for(var i = 0; i < item.length; i++) {
         if(!$(item[i]).val() || $(item[i]).attr("data-frm-no") == frm_no) {
@@ -1303,11 +1249,11 @@ if($od["od_b_tel"]) {
           barcode_arr.push(temp_arr);
           
           if(empty_count !== 0) {
-              // 바코드가 일부만 입력되어있는 경우
-              error_arr.push($(this).find('.p1 .span1').text().replace(/(\\n|\s\s)/g, ''));
+            // 바코드가 일부만 입력되어있는 경우
+            error_arr.push($(this).find('.p1 .span1').text().replace(/(\\n|\s\s)/g, ''));
           } else {
-              if(error_arr.length === 0)
-                $ipt_error = null;
+            if(error_arr.length === 0)
+              $ipt_error = null;
           }
       });
 
@@ -1335,9 +1281,7 @@ if($od["od_b_tel"]) {
       }
       
       barcode_arr.forEach(function(arr) {
-          if (isDuplicate(arr)) {
-              isDuplicated = true;
-          }
+        if (isDuplicate(arr)) { isDuplicated = true; }
       });
 
       if (isDuplicated) {
@@ -1522,24 +1466,6 @@ if($od["od_b_tel"]) {
     }
   }
 
-  // 팝업열기
-  function showPopup(multipleFilter) {
-    const popup = document.querySelector('#popup');
-
-    if (multipleFilter) {
-      popup.classList.add('multiple-filter');
-    } else {
-      popup.classList.remove('multiple-filter');
-    }
-
-    popup.classList.remove('hide');
-  }
-
-  // 팝업닫기
-  function closePopup() {
-    const popup = document.querySelector('#popup');
-    popup.classList.add('hide');
-  }
 
   function showBarcodeHistory(barcode, ct_id) {
     var data = null;
