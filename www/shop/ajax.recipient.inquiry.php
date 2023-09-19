@@ -408,6 +408,12 @@ fclose($log_file);
 // 23.07.18 : 서원 - 틸코 서버 host변경 관련 로그기록(-종료-)
 
 
+$log_txt .= "url : ".$url_recipientContractDetail."\r\n";
+$log_txt .= "response : ".$response."\r\n";
+//echo "step1";
+$log_file = fopen($log_dir . 'log'.date("Ymd").'.txt', 'a');
+fwrite($log_file, $log_txt . "\r\n\r\n");
+fclose($log_file);
 
 
 // 복지용구계약대상자조회
@@ -460,7 +466,11 @@ curl_close($curl);
 
 // 23.07.18 - 서원 : 틸코 API 외부 호출 부분 함수로 변경.
 $response = Longtermcare_API( $apiHost , $url_recipientToolList , $headers , $bodies_recipientToolList );
-
+$log_txt = "url : ".$url_recipientToolList."\r\n";
+$log_txt .= "response : ".$response."\r\n";
+$log_file = fopen($log_dir . 'log'.date("Ymd").'.txt', 'a');
+fwrite($log_file, $log_txt . "\r\n\r\n");
+fclose($log_file);
 
 // 복지용구계약대상자조회
 //$recipientToolList = json_decode(substr($response,strpos($response,'{')),TRUE);
@@ -637,7 +647,11 @@ curl_close($curl);
 
 // 23.07.18 - 서원 : 틸코 API 외부 호출 부분 함수로 변경.
 $response = Longtermcare_API( $apiHost , $url_recipientContractHistory , $headers , $bodies_recipientContractHistory );
-
+$log_txt = "url : ".$url_recipientContractHistory."\r\n";
+$log_txt .= "response : ".$response."\r\n";
+$log_file = fopen($log_dir . 'log'.date("Ymd").'.txt', 'a');
+fwrite($log_file, $log_txt . "\r\n\r\n");
+fclose($log_file);
 
 $recipientContractHistory = json_decode($response,TRUE);
 if ( strcmp($recipientContractHistory['Status'],'OK') != 0)
