@@ -21,7 +21,8 @@ add_javascript(G5_POSTCODE_JS, 0);
 
 <section class="wrap">
 <input type="hidden" name="checkUnload" id="checkUnload" value="0">
-  <div class="sub_section_tit">간편 주문서 신청</div>
+  <?php /* 23.09.13 : 서원 - 스마트 서비스 매뉴얼 추가 */?>
+  <div class="sub_section_tit">간편 주문서 신청 <a href="javascript:void(0);" onclick="window.open('<?=G5_DATA_URL;?>/file/이로움_스마트_서비스_04_간편_주문서_작성.pdf');" class="thkc_btnManual">사용방법 확인하기</a></div>
   <div class="inner">
   <form id="simple_order" name="forderform" class="form-horizontal" action="orderformupdate.php" method="post" onsubmit="return form_submit(this);">
       <input type="hidden" name="org_od_price" value="0">
@@ -1148,6 +1149,9 @@ function select_item(obj, io_id, ct_qty) {
   if(obj.it_type11 == '1') {
     $it_tag.append('<span style="display:inline-block;margin-right:4px;border:1px solid <?=$default['de_it_type11_color']?>;color:<?=$default['de_it_type11_color']?>"><?=$default['de_it_type11_name']?></span>');
   }
+  if(obj.it_type12 == '1') {
+    $it_tag.append('<span style="display:inline-block;margin-right:4px;border:1px solid <?=$default['de_it_type12_color']?>;color:<?=$default['de_it_type12_color']?>"><?=$default['de_it_type12_name']?></span>');
+  }
 
   var $it_price = $('<p class="it_price">');
   $it_price.append('판매가 : ' + number_format(it_price));
@@ -1606,6 +1610,7 @@ $(function() {
     $gubun_text = '판매';
     if($gubun == '01') $gubun_text = '대여';
     else if($gubun == '02') $gubun_text = '비급여';
+	else if($gubun == '03') $gubun_text = '보장구';
 
     $data['gubun'] = $gubun_text;
 
@@ -1678,6 +1683,7 @@ $(function() {
         it_type9,
         it_type10,
         it_type11,
+		it_type12,
         it_expected_warehousing_date,
         it_buy_min_qty,
         it_buy_max_qty,
@@ -1757,6 +1763,7 @@ $(function() {
         it_type9,
         it_type10,
         it_type11,
+		it_type12,
         it_expected_warehousing_date,
         it_buy_min_qty,
         it_buy_max_qty,

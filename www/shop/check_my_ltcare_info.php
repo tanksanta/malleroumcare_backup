@@ -323,7 +323,8 @@ input[type="number"]::-webkit-inner-spin-button {
 </style>
 <section class="ltcare_wrap">
   <div class="ltcare_tit">
-    <p>요양정보 간편조회</p>
+    <?php /* 23.09.13 : 서원 - 스마트 서비스 매뉴얼 추가 */?>
+    <p>요양정보 간편조회 <a href="javascript:void(0);" onclick="window.open('<?=G5_DATA_URL;?>/file/이로움_스마트_서비스_01_수급자_관리_조회.pdf');" class="thkc_btnManual">사용방법 확인하기</a></p>
   </div>
   <div class="ltcare_search">
     <form id="form_simple_eform" class="form-horizontal" autocomplete="off" onsubmit="return false;">

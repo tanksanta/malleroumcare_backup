@@ -191,6 +191,10 @@ html,body{height: 100%;}
   background: #333;
 }
 
+.billBtnWrapM{
+  height: 30px;
+}
+
 /* 이전 결제 내역 */
 .priceListWrap .listTitle{
   font-size: 16px;
@@ -285,3 +289,21 @@ html,body{height: 100%;}
   }
 }
 
+a.thkc_btnManual{
+  border-radius: 8px;
+  border: 1px solid #FF9013;
+  color: #FF6B00;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: -0.49px;
+  height: 36px;
+  display: inline-flex;
+  padding: 0px 15px;
+  justify-content: center;
+  align-items: center; 
+  margin: 0 0 0 5px;
+  float: right;
+}
+a.thkc_btnManual:hover{
+  background: rgba(255, 144, 19, 0.10);
+}

@@ -240,7 +240,8 @@
              <!-- contents -->
              <div class="contentsWrap">
                 <!-- 결제 청구서 내역 -->
-                <div class="billWrap">                    
+                <a href="javascript:void(0);" onclick="window.open('<?=G5_DATA_URL;?>/file/이로움_스마트_서비스_05_간편결제_하기.pdf');" class="thkc_btnManual">간편결제 메뉴얼</a>                    
+                <div class="billWrap">
                     <div class="billTitle">[<?=$member['mb_giup_bname'];?>][<?=date("m", mktime(0, 0, 0, date("m")-1, 1));?>월]대금 결제 청구서</div>
                     <div class="billListWrap">
                         <div class="billList">
@@ -282,9 +283,9 @@
                             <div class="btn03">청구 금액 없음</div>
                         <?php } ?>
                         <?php } ?>
-
                         </div>
-                    </div>                    
+                        
+                    </div>                  
                 </div>
                 <!-- 이전 결제 내역 -->
                 <div class="priceListWrap">
