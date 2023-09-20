@@ -371,6 +371,7 @@
                                     ) {
                                     // ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==
                                 ?>
+                                <li><img src="<?=G5_IMG_URL;?>/new_main_eroum/thkc_ico_manage04.svg" alt="고객상담 신청관리"><a href="/shop/eroumon_members_conslt_list.php">고객상담 신청관리</a></li>
                                 <li><img src="<?=G5_IMG_URL;?>/new_main_eroum/thkc_ico_manage08.svg" alt="복지용구 신청관리"><a href="/shop/eroumon_order_list.php">복지용구 신청관리</a></li>
                                 <?php } ?>
                                 <li><img src="<?=G5_IMG_URL;?>/new_main_eroum/thkc_ico_manage01.svg" alt="주문/배송 관리"><a href="/shop/orderinquiry.php">주문/배송 관리</a></li>
