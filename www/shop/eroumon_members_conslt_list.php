@@ -64,7 +64,7 @@
     $g5['title'] = '고객상담 신청관리';
 
     include_once('./_head.php');
-    $config['cf_page_rows']= 10;
+ 
     // 테스트용... 사업자 번호 임의수정
     //$member['mb_giup_bnum'] = '123-45-67892';
     //$member['mb_giup_bnum'] = '111-22-33333';
