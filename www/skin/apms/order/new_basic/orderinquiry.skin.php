@@ -189,27 +189,32 @@ $(function(){
 <script src="/js/detectmobilebrowser.js">
 </script>
 
+<?php
+      // 23.09.21 : 서원 - 숨김처리에 대한 cnt값을 확인하고자 SQL 실행 위치를 변경함.
+      $hidden_order_result = sql_query("
+      SELECT o.*, c.it_name, c.ct_option, count(*) as cnt FROM {$g5['g5_shop_order_table']} o
+      INNER JOIN {$g5['g5_shop_cart_table']} c ON o.od_id = c.od_id
+      WHERE o.mb_id = '{$member['mb_id']}' and od_hide_control = '1'
+      GROUP BY o.od_id
+      ORDER BY o.od_id desc
+    ");
+    $total_hidden_order = sql_num_rows($hidden_order_result);
+?>
+
 <section id="pro-order" class="wrap order-list">
   <div class="sub_section_tit">주문/배송 관리</div>
   <div class="r_btn_area">
-    <a href="javascript:void(0)" id="btn_hidden_order" class="btn eroumcare_btn2" title="숨김처리한 주문">숨김처리한 주문</a>
+    <a href="javascript:void(0)" id="btn_hidden_order" class="btn eroumcare_btn2" title="숨김처리한 주문">숨김처리<?=($total_hidden_order)?" (".$total_hidden_order."건)":""?></a>
   </div>
   <div class="r_btn_area2">
     <a href="./schedule/index.php" class="btn eroumcare_btn2" onclick="return showSchdule(this.href);"
             target="_blank" title="일정 보기">일정 보기</a>
   </div>
+
   <div id="hidden_order">
-    <div class="hidden_order_title">숨김처리한 주문</div>
+    <div class="hidden_order_title">숨김처리<?=($total_hidden_order)?" (".$total_hidden_order."건)":""?></div>
     <ul>
       <?php
-      $hidden_order_result = sql_query("
-        SELECT o.*, c.it_name, c.ct_option, count(*) as cnt FROM {$g5['g5_shop_order_table']} o
-        INNER JOIN {$g5['g5_shop_cart_table']} c ON o.od_id = c.od_id
-        WHERE o.mb_id = '{$member['mb_id']}' and od_hide_control = '1'
-        GROUP BY o.od_id
-        ORDER BY o.od_id desc
-      ");
-      $total_hidden_order = sql_num_rows($hidden_order_result);
       if(!$total_hidden_order) {
         echo '<div class="hidden_order_empty">숨긴 주문이 없습니다.</div>';
       }

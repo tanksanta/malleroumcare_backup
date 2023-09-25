@@ -22,5 +22,6 @@ $result = sql_query("
 if(!$result)
   json_response(500, 'DB 서버 오류 발생');
 
+set_order_admin_log($od_id, "사업소 - 주문숨김 취소");
 json_response(200, 'OK');
 ?>

@@ -9,6 +9,7 @@
             if(sql_query($sql)){
                 echo "S";
                 // echo $sql;
+                set_order_admin_log($_POST['od_id'], "사업소 - 주문숨김");
             }else{
                 echo "N";
             }
