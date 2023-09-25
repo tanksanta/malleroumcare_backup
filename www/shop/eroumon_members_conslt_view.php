@@ -135,7 +135,7 @@
 
 
     $_conslt_st = false;
-    if( $sql_result['CONSLT_STTUS']==="CS03" || $sql_result['CONSLT_STTUS']==="CS04" || $row['CONSLT_STTUS']==="CS09" ) { $_conslt_st = true; }
+    if( $sql_result['CONSLT_STTUS']==="CS03" || $sql_result['CONSLT_STTUS']==="CS04" || $sql_result['CONSLT_STTUS']==="CS09" ) { $_conslt_st = true; }
 
     if( !is_array($sql_result) ) { alert("[이로움ON] 1:1 상담 정보를 찾을 수 없습니다.", G5_SHOP_URL . "/eroumon_members_conslt_list.php".(($qstr)?"?".$qstr:"")); }
 
