@@ -101,7 +101,7 @@
         $age = $birthday->diff( new DateTime(date('ymd')) )->y; // 만나이 계산
 
         $_conslt_st = false;
-        if( $row['CONSLT_STTUS']==="CS03" || $row['CONSLT_STTUS']==="CS04" ) { $_conslt_st = true; }
+        if( $row['CONSLT_STTUS']==="CS03" || $row['CONSLT_STTUS']==="CS04" || $row['CONSLT_STTUS']==="CS09" ) { $_conslt_st = true; }
 
         $sheet->setCellValue('A'.($i+2), ($total_count - $i) );
         $sheet->setCellValue('B'.($i+2), $row['Hangeul_CONSLT_STTUS'] );

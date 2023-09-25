@@ -52,6 +52,8 @@
         </code>
 
     */
+    
+    /* // == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == */
 
     include_once('./_common.php');
 
@@ -232,7 +234,7 @@
                 $age = $birthday->diff( new DateTime(date('ymd')) )->y; // 만나이 계산
 
                 $_conslt_st = false;
-                if( $row['CONSLT_STTUS']==="CS03" || $row['CONSLT_STTUS']==="CS04" ) { $_conslt_st = true; }
+                if( $row['CONSLT_STTUS']==="CS03" || $row['CONSLT_STTUS']==="CS04" || $row['CONSLT_STTUS']==="CS09" ) { $_conslt_st = true; }
         ?>    
             <tr class="<?=$bg?>" >
 

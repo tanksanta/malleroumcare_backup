@@ -30,6 +30,31 @@
     /*                */
     /* // == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == */
 
+    /* !!중요!! */
+    /*
+        해당 페이지의 내용을 제공하기위해서는 data폴더내에 있는 dbconfig.도메인.php에 관련된 정보를 반드시 기입해야하며,
+        해당 파일은 서버의 민감정보가 포함됨에 따라 Git에서 관리하지 않으며, 별도 관리함으로 수기 입력을 해야 한다.
+        
+        <code>
+        if( $_SERVER['HTTP_HOST']==="eroumcare.com" || $_SERVER['HTTP_HOST']=="www.eroumcare.com" ) {
+            define('EROUMON_HOST', '상용(운영) 호스트명+포트');
+            define('EROUMON_USER', '상용(운영) DB 아이디');
+            define('EROUMON_PASSWORD', '상용(운영) DB 비밀번호');
+            define('EROUMON_DB', '상용(운영) 사용 할 DB ');
+            define('EROUMON_SET_MODE', true);
+        } else {
+            define('EROUMON_HOST', '테스트 호스트명+포트');
+            define('EROUMON_USER', '테스트 DB 아이디');
+            define('EROUMON_PASSWORD', '테스트 DB 비밀번호');
+            define('EROUMON_DB', '테스트 사용 할 DB ');
+            define('EROUMON_SET_MODE', true);
+        }
+        </code>
+
+    */
+    
+    /* // == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == */
+
     include_once('./_common.php');
 
     if(!$member['mb_id'])
@@ -110,7 +135,7 @@
 
 
     $_conslt_st = false;
-    if( $sql_result['CONSLT_STTUS']==="CS03" || $sql_result['CONSLT_STTUS']==="CS04" ) { $_conslt_st = true; }
+    if( $sql_result['CONSLT_STTUS']==="CS03" || $sql_result['CONSLT_STTUS']==="CS04" || $row['CONSLT_STTUS']==="CS09" ) { $_conslt_st = true; }
 
     if( !is_array($sql_result) ) { alert("[이로움ON] 1:1 상담 정보를 찾을 수 없습니다.", G5_SHOP_URL . "/eroumon_members_conslt_list.php".(($qstr)?"?".$qstr:"")); }
 
