@@ -74,7 +74,7 @@ $recipientContractHistory['Result']['ds_result'] = null;
 $PEN_EXPI_ST_DTM = substr($row["penApplyDtm"],0,10);
 $PEN_EXPI_ED_DTM = substr($row["penApplyDtm"],13,10);
 //$sql2 = "select * from pen_purchase_hist where ENT_ID='{$member['mb_entId']}' and PEN_NM='{$rn}' and PEN_LTM_NUM ='L{$id}' and PEN_EXPI_ST_DTM>='{$PEN_EXPI_ST_DTM}' and PEN_EXPI_ED_DTM<='{$PEN_EXPI_ED_DTM}' order by ORD_END_DTM DESC";//구매한 품목
-$sql2 = "select * from pen_purchase_hist where ENT_ID='{$member['mb_entId']}' and PEN_NM='{$rn}' and PEN_LTM_NUM ='L{$id}' and ('".date("Y-m-d")."' between PEN_EXPI_ST_DTM and PEN_EXPI_ED_DTM) order by ORD_END_DTM DESC";//구매한 품목
+$sql2 = "select * from pen_purchase_hist where ENT_ID='{$member['mb_entId']}' and PEN_NM='{$rn}' and PEN_LTM_NUM ='L{$id}' and ('".date("Y-m-d")."' between PEN_EXPI_ST_DTM and PEN_EXPI_ED_DTM) order by PROD_NM DESC, ORD_END_DTM DESC";//구매한 품목
 $result = sql_query($sql2);
 $i = 0;
 while ($res_item = sql_fetch_array($result)) {
@@ -85,6 +85,24 @@ while ($res_item = sql_fetch_array($result)) {
 	$recipientContractHistory['Result']['ds_result'][$i]['TOT_AMT'] = $res_item["TOTAL_PRICE"];//급여가
 	$recipientContractHistory['Result']['ds_result'][$i]['CNCL_YN'] = $res_item["CNCL_YN"];//계약상태
 	$recipientContractHistory['Result']['ds_result'][$i]['PROD_BAR_NUM'] = $res_item["PROD_BAR_NUM"];//바코드
+
+	$ltm = "L".$id;
+	$nm = $rn;
+	$od_status = ($res_item["CNCL_YN"] == "변경")?"":$res_item["ORD_STATUS"];
+	$item_nm = str_replace(" ","",$res_item["ITEM_NM"]);
+	$bar_num = $res_item["PROD_BAR_NUM"];
+
+	$sql3 = "select count('past_id') as cnt from pen_purchase_hist where ENT_ID = '".$member['mb_entId']."' and PEN_NM = '".$nm."' and PEN_LTM_NUM  = '".$ltm."' and ('".date("Y-m-d")."' between PEN_EXPI_ST_DTM and PEN_EXPI_ED_DTM) and (replace(ITEM_NM,' ','')='".$item_nm."' or ITEM_NM = '".$item_nm."') and CNCL_YN='정상'";
+	if($od_status == "대여"){
+		$sql3 .= "and ('".date("Y-m-d")."' between ORD_STR_DTM and ORD_END_DTM) and ORD_STATUS='".$od_status."'";
+	}
+	if($bar_num != ""){
+		$sql3 .= " and PROD_BAR_NUM='".$bar_num."'";
+	}
+
+	$row3 = sql_fetch($sql3);
+	$recipientContractHistory['Result']['ds_result'][$i]['CNCL_CNT'] = $row3["cnt"];
+
 	$i++;
 }
 

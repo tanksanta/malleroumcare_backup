@@ -305,7 +305,44 @@ if($member["cert_data_ref"] != ""){
   transform: translate(-50%, -50%);
   background: white;
 }
+#loading2 {
+		  background-color: rgba(0,0,0,0.7);
+		  position: fixed;
+		  top: 0;
+		  left: 0;
+		  width: 100%;
+		  height: 100%;
+		  z-index : 9999999999999999 !important;
+		}
+
+		#loading2 > div {
+		  position: relative;
+		  top: 50%;
+		  left: 50%;
+		  transform: translate(-50%, -50%);
+		  text-align: center;
+		  
+		}
+
+		#loading2 img {
+		  top: 50%;
+		  width: 150px;
+		  position: relative;
+		}
+
+		#loading2 p {
+		  color: #fff;
+		  position: relative;
+		  top: -25px;
+		}
 </style>
+<!--로딩 중 -->
+	<div id="loading2">
+	  <div>
+		<img src="/img/loading_apple.gif" class="img-responsive">
+		<p style="margin-top:40px;font-size:30px;line-height:40px;">정보를 불러오고 있습니다.<br>잠시만 기다려주세요.</p>
+	  </div>
+	</div>
 <input type="hidden" id="rem_amount2">
 <input type="hidden" id="used_amount2">
 
@@ -495,6 +532,16 @@ if($member["cert_data_ref"] != ""){
 		  $('#cert_ent_num_popup_box').hide();
 		});
 	});
+
+	function loading_onoff2(a){
+		if(a == "on" ){
+			$('body').css('overflow-y', 'hidden');
+			$('#loading2').show();
+		}else{
+			$('body').css('overflow-y', 'scroll');
+			$('#loading2').hide(); 
+		}		
+	}
 	
 	function tilko_call(a=1){
 		$("#tilko").attr("src","/tilko_test.php?option="+a);
@@ -549,9 +596,7 @@ if($member["cert_data_ref"] != ""){
 <script>
     $(function () {
         $('#table_contract_subtitle').hide();
-        $('#table_contract_main').hide();
-
-        loading();
+        $('#table_contract_main').hide();		
 
         let prod_period = <?=json_encode($arr_period);?>;
         let cnt_period = [];
@@ -661,14 +706,14 @@ if($member["cert_data_ref"] != ""){
 									contract_cnt2[contract_list[i]['PROD_NM']+paycode] = 1;	
 								}else{ 
 									contract_cnt[contract_list[i]['PROD_NM']+paycode] += 1;
-									var cncl_cnt = cncl_yn(penNm_parent,penLtmNum_parent,contract_list[i]['PROD_NM'],contract_list[i]['PROD_BAR_NUM'],contract_list[i]['WLR_MTHD_CD']);
+									var cncl_cnt = contract_list[i]['CNCL_CNT'];//cncl_yn(penNm_parent,penLtmNum_parent,contract_list[i]['PROD_NM'],contract_list[i]['PROD_BAR_NUM'],contract_list[i]['WLR_MTHD_CD']);
 									//alert(cncl_cnt);
 									if(cncl_cnt == '1'){
 										contract_cnt2[contract_list[i]['PROD_NM']+paycode] += 1;
 									}
 								}
 							}else if(contract_list[i]['CNCL_YN'] =="변경"){
-								var cncl_cnt2 = cncl_yn(penNm_parent,penLtmNum_parent,contract_list[i]['PROD_NM'],'',contract_list[i]['WLR_MTHD_CD']);
+								var cncl_cnt2 = contract_list[i]['CNCL_CNT'];//cncl_yn(penNm_parent,penLtmNum_parent,contract_list[i]['PROD_NM'],'',contract_list[i]['WLR_MTHD_CD']);
 								//alert(cncl_cnt2);
 								if(cncl_cnt2 == '0'){//정상 카운트가 없을 경우 변경을 정상 카운트로 처리
 									if(contract_cnt[contract_list[i]['PROD_NM']+paycode] == null){
@@ -740,7 +785,7 @@ if($member["cert_data_ref"] != ""){
                                                 <td colspan="1" ><span>급여가</span></td>
                                             </tr>`;
                                 for(var ind = 0; ind < contract_list.length; ind++){
-                                    if(contract_list[ind]['PROD_NM'] != sale_n[i-(sale_y.length)]['WIM_ITM_CD']) continue;
+                                    if(contract_list[ind]['PROD_NM'].replace(' ', '') != sale_n[i-(sale_y.length)]['WIM_ITM_CD'].replace(' ', '')) continue;
                                     if(contract_list[ind]['WLR_MTHD_CD'] == '대여') continue;
                                     var CNCL_YN = (contract_list[ind]['CNCL_YN']=="변경")?"<font color='red'>(변경)</font>":"";
 									row += `<tr id="${'gumae'+index}" class="${'contract-gumae'+index}" style="display:none;">
@@ -826,7 +871,7 @@ if($member["cert_data_ref"] != ""){
                                                 <td colspan="1" ><span>급여가</span></td>
                                             </tr>`;
                                 for(var ind = 0; ind < contract_list.length; ind++){
-                                    if(contract_list[ind]['PROD_NM'] != sale_y[i]['WIM_ITM_CD']) continue;
+                                    if(contract_list[ind]['PROD_NM'].replace(' ', '') != sale_y[i]['WIM_ITM_CD'].replace(' ', '')) continue;
                                     if(contract_list[ind]['WLR_MTHD_CD'] == '대여') continue;
                                     var CNCL_YN = (contract_list[ind]['CNCL_YN']=="변경")?"<font color='red'>(변경)</font>":"";
 									row += `<tr id="${'gumae'+index}" class="${'contract-gumae'+index}" style="display:none;">
@@ -963,7 +1008,8 @@ if($member["cert_data_ref"] != ""){
                             }
                         }                                                         
                         index++; 
-                        $("#table_rental").append(row);                     
+                        $("#table_rental").append(row);    
+						loading_onoff2('off');
                     }
 
                     $('#table_contract').empty();
@@ -1011,6 +1057,8 @@ if($member["cert_data_ref"] != ""){
 					return false;
                 }
             });
+			loading_onoff2('off');
+
         }else{ // 요양정보조회 버튼을 통해 호출한 경우 => DB에서 데이터 받아와서 뿌림
             penLtmNum_parent = parent.document.all["penLtmNum_parent"].value;
             penNm_parent = parent.document.all["penNm_parent"].value;
@@ -1336,11 +1384,13 @@ if($member["cert_data_ref"] != ""){
                 buildTable(ct_list);
                 buildTable(add_ct_list, 'add');
             }
+			loading_onoff2('off');
         }
         
 		//요양정보업데이트 이벤트
 		$(document).on("click", "#pen_info_update", function (){
-			loading();
+			loading_onoff2('on');
+
 			var head_title = `<span class = "rep_common"><?php echo "홍길동(L1234567890)";?></span><span>님의 요양정보</span>`;
             $(".head-title").html('');
 			$(".head-title").append(head_title);
@@ -1365,7 +1415,7 @@ if($member["cert_data_ref"] != ""){
 					.done(function(result) {
 					$("#rem_amount2").val(result["data"]["rem_amount"]);
 					$("#used_amount2").val(1600000-result["data"]["rem_amount"]);
-					
+					var result_cncl_cnt = result["data"]["recipientContractHistory"];
 					var rem_amount2 = $("#rem_amount2").val();
 					var used_amount2 = $("#used_amount2").val();
 					//alert(rem_amount2);
@@ -1426,15 +1476,15 @@ if($member["cert_data_ref"] != ""){
 									contract_cnt2[contract_list[i]['PROD_NM']+paycode] = 1;	
 								}else{ 
 									contract_cnt[contract_list[i]['PROD_NM']+paycode] += 1;
-									var cncl_cnt = cncl_yn(penNm_parent,penLtmNum_parent,contract_list[i]['PROD_NM'],contract_list[i]['BCD_NO'],contract_list[i]['WLR_MTHD_CD']);
-									//alert(contract_list[i]['BCD_NO']);
+									var cncl_cnt = result_cncl_cnt[contract_list[i]['PROD_NM'].replace(' ', '')][contract_list[i]['BCD_NO']]["CNCL_CNT"];
+									//cncl_yn(penNm_parent,penLtmNum_parent,contract_list[i]['PROD_NM'],contract_list[i]['BCD_NO'],contract_list[i]['WLR_MTHD_CD']);									
 									if(cncl_cnt == '1'){
 										contract_cnt2[contract_list[i]['PROD_NM']+paycode] += 1;
 									}
 								}
 							}else if(contract_list[i]['CNCL_YN'] =="변경"){
-								var cncl_cnt2 = cncl_yn(penNm_parent,penLtmNum_parent,contract_list[i]['PROD_NM'],'',contract_list[i]['WLR_MTHD_CD']);
-								//alert(cncl_cnt2);
+								var cncl_cnt2 = result_cncl_cnt[contract_list[i]['PROD_NM'].replace(' ', '')][contract_list[i]['BCD_NO']]["CNCL_CNT"];
+									//cncl_yn(penNm_parent,penLtmNum_parent,contract_list[i]['PROD_NM'],contract_list[i]['BCD_NO'],contract_list[i]['WLR_MTHD_CD']);
 								if(cncl_cnt2 == '0'){//정상 카운트가 없을 경우 변경을 정상 카운트로 처리
 									if(contract_cnt[contract_list[i]['PROD_NM']+paycode] == null){
 										contract_cnt[contract_list[i]['PROD_NM']+paycode] = 1;
@@ -1502,7 +1552,7 @@ if($member["cert_data_ref"] != ""){
                                             </tr>`;
                                 for(var ind = 0; ind < contract_list.length; ind++){
 									if(contract_list[ind]['CNCL_YN']!="정상")continue;
-                                    if(contract_list[ind]['PROD_NM'] != sale_n[i-(sale_y.length)]['WIM_ITM_CD']) continue;
+                                    if(contract_list[ind]['PROD_NM'].replace(' ', '') != sale_n[i-(sale_y.length)]['WIM_ITM_CD'].replace(' ', '')) continue;
                                     if(contract_list[ind]['WLR_MTHD_CD'] == '대여') continue;
 									var CNCL_YN = (contract_list[ind]['CNCL_YN']=="변경")?"<font color='red'>(변경)</font>":"";
                                     row += `<tr id="${'gumae'+index}" class="${'contract-gumae'+index}" style="display:none;">
@@ -1587,7 +1637,7 @@ if($member["cert_data_ref"] != ""){
                                             </tr>`;
                                 for(var ind = 0; ind < contract_list.length; ind++){
 									if(contract_list[ind]['CNCL_YN']!="정상")continue;
-                                    if(contract_list[ind]['PROD_NM'] != sale_y[i]['WIM_ITM_CD']) continue;
+                                    if(contract_list[ind]['PROD_NM'].replace(' ', '') != sale_y[i]['WIM_ITM_CD'].replace(' ', '')) continue;
                                     if(contract_list[ind]['WLR_MTHD_CD'] == '대여') continue;
 									var CNCL_YN = (contract_list[ind]['CNCL_YN']=="변경")?"<font color='red'>(변경)</font>":"";
                                     row += `<tr id="${'gumae'+index}" class="${'contract-gumae'+index}" style="display:none;">
@@ -1660,6 +1710,7 @@ if($member["cert_data_ref"] != ""){
                                 for(var ind = 0; ind < contract_list.length; ind++){
                                     if(contract_list[ind]['PROD_NM'].replace(' ', '') != rent_n[i-(rent_y.length)]['WIM_ITM_CD'].replace(' ', '')) continue;                                    
                                     if(contract_list[ind]['WLR_MTHD_CD'] == '판매') continue;
+									if(contract_list[ind]['CNCL_YN']=="취소") continue;
 									var CNCL_YN = (contract_list[ind]['CNCL_YN']=="변경")?"<font color='red'>(변경)</font>":"";
                                     row += `<tr id="${'daeyeo'+index}" class="${'contract-daeyeo'+index}" style="display:none;">
                                                 <td colspan="1" style="border-top-style: none; border-bottom-style: none;"></td>
@@ -1700,6 +1751,7 @@ if($member["cert_data_ref"] != ""){
                                 for(var ind = 0; ind < contract_list.length; ind++){
                                     if(contract_list[ind]['PROD_NM'].replace(' ', '') != rent_y[i]['WIM_ITM_CD'].replace(' ', '')) continue;                                    
                                     if(contract_list[ind]['WLR_MTHD_CD'] == '판매') continue;
+									if(contract_list[ind]['CNCL_YN']=="취소") continue;
 									var CNCL_YN = (contract_list[ind]['CNCL_YN']=="변경")?"<font color='red'>(변경)</font>":"";
                                     row += `<tr id="${'daeyeo'+index}" class="${'contract-daeyeo'+index}" style="display:none;">
                                                 <td colspan="1" style="border-top-style: none; border-bottom-style: none;"></td>
@@ -1807,6 +1859,7 @@ if($member["cert_data_ref"] != ""){
 					return false;
                 }
             });
+			loading_onoff2('off');
 		});
 		
 
@@ -1839,11 +1892,14 @@ if($member["cert_data_ref"] != ""){
 
         // 대여급여품목 클릭이벤트
         $('#table_rental').on('click', '.daeyeo-toggler', function(e){
-            e.preventDefault();
+            var innerTxt = ($(this).context.innerText).replace('▼','').replace('▲','');
+			e.preventDefault();
             if ($('#'+e.target.parentElement.parentElement.id).hasClass('daeyeo-open')) {
                 $('#'+e.target.parentElement.parentElement.id).attr('style', 'border: none;');
+				$(this).context.innerText = innerTxt+' ▼';
             } else {
                 $('#'+e.target.parentElement.parentElement.id).attr('style', 'border: 2px solid #3F6EC2; background:#ECF1F9;');
+				$(this).context.innerText = innerTxt+' ▲';
             }
             $('#'+e.target.parentElement.parentElement.id).toggleClass("daeyeo-open");
             $('.contract-daeyeo'+$(this).attr('data-prod-contract-daeyeo')).map((idx, child) => {
@@ -1947,75 +2003,7 @@ if($member["cert_data_ref"] != ""){
 
 	function makeComma(str) {str = String(str);return str.replace(/(\d)(?=(?:\d{3})+(?!\d))/g, '$1,');}
 
-    function loading() {
-        document.documentElement.style.overflowY = "hidden";
-        LoadingWithMask('/img/loading-modal.gif');
-        setTimeout("closeLoadingWithMask()", 1000);
-    }
 
-    function LoadingWithMask(gif) {
-        //화면의 높이와 너비를 구합니다.
-        var maskHeight = window.document.body.clientHeight+1000;
-        var maskWidth = window.document.body.clientWidth;
-        //화면에 출력할 마스크를 설정해줍니다.
-        var mask = "<div id='mask_loading' style='position:absolute; z-index:9000; background-color:#000000; left:0; top:0; display: flex; justify-content: center; align-items: center;'><img id ='loadingImg' src='"+ gif + "' style='position: absolute; display: block; margin: auto;'/></div>";
-        //화면에 레이어 추가
-        $('body').append(mask)
-        //마스크의 높이와 너비를 화면 것으로 만들어 전체 화면을 채웁니다.
-        $('#mask_loading').css({'width' : maskWidth,'height': maskHeight,'opacity' : '0.5'}); 
-        //마스크 표시
-        $('#mask_loading').show();
-        //로딩중 이미지 표시
-        // $('#loadingImg').appendTo(loadingImg);
-        // $('#loadingImg').show();
-    }
-
-    function noData() {
-        //화면의 높이와 너비를 구합니다.
-        var maskHeight = window.document.body.clientHeight;
-        var maskWidth = window.document.body.clientWidth;
-        //화면에 출력할 마스크를 설정해줍니다.
-        var mask = "<div id='mask_loading' style='position:absolute; z-index:9000; background-color:#000000; left:0; top:0; display: flex; justify-content: center; align-items: center;'>요양정보 업데이트가 필요합니다.</div>";
-        //화면에 레이어 추가
-        $('body').append(mask)
-        //마스크의 높이와 너비를 화면 것으로 만들어 전체 화면을 채웁니다.
-        $('#mask_loading').css({'width' : maskWidth,'height': maskHeight,'opacity' : '0.5'}); 
-        //마스크 표시
-        $('#mask_loading').show();
-        //로딩중 이미지 표시
-        // $('#loadingImg').appendTo(loadingImg);
-        // $('#loadingImg').show();
-    }
-
-    function closeLoadingWithMask() {
-        document.documentElement.style.overflowY = "auto";
-        $('#mask_loading, #loadingImg').hide();
-        $('#mask_loading, #loadingImg').empty(); 
-    }
-
-	function cncl_yn(nm,ltm,item_nm,bar_num,od_status){//변경건, 중복건 체크
-		var cnt = "";
-		$.ajax({
-			method: "POST",
-			url: "./ajax.cncl_yn_count.php",
-			async:false,
-			data: {
-				'nm': nm,
-				'ltm': ltm,
-				'item_nm': item_nm,
-				'bar_num': bar_num,
-				'od_status': od_status
-			},
-			dataType: "json",success : function(res){ // 비동기통신의 성공일경우 success콜백으로 들어옵니다. 'res'는 응답받은 데이터이다.
-                // 응답코드 > 0000
-				cnt = res;				
-            },
-            error : function(XMLHttpRequest, textStatus, errorThrown){ // 비동기 통신이 실패할경우 error 콜백으로 들어옵니다.
-                //alert("통신 실패.");
-            }
-		});
-		return cnt;
-	}
 
     function go_prints(){
         var style = document.createElement('style');
