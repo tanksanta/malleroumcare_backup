@@ -52,7 +52,7 @@ if($ca_id) {
 if ($sfl == "")  $sfl = "all";
 
 $sql_common = " from {$g5['g5_shop_item_table']} a
-                JOIN {$g5['g5_shop_category_table']} b ON a.ca_id = b.ca_id and b.ca_use='1'
+                JOIN {$g5['g5_shop_category_table']} b ON a.ca_id = b.ca_id
                where 1=1 ";
 $sql_common .= $sql_search;
 

@@ -79,7 +79,7 @@ $sql = "
     it_cust_price,
     it_rental_price,
     REPLACE(a.it_name, ' ', '') as it_name_no_space,
-    a.ca_id,
+    ca_id,
     ( select ca_name from g5_shop_category where ca_id = left(a.ca_id, 4) ) as ca_name,
     it_img1 as it_img,
     it_delivery_cnt,
@@ -120,7 +120,6 @@ $sql = "
     it_expected_warehousing_date
   FROM
     {$g5['g5_shop_item_table']} a
-	INNER JOIN g5_shop_category c ON a.ca_id = c.ca_id AND c.ca_use='1' 
   WHERE
     (
       a.it_model like '%$keyword%' OR 
