@@ -3,23 +3,23 @@ if (!defined("_GNUBOARD_")) exit; // 개별 페이지 접근 불가
 
 $btn3 = (isset($wset['btn3']) && $wset['btn3']) ? $wset['btn3'] : 'black';
 
-$sql = "SELECT * FROM g5_shop_category WHERE ca_id = '$ca_id'";
+$sql = "SELECT * FROM g5_shop_category WHERE ca_id = '$ca_id' and ca_use='1'";
 $cate_result = sql_fetch($sql);
 
 $depth = strlen($ca_id);
 $pca_id = substr($ca_id, 0, 2);
 
-$sql = "SELECT * FROM g5_shop_category WHERE ca_id = '$pca_id'";
+$sql = "SELECT * FROM g5_shop_category WHERE ca_id = '$pca_id' and ca_use='1'";
 $one_cate_result = sql_fetch($sql);
 
 if ( $depth >= 4 ) {
-  $sql = "SELECT * FROM g5_shop_category WHERE ca_id = '".substr($ca_id, 0, 4)."'";
+  $sql = "SELECT * FROM g5_shop_category WHERE ca_id = '".substr($ca_id, 0, 4)."' and ca_use='1'";
   $two_cate_result = sql_fetch($sql);
 }
 
 $sql = "SELECT * FROM g5_shop_category where ( length(ca_id) = 4 and ca_id like '"
     . substr($ca_id, 0, 2)
-    . "%' ) ORDER BY ca_order, ca_id ASC";
+    . "%' ) and ca_use='1' ORDER BY ca_order, ca_id ASC";
 $res3 = sql_query($sql);
 
 $ca_sub_name_table = [];
@@ -38,7 +38,7 @@ while( $row3 = sql_fetch_array($res3) ) {
   $row3['cnt'] = $row1['cnt'];*/
 
   // 3 depth 서브 카테고리 조회
-  $sql = " SELECT * FROM g5_shop_category WHERE ( length(ca_id) = 6 and ca_id like '{$row3['ca_id']}%' ) ORDER BY ca_order, ca_id ASC ";
+  $sql = " SELECT * FROM g5_shop_category WHERE ( length(ca_id) = 6 and ca_id like '{$row3['ca_id']}%' ) and ca_use='1' ORDER BY ca_order, ca_id ASC ";
   $sub_result = sql_query($sql);
   while($sub = sql_fetch_array($sub_result)) {
     if(!$sub_categories[$row3['ca_id']])

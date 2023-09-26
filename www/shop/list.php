@@ -94,7 +94,7 @@ if($ca_sub) {
 	$ca_sub_idx = 1;
 	foreach($ca_sub as $sub) {
 		$ca_id_sub = $ca_id.$sub;
-		$where .= " or ca_id like '$ca_id_sub%'
+		$where .= " or jt.ca_id like '$ca_id_sub%'
 		or ca_id2 like '$ca_id_sub%'
 		or ca_id3 like '$ca_id_sub%' 
 		or ca_id4 like '$ca_id_sub%'
@@ -112,7 +112,7 @@ if($ca_sub) {
 	}
 	$ca_sub_orderby .= " end, ";
 } else {
-	$where .= " or ca_id like '$ca_id%'
+	$where .= " or jt.ca_id like '$ca_id%'
 	or ca_id2 like '$ca_id%'
 	or ca_id3 like '$ca_id%'
 	or ca_id4 like '$ca_id%'
@@ -236,6 +236,7 @@ if ($sort != 'custom') {
 					   from `{$g5['g5_shop_item_table']}` a
 					   left join (select it_id as temp_it_id, ca_id as temp_ca_id, custom_index from g5_shop_item_custom_index) b
 					   on (a.it_id = b.temp_it_id) and  (temp_ca_id = '{$ca_id}')) jt
+					   INNER JOIN g5_shop_category c ON jt.ca_id = c.ca_id AND c.ca_use='1' 
 				 where $where order by $ca_sub_orderby custom_index is null asc, custom_index asc, pt_num asc, it_id asc limit $from_record, $item_rows
 				 ";
 }
