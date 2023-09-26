@@ -233,6 +233,25 @@ $sql = $sql.';';
 
 sql_query($sql);
 
+for($idx = 0; $idx < sizeof($insert_list); $idx++){
+	$ltm = $insert_list[$idx]['PEN_LTM_NUM'];
+	$nm = $insert_list[$idx]['PEN_NM'];
+	$od_status = ($insert_list[$idx]['CNCL_YN'] == "변경")?"":$insert_list[$idx]['ORD_STATUS'];
+	$item_nm = str_replace(" ","",$insert_list[$idx]['ITEM_NM']);
+	$bar_num = $insert_list[$idx]['PROD_BAR_NUM'];
+
+	$sql3 = "select count('past_id') as cnt from pen_purchase_hist where ENT_ID = '".$member['mb_entId']."' and PEN_NM = '".$nm."' and PEN_LTM_NUM  = '".$ltm."' and ('".date("Y-m-d")."' between PEN_EXPI_ST_DTM and PEN_EXPI_ED_DTM) and (replace(ITEM_NM,' ','')='".$item_nm."' or ITEM_NM = '".$item_nm."') and CNCL_YN='정상'";
+	if($od_status == "대여"){
+		$sql3 .= "and ('".date("Y-m-d")."' between ORD_STR_DTM and ORD_END_DTM) and ORD_STATUS='".$od_status."'";
+	}
+	if($bar_num != ""){
+		$sql3 .= " and PROD_BAR_NUM='".$bar_num."'";
+	}
+
+	$row3 = sql_fetch($sql3);
+	$recipientContractHistory[$item_nm][$bar_num]['CNCL_CNT'] = $row3["cnt"];
+}
+
 //***** 틸코블렛 API 조회 값중 대여 상품이 있는 경우 잔여 금액을 계산하지 못하고 잘못된 값을 반환하는 사례가 발생하여 아래 계약건에 대한 금액 합산 로직을 추가하였음 - 정한진 차장 2023.06.13
 /*
 $pen_budget = $list_data['ds_toolPayLmtList'][$ind]['REMN_AMT'];//잔여금액 초기화
@@ -269,5 +288,6 @@ if($count>0){
 json_response(200, 'OK', array(
   'sql' => $sql_mu,
   'rem_amount' => $pen_budget,
+  'recipientContractHistory' => $recipientContractHistory,
 ));
 ?>
