@@ -105,7 +105,7 @@ if($ca_sub) {
 		or ca_id9 like '$ca_id_sub%' 
 		or ca_id10 like '$ca_id_sub%'
 		";
-		$ca_sub_orderby .= " when (ca_id like '$ca_id_sub%'
+		$ca_sub_orderby .= " when (jt.ca_id like '$ca_id_sub%'
 		or ca_id2 like '$ca_id_sub%'
 		or ca_id3 like '$ca_id_sub%') then $ca_sub_idx ";
 		$ca_sub_idx++;
