@@ -71,8 +71,6 @@ for ($i=0; $i<count($_POST['ca_id']); $i++)
                     ca_order            = '".sql_real_escape_string(strip_tags($_POST['ca_order'][$i]))."',
 					ca_mb_id            = '".sql_real_escape_string(strip_tags(clean_xss_attributes($_POST['ca_mb_id'][$i])))."',
 					ca_use              = '".sql_real_escape_string(strip_tags($_POST['ca_use'][$i]))."',
-                    ca_cert_use         = '".sql_real_escape_string(strip_tags($_POST['ca_cert_use'][$i]))."',
-					ca_adult_use        = '".sql_real_escape_string(strip_tags($_POST['ca_adult_use'][$i]))."',
                     ca_img_width        = '".sql_real_escape_string(strip_tags($_POST['ca_img_width'][$i]))."',
                     ca_img_height       = '".sql_real_escape_string(strip_tags($_POST['ca_img_height'][$i]))."',
                     ca_mobile_img_width  = '".sql_real_escape_string(strip_tags($_POST['ca_mobile_img_width'][$i]))."',
@@ -85,7 +83,6 @@ for ($i=0; $i<count($_POST['ca_id']); $i++)
                     ca_list_row         = '".sql_real_escape_string(strip_tags($_POST['ca_list_row'][$i]))."',
                     ca_mobile_list_mod  = '".sql_real_escape_string(strip_tags($_POST['ca_mobile_list_mod'][$i]))."',
                     ca_mobile_list_row  = '".sql_real_escape_string(strip_tags($_POST['ca_mobile_list_row'][$i]))."',
-                    ca_stock_qty        = '".sql_real_escape_string(strip_tags($_POST['ca_stock_qty'][$i]))."',
 					pt_use			    = '".sql_real_escape_string(strip_tags($_POST['pt_use'][$i]))."',
                     pt_limit		    = '".sql_real_escape_string(strip_tags($_POST['pt_limit'][$i]))."',
                     pt_item			    = '".sql_real_escape_string(strip_tags($_POST['pt_item'][$i]))."',
@@ -93,6 +90,27 @@ for ($i=0; $i<count($_POST['ca_id']); $i++)
                     pt_form			    = '".sql_real_escape_string(strip_tags($_POST['pt_form'][$i]))."'
               where ca_id = '".sql_real_escape_string(strip_tags($_POST['ca_id'][$i]))."' "; // APMS : 2014.07.23
     sql_query($sql);
+
+
+    // *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-*
+    // 23.10.04 : 서원 - eroumAPI신규추가 [ 카테고리 정보 수정 부분 시작 ]
+    //                   EROUMCARE_API_PROD_UPDATECATEGORY - /api/prod/updateCategory
+    // *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-*
+    $_ca_id = sql_real_escape_string(strip_tags($_POST['ca_id'][$i]));
+    $_ca_use = sql_real_escape_string(strip_tags($_POST['ca_use'][$i]));
+    if( ($cate_gubun_table[substr($_ca_id, 0, 2)]) && (mb_strlen($_ca_id)<=4) && (mb_strlen($_ca_id)>2) ) {
+        $sendData = [];
+        $sendData["ca_name"]        = $p_ca_name;
+        $sendData["gubun"]          = $cate_gubun_table[substr($_ca_id, 0, 2)];
+        $sendData["ca_use"]         = ($_ca_use?"01":"02") ;
+        $sendData["usrId"]          = $member['mb_id'];
+        $sendData["itemId"]         = clean_xss_attributes( clean_xss_tags( get_search_string( $_POST['itemId'][$i] ) ) );
+        $res = get_eroumcare(EROUMCARE_API_PROD_UPDATECATEGORY, $sendData);
+    }        
+    // *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-*
+    // 23.10.04 : 서원 - eroumAPI신규추가 [ 카테고리 정보 수정 부분 종료 ]
+    // *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-*
+
 }
 
 goto_url("./categorylist.php?$qstr");

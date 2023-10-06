@@ -203,7 +203,26 @@ if(USE_G5_THEME) {
         </tr>
         <tr>
             <th scope="row"><label for="itemId">품목코드</label></th>
-            <td><input type="text" name="itemId" value="<?php echo $ca['itemId']; ?>" id="itemId" required class="required frm_input"></td>
+            <td>
+                <?php 
+                // *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-*
+                // 신규 API 추가에 따른 코드 수정 부분 시작.
+                // 23.10.05 : 서원 - WMDS쪽 신규 API가 추가됨에 따라 해당 API에서 'itemId' 값을 Key값으로 사용함으로 해당 값은 등록이후 변경 불가능 해야함.
+                //                   해당 값이 변경될 경우 WMDS에서 찾을 수 없음.
+                if ( (mb_strlen($subid)<=4) && $subid ) {
+                ?>
+                    <input type="text" name="itemId" value="<?=$ca['itemId']; ?>" id="itemId" required class="required frm_input">
+                <?php } else { ?>
+                    <?=$ca['itemId'];?>
+                    <?=help("* 품목코드는 내부 WMDS 시스템과 연결되는 코드로 변경이 불가능 합니다.");?>
+                    <?=(mb_strlen($subid)>4)?help("* 하위 분류코드에서 품목코드 변경은 불가능 합니다."):"";?>
+                    <input type="hidden" name="itemId" value="<?=$ca['itemId']; ?>" id="itemId" required class="required frm_input">
+                <?php
+                }
+                // 신규 API 추가에 따른 코드 수정 부분 종료.
+                // *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-*
+                ?>
+            </td>
         </tr>
         <tr>
             <th scope="row"><label for="ca_name">분류명</label></th>

@@ -91,6 +91,12 @@ define('EROUMCARE_API_STOCK_UPDATE',                            EROUMCARE_API_HO
 define('EROUMCARE_API_STOCK_DELETE_MULTI',                      EROUMCARE_API_HOST . '/api/stock/deleteMulti');
 // 장바구니 정보
 define('EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP',           EROUMCARE_API_HOST . '/api/prod/selectPro2000ProdInfoAjaxByShop.do');
+
+// 23.10.04 : 서원 - 분류(카테고리) 추가
+define('EROUMCARE_API_PROD_INSERTCATEGORY',                             EROUMCARE_API_HOST . '/api/prod/insertCategory');
+// 23.10.04 : 서원 - 분류(카테고리) 업데이트
+define('EROUMCARE_API_PROD_UPDATECATEGORY',                             EROUMCARE_API_HOST . '/api/prod/updateCategory');
+
 // 상품 등록
 define('EROUMCARE_API_PROD_INSERT',                             EROUMCARE_API_HOST . '/api/prod/insert');
 // 상품 업데이트

@@ -102,11 +102,10 @@ if(USE_G5_THEME) {
     <tr>
         <th scope="col" rowspan="2" id="sct_order">출력순서</th>
         <th scope="col" rowspan="2"><?php echo subject_sort_link("ca_id"); ?>분류코드</a></th>
-        <th scope="col" id="sct_cate"><?php echo subject_sort_link("ca_name"); ?>분류명</a></th>
-        <th scope="col" id="sct_amount">상품수</th>
+        <th scope="col" rowspan="2" id="sct_cate" style="min-width:150px;"><?php echo subject_sort_link("ca_name"); ?>분류명</a></th>
+        <th scope="col" rowspan="2" id="sct_admin" style="min-width:120px;">품목코드</a></th>
+        <th scope="col" rowspan="2" id="sct_amount">상품수</th>
         <th scope="col" id="sct_sell"<?php echo (USE_PARTNER) ? '' : ' rowspan="2"';?>><?php echo subject_sort_link("ca_use"); ?>판매가능</a></th>
-		<th scope="col" id="sct_amount"<?php echo (USE_PARTNER) ? '' : ' rowspan="2"';?>>본인인증</th>
-		<th scope="col" id="sct_adultcert"<?php echo (USE_PARTNER) ? '' : ' rowspan="2"';?>>성인인증</th>
 		<th scope="col" id="sct_imgw">PC이미지 폭</th>
         <th scope="col" id="sct_imgh">PC이미지 높이</th>
         <th scope="col" id="sct_imgcol">PC 가로수</th>
@@ -117,8 +116,6 @@ if(USE_G5_THEME) {
 		<th scope="col" rowspan="2">관리</th>
     </tr>
     <tr>
-        <th scope="col" id="sct_admin"><?php echo subject_sort_link("ca_mb_id"); ?>관리회원아이디</a></th>
-		<th scope="col" id="sct_sell"><?php echo subject_sort_link("ca_stock_qty"); ?>기본재고</a></th>
 		<?php if(USE_PARTNER) { ?>
 	        <th scope="col" id="sct_adultcert"><?php echo subject_sort_link("pt_use"); ?>파트너</a></th>
 			<th scope="col"><?php echo subject_sort_link("pt_point"); ?>등록비</a></th>
@@ -161,7 +158,7 @@ if(USE_G5_THEME) {
         $s_upd = '<a href="./categoryform.php?w=u&amp;ca_id='.$row['ca_id'].'&amp;'.$qstr.'" class="btn btn_02"><span class="sound_only">'.get_text($row['ca_name']).' </span>수정</a> ';
 
         if ($is_admin == 'super')
-            $s_del = '<a href="./categoryformupdate.php?w=d&amp;ca_id='.$row['ca_id'].'&amp;'.$qstr.'" onclick="return delete_confirm(this);" class="btn btn_02"><span class="sound_only">'.get_text($row['ca_name']).' </span>삭제</a> ';
+            $s_del = '<a href="./categoryformupdate.php?w=d&amp;ca_id='.$row['ca_id'].'&amp;itemId='.$row['itemId'].'&amp;'.$qstr.'" onclick="return delete_confirm(this);" class="btn btn_02"><span class="sound_only">'.get_text($row['ca_name']).' </span>삭제</a> ';
 
         // 해당 분류에 속한 상품의 수
         $sql1 = " select COUNT(*) as cnt from {$g5['g5_shop_item_table']}
@@ -206,22 +203,16 @@ if(USE_G5_THEME) {
             <input type="text" name="ca_order[<?php echo $i; ?>]" value='<?php echo $row['ca_order']; ?>' id="ca_order<?php echo $i; ?>" required class="required frm_input" size="3">
         </td>
         <td class="td_code" rowspan="2">
-            <input type="hidden" name="ca_id[<?php echo $i; ?>]" value="<?php echo $row['ca_id']; ?>">
+        <input type="hidden" name="itemId[<?php echo $i; ?>]" value="<?php echo $row['itemId']; ?>">
+        <input type="hidden" name="ca_id[<?php echo $i; ?>]" value="<?php echo $row['ca_id']; ?>">
             <a href="<?php echo G5_SHOP_URL; ?>/list.php?ca_id=<?php echo $row['ca_id']; ?>"><?php echo $row['ca_id']; ?></a>
         </td>
-        <td headers="sct_cate" class="sct_name sct_name<?php echo $level; ?>"><?php echo $s_level; ?> <input type="text" name="ca_name[<?php echo $i; ?>]" value="<?php echo get_text($row['ca_name']); ?>" id="ca_name<?php echo $i; ?>" required class="frm_input full_input required"></td>
-        <td headers="sct_amount" class="td_amount"><a href="./itemlist.php?sca=<?php echo $row['ca_id']; ?>"><?php echo $row1['cnt']; ?></a></td>
+        <td headers="sct_cate" rowspan="2" class="sct_name sct_name<?php echo $level; ?>"><?php echo $s_level; ?> <input type="text" name="ca_name[<?php echo $i; ?>]" value="<?php echo get_text($row['ca_name']); ?>" id="ca_name<?php echo $i; ?>" required class="frm_input full_input required"></td>
+        <td headers="sct_admin" rowspan="2" class="td_mng"> <?=$row['itemId'];?> </td>
+        <td headers="sct_amount" rowspan="2" class="td_amount"><a href="./itemlist.php?sca=<?php echo $row['ca_id']; ?>"><?php echo $row1['cnt']; ?></a></td>
 		<td headers="sct_admin" class="td_possible"<?php echo (USE_PARTNER) ? '' : ' rowspan="2"';?>>
             <input type="checkbox" name="ca_use[<?php echo $i; ?>]" value="1" id="ca_use<?php echo $i; ?>" <?php echo ($row['ca_use'] ? "checked" : ""); ?>>
             <label for="ca_use<?php echo $i; ?>">판매</label>
-        </td>
-		<td headers="sct_hpcert" class="td_possible"<?php echo (USE_PARTNER) ? '' : ' rowspan="2"';?>>
-            <input type="checkbox" name="ca_cert_use[<?php echo $i; ?>]" value="1" id="ca_cert_use_yes<?php echo $i; ?>" <?php if($row['ca_cert_use']) echo 'checked="checked"'; ?>>
-            <label for="ca_cert_use_yes<?php echo $i; ?>">사용</label>
-        </td>
-		<td headers="sct_adultcert" class="td_possible"<?php echo (USE_PARTNER) ? '' : ' rowspan="2"';?>>
-            <input type="checkbox" name="ca_adult_use[<?php echo $i; ?>]" value="1" id="ca_adult_use_yes<?php echo $i; ?>" <?php if($row['ca_adult_use']) echo 'checked="checked"'; ?>>
-            <label for="ca_adult_use_yes<?php echo $i; ?>">사용</label>
         </td>
 		<td headers="sct_imgw">
             <label for="ca_out_width<?php echo $i; ?>" class="sound_only">출력이미지 폭</label>
@@ -281,19 +272,6 @@ if(USE_G5_THEME) {
         </td>
 	</tr>
     <tr class="<?php echo $bg; ?>">
-        <td headers="sct_admin" class="td_mng">
-            <?php if ($is_admin == 'super') {?>
-            <label for="ca_mb_id<?php echo $i; ?>" class="sound_only">관리회원아이디</label>
-            <input type="text" name="ca_mb_id[<?php echo $i; ?>]" value="<?php echo $row['ca_mb_id']; ?>" id="ca_mb_id<?php echo $i; ?>" class="frm_input full_input" size="15">
-            <?php } else { ?>
-            <input type="hidden" name="ca_mb_id[<?php echo $i; ?>]" value="<?php echo $row['ca_mb_id']; ?>">
-            <?php echo $row['ca_mb_id']; ?>
-            <?php } ?>
-        </td>
-        <td headers="sct_sell" class="td_amount">
-            <label for="ca_stock_qty<?php echo $i; ?>" class="sound_only">기본재고</label>
-            <input type="text" name="ca_stock_qty[<?php echo $i; ?>]" value="<?php echo $row['ca_stock_qty']; ?>" id="ca_stock_qty<?php echo $i; ?>" required class="required frm_input" size="8" > <span class="sound_only">개</span>
-        </td>
 		<?php if(USE_PARTNER) { ?>
 			<td headers="sct_sell" class="td_possible">
 		        <input type="checkbox" name="pt_use[<?php echo $i; ?>]" value="1" id="pt_use<?php echo $i; ?>"<?php echo ($row['pt_use'] ? ' checked' : ''); ?>>
@@ -374,7 +352,7 @@ if(USE_G5_THEME) {
 
     <?php if ($is_admin == 'super') {?>
     <a href="./categoryform.php" id="cate_add" class="btn btn_01">분류 추가</a>
-    <a href="<?php echo G5_ADMIN_URL;?>/apms_admin/apms.form.list.php" id="form_list" class="btn btn_03">등록폼 관리</a>
+    <!-- <a href="<?php echo G5_ADMIN_URL;?>/apms_admin/apms.form.list.php" id="form_list" class="btn btn_03">등록폼 관리</a> -->
 	<?php } ?>
 </div>
 
@@ -404,6 +382,10 @@ $(function() {
     });
 });
 </script>
+
+<style>
+    #sct_mobileimg, .td_amount, .td_code { width: auto; }
+</style>
 
 <?php
 include_once (G5_ADMIN_PATH.'/admin.tail.php');
