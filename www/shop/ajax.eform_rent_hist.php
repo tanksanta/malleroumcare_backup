@@ -14,7 +14,7 @@ $last_month = date("Y-m",strtotime("-1 month",time()));//지난달
 	$sql = "SELECT * FROM `eform_rent_hist` 
 	WHERE entId='{$member['mb_entId']}' 
 	AND penId='{$_POST['id']}' 
-	AND !(substr(confirm_date,1,7)<'".date("Y-m")."' AND substr(it_end_date,1,7)<'".date("Y-m")."')  ORDER BY reg_date DESC";
+	AND !(substr(reg_date,1,7)<'".date("Y-m")."' AND substr(it_end_date,1,7)<'".date("Y-m")."')  ORDER BY reg_date DESC";
 	$result = sql_query($sql);
 	$count_01 = sql_num_rows($result);
 	$html = "<table>";	
