@@ -36,13 +36,14 @@ sql_query("START TRANSACTION");
 
 $_sql_string = [];
 
-try {
+try {  
 
   $result = [];
   foreach($ct_id_list as $ct_id) {
     $ct_it_name = $_POST["ct_it_name_{$ct_id}"];
     $ct_delivery_company = $_POST["ct_delivery_company_{$ct_id}"];
     $ct_delivery_num = $_POST["ct_delivery_num_{$ct_id}"];
+	$ct_delivery_box_type = $_POST["box_size_option_{$ct_id}"];
     if (is_array($ct_delivery_num)) {
       $n_ct_delivery_num = array();
       foreach($ct_delivery_num as $delivery_num) {
@@ -69,8 +70,8 @@ try {
     }
     //$ct_warehouse = get_search_string($_POST["ct_warehouse_{$ct_id}"]);
 	$ct_warehouse = $_POST["ct_warehouse_{$ct_id}"];
-
-
+    
+    
     if($ct_delivery_num||$ct_delivery_combine){
       $od_delivery_insert++;
     }
@@ -84,7 +85,7 @@ try {
     } else {
       $combine_where = "ct_combine_ct_id = NULL,";
     }
-
+    
     if($update_type == "popup") {
       $_sql_string[] = ("
         UPDATE g5_shop_cart SET
@@ -109,6 +110,7 @@ try {
           ct_delivery_num = '{$ct_delivery_num}',
           ct_delivery_cnt = '{$ct_delivery_cnt}',
           ct_delivery_price = '{$ct_delivery_price}',
+		  ct_delivery_box_type = '{$ct_delivery_box_type}',
           ct_edi_result = 0,
           ct_warehouse = '{$ct_warehouse}',
           ct_is_direct_delivery = '{$ct_is_direct_delivery}',
@@ -116,6 +118,19 @@ try {
           ct_direct_delivery_price = '{$ct_direct_delivery_price}'
         WHERE ct_id = '{$ct_id}'
       ");
+	  sql_query("UPDATE g5_shop_cart SET
+          $combine_where
+          ct_delivery_company = '{$ct_delivery_company}',
+          ct_delivery_num = '{$ct_delivery_num}',
+          ct_delivery_cnt = '{$ct_delivery_cnt}',
+          ct_delivery_price = '{$ct_delivery_price}',
+		  ct_delivery_box_type = '{$ct_delivery_box_type}',
+          ct_edi_result = 0,
+          ct_warehouse = '{$ct_warehouse}',
+          ct_is_direct_delivery = '{$ct_is_direct_delivery}',
+          ct_direct_delivery_partner = '{$ct_direct_delivery_partner}',
+          ct_direct_delivery_price = '{$ct_direct_delivery_price}'
+        WHERE ct_id = '{$ct_id}'");
     }
 
     //배송 로그
@@ -155,18 +170,35 @@ try {
         d_date = '{$data}'
     ";
 
-    $result_status = '';
+    foreach($delivery_companys as $company){ 
+        if($ct_delivery_company == $company["val"] ){
+          $result_company2 = $company["name"];
+          break;
+        }
+    }
+	
+	$result_status = '';
     $result_text = '배송정보';
     if($ct_is_direct_delivery) {
       $result_status = 'disable';
       $result_text = '입력완료(직배송)';
     }
     if($ct_delivery_combine) {
-      $result_status = 'disable';
+      
+	  $sql_ctd ="select `ct_delivery_company`,`ct_delivery_num` from `g5_shop_cart` where `ct_id` = '".$ct_delivery_combine_ct_id."'";
+      $result_ctd = sql_fetch($sql_ctd);
+
+      foreach($delivery_companys as $data){ 
+        if($result_ctd['ct_delivery_company'] == $data["val"] ){
+            $result_company2=$data["name"];
+        }
+      }
+	  
+	  $result_status = 'disable';
       $result_text = '입력완료(합포)';
     }
     if($ct_delivery_num) {
-      foreach($delivery_companys as $company){
+      foreach($delivery_companys as $company){ 
         if($ct_delivery_company == $company["val"] ){
           $result_company = $company["name"];
           break;
@@ -179,6 +211,7 @@ try {
       'ct_id' => $ct_id,
       'status' => $result_status,
       'text' => $result_text,
+	  'text2' => $result_company2,
     );
 
     // partner01 위탁인 경우 푸쉬 전송
