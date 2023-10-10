@@ -2031,19 +2031,19 @@ function print_name_and_value($name, $val) {
             <th>화장실</th>
             <td>
               <label for="living_toilet_0">
-                <input type="radio" id="living_toilet_0" <?=print_name_and_value("living_toilet", "00")?>>양호
+                <input type="radio" id="living_toilet_0" <?=print_name_and_value("living_toilet", "00")?>>실내
               </label>
               <label for="living_toilet_1">
-                <input type="radio" id="living_toilet_1" <?=print_name_and_value("living_toilet", "01")?>>불량
+                <input type="radio" id="living_toilet_1" <?=print_name_and_value("living_toilet", "01")?>>실외
               </label>
             </td>
             <th colspan="2">좌변기</th>
             <td>
               <label for="living_western_0">
-                <input type="radio" id="living_western_0" <?=print_name_and_value("living_western", "00")?>>양호
+                <input type="radio" id="living_western_0" <?=print_name_and_value("living_western", "00")?>>있음
               </label>
               <label for="living_western_1">
-                <input type="radio" id="living_western_1" <?=print_name_and_value("living_western", "01")?>>불량
+                <input type="radio" id="living_western_1" <?=print_name_and_value("living_western", "01")?>>없음
               </label>
             </td>
           </tr>
@@ -2051,19 +2051,19 @@ function print_name_and_value($name, $val) {
             <th>온수여부</th>
             <td>
               <label for="living_hot_water_0">
-                <input type="radio" id="living_hot_water_0" <?=print_name_and_value("living_hot_water", "00")?>>양호
+                <input type="radio" id="living_hot_water_0" <?=print_name_and_value("living_hot_water", "00")?>>있음
               </label>
               <label for="living_hot_water_1">
-                <input type="radio" id="living_hot_water_1" <?=print_name_and_value("living_hot_water", "01")?>>불량
+                <input type="radio" id="living_hot_water_1" <?=print_name_and_value("living_hot_water", "01")?>>없음
               </label>
             </td>
             <th colspan="2">욕조</th>
             <td>
               <label for="living_bathtub_0">
-                <input type="radio" id="living_bathtub_0" <?=print_name_and_value("living_bathtub", "00")?>>양호
+                <input type="radio" id="living_bathtub_0" <?=print_name_and_value("living_bathtub", "00")?>>있음
               </label>
               <label for="living_bathtub_1">
-                <input type="radio" id="living_bathtub_1" <?=print_name_and_value("living_bathtub", "01")?>>불량
+                <input type="radio" id="living_bathtub_1" <?=print_name_and_value("living_bathtub", "01")?>>없음
               </label>
             </td>
           </tr>
@@ -2071,19 +2071,19 @@ function print_name_and_value($name, $val) {
             <th>세면대여부</th>
             <td>
               <label for="living_basin_0">
-                <input type="radio" id="living_basin_0" <?=print_name_and_value("living_basin", "00")?>>양호
+                <input type="radio" id="living_basin_0" <?=print_name_and_value("living_basin", "00")?>>있음
               </label>
               <label for="living_basin_1">
-                <input type="radio" id="living_basin_1" <?=print_name_and_value("living_basin", "01")?>>불량
+                <input type="radio" id="living_basin_1" <?=print_name_and_value("living_basin", "01")?>>없음
               </label>
             </td>
             <th colspan="2">주방</th>
             <td>
               <label for="living_kitchen_0">
-                <input type="radio" id="living_kitchen_0" <?=print_name_and_value("living_kitchen", "00")?>>양호
+                <input type="radio" id="living_kitchen_0" <?=print_name_and_value("living_kitchen", "00")?>>있음
               </label>
               <label for="living_kitchen_1">
-                <input type="radio" id="living_kitchen_1" <?=print_name_and_value("living_kitchen", "01")?>>불량
+                <input type="radio" id="living_kitchen_1" <?=print_name_and_value("living_kitchen", "01")?>>없음
               </label>
             </td>
           </tr>
@@ -2293,15 +2293,16 @@ function print_name_and_value($name, $val) {
               </label>
             </td>
           </tr>
+		   <tr>
+            <th>기타내용 및 종합의견</th>
+            <td>
+              <textarea name="etc_content" style="border:0px;"><?= $rec['etc_content'] ?: '' ?></textarea>
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>
 
-    
-    <div class="textarea_head">종합의견</div>
-    <textarea name="etc_content"><?= $rec['etc_content'] ?: '' ?></textarea>
-
-    
     <div class="sub_title_wrap">
       <div class="sub_title">
         12.종합의견
