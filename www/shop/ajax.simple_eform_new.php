@@ -19,6 +19,21 @@ if(sql_num_rows($res_check) == 0){
   sql_query($append_col);
 }
 
+/**
+* 기존에 있던  eform_document_item 테이블을 재사용하기 위한 작업
+* 새로이 필요한 컬럼(it_rental_price)이 존재하는지 확인 후, 없으면 새로 추가하는 작업 진행
+*/
+$sql_check2 = "
+  show columns from eform_document_item where field in ('it_rental_price');
+";
+$res_check2 = sql_query($sql_check2);
+if(sql_num_rows($res_check2) == 0){
+
+  $append_col2 = "alter table eform_document_item ".
+                "add column it_rental_price int(11) NULL DEFAULT NULL COMMENT '월대여가(급여제공기록용)' after it_price";
+  sql_query($append_col2);
+}
+
 $w = $_POST['w'];
 $sealFile_self = $_POST['sealFile_self'] == "true" ? true : false; //직인 직접날인 여부 
 
@@ -557,6 +572,7 @@ for($i = 0; $i < count($it_id_arr); $i++) {
         $gubun = '00';
         $it_price = $it['it_cust_price']; // 급여가
 		$it_price_pen = calc_pen_price($penTypeCd, $it_price,1);//본인부담금(추가)
+		$it_rental_price = "";//월대여가(추가)
     } else if($it_gubun === '대여') {
         $gubun = '01';
         $str_date = substr($it_date, 0, 10);
@@ -572,6 +588,7 @@ for($i = 0; $i < count($it_id_arr); $i++) {
         $price = calc_rental_price($str_date, $end_date, $it['it_rental_price'],$penTypeCd);//(추가)
 		$it_price = $price["calc_rental_price"];//대여가(추가)
 		$it_price_pen = $price["calc_pen_price"];//본인부담금(추가)
+		$it_rental_price = $it['it_rental_price'];//월대여가(추가)-
 
         //$it_price = calc_rental_price($str_date, $end_date, $it['it_rental_price']);
     } else {
@@ -593,6 +610,7 @@ for($i = 0; $i < count($it_id_arr); $i++) {
                 it_qty = '1',
                 it_date = '$it_date',
                 it_price = '$it_price',
+				it_rental_price = '$it_rental_price',
                 it_price_pen = '$it_price_pen',
                 it_price_ent = '$it_price_ent'
         ";

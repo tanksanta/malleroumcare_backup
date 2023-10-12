@@ -73,7 +73,6 @@ function make_it_type_url($it_type) {
   }
   return $it_type_url;
 }
-
 $ca_url = G5_SHOP_URL.'/list.php?ca_id='.$ca_id;
 $ca_sub_url = make_ca_sub_url($ca_sub);
 $it_type_url = make_it_type_url($it_type);
@@ -82,6 +81,7 @@ if($sort) $sort_url .= "&sort=$sort";
 if($sortodr) $sort_url .= "&sortodr=$sortodr";
 $sup_url = "";
 if($prodSupYn) $sup_url .= "&prodSupYn=$prodSupYn";
+if($prodRentalYn) $sup_url .= "&prodRentalYn=$prodRentalYn";
 $q_url = "";
 if($q) $q_url .= "&q=$q";
 
@@ -133,6 +133,7 @@ $(function() {
           <?php if($sort) echo "<input type='hidden' name='sort' value='$sort'>"; ?> 
           <?php if($sortodr) echo "<input type='hidden' name='sortodr' value='$sortodr'>"; ?> 
           <?php if($prodSupYn) echo "<input type='hidden' name='prodSupYn' value='$prodSupYn'>"; ?> 
+		  <?php if($prodRentalYn) echo "<input type='hidden' name='prodRentalYn' value='$prodRentalYn'>"; ?> 
           <input type="text" name="q" value="<?=($q ? $q : '')?>" class="input_search" maxlength="30">
           <input type="submit" class="input_submit" value="검색">
         </form>
@@ -178,10 +179,14 @@ $(function() {
     <li>
       <div class="cate_head">유통여부</div>
       <div class="cate_body">
-        <a href="<?=$ca_url.$ca_sub_url.$sort_url?>&prodSupYn=<?=($prodSupYn == 'N' ? 'Y' : ($prodSupYn == 'all' ? 'Y' : 'all')).$q_url?>"
+        <a href="<?=$ca_url.$ca_sub_url.$sort_url?>&prodSupYn=<?=($prodRentalYn != "Y" ? ($prodSupYn == 'N' ? 'Y' : ($prodSupYn == 'all' ? 'Y' : 'all')): "Y").$q_url?>"
         class="<?php if(in_array($prodSupYn, array('Y'))) echo 'active'; ?>">유통품목</a>
-        <a href="<?=$ca_url.$ca_sub_url.$sort_url?>&prodSupYn=<?=($prodSupYn == 'Y' ? 'N' : ($prodSupYn == 'all' ? 'N' : 'all')).$q_url?>"
+        <a href="<?=$ca_url.$ca_sub_url.$sort_url?>&prodSupYn=<?=($prodRentalYn != "Y" ? ($prodSupYn == 'Y' ? 'N' : ($prodSupYn == 'all' ? 'N' : 'all')): "N").$q_url?>"
         class="<?php if(in_array($prodSupYn, array('N'))) echo 'active'; ?>">비유통품목</a>
+		<?php if(substr($cate['ca_id'], 2) == "20"){?>
+		<a href="<?=$ca_url.$ca_sub_url.$sort_url?>&prodRentalYn=<?=(($prodRentalYn == 'N' || $prodRentalYn == '') ? 'Y' : 'N').$q_url?>"
+        class="<?php if(in_array($prodRentalYn, array('Y'))) echo 'active'; ?>">렌탈품목</a>
+		<?php }?>
       </div>
     </li>
     <?php } ?>
@@ -189,7 +194,7 @@ $(function() {
 			<div class="cate_head">기타설정</div>
 			<div class="cate_body">
         <?php
-        for($i = 1; $i <= 12; $i++) {
+        for($i = 1; $i <= 13; $i++) {
           if($default['de_it_type'.$i.'_name']) {
             echo '<a href="'.$ca_url.$ca_sub_url.$sort_url.$sup_url.$q_url.(in_array($i, $it_type) ? make_it_type_url(array_diff($it_type, [$i])) : '&it_type%5B%5D='.$i).'"'.(in_array($i, $it_type) ? ' class="active"' : '').'>';
             echo $default['de_it_type'.$i.'_name'];
@@ -205,8 +210,7 @@ $(function() {
     </li>-->
   </ul>
 </div>
-
-<?php if($q || $ca_sub || $prodSupYn) { ?>
+<?php if($q || $ca_sub || $prodSupYn || $prodRentalYn) { ?>
 <div class="cate_selected">
   <div class="selected_head">
     <a href="<?=G5_SHOP_URL.'/list.php?ca_id='.$ca_id?>">전체해제</a>
@@ -223,6 +227,11 @@ $(function() {
                 <a href="<?=$ca_url.$ca_sub_url.$sort_url?><?=($prodSupYn == 'N' ? '&prodSupYn=all' : '').$q_url?>">비유통품목 <i class="fa fa-times" aria-hidden="true"></i></a>
             <?php } ?>
         <?php } ?>
+	<?php if(substr($cate['ca_id'], 2) == "20"){?>
+			<?php if(in_array($prodRentalYn, array('Y'))) { ?>
+                <a href="<?=$ca_url.$ca_sub_url.$sort_url?><?=($prodRentalYn == 'Y' ? '&prodRentalYn=N' : '').$q_url?>">렌탈품목 <i class="fa fa-times" aria-hidden="true"></i></a>
+            <?php } ?>
+	<?php }?>
     <?php foreach($ca_sub as $sub) { ?>
     <a href="<?=$ca_url.make_ca_sub_url(array_diff($ca_sub, [$sub])).$sort_url.$sup_url.$q_url?>"><?=$ca_sub_name_table[$sub]?> <i class="fa fa-times" aria-hidden="true"></i></a>
     <?php } ?>

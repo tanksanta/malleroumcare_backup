@@ -146,7 +146,7 @@ $where .= $sql_apms_where;
 if($_COOKIE["prodSupYn"] == "Y" || $_COOKIE["prodSupYn"] == "N"){
 	$prodSupYn = $_COOKIE["prodSupYn"];
 }*/
-if(!$prodSupYn) $prodSupYn = 'Y';
+if(!$prodSupYn && $prodRentalYn != "Y") $prodSupYn = 'Y';
 
 if($prodSupYn) {
 	//setcookie("prodSupYn", $prodSupYn, time() + 86400 * 3650, "/");
@@ -154,6 +154,12 @@ if($prodSupYn) {
 	if($prodSupYn == "Y" || $prodSupYn == "N"){
 		$where .= " AND prodSupYn = '{$prodSupYn}'";
 	}
+}
+
+if($prodRentalYn == "Y"){
+	$where .= " AND it_10_subj = 'rental'";
+}else{
+	$where .= " AND it_10_subj != 'rental'";
 }
 
 // 기타설정(태그선택)
@@ -208,7 +214,9 @@ if ($page < 1) $page = 1;
 $from_record = ($page - 1) * $item_rows;
 
 // 전체 페이지 계산
-$row2 = sql_fetch(" select count(*) as cnt from `{$g5['g5_shop_item_table']}` where $where ");
+$row2 = sql_fetch(" select count(*) as cnt from `{$g5['g5_shop_item_table']}` as jt
+INNER JOIN g5_shop_category c ON jt.ca_id = c.ca_id AND c.ca_use='1'
+where $where ");
 
 // if selected count is 0 then it means it has searched from the subcategory
 // which is dedicated from previous selection 2022.08.03 by Jake
@@ -229,7 +237,9 @@ $num = $total_count - ($page - 1) * $item_rows;
 
 // 커스텀 인덱스
 if ($sort != 'custom') {
-	$list_sql = "select * from `{$g5['g5_shop_item_table']}` where $where order by $ca_sub_orderby $order_by limit $from_record, $item_rows";
+	$list_sql = "select * from `{$g5['g5_shop_item_table']}` as jt
+	INNER JOIN g5_shop_category c ON jt.ca_id = c.ca_id AND c.ca_use='1'
+	where  $where order by $ca_sub_orderby $order_by limit $from_record, $item_rows";
 } else {
 	$list_sql = "select *
 				 from (select *

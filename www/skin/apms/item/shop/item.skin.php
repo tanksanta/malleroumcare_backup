@@ -524,18 +524,29 @@ if ($it['ca_id']) {
     </div>
     <script>
     $(function() {
-      $('.samhwa-item-info-opener').click(function() {
-        $('.samhwa-item-info').show();
+      
+	  $('.samhwa-item-info-opener').click(function() {
+      <?php if($it['it_10_subj'] != "rental"){?>
+		$('.samhwa-item-info').show();
+	  <?php }else{?>
+		location.href='<?=$it["it_10"]?>'
+	  <?php }?>
       });
       $('.item-info-arrowbtn').click(function() {
         $('.samhwa-item-info').hide();
       });
+	  
     });
     </script>
     <?php if ($is_orderable && $member['mb_type'] !== 'normal') { ?>
     <div class="samhwa-item-info-opener mobile">
       <ul class="item-buy-btn">
-        <li class="buy"><input type="submit" onclick="document.pressed=this.value;" value="상품주문" class="btn btn-color btn-block <?php echo $it['prodSupYn'] === 'N' ? 'disabled' : ''; ?>"></li>
+        <?php if($it['it_10_subj'] == "rental"){?>
+			<li style="width:100%">
+				<input type="button" value="렌탈주문" style="width:100%;height: 65px;font-size: 25px;font-weight: 500;background-color: #ef7c00;color: #fff !important;border: none !important;border-radius: 0px !important;cursor: pointer;outline: none;">
+			</li>
+		<?php }else{?>
+		<li class="buy"><input type="submit" onclick="document.pressed=this.value;" value="상품주문" class="btn btn-color btn-block <?php echo $it['prodSupYn'] === 'N' ? 'disabled' : ''; ?>"></li>
         <li class="cart">
           <div class="cart-ok">
             <p>장바구니에 담았습니다.</p>
@@ -546,6 +557,7 @@ if ($it['ca_id']) {
           </div>
           <input type="submit" onclick="document.pressed=this.value;" value="장바구니" class="btn btn-color btn-block">
         </li>
+		<?php }?>
       </ul>
     </div>
     <?php } ?>
@@ -691,8 +703,9 @@ if ($it['ca_id']) {
           <?php if($it['it_type9']){ ?><p class="p_box" style="border:1px solid <?=$default['de_it_type9_color']?>; color:<?=$default['de_it_type9_color']?>;"><?=$default['de_it_type9_name']?></p><?php } ?>
           <?php if($it['it_type10'] || $is_soldout){ ?><p class="p_box" style="border:1px solid <?=$default['de_it_type10_color']?>; color:<?=$default['de_it_type10_color']?>;"><?=$default['de_it_type10_name']?></p><?php } ?>
           <?php if($it['it_type11']){ ?><p class="p_box" style="border:1px solid <?=$default['de_it_type11_color']?>; color:<?=$default['de_it_type11_color']?>;"><?=substr($it['it_deadline'],0,5)." ".$default['de_it_type11_name']?></p><?php } ?>
-          <?php if($it['it_10_subj'] == 'rental'){ ?><p class="p_box" style="border:1px solid red; background-color: red; color:white;"><a href="<?=$it['it_10']?>">렌탈</a></p><?php } ?>
+          <?php if($it['it_10_subj'] == 'rental'){ ?><!--p class="p_box" style="border:1px solid red; background-color: red; color:white;"><a href="<?=$it['it_10']?>">렌탈</a></p --><?php } ?>
 		  <?php if($it['it_type12']){ ?><p class="p_box" style="border:1px solid <?=$default['de_it_type12_color']?>; color:<?=$default['de_it_type12_color']?>;"><?=$default['de_it_type12_name']?></p><?php } ?>
+		  <?php if($it['it_type13']){ ?><p class="p_box" style="border:1px solid <?=$default['de_it_type13_color']?>; color:<?=$default['de_it_type13_color']?>;"><?=$default['de_it_type13_name']?></p><?php } ?>
         </div>
       </div>
 
@@ -1132,7 +1145,12 @@ if ($it['ca_id']) {
       <?php if ($is_orderable && $member['mb_type'] !== 'normal') { ?>
         <div style="text-align:center;" class="item-btns">
           <ul class="item-buy-btn">
-            <li class="buy"><input type="submit" onclick="document.pressed=this.value;" value="상품주문" class="btn btn-<?php echo $btn2;?> btn-block <?php echo $it['prodSupYn'] === 'N' ? 'disabled' : ''; ?>"></li>
+       <?php if($it['it_10_subj'] == "rental"){?>
+			<li style="width:100%">
+				<input type="button" onclick="rental_link()" value="렌탈주문" style="width:100%;height: 65px;font-size: 25px;font-weight: 500;background-color: #ef7c00;color: #fff !important;border: none !important;border-radius: 0px !important;cursor: pointer;outline: none;">
+			</li>
+		<?php }else{?>
+			<li class="buy"><input type="submit" onclick="document.pressed=this.value;" value="상품주문" class="btn btn-<?php echo $btn2;?> btn-block <?php echo $it['prodSupYn'] === 'N' ? 'disabled' : ''; ?>"></li>
             <li class="cart">
               <div class="cart-ok">
                 <p class="pc">선택하신 상품을 장바구니에 담았습니다.</p>
@@ -1144,6 +1162,7 @@ if ($it['ca_id']) {
               </div>
               <input type="submit" onclick="document.pressed=this.value;" value="장바구니" class="btn btn-<?php echo $btn1;?> btn-block">
             </li>
+		<?php }?>
           </ul>
         </div>
         <?php if ( $it['it_10'] != "1") { ?> <!-- 여분필드 10에 네이버페이 노출 1로 할 경우 노출안됨 -->
@@ -1180,6 +1199,10 @@ if ($it['ca_id']) {
           $("select.it_option").addClass("form-control input-sm");
           $("select.it_supply").addClass("form-control input-sm");
         });
+		
+		function rental_link(){
+			window.open('about:blank').location.href='<?=$it["it_10"]?>';
+		}
 
         // 재입고SMS 알림
         function popup_stocksms(it_id, ca_id) {
