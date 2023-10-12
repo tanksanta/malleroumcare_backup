@@ -146,7 +146,7 @@ $where .= $sql_apms_where;
 if($_COOKIE["prodSupYn"] == "Y" || $_COOKIE["prodSupYn"] == "N"){
 	$prodSupYn = $_COOKIE["prodSupYn"];
 }*/
-if(!$prodSupYn) $prodSupYn = 'Y';
+if(!$prodSupYn && $prodRentalYn != "Y") $prodSupYn = 'Y';
 
 if($prodSupYn) {
 	//setcookie("prodSupYn", $prodSupYn, time() + 86400 * 3650, "/");
@@ -154,6 +154,12 @@ if($prodSupYn) {
 	if($prodSupYn == "Y" || $prodSupYn == "N"){
 		$where .= " AND prodSupYn = '{$prodSupYn}'";
 	}
+}
+
+if($prodRentalYn == "Y"){
+	$where .= " AND it_10_subj = 'rental'";
+}else{
+	$where .= " AND it_10_subj != 'rental'";
 }
 
 // 기타설정(태그선택)

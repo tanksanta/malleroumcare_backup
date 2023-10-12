@@ -312,7 +312,7 @@ $warehouse_list = get_warehouses();
             <input type="checkbox" name="it_type5" value="1" <?php echo ($it['it_type5'] ? "checked" : ""); ?> id="it_type5">
             <label for="it_type5"><span style="color:<?php echo $default['de_it_type5_color']; ?>"><?php echo $default['de_it_type5_name']; ?></span></label>
             <?php
-            for($x = 6; $x <= 12; $x ++) {
+            for($x = 6; $x <= 13; $x ++) {
               $cur_it_type = 'it_type' . $x;
               if($default['de_'. $cur_it_type .'_name']) {
             ?>

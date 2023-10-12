@@ -1304,78 +1304,14 @@ if( function_exists('pg_setting_check') ){
         <tr>
             <th scope="row">태그 설정</th>
             <td>
+			<?php for($i = 1; $i <= 13; $i++ ){?>
                 <label for="it_type1_name">Name:</label>
-                <input type="text" name="it_type1_name" value="<?php echo $default['de_it_type1_name']; ?>" id="it_type1_name" class="frm_input" size="20" placeholder="태그1 이름">
+                <input type="text" name="it_type<?=$i?>_name" value="<?php echo $default['de_it_type'.$i.'_name']; ?>" id="it_type<?=$i?>_name" class="frm_input" size="20" placeholder="태그<?=$i?> 이름">
                 &nbsp;&nbsp;&nbsp;
-                <label for="it_type1_color">Color:</label>
-                <input type="text" name="it_type1_color" value="<?php echo $default['de_it_type1_color']; ?>" id="it_type1_color" class="frm_input" size="20" placeholder="태그1 색상">
-                <br/>
-                <label for="it_type2_name">Name:</label>
-                <input type="text" name="it_type2_name" value="<?php echo $default['de_it_type2_name']; ?>" id="it_type2_name" class="frm_input" size="20" placeholder="태그2 이름">
-                &nbsp;&nbsp;&nbsp;
-                <label for="it_type2_color">Color:</label>
-                <input type="text" name="it_type2_color" value="<?php echo $default['de_it_type2_color']; ?>" id="it_type2_color" class="frm_input" size="20" placeholder="태그2 색상">
-                <br/>
-                <label for="it_type3_name">Name:</label>
-                <input type="text" name="it_type3_name" value="<?php echo $default['de_it_type3_name']; ?>" id="it_type3_name" class="frm_input" size="20" placeholder="태그3 이름">
-                &nbsp;&nbsp;&nbsp;
-                <label for="it_type3_color">Color:</label>
-                <input type="text" name="it_type3_color" value="<?php echo $default['de_it_type3_color']; ?>" id="it_type3_color" class="frm_input" size="20" placeholder="태그3 색상">
-                <br/>
-                <label for="it_type4_name">Name:</label>
-                <input type="text" name="it_type4_name" value="<?php echo $default['de_it_type4_name']; ?>" id="it_type4_name" class="frm_input" size="20" placeholder="태그4 이름">
-                &nbsp;&nbsp;&nbsp;
-                <label for="it_type4_color">Color:</label>
-                <input type="text" name="it_type4_color" value="<?php echo $default['de_it_type4_color']; ?>" id="it_type4_color" class="frm_input" size="20" placeholder="태그4 색상">
-                <br/>
-                <label for="it_type5_name">Name:</label>
-                <input type="text" name="it_type5_name" value="<?php echo $default['de_it_type5_name']; ?>" id="it_type5_name" class="frm_input" size="20" placeholder="태그5 이름">
-                &nbsp;&nbsp;&nbsp;
-                <label for="it_type5_color">Color:</label>
-                <input type="text" name="it_type5_color" value="<?php echo $default['de_it_type5_color']; ?>" id="it_type5_color" class="frm_input" size="20" placeholder="태그5 색상">
-                &nbsp;&nbsp;&nbsp;
-                <br/>
-                <label for="it_type6_name">Name:</label>
-                <input type="text" name="it_type6_name" value="<?php echo $default['de_it_type6_name']; ?>" id="it_type6_name" class="frm_input" size="20" placeholder="태그6 이름">
-                &nbsp;&nbsp;&nbsp;
-                <label for="it_type6_color">Color:</label>
-                <input type="text" name="it_type6_color" value="<?php echo $default['de_it_type6_color']; ?>" id="it_type6_color" class="frm_input" size="20" placeholder="태그6 색상">
-                <br/>
-                <label for="it_type7_name">Name:</label>
-                <input type="text" name="it_type7_name" value="<?php echo $default['de_it_type7_name']; ?>" id="it_type7_name" class="frm_input" size="20" placeholder="태그7 이름">
-                &nbsp;&nbsp;&nbsp;
-                <label for="it_type7_color">Color:</label>
-                <input type="text" name="it_type7_color" value="<?php echo $default['de_it_type7_color']; ?>" id="it_type7_color" class="frm_input" size="20" placeholder="태그7 색상">
-                <br/>
-                <label for="it_type8_name">Name:</label>
-                <input type="text" name="it_type8_name" value="<?php echo $default['de_it_type8_name']; ?>" id="it_type8_name" class="frm_input" size="20" placeholder="태그8 이름">
-                &nbsp;&nbsp;&nbsp;
-                <label for="it_type8_color">Color:</label>
-                <input type="text" name="it_type8_color" value="<?php echo $default['de_it_type8_color']; ?>" id="it_type8_color" class="frm_input" size="20" placeholder="태그8 색상">
-                <br/>
-                <label for="it_type9_name">Name:</label>
-                <input type="text" name="it_type9_name" value="<?php echo $default['de_it_type9_name']; ?>" id="it_type9_name" class="frm_input" size="20" placeholder="태그9 이름">
-                &nbsp;&nbsp;&nbsp;
-                <label for="it_type9_color">Color:</label>
-                <input type="text" name="it_type9_color" value="<?php echo $default['de_it_type9_color']; ?>" id="it_type9_color" class="frm_input" size="20" placeholder="태그9 색상">
-                <br/>
-                <label for="it_type10_name">Name:</label>
-                <input type="text" name="it_type10_name" value="<?php echo $default['de_it_type10_name']; ?>" id="it_type10_name" class="frm_input" size="20" placeholder="태그10 이름">
-                &nbsp;&nbsp;&nbsp;
-                <label for="it_type10_color">Color:</label>
-                <input type="text" name="it_type10_color" value="<?php echo $default['de_it_type10_color']; ?>" id="it_type10_color" class="frm_input" size="20" placeholder="태그10 색상">
-                <br/>
-                <label for="it_type11_name">Name:</label>
-                <input type="text" name="it_type11_name" value="<?php echo $default['de_it_type11_name']; ?>" id="it_type11_name" class="frm_input" size="20" placeholder="태그11 이름">
-                &nbsp;&nbsp;&nbsp;
-                <label for="it_type11_color">Color:</label>
-                <input type="text" name="it_type11_color" value="<?php echo $default['de_it_type11_color']; ?>" id="it_type11_color" class="frm_input" size="20" placeholder="태그11 색상">
-				<br/>
-                <label for="it_type12_name">Name:</label>
-                <input type="text" name="it_type12_name" value="<?php echo $default['de_it_type12_name']; ?>" id="it_type12_name" class="frm_input" size="20" placeholder="태그12 이름">
-				&nbsp;&nbsp;&nbsp;
-                <label for="it_type12_color">Color:</label>
-                <input type="text" name="it_type12_color" value="<?php echo $default['de_it_type12_color']; ?>" id="it_type12_color" class="frm_input" size="20" placeholder="태그12 색상">
+                <label for="it_type<?=$i?>_color">Color:</label>
+                <input type="text" name="it_type<?=$i?>_color" value="<?php echo $default['de_it_type'.$i.'_color']; ?>" id="it_type<?=$i?>_color" class="frm_input" size="20" placeholder="태그<?=$i?> 색상">
+                <br/>                
+				<?php }?>
             </td>
         </tr>
         <tr>

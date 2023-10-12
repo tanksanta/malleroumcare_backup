@@ -332,6 +332,7 @@ while($wish_row = sql_fetch_array($wish_result)) {
           <?php if($list[$i]['it_type10'] || $soldout_ck){ ?><p class="p_box" style="border:1px solid <?=$default['de_it_type10_color']?>; color:<?=$default['de_it_type10_color']?>;"><?=$default['de_it_type10_name']?></p><?php } ?>
           <?php if($list[$i]['it_type11']){ ?><p class="p_box" style="border:1px solid <?=$default['de_it_type11_color']?>; color:<?=$default['de_it_type11_color']?>;"><?=substr($list[$i]['it_deadline'],0,5)." ".$default['de_it_type11_name']?></p><?php } ?>
 		  <?php if($list[$i]['it_type12']){ ?><p class="p_box" style="border:1px solid <?=$default['de_it_type12_color']?>; color:<?=$default['de_it_type12_color']?>;"><?=$default['de_it_type12_name']?></p><?php } ?>
+		  <?php if($list[$i]['it_type13']){ ?><p class="p_box" style="border:1px solid <?=$default['de_it_type13_color']?>; color:<?=$default['de_it_type13_color']?>;"><?=$default['de_it_type13_name']?></p><?php } ?>
         </div>
         <?php
         $tag_list = apms_get_text($list[$i]['pt_tag']);

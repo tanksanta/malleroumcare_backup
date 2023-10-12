@@ -23,6 +23,7 @@ for ($i=0; $i<count($_POST['it_id']); $i++)
                    it_type10 = '".sql_real_escape_string($_POST['it_type10'][$i])."',
                    it_type11 = '".sql_real_escape_string($_POST['it_type11'][$i])."',
 				   it_type12 = '".sql_real_escape_string($_POST['it_type12'][$i])."'
+				   it_type13 = '".sql_real_escape_string($_POST['it_type13'][$i])."'
              where it_id = '".sql_real_escape_string($_POST['it_id'][$i])."' ";
     sql_query($sql);
 }
