@@ -748,6 +748,7 @@ $(function() {
 		width:96% !important;
 		left:50% !important;
 		margin-left:-48% !important;
+		height:650px !important;
 	}
 }
 
@@ -992,7 +993,7 @@ table.ui-datepicker-calendar { display:none; }
 
   <div class="sub_title_wrap">
     <div class="sub_title l_title">
-      대여계약 급여제공기록
+      대여계약 급여제공기록 BETA
     </div>
 	<div class="cart_btn_wrap r_btn_wrap">      
       <div class="c_month"><b>생성월 선택</b>
@@ -1053,10 +1054,13 @@ $row = sql_fetch($sql);
 $start_date = substr($row["start_time"],0,10);
 if($start_date != ""){
 ?>
-  <div style="margin-top:-20px;margin-bottom:15px;">
+  <div style="margin-top:-20px;">
 	<font color="red">※ 대여계약 급여제공기록 서비스는 <b><?=$start_date?></b> 이후 계약 된 품목부터 이용 하실 수 있습니다.</font>
   </div>
 <?php }?>
+  <div style="margin-top:0px;margin-bottom:15px;">
+	<font color="#999999">해당 기능은 베타버전입니다. 사용 중에 발생하는 불편 사항이나 개선점은 고객센터에 문의 하시기 바랍니다.</font>
+  </div>
   <div class="memo_wrap">
     <div class="sub_title_wrap">
       <div class="sub_title l_title">
@@ -1173,7 +1177,8 @@ if($start_date != ""){
 		<!-- 대여계약 급여제공기록 이력 리스트 -->
         </div>	
 		<div style="margin-top:10px;text-align:left;border-top:1px solid #333333;height:40px;padding-top:10px;" class="pop_tail">
-			이력 정보는 계약 종료 날짜 기준 다음달 1일에 자동 삭제됩니다.
+			이력 정보는 계약 종료 날짜 기준 다음달 1일에 자동 삭제됩니다.<br>
+			<font color="red">※ 계약기간(종료일)이 계약생성일보다 이전인 경우 계약생성일 기준으로 다음달 1일에 삭제됩니다.</font>
         </div>
 
 	</div>	
