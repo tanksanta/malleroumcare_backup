@@ -11,6 +11,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 if($auth_check = auth_check($auth[$sub_menu], "r"))
+
 // 초기 3개월 범위 적용
 $fr_date = $_REQUEST["fr_date"];
 $to_date = $_REQUEST["to_date"];
@@ -18,23 +19,27 @@ if ($fr_date == "" && $to_date == "") {
     $fr_date = date("Y-m-d", strtotime("-60 day"));
     $to_date = date("Y-m-d");
 }
+
 $qstr .= '&amp;page_rows='.$page_rows;
 $click_status = ($click_status == "")?"준비": $click_status;
 
-$sql = "SELECT COUNT(CASE WHEN ct_status='준비' THEN 1 END) AS count1, 
-COUNT(CASE WHEN ct_status='출고준비' THEN 1 END) AS count2,
-COUNT(CASE WHEN ct_status='배송' THEN 1  END) AS count3 
-FROM g5_shop_cart c
-LEFT JOIN g5_shop_order o ON c.od_id = o.od_id
-WHERE ct_is_direct_delivery = '1'
-AND od_del_yn = 'N'";
+$sql = "	SELECT 
+				COUNT(CASE WHEN ct_status='준비' THEN 1 END) AS count1
+				,COUNT(CASE WHEN ct_status='출고준비' THEN 1 END) AS count2
+				,COUNT(CASE WHEN ct_status='배송' THEN 1  END) AS count3
+			FROM 
+				g5_shop_cart c
+			LEFT JOIN 
+				g5_shop_order o ON c.od_id = o.od_id
+			WHERE 
+				ct_is_direct_delivery = '1'
+				AND od_del_yn = 'N'
+";
 $row = sql_fetch($sql,true);
 
 $count1 = $row["count1"];//상품준비count
 $count2 = $row["count2"];//출고준비count
 $count3 = $row["count3"];//출고완료(배송완료포함)count
-
-
 
 $where = array();
 $where[] = "ct_is_direct_delivery = '1'";//직배항목만
@@ -136,7 +141,7 @@ if (gettype($gubun) == 'string' && $gubun !== '') {
   $qstr .= "&amp;gubun=".$gubun;
 }
 
-// 위탁엑셀 다운, 미다운
+// 발주서(엑셀) 다운, 미다운
 if (gettype($ct_is_delivery_excel_downloaded) == 'string' && $ct_is_delivery_excel_downloaded !== '') {
   if ($ct_is_delivery_excel_downloaded == 'saved')
     $where[] = " ( ct_is_delivery_excel_downloaded = '1' ) ";
@@ -166,7 +171,7 @@ if ($click_status) {//상품상태
   $qstr .= "&amp;click_status=".$click_status;
 } 
 
-$where[] = " (m.mb_intercept_date = '' OR m.mb_intercept_date IS NULL) ";
+$where[] = " (m2.mb_intercept_date = '' OR m2.mb_intercept_date IS NULL) ";
 
 $sql_search = '';
 if ($where) {
@@ -181,46 +186,41 @@ if ($where_count) {
 // shop_cart 조인으로 수정
 // member 테이블 조인
 $sql_common = "
-  FROM
-    {$g5['g5_shop_cart_table']} c
-  LEFT JOIN
-    {$g5['g5_shop_item_table']} i ON c.it_id = i.it_id
-  LEFT JOIN
-    {$g5['g5_shop_order_table']} o ON c.od_id = o.od_id
-  LEFT JOIN
-    {$g5['member_table']} m ON c.mb_id = m.mb_id
-  LEFT JOIN 
-    {$g5['member_table']} m2 ON c.ct_direct_delivery_partner = m2.mb_id
-  LEFT JOIN
-    partner_install_report pir ON c.od_id = pir.od_id
-  LEFT JOIN
-    g5_shop_order_cancel_request ocr ON c.od_id = ocr.od_id
+  FROM	{$g5['g5_shop_cart_table']} c
+  LEFT JOIN	{$g5['g5_shop_item_table']} i ON c.it_id = i.it_id
+  LEFT JOIN	{$g5['g5_shop_order_table']} o ON c.od_id = o.od_id
+  -- LEFT JOIN	{$g5['member_table']} m ON c.mb_id = m.mb_id
+  LEFT JOIN	{$g5['member_table']} m2 ON c.ct_direct_delivery_partner = m2.mb_id
+  -- LEFT JOIN	partner_install_report pir ON c.od_id = pir.od_id
+  -- LEFT JOIN	g5_shop_order_cancel_request ocr ON c.od_id = ocr.od_id
 ";
 
-$sql_counts = "
-  SELECT
-    count(*) as cnt,
-    ct_status,
-    sum(
-      case
-        when io_type = 0
-        then ct_price + io_price
-        else ct_price
-      end * ct_qty
-    ) as ct_price,
-    sum(ct_sendcost) as ct_sendcost,
-    sum(ct_discount) as ct_discount
-  {$sql_common}
-  {$sql_count_search}
-  GROUP BY
-    ct_status
+$sql_counts = "	SELECT
+					count(*) as cnt
+					,ct_status
+					,sum(
+						CASE
+							WHEN io_type = 0
+							THEN ct_price + io_price
+							ELSE ct_price
+						END * ct_qty
+					) AS ct_price
+					,sum(ct_sendcost) AS ct_sendcost
+					,sum(ct_discount) AS ct_discount
+				
+					{$sql_common}
+					{$sql_count_search}
+				
+				GROUP BY ct_status
 ";
+
 $result_counts = sql_query($sql_counts);
+
 $cate_counts = [];
 $total_info = [];
 while($count = sql_fetch_array($result_counts)) {
-  $cate_counts[$count['ct_status']] = $count['cnt'];
-  $total_info[$count['ct_status']] = $count;
+	$cate_counts[$count['ct_status']] = $count['cnt'];
+	$total_info[$count['ct_status']] = $count;
 }
 
 $sql_common .= $sql_search;
@@ -235,298 +235,327 @@ $total_page  = ceil($total_count / $rows);  // 전체 페이지 계산
 if ($page < 1) { $page = 1; } // 페이지가 없으면 첫 페이지 (1 페이지)
 $from_record = ($page - 1) * $rows; // 시작 열을 구함
 
+
 if($_REQUEST["orb"] == ""){
-	if($click_status == "준비"){
-		$_REQUEST["orb"] = "deadline_it";//마감-상품명
-	}elseif($click_status == "출고준비"){
-		$_REQUEST["orb"] = "od_id";//주문번호
-	}elseif($click_status == "배송"){
-		$_REQUEST["orb"] = "out_time_partner";//출고일-파트너명
-	}
+
+	//정렬기준: 마감-상품명
+	if($click_status == "준비"){ $_REQUEST["orb"] = "deadline_it"; }
+	//정렬기준: 주문번호
+	elseif($click_status == "출고준비"){ $_REQUEST["orb"] = "od_id"; }
+	//정렬기준: 출고일-파트너명
+	elseif($click_status == "배송"){ $_REQUEST["orb"] = "out_time_partner"; }
+
 }
 
-if($_REQUEST["orb"] == "od_id"){//주문번호
+
+// 정렬기준: 주문번호
+if($_REQUEST["orb"] == "od_id"){
 	$sql_order = " ORDER BY o.od_id DESC ";
-}elseif($_REQUEST["orb"] == "deadline_partner"){//마감-파트너명
-	$sql_order = " ORDER BY IF(time_dead>0, 1, 2) ASC, time_dead ASC,
-	CASE
-    WHEN partner_name IS NULL THEN '2'
-    WHEN partner_name = '' THEN '1'
-    ELSE '0'	
-	END,partner_name ASC ";
-}elseif($_REQUEST["orb"] == "deadline_it"){//마감-상품명
-	$sql_order = " ORDER BY IF(time_dead>0, 1, 2) ASC, time_dead ASC,
-	i.it_name ASC ";
-}elseif($_REQUEST["orb"] == "partner_it"){//파트너명-상품명
-	$sql_order = " ORDER BY CASE
-    WHEN partner_name IS NULL THEN '2'
-    WHEN partner_name = '' THEN '1'
-    ELSE '0'	
-END,partner_name ASC, i.it_name ASC ";
-}elseif($_REQUEST["orb"] == "out_time_partner"){//출고일-파트너명
-	$sql_order = " ORDER BY ct_ex_date DESC,CASE
-    WHEN partner_name IS NULL THEN '2'
-    WHEN partner_name = '' THEN '1'
-    ELSE '0'	
-END,partner_name ASC ";
+
 }
+// 정렬기준: 마감-파트너명
+elseif($_REQUEST["orb"] == "deadline_partner"){
+	$sql_order = "	ORDER BY IF(time_dead>0, 1, 2) ASC
+							,time_dead ASC
+							,CASE
+								WHEN partner_name IS NULL THEN '2'
+								WHEN partner_name = '' THEN '1'
+								ELSE '0'	
+							END
+							,partner_name ASC ";
+
+}
+// 정렬기준: 마감-상품명
+elseif($_REQUEST["orb"] == "deadline_it"){
+	$sql_order = "	ORDER BY IF(time_dead>0, 1, 2) ASC
+								,time_dead ASC
+								,i.it_name ASC ";
+
+}
+// 정렬기준: 파트너명-상품명
+elseif($_REQUEST["orb"] == "partner_it"){
+	$sql_order = "	ORDER BY CASE
+								WHEN partner_name IS NULL THEN '2'
+								WHEN partner_name = '' THEN '1'
+								ELSE '0'	
+							END
+							,partner_name ASC
+							,i.it_name ASC ";
+
+}
+// 정렬기준: 출고일-파트너명
+elseif($_REQUEST["orb"] == "out_time_partner"){
+	$sql_order = "	ORDER BY ct_ex_date DESC
+							,CASE
+    							WHEN partner_name IS NULL THEN '2'
+    							WHEN partner_name = '' THEN '1'
+    						ELSE '0'
+							END
+							,partner_name ASC ";
+}
+
 $qstr .= "&amp;orb=".$_REQUEST["orb"];
 $sql_common .= $sql_order;
 
-$sql  = "
-  select *, o.od_id as od_id, c.ct_id as ct_id, c.mb_id as mb_id,m2.mb_name AS partner_name,(od_cart_coupon + od_coupon + od_send_coupon) as couponprice,
-  TIMEDIFF(it_deadline,DATE_FORMAT(NOW(), '%H:%i:%s')) AS time_dead 
-  $sql_common
-  limit $from_record, $rows
+$sql  = "	SELECT
+				c.it_name
+				,c.ct_option
+				,c.ct_barcode_insert
+				,c.ct_id AS ct_id
+				,c.mb_id AS mb_id
+				,c.prodMemo
+				,c.ct_rdy_date
+				,c.ct_ex_date
+				,c.ct_is_delivery_excel_downloaded
+				,c.ct_delivery_num
+				,c.ct_combine_ct_id
+				,c.ct_qty
+				,c.ct_discount
+				,c.ct_warehouse
+
+				,c.ct_price
+				,c.io_price
+
+				,o.od_cancel_reason
+				,o.od_id AS od_id
+				,o.od_b_name
+				,o.od_b_tel
+				,o.od_b_addr1
+				,o.od_b_addr2
+				,o.od_b_addr3
+				,o.od_memo
+				,o.od_time
+				,(o.od_cart_coupon + o.od_coupon + o.od_send_coupon) AS couponprice
+
+				,m2.mb_name AS partner_name
+
+				,i.ca_id
+				,i.it_deadline
+				,i.it_admin_memo
+				,i.it_expected_warehousing_date
+				,TIMEDIFF(i.it_deadline,DATE_FORMAT(NOW(), '%H:%i:%s')) AS time_dead
+			$sql_common
+			LIMIT $from_record, $rows
 ";
+
 if ($click_status || $od_status) {
   if ($show_all == 'Y' && ($click_status == "준비" || $click_status == "출고준비" || $od_status == '준비' || $od_status == '출고준비')) {
     $sql = preg_replace('/limit (.*)/i', '', $sql);
   }
 }
 $result = sql_query($sql);
+
 //echo $sql;
-$orderlist = array();
-while( $row = sql_fetch_array($result) ) {
-  $orderlist[] = $row;
-}
+//$orderlist = array();
+//while( $row = sql_fetch_array($result) ) {
+ // $orderlist[] = $row;
+//}
 $warehouse_list = get_warehouses();
 ?>
-<style>
-  #loading_excel {
-    display: none;
-    width: 100%;
-    height: 100%;
-    position: fixed;
-    left: 0;
-    top: 0;
-    z-index: 9999;
-    background: rgba(0, 0, 0, 0.3);
-  }
-  #loading_excel .loading_modal {
-    position: absolute;
-    width: 400px;
-    padding: 30px 20px;
-    background: #fff;
-    text-align: center;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-  }
-  #loading_excel .loading_modal p {
-    padding: 0;
-    font-size: 16px;
-  }
-  #loading_excel .loading_modal img {
-    display: block;
-    margin: 20px auto;
-  }
-  #loading_excel .loading_modal button {
-    padding: 10px 30px;
-    font-size: 16px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-  }
-  .popup_box2 {
-		display: none;
-		position: fixed;
-		width: 100%;
-		height: 100%;
-		left: 0;
-		top: 0;
-		z-index: 9999;
-		background: rgba(0, 0, 0, 0.8);		
-	}
 
-	.popup_box_con {
-		padding:20px;
-		position: relative;
-		background: #ffffff;
-		z-index: 99999;
-		margin-left:-206px;
-	}
-	.newbutton2{
-		font-size: 12px;
-		height: 33px;
-		padding: 0 10px;
-		cursor: pointer;
-		outline: none;
-		box-sizing: border-box;
-		border: 1px solid #ddd;
-	}
-	.newbutton3{
-		font-size: 12px;
-		height: 33px;
-		padding: 0 10px;
-		cursor: pointer;
-		outline: none;
-		box-sizing: border-box;
-		border: 1px solid #000;
-		color: #fff;
-		background-color:#000;
-	}
-	.newbutton4{
-		font-size: 12px;
-		height: 33px;
-		padding: 0 10px;
-		cursor: pointer;
-		outline: none;
-		box-sizing: border-box;
-		border: 1px solid #0033ff;
-		color: #0033ff;
-		background-color:#fff;
-	}
+
+
+<style>
+	#loading_excel { display: none; width: 100%; height: 100%; position: fixed; left: 0; top: 0; z-index: 9999; background: rgba(0, 0, 0, 0.3); }
+	#loading_excel .loading_modal { position: absolute; width: 400px; padding: 30px 20px; background: #fff; text-align: center; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+	#loading_excel .loading_modal p { padding: 0; font-size: 16px; }
+	#loading_excel .loading_modal img { display: block; margin: 20px auto; }
+	#loading_excel .loading_modal button { padding: 10px 30px; font-size: 16px; border: 1px solid #ddd; border-radius: 5px; }
+	.popup_box2 { display: none; position: fixed; width: 100%; height: 100%; left: 0; top: 0; z-index: 9999; background: rgba(0, 0, 0, 0.8); 	}
+	.popup_box_con { padding:20px; position: relative; background: #ffffff; z-index: 99999; margin-left:-206px;	}
+	.newbutton2{ font-size: 12px; height: 33px; padding: 0 10px; cursor: pointer; outline: none; box-sizing: border-box; border: 1px solid #ddd;	}
+	.newbutton3{ font-size: 12px; height: 33px; padding: 0 10px; cursor: pointer; outline: none; box-sizing: border-box; border: 1px solid #000; color: #fff; background-color:#000;	}
+	.newbutton4{ font-size: 12px; height: 33px; padding: 0 10px; cursor: pointer; outline: none; box-sizing: border-box; border: 1px solid #0033ff; color: #0033ff; background-color:#fff;	}
 	.bg0 {background:#fff}
 	.bg1 {background:#f2f5f9}
 	.bg1 td {border-color:#e9e9e9}
 	.bg2 {background: #F7EEEE;}
 </style>
-<div id="" class="" style="margin:-60px 100px 0px 0px;text-align:right;padding:10px">			
-		<select name="" id="ct_direct_delivery_partner_sb" style="border: 1px solid #dbdde2;border-radius: 0px;width: 150px;height: 33px !important;padding: 0px 13px !important;font-size: 12px; color: #555;">
-            <option value="">위탁(직배송) 선택</option>
-            <?php
-            $sql_p = "SELECT * FROM g5_member WHERE mb_type = 'partner' and mb_partner_auth = 1 and mb_level='5' and mb_partner_type like '%직배송%' order by mb_name ASC";
+
+
+
+<div id="" class="" style="margin:-60px 100px 0px 0px;text-align:right;padding:10px">
+
+	<select name="" id="ct_direct_delivery_partner_sb" style="border: 1px solid #dbdde2;border-radius: 0px;width: 150px;height: 33px !important;padding: 0px 13px !important;font-size: 12px; color: #555;">
+		<option value="">위탁(직배송) 선택</option>
+		<?php
+			$sql_p = "SELECT mb_id, mb_name FROM g5_member WHERE mb_type = 'partner' and mb_partner_auth = 1 and mb_level='5' and mb_partner_type like '%직배송%' order by mb_name ASC";
 			$result_p = sql_query($sql_p);
-			while($partner = sql_fetch_array($result_p)) {?>
-            <option value="<?=$partner['mb_id']?>"><?=$partner['mb_name']?></option>
-			<?php }?>
-        </select>
-        <button id="ct_direct_delivery_partner_all" class="newbutton2">위탁 선택적용</button>
-		<button id="ct_direct_delivery_partner_cncl" class="newbutton2">위탁 선택해제</button>
-        <select name="it_default_warehouse" id="ct_warehouse_sb" style="border: 1px solid #dbdde2;border-radius: 0px;width: 150px;height: 33px !important;padding: 0px 13px !important;font-size: 12px; color: #555;">
-            <?php
-            $default_warehouse_select="";
-            $default_warehouse_select .= '<option value="">출하창고 선택</option>';
-            foreach($warehouse_list as $warehouse) {
-                $default_warehouse_select .='<option value="'.$warehouse.'" >'.$warehouse.'</option>';
-            }
-            echo $default_warehouse_select;
-            ?>
-        </select>
-        <button id="ct_warehouse_all" class="newbutton2">출하창고 선택변경</button>
-		<button id="ct_warehouse_cncl" class="newbutton2">출고창고 선택해제</button>
-        </div>
+			while( $partner = sql_fetch_array($result_p) ) {
+				echo("<option value='" . $partner['mb_id'] . "'>" . $partner['mb_name'] . "</option>");
+			}
+		?>
+	</select>
+
+	<button id="ct_direct_delivery_partner_all" class="newbutton2">위탁 선택적용</button>
+	<button id="ct_direct_delivery_partner_cncl" class="newbutton2">위탁 선택해제</button>
+
+	<select name="it_default_warehouse" id="ct_warehouse_sb" style="border: 1px solid #dbdde2;border-radius: 0px;width: 150px;height: 33px !important;padding: 0px 13px !important;font-size: 12px; color: #555;">
+		<?php
+			$default_warehouse_select="";
+			$default_warehouse_select .= '<option value="">출하창고 선택</option>';
+			foreach($warehouse_list as $warehouse) {
+				$default_warehouse_select .='<option value="'.$warehouse.'" >'.$warehouse.'</option>';
+			}
+			echo $default_warehouse_select;
+			?>
+	</select>
+
+	<button id="ct_warehouse_all" class="newbutton2">출하창고 선택변경</button>
+	<button id="ct_warehouse_cncl" class="newbutton2">출고창고 선택해제</button>
+
+</div>
+
+
+
 <form name="frmsamhwaorderlist" id="frmsamhwaorderlist" style="margin-top:-15px;" method="get">
-<input type="hidden" name="page_rows" id="page_rows" value="<?=$page_rows?>">
-<input type="hidden" name="ct_ids" id="ct_ids" value="<?=$ct_ids?>">
-<input type="hidden" name="reload_submit" id="reload_submit" value="<?=$reload_submit?>">
-<input type="hidden" name="page" id="page" value="">
-  <div class="tbl_wrap" style="margin-bottom:-25px;margin-top:30px;">
+	<input type="hidden" name="page_rows" id="page_rows" value="<?=$page_rows?>">
+	<input type="hidden" name="ct_ids" id="ct_ids" value="<?=$ct_ids?>">
+	<input type="hidden" name="reload_submit" id="reload_submit" value="<?=$reload_submit?>">
+	<input type="hidden" name="page" id="page" value="">
+
+	<div class="tbl_wrap" style="margin-bottom:-25px;margin-top:30px;">
 		<input type="button" value="상품준비(<?=number_format($count1)?>)" class="<?=($click_status == "준비")?"newbutton3":"newbutton2";?>" onClick="$('#click_status').val('준비');$('#deadline_it').attr('checked',true);$('#frmsamhwaorderlist').submit();" id="click_status1"/>
 		<input type="button" value="출고준비(<?=number_format($count2)?>)" class="<?=($click_status == "출고준비")?"newbutton3":"newbutton2";?>" onClick="$('#click_status').val('출고준비');$('#od_id1').attr('checked',true);$('#frmsamhwaorderlist').submit();" id="click_status2"/>
-        <input type="button" value="출고완료(<?=number_format($count3)?>)" class="<?=($click_status == "배송")?"newbutton3":"newbutton2";?>" onClick="$('#click_status').val('배송');$('#out_time_partner').attr('checked',true);$('#frmsamhwaorderlist').submit();"id="click_status3"/>
+		<input type="button" value="출고완료(<?=number_format($count3)?>)" class="<?=($click_status == "배송")?"newbutton3":"newbutton2";?>" onClick="$('#click_status').val('배송');$('#out_time_partner').attr('checked',true);$('#frmsamhwaorderlist').submit();"id="click_status3"/>
 		<input type="hidden" name="click_status" id="click_status" value="<?=$click_status?>">
-  </div>
-  <div class="new_form">
-    <table class="new_form_table" id="search_detail_table">
-      <tr>
-        <th>정렬 기준</th>
-        <td>
-          <input type="radio" name="orb" id="od_id1" value="od_id" <?=($_REQUEST["orb"] == "od_id")?"checked":"";?>> <label for='od_id1'>주문번호</label>		  
-		  <input type="radio" name="orb" id="deadline_partner" value="deadline_partner" <?=($_REQUEST["orb"] == "deadline_partner")?"checked":"";?>> <label for='deadline_partner'>마감시간-파트너명</label>
-		  <input type="radio" name="orb" id="deadline_it" value="deadline_it" <?=($_REQUEST["orb"] == "deadline_it" || $_REQUEST["orb"] == "")?"checked":"";?>> <label for='deadline_it'>마감시간-상품명</label> 
-		  <input type="radio" name="orb" id="partner_it" value="partner_it" <?=($_REQUEST["orb"] == "partner_it")?"checked":"";?>> <label for='partner_it'>파트너명-상품명</label>
-		  <input type="radio" name="orb" id="out_time_partner" value="out_time_partner" <?=($_REQUEST["orb"] == "out_time_partner")?"checked":"";?>> <label for='out_time_partner'>출고일-파트너명</label>
-		  
-        </td>
-      </tr>
-	  <tr>
-        <th>검색조건</th>
-        <td >
-			바코드 입력여부&nbsp;&nbsp;
-            <select name="ct_barcode_saved" id="ct_barcode_saved">
-            <option value="" >전체</option>
-            <option value="none" <?php echo get_selected($ct_barcode_saved, 'none'); ?>>미입력</option>
-            <option value="saved" <?php echo get_selected($ct_barcode_saved, 'saved'); ?>>입력완료</option>
-			</select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;		  
-			배송정보입력&nbsp;&nbsp;
-            <select name="ct_delivery_saved" id="ct_delivery_saved">
-            <option value="" >전체</option>
-            <option value="none" <?php echo get_selected($ct_delivery_saved, 'none'); ?>>미입력</option>
-            <option value="saved" <?php echo get_selected($ct_delivery_saved, 'saved'); ?>>입력완료</option>
-			</select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			급여구분&nbsp;&nbsp;
-            <select name="gubun" id="gubun">
-            <option value="">전체</option>
-            <option value="10" <?php echo get_selected($gubun, '10'); ?>>급여</option>
-            <option value="70" <?php echo get_selected($gubun, '70'); ?>>비급여</option>
-			<option value="80" <?php echo get_selected($gubun, '80'); ?>>보장구</option>
-			</select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	
-			위탁엑셀다운로드&nbsp;&nbsp;
-            <select name="ct_is_delivery_excel_downloaded" id="ct_is_delivery_excel_downloaded">
-            <option value="" >전체</option>
-            <option value="saved" <?php echo get_selected($ct_is_delivery_excel_downloaded, 'saved'); ?>>다운완료</option>
-            <option value="none" <?php echo get_selected($ct_is_delivery_excel_downloaded, 'none'); ?>>미다운</option>
-			</select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			마감시간&nbsp;&nbsp;
-            <select name="it_deadline" id="it_deadline" style="width:125px;">
-            <option value="" >전체</option>
-            <option value="1" <?php echo get_selected($it_deadline, '1'); ?>>09:00~10:00</option>
-            <option value="2" <?php echo get_selected($it_deadline, '2'); ?>>10:00~11:00</option>
-            <option value="3" <?php echo get_selected($it_deadline, '3'); ?>>11:00~12:00</option>
-            <option value="4" <?php echo get_selected($it_deadline, '4'); ?>>12:00~13:00</option>
-			<option value="5" <?php echo get_selected($it_deadline, '5'); ?>>13:00~14:00</option>
-			<option value="6" <?php echo get_selected($it_deadline, '6'); ?>>14:00~15:00</option>
-			<option value="7" <?php echo get_selected($it_deadline, '7'); ?>>15:00~16:00</option>
-			<option value="8" <?php echo get_selected($it_deadline, '8'); ?>>16:00~17:00</option>
-			<option value="9" <?php echo get_selected($it_deadline, '9'); ?>>17:00~18:00</option>
-			<option value="10" <?php echo get_selected($it_deadline, '10'); ?>>기타/시간미등록</option>
-			</select>
-        </td>
-      </tr>
-	  <tr>
-        <th>검색기간</th>
-        <td>
-          <div class="sel_field">
-			<input type="button" value="오늘" id="select_date_today" name="select_date" class="select_date newbutton"/>
-            <input type="button" value="어제" id="select_date_yesterday" name="select_date" class="select_date newbutton"/>
-            <input type="button" value="일주일" id="select_date_sevendays" name="select_date" class="select_date newbutton"/>
-            <input type="button" value="이번달" id="select_date_thismonth" name="select_date" class="select_date newbutton"/>
-            <input type="button" value="지난달" id="select_date_lastmonth" name="select_date" class="select_date newbutton"/>    
-			<input type="button" value="전체" id="select_date_all" name="select_date" class="select_date newbutton4"/>
-            <input type="text" id="fr_date" class="date" name="fr_date" value="<?php echo $fr_date; ?>" class="frm_input" size="10" maxlength="10" autocomplete='off' readonly> ~
-            <input type="text" id="to_date" class="date" name="to_date" value="<?php echo $to_date; ?>" class="frm_input" size="10" maxlength="10" autocomplete='off' readonly>
-          </div>
-        </td>
-      </tr>
-      <tr>
-        <th>키워드 검색</th>
-        <td>
-			파트너&nbsp;&nbsp;
-			<input type="text" name="search_partner" value="<?php echo $search_partner; ?>" id="search_partner" class="frm_input" autocomplete="off" style="width:150px;" placeholder="파트너ID 또는 이름 검색"> <input type="button" value="파트너검색" class="newbutton" style="background-color:#000000;color:#ffffff;" onClick="partner_search()">&nbsp;&nbsp;&nbsp;&nbsp;
-			상품명&nbsp;&nbsp;
-			<input type="text" name="search_it_name" value="<?php echo $search_it_name; ?>" id="search_it_name" class="frm_input" autocomplete="off" style="width:150px;">&nbsp;&nbsp;&nbsp;&nbsp;
-			수령인명&nbsp;&nbsp;
-			<input type="text" name="search_b_name" value="<?php echo $search_b_name; ?>" id="search_b_name" class="frm_input" autocomplete="off" style="width:150px;">&nbsp;&nbsp;&nbsp;&nbsp;
-			배송주소&nbsp;&nbsp;
-			<input type="text" name="search_b_addr" value="<?php echo $search_b_addr; ?>" id="search_b_addr" class="frm_input" autocomplete="off" style="width:150px;">&nbsp;&nbsp;&nbsp;&nbsp;
-			관리자메모&nbsp;&nbsp;
-			<input type="text" name="search_b_memo" value="<?php echo $search_b_memo; ?>" id="search_b_memo" class="frm_input" autocomplete="off" style="width:150px;">&nbsp;&nbsp;
-			<input type="submit" value="검색" class="newbutton" style="background-color:#000000;color:#ffffff;width:70px;" onClick="$('#reload_submit').val('');">
-        </td>
-      </tr>
-	  
-    </table>
-  </div>
+	</div>
+
+
+	<div class="new_form">
+		<table class="new_form_table" id="search_detail_table">
+			<tr>
+				<th>정렬 기준</th>
+				<td>
+					<input type="radio" name="orb" id="od_id1" value="od_id" <?=($_REQUEST["orb"] == "od_id")?"checked":"";?>> <label for='od_id1'>주문번호</label>		  
+					<input type="radio" name="orb" id="deadline_partner" value="deadline_partner" <?=($_REQUEST["orb"] == "deadline_partner")?"checked":"";?>> <label for='deadline_partner'>마감시간-파트너명</label>
+					<input type="radio" name="orb" id="deadline_it" value="deadline_it" <?=($_REQUEST["orb"] == "deadline_it" || $_REQUEST["orb"] == "")?"checked":"";?>> <label for='deadline_it'>마감시간-상품명</label> 
+					<input type="radio" name="orb" id="partner_it" value="partner_it" <?=($_REQUEST["orb"] == "partner_it")?"checked":"";?>> <label for='partner_it'>파트너명-상품명</label>
+					<input type="radio" name="orb" id="out_time_partner" value="out_time_partner" <?=($_REQUEST["orb"] == "out_time_partner")?"checked":"";?>> <label for='out_time_partner'>출고일-파트너명</label>
+				</td>
+			</tr>
+			<tr>
+			<th>검색조건</th>
+				<td >
+					바코드 입력여부&nbsp;&nbsp;
+					<select name="ct_barcode_saved" id="ct_barcode_saved">
+						<option value="" >전체</option>
+						<option value="none" <?php echo get_selected($ct_barcode_saved, 'none'); ?>>미입력</option>
+						<option value="saved" <?php echo get_selected($ct_barcode_saved, 'saved'); ?>>입력완료</option>
+					</select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					
+					배송정보입력&nbsp;&nbsp;
+					<select name="ct_delivery_saved" id="ct_delivery_saved">
+						<option value="" >전체</option>
+						<option value="none" <?php echo get_selected($ct_delivery_saved, 'none'); ?>>미입력</option>
+						<option value="saved" <?php echo get_selected($ct_delivery_saved, 'saved'); ?>>입력완료</option>
+					</select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+					급여구분&nbsp;&nbsp;
+					<select name="gubun" id="gubun">
+						<option value="">전체</option>
+						<option value="10" <?php echo get_selected($gubun, '10'); ?>>급여</option>
+						<option value="70" <?php echo get_selected($gubun, '70'); ?>>비급여</option>
+						<option value="80" <?php echo get_selected($gubun, '80'); ?>>보장구</option>
+					</select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					
+					발주서 다운로드&nbsp;&nbsp;
+					<select name="ct_is_delivery_excel_downloaded" id="ct_is_delivery_excel_downloaded">
+						<option value="" >전체</option>
+						<option value="saved" <?php echo get_selected($ct_is_delivery_excel_downloaded, 'saved'); ?>>발주완료</option>
+						<option value="none" <?php echo get_selected($ct_is_delivery_excel_downloaded, 'none'); ?>>미다운</option>
+					</select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+					마감시간&nbsp;&nbsp;
+					<select name="it_deadline" id="it_deadline" style="width:125px;">
+						<option value="" >전체</option>
+						<option value="1" <?php echo get_selected($it_deadline, '1'); ?>>09:00~10:00</option>
+						<option value="2" <?php echo get_selected($it_deadline, '2'); ?>>10:00~11:00</option>
+						<option value="3" <?php echo get_selected($it_deadline, '3'); ?>>11:00~12:00</option>
+						<option value="4" <?php echo get_selected($it_deadline, '4'); ?>>12:00~13:00</option>
+						<option value="5" <?php echo get_selected($it_deadline, '5'); ?>>13:00~14:00</option>
+						<option value="6" <?php echo get_selected($it_deadline, '6'); ?>>14:00~15:00</option>
+						<option value="7" <?php echo get_selected($it_deadline, '7'); ?>>15:00~16:00</option>
+						<option value="8" <?php echo get_selected($it_deadline, '8'); ?>>16:00~17:00</option>
+						<option value="9" <?php echo get_selected($it_deadline, '9'); ?>>17:00~18:00</option>
+						<option value="10" <?php echo get_selected($it_deadline, '10'); ?>>기타/시간미등록</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<th>검색기간</th>
+				<td>
+					<div class="sel_field">
+						<input type="button" value="오늘" id="select_date_today" name="select_date" class="select_date newbutton"/>
+						<input type="button" value="어제" id="select_date_yesterday" name="select_date" class="select_date newbutton"/>
+						<input type="button" value="일주일" id="select_date_sevendays" name="select_date" class="select_date newbutton"/>
+						<input type="button" value="이번달" id="select_date_thismonth" name="select_date" class="select_date newbutton"/>
+						<input type="button" value="지난달" id="select_date_lastmonth" name="select_date" class="select_date newbutton"/>    
+						<input type="button" value="전체" id="select_date_all" name="select_date" class="select_date newbutton4"/>
+						<input type="text" id="fr_date" class="date" name="fr_date" value="<?php echo $fr_date; ?>" class="frm_input" size="10" maxlength="10" autocomplete='off' readonly> ~
+						<input type="text" id="to_date" class="date" name="to_date" value="<?php echo $to_date; ?>" class="frm_input" size="10" maxlength="10" autocomplete='off' readonly>
+					</div>
+				</td>
+			</tr>
+			<tr>
+			<th>키워드 검색</th>
+				<td>
+					파트너&nbsp;&nbsp;
+					<input type="text" name="search_partner" value="<?php echo $search_partner; ?>" id="search_partner" class="frm_input" autocomplete="off" style="width:150px;" placeholder="파트너ID 또는 이름 검색"> <input type="button" value="파트너검색" class="newbutton" style="background-color:#000000;color:#ffffff;" onClick="partner_search()">&nbsp;&nbsp;&nbsp;&nbsp;
+					
+					상품명&nbsp;&nbsp;
+					<input type="text" name="search_it_name" value="<?php echo $search_it_name; ?>" id="search_it_name" class="frm_input" autocomplete="off" style="width:150px;">&nbsp;&nbsp;&nbsp;&nbsp;
+					
+					수령인명&nbsp;&nbsp;
+					<input type="text" name="search_b_name" value="<?php echo $search_b_name; ?>" id="search_b_name" class="frm_input" autocomplete="off" style="width:150px;">&nbsp;&nbsp;&nbsp;&nbsp;
+					
+					배송주소&nbsp;&nbsp;
+					<input type="text" name="search_b_addr" value="<?php echo $search_b_addr; ?>" id="search_b_addr" class="frm_input" autocomplete="off" style="width:150px;">&nbsp;&nbsp;&nbsp;&nbsp;
+					
+					관리자메모&nbsp;&nbsp;
+					<input type="text" name="search_b_memo" value="<?php echo $search_b_memo; ?>" id="search_b_memo" class="frm_input" autocomplete="off" style="width:150px;">&nbsp;&nbsp;
+					<input type="submit" value="검색" class="newbutton" style="background-color:#000000;color:#ffffff;width:70px;" onClick="$('#reload_submit').val('');">
+				</td>
+			</tr>
+		</table>
+	</div>
 </form>
+
+
 
 <div style="margin:0px 0px 5px 20px; float:left">
 	<!--검색 개수 : <?php echo $total_count; ?> 건 -->
 	<input type="button" value="0건 선택" id="all_chk2" name="all_chk2" class="newbutton2" style="pointer-events : none;"/>
-<?php if($click_status == "준비"){
-		echo '<input type="button" value="선택 출고준비로 변경 ▶" id="" name="" class="newbutton2" onClick="return change_step_go(\'출고준비\')"/>';
-	}elseif($click_status == "출고준비"){
-		echo '<input type="button" value="선택 출고완료로 변경 ▶" id="" name="" class="newbutton2" onClick="return change_step_go(\'배송\')"/>
-		<input type="button" value="◀ 선택 상품준비로 되돌리기" id="" name="" class="newbutton2" onClick="return change_step_go(\'준비\')"/>
-		<input type="button" value="선택 바코드 정보 입력" id="" name="" class="newbutton2" style="background-color:#000;color:#fff;" onClick="barcode_insert(\'\');"/>';
-	}elseif($click_status == "배송"){//출고완료
-		echo '<input type="button" value="◀ 선택 출고준비로 되돌리기" id="" name="" class="newbutton2" onClick="return change_step_go(\'출고준비\')"/>';
-	}
-	if($click_status == "준비" || $click_status == "출고준비"){
-		echo ' <input type="button" value="선택 위탁 엑셀다운로드" id="" name="" class="newbutton2" style="background:#339900;color:#fff;" onclick="direct_delivery_excel();"/>';
-	}
-?>
+
+	<?php 
+		if($click_status == "준비"){
+			echo ('
+				<input type="button" value="선택 출고준비로 변경 ▶" id="" name="" class="newbutton2" onClick="return change_step_go(\'출고준비\')"/>
+			');
+		} 
+		elseif($click_status == "출고준비"){
+			echo ('
+				<input type="button" value="선택 출고완료로 변경 ▶" id="" name="" class="newbutton2" onClick="return change_step_go(\'배송\')"/>
+				<input type="button" value="◀ 선택 상품준비로 되돌리기" id="" name="" class="newbutton2" onClick="return change_step_go(\'준비\')"/>
+				<input type="button" value="선택 바코드 정보 입력" id="" name="" class="newbutton2" style="background-color:#000;color:#fff;" onClick="barcode_insert(\'\');"/>
+			');
+		} 
+		elseif($click_status == "배송"){//출고완료
+			echo ('
+				<input type="button" value="◀ 선택 출고준비로 되돌리기" id="" name="" class="newbutton2" onClick="return change_step_go(\'출고준비\')"/>
+			');
+		}
+
+		if($click_status == "준비" || $click_status == "출고준비"){
+			echo ('
+				<input type="button" value="선택 발주서 다운로드" id="" name="" class="newbutton2" style="background:#339900;color:#fff;" onclick="direct_delivery_excel();"/>
+			');
+		}
+	?>
 </div>
+
+
+
 <div style="margin:0px 20px 0px 0px; float:right;right:0px;">
 	<select name="page_rows" id="page_rows2" onChange="javascript:$('#page_rows').val(this.value);$('#frmsamhwaorderlist').submit();" style="width:130px;height:33px;">
 		<option value="50"  <?=($page_rows =='50')?"selected":"";?>>50개씩보기</option>
@@ -536,121 +565,134 @@ $warehouse_list = get_warehouses();
     </select>
 </div>
 
+
+
 <div class="tbl_head01 tbl_wrap">
-    <table>
-    <caption><?php echo $g5['title']; ?></caption>
-    <thead>
-    <tr>
-        <th scope="col" width="10px;"><input type="checkbox" name="all_chk" id="all_chk" class="frm_input"></th>
-		<th scope="col" width="107px;">주문번호</th>
-		<th scope="col" width="170px;">상품명</th>
-		<th scope="col" width="60px;">바코드<br>/수량</th>
-		<th scope="col" width="50px;">급여<br>구분</th>		
-		<th scope="col" width="60px;">배송정보</th>
-        <th scope="col" width="110px;">직배송 파트너</th>
-		<th scope="col" width="120px;">수령인</th>
-        <th scope="col" width="100px;">수령인 연락처</th>
-		<th scope="col">배송주소</th>        
-		<th scope="col" width="60px;">단가</th>
-		<!--th scope="col" width="70px;">공급가격</th>
-		<th scope="col" width="60px;">부가세</th-->
-		<th scope="col" width="70px;">총액</th>
-		<th scope="col" width="75px;">마감시간</th>
-		<th scope="col" width="5px;">요청사항</th>
-		<th scope="col" width="130px;">관리자메모</th>
-		<th scope="col" width="75px;">주문일</th>
-		<th scope="col" width="75px;">출고준비<br>변경일</th>
-		<th scope="col" width="75px;">출고일</th>
-		<th scope="col" width="70px;">위탁엑셀다운</th>
-    </tr>
-    </thead>
-    <tbody>
-    <?php
-    foreach($orderlist as $order) {
-        $num = $total_count -(($page-1)*$page_rows)- $i ;
+	<table>
+		<caption><?php echo $g5['title']; ?></caption>
+		<thead>
+			<tr>
+				<th scope="col" width="10px;"><input type="checkbox" name="all_chk" id="all_chk" class="frm_input"></th>
+				<th scope="col" width="107px;">주문번호</th>
+				<th scope="col" width="170px;">상품명</th>
+				<th scope="col" width="60px;">바코드<br>/수량</th>
+				<th scope="col" width="50px;">급여<br>구분</th>		
+				<th scope="col" width="60px;">배송정보</th>
+				<th scope="col" width="110px;">직배송 파트너</th>
+				<th scope="col" width="120px;">수령인</th>
+				<th scope="col" width="100px;">수령인 연락처</th>
+				<th scope="col">배송주소</th>        
+				<!-- th scope="col" width="60px;">단가</th>
+				<th scope="col" width="70px;">공급가격</th>
+				<th scope="col" width="60px;">부가세</th>
+				<th scope="col" width="70px;">총액</th -->
+				<th scope="col" width="75px;">마감시간</th>
+				<th scope="col" width="5px;">요청사항</th>
+				<th scope="col" width="130px;">관리자메모</th>
+				<th scope="col" width="75px;">주문일</th>
+				<th scope="col" width="75px;">출고준비<br>변경일</th>
+				<th scope="col" width="75px;">출고일</th>
+				<th scope="col" width="75px;">출하창고</th>
+				<th scope="col" width="70px;">발주서다운</th>
+			</tr>
+		</thead>
+		<tbody>
+		<?php
+			while( $order = sql_fetch_array($result) ) {
+				$num = $total_count -(($page-1)*$page_rows)- $i ;
 
-        $bg = 'bg'.($i%2);
-		$bg = ($order['od_cancel_reason'] != "")? "bg2": $bg;
-		
-		//$mb = get_member($order['ct_direct_delivery_partner']);
-		$ct_direct_delivery_partner_name = ($order['partner_name'] == "")?"미등록": $order['partner_name'];//파트너
-		if(!$order['ct_barcode_insert']) {//등록 바코드 수량
-			$order['ct_barcode_insert'] = 0;
-		}
-		$opt_price = 0;
+				$bg = 'bg'.($i%2);
+				$bg = ($order['od_cancel_reason'] != "")? "bg2": $bg;
+				
+				//$mb = get_member($order['ct_direct_delivery_partner']);
+				$ct_direct_delivery_partner_name = ($order['partner_name'] == "")?"미등록": $order['partner_name'];//파트너
+				if(!$order['ct_barcode_insert']) {//등록 바코드 수량
+					$order['ct_barcode_insert'] = 0;
+				}
 
-		if($order['io_type'])
-		  $opt_price = $order['io_price'];
-		else
-		  $opt_price = $order['ct_price'] + $order['io_price'];
+				$opt_price = 0;
+				if($order['io_type']) {
+					$opt_price = $order['io_price'];
+				} else {
+					$opt_price = $order['ct_price'] + $order['io_price'];
+				}
 
-		$order["opt_price"] = $opt_price;
+				$order["opt_price"] = $opt_price;
 
-		// 소계
-		$order['ct_price_stotal'] = $opt_price * $order['ct_qty'] - $order['ct_discount'];
-		if($order["prodSupYn"] == "Y") {
-		  $order["ct_price_stotal"] -= ($order["ct_stock_qty"] * $opt_price);
-		}
-		// 단가 역산
-		$order["opt_price"] = $order['ct_price_stotal'] ? @round($order['ct_price_stotal'] / ($order["ct_qty"] - $order["ct_stock_qty"])) : 0;
+				// 소계
+				$order['ct_price_stotal'] = $opt_price * $order['ct_qty'] - $order['ct_discount'];
+				if($order["prodSupYn"] == "Y") {
+					$order["ct_price_stotal"] -= ($order["ct_stock_qty"] * $opt_price);
+				}
+				// 단가 역산
+				$order["opt_price"] = $order['ct_price_stotal'] ? @round($order['ct_price_stotal'] / ($order["ct_qty"] - $order["ct_stock_qty"])) : 0;
 
-		// 공급가액
-		$order["basic_price"] = $order['ct_price_stotal'];
-		// 부가세
-		$order["tax_price"] = 0;
-		if($order['it_taxInfo'] != "영세" ) {
-		  // 공급가액
-		  $order["basic_price"] = round($order['ct_price_stotal'] / 1.1);
-		  // 부가세
-		  $order["tax_price"] = round($order['ct_price_stotal'] / 11);
-		}
-		$direct_delivery_text = ($order['ct_is_delivery_excel_downloaded'] == 1)?"다운완료":"-";//위탁엑셀다운로드완료
-		$order['od_memo'];
-		$order['prodMemo'];
-		$memo = ($order['od_memo'] !="" || $order['prodMemo'] != "")?"<a href=\"javascript:;\" onClick=\"go_view('".$order["od_id"]."','".$order["it_name"]."','".$order['od_memo']."','".$order['prodMemo']."')\">보기</a>":"-";//요청사항보기
-		if ($cancel_order_table[$order['od_id']]) {
-			$is_order_cancel_requested = "cancel_requested";
-		  }
-    ?>
-    <tr class="<?php echo $bg; ?>">
-        <td align="center"><input type="checkbox" name="od_id[]" id="<?=$order["ct_id"];?>" value="<?=$order["ct_id"];?>" data-value="<?=substr($order["ca_id"],0,2)?>" data-barcode='<?=($order['ct_barcode_insert']!=$order['ct_qty'])?0:1;?>' class="frm_input checkSelect chkbox"></td>
-		<td align="center"><a href="samhwa_orderform.php?od_id=<?=$order["od_id"];?>&sub_menu=400405" target="_blank"><?=$order["od_id"];//주문번호 ?></a></td>
-		<td align="center"><?=$order["it_name"].(($order["ct_option"] != $order["it_name"])?" [".$order["ct_option"]."]":"");//상품명 ?></td>
-		<td align="center" <?=($order['ct_barcode_insert'] >= $order['ct_qty'] || substr($order["ca_id"],0,2) == "70")?"":"style='color:red;'"; ?>><span  style='cursor:pointer;' onClick="barcode_insert('<?=$order["ct_id"]?>')"><?=(substr($order["ca_id"],0,2) != "70")?$order['ct_barcode_insert']."/".$order['ct_qty']:$order['ct_qty'];//바코드/수량 ?></span></td>
-		<td align="center"><?=(substr($order["ca_id"],0,2) == "70")?"비급여":((substr($order["ca_id"],0,2) == "80")?"보장구":"급여");//급여구분 ?></td>		
-		<td align="center" <?=($order['ct_combine_ct_id']||$order['ct_delivery_num'])?"":"style='color:red;'";?>><?=($order['ct_combine_ct_id']||$order['ct_delivery_num'])?"입력완료":"미입력";//배송정보 ?></td>
-        <td align="center"><?=$ct_direct_delivery_partner_name;//직배송파트너?></td>
-		<td align="center"><?=$order["od_b_name"];//수령인 ?></a></td>
-		<td align="center"><?=$order["od_b_tel"];//연락처 ?></td>
-		<td align="center"><?=$order["od_b_addr1"].(($order["od_b_addr2"]!="")?" ".$order["od_b_addr2"]:"").(($order["od_b_addr3"]!="")?" ".$order["od_b_addr3"]:"");//배송주소 ?></td>
-   				
-		<td align="right"><?=number_format($order["opt_price"]);//단가 ?></td>
-		<!--td align="right"><?=number_format($order["basic_price"]);//공급가격?></td>
-		<td align="right"><?=number_format($order["tax_price"]);//부가세 ?></td-->
-		<td align="right"><?=number_format($order["ct_price_stotal"]);//총액 ?></td>
-		<td align="center"><?=($order["it_deadline"] == "00:00:00" || $order["it_type11"] == "0")?"-":$order["it_deadline"];//마감시간 ?></td>
-		<td align="center"><?=$memo;//요청사항 ?></td>
-		<td align="center"><?=$order['it_admin_memo'];//관리자메모 ?></td>
-		<td align="center"><?=substr($order['od_time'],0,10)."<br>(".substr($order['od_time'],11,10).")";//주문일 ?></td>
-		<td align="center"><?=substr($order['ct_rdy_date'],0,10);//출고준비변경일 ?></td>
-		<td align="center"><?=($order["ct_ex_date"]=="" || $order["ct_ex_date"]=="0000-00-00")?"-":$order["ct_ex_date"];//출고일 ?></td>
-		<td align="center"><?=$direct_delivery_text?></td>
-    </tr>
-    <?php
-    $i++;
-	}
+				// 공급가액
+				$order["basic_price"] = $order['ct_price_stotal'];
+				// 부가세
+				$order["tax_price"] = 0;
 
-    if ($i == 0) {
-        echo '<tr><td colspan="19" class="empty_table">자료가 없습니다.</td></tr>';
-    }
-    ?>
-    </tbody>
+				if($order['it_taxInfo'] != "영세" ) {
+					// 공급가액
+					$order["basic_price"] = round($order['ct_price_stotal'] / 1.1);
+					// 부가세
+					$order["tax_price"] = round($order['ct_price_stotal'] / 11);
+				}
+
+				$direct_delivery_text = ($order['ct_is_delivery_excel_downloaded'] == 1)?"발주완료":"-";//위탁엑셀다운로드완료
+				$memo = ($order['od_memo'] !="" || $order['prodMemo'] != "")?"<a href=\"javascript:;\" onClick=\"go_view('".$order["od_id"]."','".$order["it_name"]."','".$order['od_memo']."','".$order['prodMemo']."')\">보기</a>":"-";//요청사항보기
+				if ($cancel_order_table[$order['od_id']]) {
+					$is_order_cancel_requested = "cancel_requested";
+				}
+		?>
+
+		<tr class="<?php echo $bg; ?>">
+			<td align="center"><input type="checkbox" name="od_id[]" id="<?=$order["ct_id"];?>" value="<?=$order["ct_id"];?>" data-value="<?=substr($order["ca_id"],0,2)?>" data-barcode='<?=($order['ct_barcode_insert']!=$order['ct_qty'])?0:1;?>' class="frm_input checkSelect chkbox"></td>
+			<td align="center"><a href="samhwa_orderform.php?od_id=<?=$order["od_id"];?>&sub_menu=400405" target="_blank"><?=$order["od_id"];//주문번호 ?></a></td>
+			<td align="center">
+				<?=$order["it_name"].(($order["ct_option"] != $order["it_name"])?" [".$order["ct_option"]."]":"");//상품명 ?>
+				<?=($order["it_expected_warehousing_date"]?"<br/><span class='red'>".$order["it_expected_warehousing_date"]."</span>":"")?>
+			</td>
+			<td align="center" onClick="barcode_insert('<?=$order["ct_id"]?>')" style='cursor:pointer;'><span class='BarcodeCnt<?=$order["ct_id"]?> <?=($order['ct_barcode_insert'] >= $order['ct_qty'] || substr($order["ca_id"],0,2) == "70")?"":"red"; ?>'><?=(substr($order["ca_id"],0,2) != "70")?$order['ct_barcode_insert']."/".$order['ct_qty']:$order['ct_qty'];//바코드/수량 ?></span></td>
+			<td align="center"><?=(substr($order["ca_id"],0,2) == "70")?"비급여":((substr($order["ca_id"],0,2) == "80")?"보장구":"급여");//급여구분 ?></td>		
+			<td align="center" class="Delivery<?=$order["ct_id"]?> <?=($order['ct_combine_ct_id']||$order['ct_delivery_num'])?"":"red";?>"><?=($order['ct_combine_ct_id']||$order['ct_delivery_num'])?"입력완료":"미입력";//배송정보 ?></td>
+			<td align="center"><?=$ct_direct_delivery_partner_name;//직배송파트너?></td>
+			<td align="center"><?=$order["od_b_name"];//수령인 ?></a></td>
+			<td align="center"><?=$order["od_b_tel"];//연락처 ?></td>
+			<td align="center"><?=$order["od_b_addr1"].(($order["od_b_addr2"]!="")?" ".$order["od_b_addr2"]:"").(($order["od_b_addr3"]!="")?" ".$order["od_b_addr3"]:"");//배송주소 ?></td>
+					
+			<!-- td align="right"><?=number_format($order["opt_price"]);//단가 ?></td>
+			<td align="right"><?=number_format($order["basic_price"]);//공급가격?></td>
+			<td align="right"><?=number_format($order["tax_price"]);//부가세 ?></td>
+			<td align="right"><?=number_format($order["ct_price_stotal"]);//총액 ?></td -->
+
+			<td align="center"><?=($order["it_deadline"] == "00:00:00" || $order["it_type11"] == "0")?"-":$order["it_deadline"];//마감시간 ?></td>
+			<td align="center"><?=$memo;//요청사항 ?></td>
+			<td align="center"><?=$order['it_admin_memo'];//관리자메모 ?></td>
+			<td align="center"><?=substr($order['od_time'],0,10)."<br>(".substr($order['od_time'],11,10).")";//주문일 ?></td>
+			<td align="center"><?=substr($order['ct_rdy_date'],0,10);//출고준비변경일 ?></td>
+			<td align="center"><?=($order["ct_ex_date"]=="" || $order["ct_ex_date"]=="0000-00-00")?"-":$order["ct_ex_date"];//출고일 ?></td>
+			<td align="center"><?=$order['ct_warehouse']; //출하창고 ?></td>
+			<td align="center"><?=$direct_delivery_text?></td>
+		</tr>
+
+		<?php
+				$i++;
+			}
+
+			if ($i == 0) {
+				echo '<tr><td colspan="19" class="empty_table">자료가 없습니다.</td></tr>';
+			}
+		?>
+    	</tbody>
     </table>
 </div>
 
+
+
 <div id="loading_excel">
   <div class="loading_modal">
-    <p>엑셀파일 다운로드 중입니다.</p>
+    <p>발주서 파일 다운로드 중입니다.</p>
     <p>잠시만 기다려주세요.</p>
     <img src="/shop/img/loading.gif" alt="loading">
     <button onclick="cancelExcelDownload();" class="btn_cancel_excel">취소</button>
@@ -689,6 +731,7 @@ $warehouse_list = get_warehouses();
 	</div>
 	
 </div>
+
 <?php //파터너 선택 모달팝업 ?>
 <div id="popup_box4" class="popup_box2">    
 	<div id="" class="popup_box_con" style="height:600px;margin-top:-300px;margin-left:-25%;width:50%;left:50%;top:50%;padding:0px;">
@@ -701,22 +744,28 @@ $warehouse_list = get_warehouses();
 		</div>		
 	</div>	
 </div>
+
 <?php //바코드 입력 모달팝업 ?>
 <div id="popup_box5" class="popup_box2">    
 	<div id="dragg_popup" class="popup_box_con" style="height:500px;margin-top:-240px;margin-left:-30%;width:60%;left:50%;top:50%;padding:0px;">
+
 		<div style="text-align:left;top:0px;width:100%;background-color:#000000;padding:10px;float:left;" title="여기를 드레그하여 이동이 가능합니다.">
-		<span style="color:#ffffff;font-size:17px;float:left;">바코드 입력</span>
-		<span style="color:#ffffff;font-size:17px;float:right;cursor:pointer;" onClick="reload_submit()" >Ⅹ</span>
+			<span style="color:#ffffff;font-size:17px;float:left;">바코드 입력</span>
+			<span style="color:#ffffff;font-size:17px;float:right;cursor:pointer;" onClick="reload_submit()" >Ⅹ</span>
 		</div>
-		<div id="" style="float:left;width:100%;">
-		<form method="post" action="/adm/shop_admin/popup.barcode_insert.php" name="barcode_form" target='barcode_frame'>
-			<input type="hidden" name="barcode_ct_id" id="barcode_ct_id" value="">
-		</form>
-		<iframe id="barcode_frame" name="barcode_frame" src="" scrolling="yes" frameborder="0" allowTransparency="false" style="width:100%;height:500px;"></iframe>		
+
+		<div id="" style="float:left; width:99.9%;">
+			<form method="post" action="/adm/shop_admin/popup.barcode_insert.php" name="barcode_form" target='barcode_frame'>
+				<input type="hidden" name="barcode_ct_id" id="barcode_ct_id" value="">
+			</form>
+			
+			<iframe id="barcode_frame" name="barcode_frame" src="" scrolling="yes" frameborder="0" allowTransparency="false" style="width:100%;height:500px;"></iframe>		
 		</div>
+
 		<div style="text-align:center;width:100%;background-color:#ffffff;padding:10px;" title="여기를 드레그하여 이동이 가능합니다.">
-		<a href="javascript:reload_submit();" class="btn " style="background:#dddddd;border-radius:3px;width:70px;">닫기</a>
+			<a href="javascript:reload_submit();" class="btn " style="background:#dddddd;border-radius:3px;width:70px;">닫기</a>
 		</div>
+		
 	</div>
 </div>
 
@@ -964,11 +1013,13 @@ $(function() {
 		}
 		checkbox_count();
 	});
-/*
-	$("#all_chk2").click(function() {
-		$("#all_chk").trigger("click");
-	});
-*/
+
+	/*
+		$("#all_chk2").click(function() {
+			$("#all_chk").trigger("click");
+		});
+	*/
+
 	$(".checkSelect").click(function() {
 		var total = $(".checkSelect").length;
 		var checked = $(".checkSelect:checked").length;
@@ -976,6 +1027,7 @@ $(function() {
 		else $("#all_chk").prop("checked", true); 
 		checkbox_count();
 	});
+
 });
 
 function checkbox_count(){
@@ -984,6 +1036,7 @@ function checkbox_count(){
 	
 }
 function reload_submit(){
+	/*
 	var ct_id = [];
 	var item = $("input[name='od_id[]']:checked");
 	for(var i = 0; i < item.length; i++) {
@@ -994,6 +1047,10 @@ function reload_submit(){
 	$("#reload_submit").val("ok");
 	$("#page").val("<?=$page?>");
 	document.frmsamhwaorderlist.submit();
+	*/
+	
+	$('body').removeClass('modal-open');
+	$("#popup_box5").hide();
 }
 
 function formatDate(date) {
@@ -1077,7 +1134,11 @@ function change_step2(od_id, step, api,od_id2) {
 }
 
 function direct_delivery_excel(){
+
 	if(select_check() == true){
+
+		if( !confirm("선택한 주문상품의 발주서를 다운로드합니다. (구매팀전용기능)") ) return;
+
 		$('#loading_excel').show();
 		href = './order.partner.excel.php';
 		var od_id = [];
@@ -1094,10 +1155,14 @@ function direct_delivery_excel(){
 			$('#loading_excel').hide();
 			location.reload();
 		});
+		
 	}
 }
 
 function downloadExcel() {
+
+	if( !confirm("직배송 주문관리 리스트를 엑셀로 다운로드합니다. (구매팀전용기능)") ) return;
+
     var href = './direct_delivery_orderlist.excel.download.php';
 
     $('#loading_excel').show();
@@ -1196,10 +1261,12 @@ function barcode_insert(a){//선택 바코드 정보 입력
 		od_id.push(a);
 		$("#barcode_ct_id").val(od_id);
 		document.barcode_form.submit();
-			
-			//$("#barcode_frame").attr('src',"/adm/shop_admin/popup.barcode_insert.php");
-		$('body').addClass('modal-open');
-		$('#popup_box5').show();
+		
+		$("#barcode_frame").on("load", function() {
+			$('body').addClass('modal-open');
+			$('#popup_box5').show();
+		});
+
 	}else{
 		if(select_check() == true){
 			var item = $("input[name='od_id[]']:checked");
@@ -1209,9 +1276,11 @@ function barcode_insert(a){//선택 바코드 정보 입력
 			$("#barcode_ct_id").val(od_id);
 			document.barcode_form.submit();
 			
-			//$("#barcode_frame").attr('src',"/adm/shop_admin/popup.barcode_insert.php");
-			$('body').addClass('modal-open');
-			$('#popup_box5').show();			
+			$("#barcode_frame").on("load", function() {
+				$('body').addClass('modal-open');
+				$('#popup_box5').show();
+			});
+			
 		}
 	}
 }

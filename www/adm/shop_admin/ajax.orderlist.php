@@ -402,39 +402,33 @@ if ($where_count) {
 // shop_cart 조인으로 수정
 // member 테이블 조인
 $sql_common = "
-  FROM
-    {$g5['g5_shop_cart_table']} c
-  LEFT JOIN
-    {$g5['g5_shop_item_table']} i ON c.it_id = i.it_id
-  LEFT JOIN
-    {$g5['g5_shop_order_table']} o ON c.od_id = o.od_id
-  LEFT JOIN
-    {$g5['member_table']} m ON c.mb_id = m.mb_id
-  LEFT JOIN
-    partner_install_report pir ON c.od_id = pir.od_id
-  LEFT JOIN
-    g5_shop_order_cancel_request ocr ON c.od_id = ocr.od_id
+  FROM  {$g5['g5_shop_cart_table']} c
+  -- LEFT JOIN {$g5['g5_shop_item_table']} i ON c.it_id = i.it_id
+  LEFT JOIN {$g5['g5_shop_order_table']} o ON c.od_id = o.od_id
+  LEFT JOIN {$g5['member_table']} m ON c.mb_id = m.mb_id
+  LEFT JOIN partner_install_report pir ON c.od_id = pir.od_id
+  LEFT JOIN g5_shop_order_cancel_request ocr ON c.od_id = ocr.od_id
 ";
 
-$sql_counts = "
-  SELECT
-    count(*) as cnt,
-    ct_status,
-    sum(
-      case
-        when io_type = 0
-        then ct_price + io_price
-        else ct_price
-      end * ct_qty
-    ) as ct_price,
-    sum(ct_sendcost) as ct_sendcost,
-    sum(ct_discount) as ct_discount
-  {$sql_common}
-  {$sql_count_search}
-  GROUP BY
-    ct_status
+$sql_counts = " SELECT
+                  count(c.ct_id) AS cnt,
+                  ct_status,
+                  SUM(
+                    CASE
+                      WHEN io_type = 0
+                      THEN ct_price + io_price
+                      ELSE ct_price
+                    END * ct_qty
+                  ) AS ct_price,
+                  SUM(ct_sendcost) AS ct_sendcost,
+                  SUM(ct_discount) AS ct_discount
+                  {$sql_common}
+                  {$sql_count_search}
+                GROUP BY
+                  ct_status
 ";
 $result_counts = sql_query($sql_counts);
+
 $cate_counts = [];
 $total_info = [];
 while($count = sql_fetch_array($result_counts)) {
@@ -445,7 +439,7 @@ while($count = sql_fetch_array($result_counts)) {
 $sql_common .= $sql_search;
 
 // 페이지네이트
-$sql = " select count(*) as cnt " . $sql_common;
+$sql = " SELECT count(c.ct_id) as cnt " . $sql_common;
 $row = sql_fetch($sql, true);
 $total_count = $row['cnt'];
 //$rows = $config['cf_page_rows'];
@@ -462,22 +456,81 @@ foreach($order_steps as $order_step) {
 $order_by_step = implode(' , ', $order_by_steps);
 $sql_common .= " ORDER BY FIELD(ct_status, " . $order_by_step . " ), ct_move_date desc, o.od_id desc ";
 
-$sql  = "
-  select *, o.od_id as od_id, c.ct_id as ct_id, c.mb_id as mb_id, (od_cart_coupon + od_coupon + od_send_coupon) as couponprice
-  $sql_common
-  limit $from_record, $rows
+$sql  = " SELECT 
+            c.ct_barcode_insert
+            ,c.ct_barcode_insert_not_approved
+            ,c.ct_delivery_company
+            ,c.ct_delivery_num
+            ,c.ct_direct_delivery_date
+            ,c.ct_direct_delivery_partner
+            ,c.ct_discount
+            ,c.ct_ex_date
+            ,c.ct_id
+            ,c.ct_is_delivery_excel_downloaded
+            ,c.ct_is_direct_delivery
+            ,c.ct_is_ecount_excel_downloaded
+            ,c.ct_manager
+            ,c.ct_move_date
+            ,c.ct_option
+            ,c.ct_price
+            ,c.ct_qty
+            ,c.ct_send_direct_delivery
+            ,c.ct_send_direct_delivery_email
+            ,c.ct_send_direct_delivery_fax
+            ,c.ct_sendcost
+            ,c.ct_status
+            ,c.ct_stock_qty
+            ,c.ct_warehouse
+            ,c.io_price
+            ,c.io_type
+            ,c.it_id
+            ,c.it_name
+            ,c.prodMemo
+            ,c.prodSupYn
+            
+            ,m.mb_entNm
+            ,m.mb_id
+            ,m.mb_manager
+            ,m.mb_type
+            ,m.mb_level
+            ,m.mb_giup_type
+
+            ,o.od_b_name
+            ,o.od_bank_account
+            ,o.od_delivery_type
+            ,o.od_delivery_yn
+            ,o.od_deposit_name
+            ,o.od_edi_result
+            ,o.od_ex_date
+            ,o.od_id
+            ,o.od_important
+            ,o.od_important2
+            ,o.od_memo
+            ,o.od_name
+            ,o.od_partner_edit
+            ,o.od_pay_state
+            ,o.od_sales_manager
+            ,o.od_settle_case
+            ,o.od_time
+
+            ,ocr.refund_status
+
+          $sql_common
+          LIMIT $from_record, $rows
 ";
 if ($click_status || $od_status) {
   if ($show_all == 'Y' && ($click_status == "준비" || $click_status == "출고준비" || $od_status == '준비' || $od_status == '출고준비')) {
     $sql = preg_replace('/limit (.*)/i', '', $sql);
   }
 }
+//var_dump($sql);
 $result = sql_query($sql);
 
-$orderlist = array();
+/*$orderlist = array();
 while( $row = sql_fetch_array($result) ) {
   $orderlist[] = $row;
 }
+*/
 
 $ret = array();
 $ct_status_info = get_step($ct_status);
@@ -515,7 +568,8 @@ $ret['main'] = "
             <th class=\"od_content\">배송요청사항</th>
             <th class=\"od_price\">결제금액</th>
             <th class=\"od_sales_manager\">영업담당자</th>
-            <th class=\"od_release_manager\">출고담당자</th>
+            <th class=\"ct_warehouse\">출하창고</th>
+            <!--<th class=\"od_release_manager\">출고담당자</th>-->
             <!--<th class=\"od_ex_date\">출고완료일</th>-->
             <th class=\"od_content\">위탁</th>
             <th class=\"od_step\">주문상태</th>
@@ -539,19 +593,23 @@ if ( !$total_count ) {
 
 $now_step = $last_step ? $last_step : '';
 
+/*
 // 출고담당자 목록
 $ct_manager_list = [];
 $result_ct_manager = sql_query("select b.`mb_name`, b.`mb_id` from `g5_auth` a left join `g5_member` b on (a.`mb_id`=b.`mb_id`) where a.`au_menu` = '400001'");
 foreach($result_ct_manager as $ct_manager) {
   $ct_manager_list[] = $ct_manager;
 }
+*/
 
 // 영업담당자 목록
 $sales_manager_table = [];
+
 $result_sales_manager = sql_query("select mb_id, mb_name from g5_member where mb_level = 9");
 foreach($result_sales_manager as $sales_manager) {
   $sales_manager_table[$sales_manager['mb_id']] = $sales_manager['mb_name'];
 }
+
 
 // 취소요청된 주문 목록
 $cancel_order_table = [];
@@ -560,7 +618,8 @@ foreach($result_cancel_order as $cancel_order) {
   $cancel_order_table[$cancel_order['od_id']] = true;
 }
 
-foreach($orderlist as $order) {
+//foreach($orderlist as $order) {
+while( $order = sql_fetch_array($result) ) {
   //ct_count (order 기준 - 개수 )
   $sql_ct_count = "select count(ct_id) as ct_count from `g5_shop_cart` where `od_id` ='".$order['od_id']."'";
   $result_ct_count = sql_fetch($sql_ct_count);
@@ -590,8 +649,9 @@ foreach($orderlist as $order) {
   $ct_manager = $order['ct_manager']; //출고 담당자 아이디
   $prodMemo = $order['prodMemo'];
 
-  //출고담당자 select
+  //출고담당자 select  
   $od_release_select="";
+  /*
   $od_release_select = '<select class="ct_manager" data-ct-id="'.$order['ct_id'].'" style="width:70px">';
   $od_release_select .= '<option value="미지정">미지정</option>';
   foreach($ct_manager_list as $row_m) {
@@ -600,6 +660,7 @@ foreach($orderlist as $order) {
     $od_release_select .='<option value="'.$row_m['mb_id'].'" '.$selected.'>'.$row_m['mb_name'].'('.$row_m['mb_id'].')</option>';
   }
   $od_release_select .='</select>';
+  */
 
   //사업소명
   if($order['mb_entNm']){
@@ -798,7 +859,7 @@ foreach($orderlist as $order) {
     }
   }
   if($order['ct_is_delivery_excel_downloaded']) {
-    $direct_delivery_text .= "<br><span id='excel_done' class='excel_done' data-ct-id='{$order['ct_id']}' style='color: #FF6600'>엑셀 다운로드 완료</span>";
+    $direct_delivery_text .= "<br><span id='excel_done' class='excel_done' data-ct-id='{$order['ct_id']}' style='color: #FF6600'>발주완료</span>";
   }
   if($order['ct_send_direct_delivery']) {
     $send_direct_delivery = '발주전송';
@@ -886,10 +947,13 @@ foreach($orderlist as $order) {
       <td align=\"center\" class=\"od_sales_manager\">
         {$sale_manager}
       </td>
+      <td align=\"center\" class=\"ct_warehouse\">
+      {$order['ct_warehouse']}
+      </td>
+      <!--
       <td align=\"center\" class=\"od_release_manager\">
         {$od_release_select}
       </td>
-      <!--
       <td align=\"center\" class=\"od_ex_date\">
         {$ct_ex_date}
       </td>
