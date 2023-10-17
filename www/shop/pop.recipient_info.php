@@ -2558,7 +2558,7 @@ if($member["cert_data_ref"] != ""){
 
             penLtmNum_parent = parent.document.all["penLtmNum_parent"].value;
             penNm_parent = parent.document.all["penNm_parent"].value;
-            $(".rep_common").text(penNm_parent+"(L"+penLtmNum_parent+")");
+            $(".rep_common").text(penNm_parent+"("+penLtmNum_parent+")");
 		}
 		var style = document.createElement('style');
             style.setAttribute('media', 'print');
