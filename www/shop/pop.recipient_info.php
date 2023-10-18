@@ -2552,7 +2552,15 @@ if($member["cert_data_ref"] != ""){
 
 
     function go_prints(){
-        var style = document.createElement('style');
+        if('<?=$page_type?>' != 'search'){
+			var head_title = `<span class = "rep_common"><?php echo "홍길동(L1234567890)";?></span><span>님의 요양정보</span>`;
+            $(".head-title").append(head_title);
+
+            penLtmNum_parent = parent.document.all["penLtmNum_parent"].value;
+            penNm_parent = parent.document.all["penNm_parent"].value;
+            $(".rep_common").text(penNm_parent+"("+penLtmNum_parent+")");
+		}
+		var style = document.createElement('style');
             style.setAttribute('media', 'print');
             style.textContent = `
                 body { transform: scale(0.9); }
@@ -2564,6 +2572,11 @@ if($member["cert_data_ref"] != ""){
             `;
         document.head.appendChild(style);
         samhwaprint($('html').html());
+		if('<?=$page_type?>' != 'search'){
+			var head_title = '';
+            $(".head-title").html(head_title);
+		}
+
     }
 
 </script>
