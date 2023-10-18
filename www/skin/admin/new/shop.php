@@ -16,16 +16,22 @@ function get_order_status_sum($status)
 {
     global $g5;
 
-    $sql = " select count(*) as cnt,
-                    sum(od_cart_price + od_send_cost + od_send_cost2 - od_cancel_price) as price
-                from {$g5['g5_shop_order_table']}
-                where od_status = '$status' ";
+    $_fr_date = date("Y-m-d", strtotime("-60 day"));
+    $_to_date = date("Y-m-d");
+
+
+    $sql = "    SELECT 
+                    count(*) AS cnt
+                    ,sum(ct_price) AS price
+                FROM {$g5['g5_shop_cart_table']}
+                WHERE ( ct_time between '" . $_fr_date . " 00:00:00' AND '" . $_to_date . " 23:59:59' ) 
+                    " . ( ($status!="전체")?"AND ct_status = '$status'":"" ) . "
+    ";
     $row = sql_fetch($sql);
 
     $info = array();
     $info['count'] = (int)$row['cnt'];
     $info['price'] = (int)$row['price'];
-    $info['href'] = G5_ADMIN_URL.'/shop_admin/orderlist.php?od_status='.urlencode($status);
 
     return $info;
 }
@@ -35,7 +41,7 @@ function get_order_date_sum($date)
 {
     global $g5;
 
-    $sql = " select sum(od_cart_price + od_send_cost + od_send_cost2) as orderprice,
+    $sql = " SELECT sum(od_cart_price + od_send_cost + od_send_cost2) as orderprice,
                     sum(od_cancel_price) as cancelprice
                 from {$g5['g5_shop_order_table']}
                 where SUBSTRING(od_time, 1, 10) = '$date' ";
@@ -59,7 +65,7 @@ function get_order_settle_sum($date)
     // 결제수단별 합계
     foreach($case as $val)
     {
-        $sql = " select sum(od_cart_price + od_send_cost + od_send_cost2 - od_receipt_point - od_cart_coupon - od_coupon - od_send_coupon) as price,
+        $sql = " SELECT sum(od_cart_price + od_send_cost + od_send_cost2 - od_receipt_point - od_cart_coupon - od_coupon - od_send_coupon) as price,
                         count(*) as cnt
                     from {$g5['g5_shop_order_table']}
                     where SUBSTRING(od_time, 1, 10) = '$date'
@@ -71,7 +77,7 @@ function get_order_settle_sum($date)
     }
 
     // 포인트 합계
-    $sql = " select sum(od_receipt_point) as price,
+    $sql = " SELECT sum(od_receipt_point) as price,
                     count(*) as cnt
                 from {$g5['g5_shop_order_table']}
                 where SUBSTRING(od_time, 1, 10) = '$date'
@@ -81,7 +87,7 @@ function get_order_settle_sum($date)
     $info['포인트']['count'] = (int)$row['cnt'];
 
     // 쿠폰 합계
-    $sql = " select sum(od_cart_coupon + od_coupon + od_send_coupon) as price,
+    $sql = " SELECT sum(od_cart_coupon + od_coupon + od_send_coupon) as price,
                     count(*) as cnt
                 from {$g5['g5_shop_order_table']}
                 where SUBSTRING(od_time, 1, 10) = '$date'
@@ -201,7 +207,7 @@ function get_max_value($arr)
 
     <div id="sidx_stat">
         <section id="anc_sidx_act">
-            <h2>처리할 주문</h2>
+            <h2>주문내역 ( 최근 3개월 / <?=date("Y-m-d", strtotime("-60 day"))?> ~ <?=date("Y-m-d")?> )</h2>
             <?php echo $pg_anchor; ?>
 
             <div id="sidx_take_act" class="tbl_head01 tbl_wrap">
@@ -215,36 +221,40 @@ function get_max_value($arr)
                 </thead>
                 <tbody>
                 <tr>
-                    <?php
-                    $info = get_order_status_sum('주문');
-                    ?>
-                    <th scope="row">주문 -&gt; 입금</th>
-                    <td class="td_numbig"><a href="<?php echo $info['href']; ?>"><?php echo number_format($info['count']); ?></a></td>
-                    <td class="td_price"><a href="<?php echo $info['href']; ?>"><?php echo number_format($info['price']); ?></a></td>
+                    <?php $info = get_order_status_sum('전체'); ?>
+                    <th scope="row">전체</th>
+                    <td class="td_num"><?=number_format($info['count']); ?></td>
+                    <td class="td_price"><?=number_format($info['price']); ?></td>
                 </tr>
                 <tr>
-                    <?php
-                    $info = get_order_status_sum('입금');
-                    ?>
-                    <th scope="row">입금 -&gt; 준비</th>
-                    <td class="td_numbig"><a href="<?php echo $info['href']; ?>"><?php echo number_format($info['count']); ?></a></td>
-                    <td class="td_price"><a href="<?php echo $info['href']; ?>"><?php echo number_format($info['price']); ?></a></td>
+                    <?php $info = get_order_status_sum('준비'); ?>
+                    <th scope="row">주문접수</th>
+                    <td class="td_num"><?=number_format($info['count']); ?></td>
+                    <td class="td_price"><?=number_format($info['price']); ?></td>
                 </tr>
                 <tr>
-                    <?php
-                    $info = get_order_status_sum('준비');
-                    ?>
-                    <th scope="row">준비 -&gt; 배송</th>
-                    <td class="td_numbig"><a href="<?php echo $info['href']; ?>"><?php echo number_format($info['count']); ?></a></td>
-                    <td class="td_price"><a href="<?php echo $info['href']; ?>"><?php echo number_format($info['price']); ?></a></td>
+                    <?php $info = get_order_status_sum('출고준비'); ?>
+                    <th scope="row">출고준비</th>
+                    <td class="td_num"><?=number_format($info['count']); ?></td>
+                    <td class="td_price"><?=number_format($info['price']); ?></td>
                 </tr>
                 <tr>
-                    <?php
-                    $info = get_order_status_sum('배송');
-                    ?>
-                    <th scope="row">배송 -&gt; 완료</th>
-                    <td class="td_numbig"><a href="<?php echo $info['href']; ?>"><?php echo number_format($info['count']); ?></a></td>
-                    <td class="td_price"><a href="<?php echo $info['href']; ?>"><?php echo number_format($info['price']); ?></a></td>
+                    <?php $info = get_order_status_sum('배송'); ?>
+                    <th scope="row">출고완료</th>
+                    <td class="td_num"><?=number_format($info['count']); ?></td>
+                    <td class="td_price"><?=number_format($info['price']); ?></td>
+                </tr>
+                <tr>
+                    <?php $info = get_order_status_sum('완료'); ?>
+                    <th scope="row">배송완료</th>
+                    <td class="td_num"><?=number_format($info['count']); ?></td>
+                    <td class="td_price"><?=number_format($info['price']); ?></td>
+                </tr>
+                <tr>
+                    <?php $info = get_order_status_sum('취소'); ?>
+                    <th scope="row">주문취소</th>
+                    <td class="td_num"><?=number_format($info['count']); ?></td>
+                    <td class="td_price"><?=number_format($info['price']); ?></td>
                 </tr>
                 </tbody>
                 </table>
@@ -302,6 +312,8 @@ function get_max_value($arr)
     </div>
 </div>
 
+<?php
+/*
 <section id="anc_sidx_settle">
     <h2>결제수단별 주문현황</h2>
     <?php echo $pg_anchor; ?>
@@ -361,6 +373,8 @@ function get_max_value($arr)
         </table>
     </div>
 </section>
+*/
+?>
 
 <div class="sidx sidx_cs">
     <section id="anc_sidx_oneq">
