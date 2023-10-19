@@ -403,7 +403,7 @@ if ($where_count) {
 // member 테이블 조인
 $sql_common = "
   FROM  {$g5['g5_shop_cart_table']} c
-  -- LEFT JOIN {$g5['g5_shop_item_table']} i ON c.it_id = i.it_id
+  LEFT JOIN {$g5['g5_shop_item_table']} i ON c.it_id = i.it_id
   LEFT JOIN {$g5['g5_shop_order_table']} o ON c.od_id = o.od_id
   LEFT JOIN {$g5['member_table']} m ON c.mb_id = m.mb_id
   LEFT JOIN partner_install_report pir ON c.od_id = pir.od_id
