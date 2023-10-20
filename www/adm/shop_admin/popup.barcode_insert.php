@@ -26,8 +26,10 @@ $sql  = "	SELECT
 				,c.mb_id
 				,c.ct_combine_ct_id
 				,c.ct_delivery_num
+				,c.ct_delivery_company
 				,c.ct_status
 				,c.it_name
+				,c.it_id
 				,c.ct_option
 				
 				,o.od_b_name				
@@ -210,17 +212,17 @@ li {
 					$stock_list = ($stock_list == "")?"우측 바코드 정보에 바코드를 등록 바랍니다.":$stock_list;
 					$ct_direct_delivery_partner_name = ($row['partner_name'] == "")?"미등록": $row['partner_name'];//파트너
 
-					$sql = ("	SELECT 
-									MAX(ct_id)
-									,ct_delivery_company 
+					$sql = ("	SELECT ct_delivery_company
 								FROM g5_shop_cart
 								WHERE it_id = '".$row["it_id"]."' 
 									AND ct_delivery_num IS NOT NULL 
 									AND ct_delivery_num <> ''
+								ORDER BY ct_id DESC
+								LIMIT 1
 					");
-				
-					$row22 = sql_fetch($sql);
-					$row["ct_delivery_company"] = ($row["ct_delivery_num"]=="")? $row22["ct_delivery_company"]:$row["ct_delivery_company"];
+					
+					$row_DC = sql_fetch($sql);
+					$row["ct_delivery_company"] = ($row["ct_delivery_num"]=="")? $row_DC["ct_delivery_company"]:$row["ct_delivery_company"];
 			?>
 			<div id="wrap<?=$i?>" class="new_form3">
 				<div class="parent" onclick="show_hide('<?=$i?>','<?=$ct_direct_delivery_partner_name?>')">
