@@ -1017,7 +1017,7 @@ table.ui-datepicker-calendar { display:none; }
 			AND penId='{$pen['penId']}'
 			WHERE a.gubun='01'
 			AND a.it_rental_price IS NOT NULL
-			AND (CURDATE() BETWEEN CONCAT(SUBSTR(a.it_date,1,7),'-01') AND CONCAT(SUBSTR(a.it_date,12,7),'-31') OR '".date("Y-m",strtotime("-1 month",time()))."-01' BETWEEN CONCAT(SUBSTR(a.it_date,1,7),'-01') AND CONCAT(SUBSTR(a.it_date,12,7),'-31'))
+			AND (CURDATE() BETWEEN CONCAT(SUBSTR(a.it_date,1,7),'-01') AND CONCAT(SUBSTR(a.it_date,12,7),'-31'))
 			ORDER BY SUBSTR(a.it_date,1,10) ASC";
 	$result = sql_query($sql);
 	$count_01 = sql_num_rows($result);

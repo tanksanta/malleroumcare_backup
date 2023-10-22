@@ -30,20 +30,25 @@ $last_month = date("Y-m",strtotime("-1 month",time()));//지난달
 	}else{		
 		while($row = sql_fetch_array($result)){
 			$penRecTypeCd = ($row['penRecTypeCd'] == "02")?"방문":"유선";
-			$row_count = count(explode(",",$row['it_ids']));
+			$it_ids = explode(",",$row['it_ids']);
+			$row_count = count($it_ids);
+			$it_dates = explode(",",$row['it_dates']);
+			for($ii = 0; $ii < $row_count; $ii++ ){
+				$it_date[$it_ids[$ii]] = $it_dates[$ii];
+			}
 			$rowspan = ($row_count == 1)? "" :" rowspan='{$row_count}'";
-			$sql2 = "SELECT it_name,it_date FROM eform_document_item WHERE it_id IN ({$row['it_ids']})";
+			$sql2 = "SELECT it_name,it_id FROM eform_document_item WHERE it_id IN ({$row['it_ids']})";
 			$result2 = sql_query($sql2);
 			$i = 0;
 			while($row2 = sql_fetch_array($result2)){
 				$it_name[$i] = $row2['it_name'];
-				$it_date[$i] = $row2['it_date'];
+				$it_id2[$i] = $row2['it_id'];
 				$i++;
 			}
 			$html .= "	<tr>";
 			$html .= "		<td{$rowspan}>{$row['confirm_date']}</td>";	
 			$html .= "		<td>{$it_name[0]}</td>";
-			$html .= "		<td>{$it_date[0]}</td>";
+			$html .= "		<td>{$it_date[$it_id2[0]]}</td>";
 			$html .= "		<td{$rowspan}>{$penRecTypeCd}</td>";
 			$html .= "		<td{$rowspan}><a href='javascript:downloadExcel(\"m\",\"{$row['rh_id']}\");'>다운로드</a></td>";
 			$html .= "	</tr>";
@@ -51,7 +56,7 @@ $last_month = date("Y-m",strtotime("-1 month",time()));//지난달
 				for($j = 1; $j < $row_count; $j++){
 					$html .="<tr>";
 					$html .= "		<td>{$it_name[$j]}</td>";
-					$html .= "		<td>{$it_date[$j]}</td>";
+					$html .= "		<td>{$it_date[$it_id2[$j]]}</td>";
 					$html .="</tr>";
 				}
 			}			

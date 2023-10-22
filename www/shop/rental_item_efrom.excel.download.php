@@ -33,7 +33,11 @@ $res = get_eroumcare(EROUMCARE_API_RECIPIENT_SELECTLIST, array(
 $pen = $res['data'][0];
 $pen_nm = $pen['penNm'];
 $it_id = explode(",",$_POST['it_ids']);
+$row_count = count($it_id);
 $it_date = explode(",",$_POST['it_dates']);
+for($ii = 0; $ii < $row_count; $ii++ ){
+	$it_dates2[$it_id[$ii]] = $it_date[$ii];
+}
 
 $title_text = $pen['penNm']."_".$pen['penLtmNum'];
 
@@ -241,7 +245,7 @@ $excel->setActiveSheetIndex(0)->setCellValue('H10', "⑦본인부담금");
 $excel->setActiveSheetIndex(0)->setCellValue('I10', "⑧공단부담액");
 //대여품목 들어갈 자리
 for($i = 0;$i < $item_count; $i++){
-$price = calc_rental_price(str_replace("-","",substr($it_date[$i],0,10)), str_replace("-","",substr($it_date[$i],11,10)), $it_rental_price[$it_id[$i]],$pen['penTypeCd']);
+$price = calc_rental_price(str_replace("-","",substr($it_dates2[$it_id[$i]],0,10)), str_replace("-","",substr($it_dates2[$it_id[$i]],11,10)), $it_rental_price[$it_id[$i]],$pen['penTypeCd']);
 $it_price = $price["calc_rental_price"];//대여가(추가)
 $it_price_pen = $price["calc_pen_price"];//본인부담금(추가)
 $it_price_ent = $it_price - $it_price_pen;//공단부담금
@@ -250,7 +254,7 @@ $excel->setActiveSheetIndex(0)->setCellValue('B'.(12+$i), $ca_name[$it_id[$i]]);
 $excel->setActiveSheetIndex(0)->setCellValue('C'.(12+$i), $it_name[$it_id[$i]]);//제품명
 $excel->setActiveSheetIndex(0)->setCellValue('D'.(12+$i), $it_code[$it_id[$i]]."\n-".$it_barcode[$it_id[$i]]);//복지용구 표준코드
 $excel->setActiveSheetIndex(0)->setCellValue('E'.(12+$i), number_format($it_price));//급여비용
-$excel->setActiveSheetIndex(0)->setCellValue('F'.(12+$i), substr($it_date[$i],0,10)."\n".substr($it_date[$i],10,11));//대여기간
+$excel->setActiveSheetIndex(0)->setCellValue('F'.(12+$i), substr($it_dates2[$it_id[$i]],0,10)."\n".substr($it_dates2[$it_id[$i]],10,11));//대여기간
 $excel->setActiveSheetIndex(0)->setCellValue('G'.(12+$i), number_format($it_price));//);//총액
 $excel->setActiveSheetIndex(0)->setCellValue('H'.(12+$i), number_format($it_price_pen));//봉인부담금
 $excel->setActiveSheetIndex(0)->setCellValue('I'.(12+$i), number_format($it_price_ent));//공단부담액
