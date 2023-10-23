@@ -935,10 +935,10 @@ while( $order = sql_fetch_array($result) ) {
           {$mb_shorten_info}{$mb_entNm}
         </a>
       </td>
-      <td align=\"center\" class=\"od_content\">
+      <td align=\"center\" class=\"od_content\" style=\"word-break:break-all\">
         {$prodMemo}
       </td>
-      <td align=\"center\" class=\"od_content\">
+      <td align=\"center\" class=\"od_content\" style=\"word-break:break-all\">
         {$order['od_memo']}
       </td>
       <td align=\"center\" class=\"od_price\">
