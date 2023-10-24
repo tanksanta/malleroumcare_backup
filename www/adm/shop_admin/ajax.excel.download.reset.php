@@ -25,7 +25,7 @@ $ct['it_name'] .= $ct['ct_option'] && $ct['ct_option'] != $ct['it_name'] ? " ({$
 if($type == 'ecount') {
     set_order_admin_log($ct['od_id'], '이카운트 엑셀 다운로드 취소 : ' . $ct['it_name']);
 } else {
-    set_order_admin_log($ct['od_id'], '위탁 엑셀 다운로드 취소 : ' . $ct['it_name']);
+    set_order_admin_log($ct['od_id'], '발주서 다운로드 취소 : ' . $ct['it_name']);
 }
 
 $ret = array(

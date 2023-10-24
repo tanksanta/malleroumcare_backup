@@ -18,6 +18,10 @@ if(!sql_query(" select mb_id from {$g5['g5_shop_order_delete_table']} limit 1 ",
   ", true);
 }
 
+
+/*
+// 23.10.13 : 서원 - 롯데택배 EDI를 사용하지 않음에 따름 불필요한 쿼리문 실행 차단.
+
 $sql_lotte = "SELECT count(*) as cnt 
   FROM {$g5['g5_shop_cart_table']} 
   WHERE ct_status = '출고준비' 
@@ -29,6 +33,8 @@ $sql_lotte = "SELECT count(*) as cnt
   AND ct_is_direct_delivery = 0 -- 직배송 아닌것
 ";
 $result_lotte = sql_fetch($sql_lotte);
+*/
+
 
 $warehouse_list = get_warehouses();
 
@@ -38,9 +44,9 @@ if (!$fr_date && !$to_date) {
     $to_date = date("Y-m-d");
 }
 
-add_javascript('<script src="'.G5_JS_URL.'/jquery.fileDownload.js"></script>', 0);
-add_javascript('<script src="'.G5_JS_URL.'/popModal/popModal.min.js"></script>', 0);
-add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min.css">', 0);
+add_javascript('<script src="'.G5_JS_URL.'/jquery.fileDownload.js?v='.APMS_SVER.'"></script>', 0);
+add_javascript('<script src="'.G5_JS_URL.'/popModal/popModal.min.js?v='.APMS_SVER.'"></script>', 0);
+add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min.css?v='.APMS_SVER.'">', 0);
 ?>
 <style>
     #text_size {
@@ -107,7 +113,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
     .popModal input[type=file] { display: block; }
     .popModal .help-block { padding: 0; display: block; margin-top: 5px; margin-bottom: 10px; color: #737373; }
 </style>
-<script src="<?php echo G5_ADMIN_URL; ?>/shop_admin/js/orderlist.js?ver=<?php echo time(); ?>"></script>
+<script src="<?php echo G5_ADMIN_URL; ?>/shop_admin/js/orderlist.js?ver=<?=APMS_SVER;?>"></script>
 
 <div class="local_ov01 local_ov fixed">
     <?php echo $listall; ?>
@@ -140,9 +146,11 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
         <button id="ct_direct_delivery_partner_all">위탁 선택적용</button>
 		<button id="ct_direct_delivery_partner_cncl">위탁 선택해제</button>
         <button id="delivery_excel_upload">택배정보 일괄 업로드</button>
+        <!-- 
         <select class="sb1" name="" id="ct_manager_sb">
             <?php
             //출고담당자 select
+            /*
             $od_release_select="";
             $sql_m="select b.`mb_name`, b.`mb_id` from `g5_auth` a left join `g5_member` b on (a.`mb_id`=b.`mb_id`) where a.`au_menu` = '400001'";
             $result_m = sql_query($sql_m);
@@ -153,9 +161,11 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
                 $od_release_select .='<option value="'.$row_m['mb_id'].'" '.$selected.'>'.$row_m['mb_name'].'('.$row_m['mb_id'].')</option>';
             }
             echo $od_release_select;
+            */
             ?>
         </select>
         <button id="ct_manager_send_all">출고담당자 선택변경</button>
+        -->
 
         <select class="sb1" name="it_default_warehouse" id="ct_warehouse_sb">
             <?php
@@ -370,6 +380,7 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
                             </div>
                         </div>
                     </div>
+                    <!--
                     <div class="select">
                         <span>출고담당자</span>
                         <div class="selectbox_multi">
@@ -385,14 +396,15 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
                                         $auth_result = sql_query($sql);
                                         while($a_row = sql_fetch_array($auth_result)) {
                                             $a_mb = get_member($a_row['mb_id']);
-                                            ?>
-                                            <li><input type="checkbox" name="od_release_manager[]" id="od_release_manager_<?php echo $a_mb['mb_id']; ?>" value="<?php echo $a_mb['mb_id']; ?>" title="<?php echo $a_mb['mb_id']; ?>" placeholder="<?php echo $a_mb['mb_id']; ?>" <?php echo option_array_checked($a_mb['mb_id'], $od_release_manager); ?>><label for="od_release_manager_<?php echo $a_mb['mb_id']; ?>"><?php echo $a_mb['mb_name']; ?></label></li>
+                                        ?>
+                                        <li><input type="checkbox" name="od_release_manager[]" id="od_release_manager_<?php echo $a_mb['mb_id']; ?>" value="<?php echo $a_mb['mb_id']; ?>" title="<?php echo $a_mb['mb_id']; ?>" placeholder="<?php echo $a_mb['mb_id']; ?>" <?php echo option_array_checked($a_mb['mb_id'], $od_release_manager); ?>><label for="od_release_manager_<?php echo $a_mb['mb_id']; ?>"><?php echo $a_mb['mb_name']; ?></label></li>
                                         <?php } ?>
                                     </ul>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    -->
                     <div class="linear">
                         <span class="linear_span">위탁</span>
                         <input type="radio" id="ct_is_direct_delivery_all" name="ct_is_direct_delivery" value="" <?php echo option_array_checked('', $ct_is_direct_delivery); ?>><label for="ct_is_direct_delivery_all"> 전체</label>
@@ -1632,7 +1644,7 @@ if( function_exists('pg_setting_check') ){
     <?php if($is_admin == 'super'){?>
     <input type="button" value="이카운트 엑셀다운로드" onclick="orderListExcelDownload('ecount')" class="btn" style="background: #6e9254; color: #fff;">
     <?php } ?>
-    <input type="button" value="위탁 엑셀다운로드" onclick="orderListExcelDownload('partner')" class="btn btn_03">
+    <input type="button" value="발주서 다운로드" onclick="orderListExcelDownload('partner')" class="btn btn_03">
     <input type="button" value="직배송 일괄전송" onclick="directDeliveryPopup(true)" class="btn btn_03">
 </div>
 
@@ -1660,6 +1672,7 @@ if( function_exists('pg_setting_check') ){
 <script>
     var excel_downloader = null;
     function orderListExcelDownload(type) {
+        
         var od_id = [];
         var item = $("input[name='od_id[]']:checked");
         for(var i = 0; i < item.length; i++) {
@@ -1709,6 +1722,7 @@ if( function_exists('pg_setting_check') ){
                 queryString += "&new_only=1";
         }
         else if (type === 'partner') {
+            if( !confirm("주문상품의 발주서를 다운로드합니다. (구매팀전용기능)") ) return;
             href = './order.partner.excel.php';
         }
 
@@ -1723,7 +1737,7 @@ if( function_exists('pg_setting_check') ){
                     $('#loading_excel').hide();
                     item.each(function() {
                         if($(this).closest('tr').find('td.od_direct_delivery span.excel_done').length === 0)
-                            $(this).closest('tr').find('td.od_direct_delivery').append('<br><span class="excel_done" style="color: #FF6600">엑셀 다운로드 완료</span>');
+                            $(this).closest('tr').find('td.od_direct_delivery').append('<br><span class="excel_done" style="color: #FF6600">발주완료</span>');
                     });
                 });
         } else if(type === 'ecount') {

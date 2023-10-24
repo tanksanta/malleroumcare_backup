@@ -3,54 +3,71 @@ $sub_menu = '400405';
 
 include_once("./_common.php");
 auth_check($auth[$sub_menu], "w");
-$ct_id = "'".str_replace(",","','",$_REQUEST["barcode_ct_id"])."'";
-$ct_id_count = count(explode(",",$_REQUEST["barcode_ct_id"]));
-$sql_common = "
-  FROM
-    {$g5['g5_shop_cart_table']} c
-  LEFT JOIN
-    {$g5['g5_shop_item_table']} i ON c.it_id = i.it_id
-  LEFT JOIN
-    {$g5['g5_shop_order_table']} o ON c.od_id = o.od_id
-  LEFT JOIN
-    {$g5['member_table']} m ON c.mb_id = m.mb_id
-  LEFT JOIN 
-    {$g5['member_table']} m2 ON c.ct_direct_delivery_partner = m2.mb_id
-  LEFT JOIN
-    partner_install_report pir ON c.od_id = pir.od_id
-  LEFT JOIN
-    g5_shop_order_cancel_request ocr ON c.od_id = ocr.od_id
-";
-$sql  = "
-  select *, o.od_id as od_id, c.ct_id as ct_id, c.mb_id as mb_id,m2.mb_name AS partner_name, (od_cart_coupon + od_coupon + od_send_coupon) as couponprice,
-  TIMEDIFF(it_deadline,DATE_FORMAT(NOW(), '%H:%i:%s')) AS time_dead, c.stoId AS c_stoId, c.it_id 
-  $sql_common
-  where c.ct_id in ($ct_id)
-  order by c.ct_id DESC
-";
-//echo $sql;
-$result = sql_query($sql);
 
+$ct_id = $_POST["barcode_ct_id"];
+$ct_id_count = count(explode(",",$_POST["barcode_ct_id"]));
+
+$sql_common = "
+  FROM	{$g5['g5_shop_cart_table']} c
+  LEFT JOIN	{$g5['g5_shop_item_table']} i ON c.it_id = i.it_id
+  LEFT JOIN	{$g5['g5_shop_order_table']} o ON c.od_id = o.od_id
+  -- LEFT JOIN	{$g5['member_table']} m ON c.mb_id = m.mb_id
+  -- LEFT JOIN	{$g5['member_table']} m2 ON c.ct_direct_delivery_partner = m2.mb_id
+  -- LEFT JOIN	partner_install_report pir ON c.od_id = pir.od_id
+  -- LEFT JOIN	g5_shop_order_cancel_request ocr ON c.od_id = ocr.od_id
+";
+$sql  = "	SELECT  
+				
+				c.ct_barcode_insert
+				,c.ct_qty
+				,c.stoId
+				,c.od_id
+				,c.ct_id
+				,c.mb_id
+				,c.ct_combine_ct_id
+				,c.ct_delivery_num
+				,c.ct_delivery_company
+				,c.ct_status
+				,c.it_name
+				,c.it_id
+				,c.ct_option
+				
+				,o.od_b_name				
+				,o.od_b_tel
+				,o.od_b_addr1
+				,o.od_b_addr2
+				,o.od_b_addr3
+
+				,i.ca_id
+
+			$sql_common
+
+			WHERE 
+				c.ct_id IN ($ct_id)
+			ORDER BY 
+				c.ct_id DESC
+";
+$result = sql_query($sql);
 
 ?>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>입고 현황</title>
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
-  <script src="/js/barcode_utils.js"></script>
-  <link type="text/css" rel="stylesheet" href="/thema/eroumcare/assets/css/font.css">
-  <link type="text/css" rel="stylesheet" href="/js/font-awesome/css/font-awesome.min.css">
-  <link rel="stylesheet" href="<?php echo G5_CSS_URL ?>/flex.css">
-  <link rel="stylesheet" href="/skin/admin/new/css/admin.css?ver=211222">
-<link rel="stylesheet" href="/skin/admin/new/css/admin.css">
-<link rel="stylesheet" href="/adm/css/samhwa_admin.css">
-<link rel="stylesheet" href="/css/apms.css">
-<link rel="stylesheet" href="/css/level/basic.css">
-<link rel="stylesheet" href="/thema/eroumcare/assets/css/samhwa.css">
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>입고 현황</title>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+	<script src="/js/barcode_utils.js"></script>
+	<link type="text/css" rel="stylesheet" href="/thema/eroumcare/assets/css/font.css">
+	<link type="text/css" rel="stylesheet" href="/js/font-awesome/css/font-awesome.min.css">
+	<link rel="stylesheet" href="<?php echo G5_CSS_URL ?>/flex.css">
+	<link rel="stylesheet" href="/skin/admin/new/css/admin.css?ver=211222">
+	<link rel="stylesheet" href="/skin/admin/new/css/admin.css">
+	<link rel="stylesheet" href="/adm/css/samhwa_admin.css">
+	<link rel="stylesheet" href="/css/apms.css">
+	<link rel="stylesheet" href="/css/level/basic.css">
+	<link rel="stylesheet" href="/thema/eroumcare/assets/css/samhwa.css">
 
   <style>
 
@@ -66,6 +83,11 @@ $result = sql_query($sql);
 	overflow-y:auto;overflow-x:hidden;
 	width:100%;	
  }
+
+ .insert_barcode_list {
+	position:absolute; top:0px; right:0px; width:100%; height:470px; background-color:#efefef; text-align:center; padding-top: 65%;
+ }
+
  .new_form3 {
     border: 1px solid #ddd;
     box-sizing: border-box;
@@ -129,105 +151,149 @@ li {
 </head>
 
 <body style="margin-bottom:15px;">
-<form method="post" action="">
-	<input type="hidden" name="ct_delivery_company" id="ct_delivery_company">
-	<input type="hidden" name="ct_delivery_num" id="ct_delivery_num">
-	<input type="hidden" name="ct_id" id="ct_id">
-</form>
-<!-- 고정 상단 -->
-<div style="padding: 10px 15px;">
-	<div class="" id="" class="" style="float:left;width:64%;height:350px;margin-right:1%;">
-		<span style="float:left;margin-left:5px;font-weight:bold;">주문 정보</span><span style="float:right;margin-right:5px;font-weight:bold;">총 <?=number_format($ct_id_count)?>건</span>
-		<div id="" class="new_form2">
-<?php $i = 0;
-	while ($row = sql_fetch_array($result)) { 
-		$stock_list = "";
-		$row['ct_barcode_insert'] = ($row['ct_barcode_insert'] == "" )? 0 :$row['ct_barcode_insert'];
-		if(substr($row["ca_id"],0,2) == "70"){
-			$barcode_qty = "비급여";
-		}else{
-			$barcode_qty = ($row['ct_barcode_insert']>=$row["ct_qty"])?$row['ct_barcode_insert']."/".$row["ct_qty"]:"<font color='red'>".$row['ct_barcode_insert']."/".$row["ct_qty"]."</font>";
-		}
-		$sto_imsi = $row['c_stoId'];
-		$stoIdDataList = explode(',',$sto_imsi);
-		$stoIdDataList = array_filter($stoIdDataList);
-		$stoIdData = implode("|", $stoIdDataList);
-		$res = api_post_call(EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP, array(
-		'stoId' => $stoIdData
-		));
-		$result_again = $res['data'];
-		if ($result_again && count($result_again)) {
-		  $j = 0 ;
-		  foreach ($result_again as $stock) {
-			$stock_list .= (($j != 0 && $stock['prodBarNum']!="")?",":"").$stock['prodBarNum'];
-			$j++;
-		  }
-		}
 
-		$stock_list = ($stock_list == "")?"우측 바코드 정보에 바코드를 등록 바랍니다.":$stock_list;
-		$ct_direct_delivery_partner_name = ($row['partner_name'] == "")?"미등록": $row['partner_name'];//파트너
-		
-		$sql = "SELECT ct_delivery_company FROM `g5_shop_order` o
-				LEFT JOIN g5_shop_cart c ON o.od_id = c.od_id
-				WHERE c.it_id = '".$row["it_id"]."' and c.ct_delivery_num != ''
-				ORDER BY o.od_time DESC
-				LIMIT 1";
-		$row22 = sql_fetch($sql);
-		$row["ct_delivery_company"] = ($row["ct_delivery_num"]=="")? $row22["ct_delivery_company"]:$row["ct_delivery_company"];
-		?>
+
+	<form method="post" action="">
+		<input type="hidden" name="ct_delivery_company" id="ct_delivery_company">
+		<input type="hidden" name="ct_delivery_num" id="ct_delivery_num">
+		<input type="hidden" name="ct_id" id="ct_id">
+	</form>
+
+
+	<!-- 고정 상단 -->
+	<div style="padding: 10px 15px;">
+		<div class="" id="" class="" style="float:left;width:64%;height:350px;margin-right:1%;">
+			<span style="float:left;margin-left:5px;font-weight:bold;">주문 정보</span><span style="float:right;margin-right:5px;font-weight:bold;">총 <?=number_format($ct_id_count)?>건</span>
+			<div id="" class="new_form2">
+
+			<?php 
+				$i = 0;
+				while ($row = sql_fetch_array($result)) { 
+
+					$row['ct_barcode_insert'] = ($row['ct_barcode_insert'] == "" )? 0 :$row['ct_barcode_insert'];
+					
+					$gubun = "";
+					if(substr($row["ca_id"],0,2) == "10") { $gubun = "급여상품(판매)"; }
+					elseif(substr($row["ca_id"],0,2) == "20") { $gubun = "급여상품(대여)"; }
+					elseif(substr($row["ca_id"],0,2) == "70") { $gubun = "비급여"; }
+					elseif(substr($row["ca_id"],0,2) == "80") { $gubun = "보장구"; }
+					else { $gubun = "기타"; }
+
+					if( substr($row["ca_id"],0,2) !== "70" ) {
+
+						if( $row['ct_barcode_insert'] >= $row["ct_qty"] ) {
+							$barcode_qty = $row['ct_barcode_insert']."/".$row["ct_qty"];
+						} else {
+							$barcode_qty = "<span class='red'>".$row['ct_barcode_insert']."/".$row["ct_qty"]."</span>";
+						}
+
+					} else {
+						$barcode_qty = $gubun."/".$row["ct_qty"];
+					}
+
+					$sto_imsi = $row['stoId'];
+					$stoIdDataList = explode(',',$sto_imsi);
+					$stoIdDataList = array_filter($stoIdDataList);
+					$stoIdData = implode("|", $stoIdDataList);
+					$res = api_post_call(EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP, array(
+						'stoId' => $stoIdData
+					));
+
+					$result_again = $res['data'];
+
+					
+					$stock_list = "";
+					$result_again = array_filter($result_again, function($_listData) {
+						return isset($_listData['prodBarNum']) && !empty($_listData['prodBarNum']);
+					});
+					$stock_list = ( implode( ',' , array_column($result_again,'prodBarNum') ) );
+
+
+					$stock_list = ($stock_list == "")?"우측 바코드 정보에 바코드를 등록 바랍니다.":$stock_list;
+					$ct_direct_delivery_partner_name = ($row['partner_name'] == "")?"미등록": $row['partner_name'];//파트너
+
+					$sql = ("	SELECT ct_delivery_company
+								FROM g5_shop_cart
+								WHERE it_id = '".$row["it_id"]."' 
+									AND ct_delivery_num IS NOT NULL 
+									AND ct_delivery_num <> ''
+								ORDER BY ct_id DESC
+								LIMIT 1
+					");
+					
+					$row_DC = sql_fetch($sql);
+					$row["ct_delivery_company"] = ($row["ct_delivery_num"]=="")? $row_DC["ct_delivery_company"]:$row["ct_delivery_company"];
+			?>
 			<div id="wrap<?=$i?>" class="new_form3">
 				<div class="parent" onclick="show_hide('<?=$i?>','<?=$ct_direct_delivery_partner_name?>')">
-				<ul >
-					<li class="parent">
-						<div class="" style="width:70%"><?=$row["it_name"].(($row["ct_option"] != $row["it_name"])?" [".$row["ct_option"]."]":"")?></div>
-						<div class="" style="width:20%">바코드/수량</div>
-						<div class="" style="width:10%"><span id="barcode_qty<?=$i?>"><?=$barcode_qty?></span>
-						<input type="hidden" id="gubun<?=$i?>" value="<?=$barcode_qty?>">
-						<input type="hidden" id="od_id<?=$i?>" value="<?=$row['od_id']?>">
-						<input type="hidden" id="ct_id<?=$i?>" value="<?=$row['ct_id']?>">
-						<input type="hidden" id="mb_id<?=$i?>" value="<?=$row['mb_id']?>">
-						<input type="hidden" id="ct_qty<?=$i?>" value="<?=$row['ct_qty']?>">
-						<input type="hidden" id="entId<?=$i?>" value="<?=get_ent_id_by_od_id($row['od_id'])?>">
-						<input type="hidden" id="stoId<?=$i?>" value='<?=$row['c_stoId']?>'>
-						<input type="hidden" id="ct_status<?=$i?>" value='<?=$row["ct_status"]?>'>
-						
-						</div>
-					</li>
-					<li class="parent">
-						<div class="" style="width:70%"><?=$row["od_b_name"];//수령인 ?></div>
-						<div class="" style="width:30%"><?=$row['od_b_tel'];//수령인 연락처 ?></div>
-					</li>
-					<li class="parent">
-						<div class="" style="width:70%"><?=$row["od_b_addr1"].(($row["od_b_addr2"]!="")?" ".$row["od_b_addr2"]:"").(($row["od_b_addr3"]!="")?" ".$row["od_b_addr3"]:"");//배송주소 ?></div>
-						<div class="" style="width:20%">송장번호 입력</div>
-						<div class="" id="delivery_num_yn_<?=$i?>" style="width:10%"><?=($row['ct_combine_ct_id']||$row['ct_delivery_num'])?"Y":"<font color='red'>N</font>";//배송정보 ?></div>
-					</li>
-					
-				</ul>
-				<input type="button" id="btn<?=$i?>" value="▼"  class="newbutton" style="color:#888888;margin-top:15px;margin-right:2px;">
+					<ul >
+						<li class="parent">
+							<div class="" style="width:70%"><?=$row["it_name"].(($row["ct_option"] != $row["it_name"])?" [".$row["ct_option"]."]":"")?></div>
+							<div class="" style="width:20%">바코드/수량</div>
+							<div class="" style="width:10%"><span id="barcode_qty<?=$i?>"><?=$barcode_qty?></span>
+								<input type="hidden" id="gubun<?=$i?>" value="<?=$gubun?>">
+								<input type="hidden" id="od_id<?=$i?>" value="<?=$row['od_id']?>">
+								<input type="hidden" id="ct_id<?=$i?>" value="<?=$row['ct_id']?>">
+								<input type="hidden" id="mb_id<?=$i?>" value="<?=$row['mb_id']?>">
+								<input type="hidden" id="ct_qty<?=$i?>" value="<?=$row['ct_qty']?>">
+								<input type="hidden" id="entId<?=$i?>" value="<?=get_ent_id_by_od_id($row['od_id'])?>">
+								<input type="hidden" id="stoId<?=$i?>" value='<?=$row['stoId']?>'>
+								<input type="hidden" id="ct_status<?=$i?>" value='<?=$row["ct_status"]?>'>
+
+							</div>
+						</li>
+
+						<li class="parent">
+							<div class="" style="width:70%"><?=$row["od_b_name"];//수령인 ?></div>
+							<div class="" style="width:30%"><?=$row['od_b_tel'];//수령인 연락처 ?></div>
+						</li>
+
+						<li class="parent">
+							<div class="" style="width:70%"><?=$row["od_b_addr1"].(($row["od_b_addr2"]!="")?" ".$row["od_b_addr2"]:"").(($row["od_b_addr3"]!="")?" ".$row["od_b_addr3"]:"");//배송주소 ?></div>
+							<div class="" style="width:20%">송장번호 입력</div>
+							<div class="" id="delivery_num_yn_<?=$i?>" style="width:10%"><?=($row['ct_combine_ct_id']||$row['ct_delivery_num'])?"Y":"<font color='red'>N</font>";//배송정보 ?></div>
+						</li>
+
+					</ul>
+
+					<input type="button" id="btn<?=$i?>" value="▼"  class="newbutton" style="color:#888888;margin-top:15px;margin-right:2px;">
 				</div>
+				
 				<div id="down_arear<?=$i?>" style="display:none;">
-				<ul >
-					<li><textarea name="barcode<?=$i?>" id="barcode<?=$i?>" rows="" cols="" class="frm_input" style="width:99%;min-height:50px;background-color:#efefef;line-height:14px;resize: none;" readonly><?=$stock_list?></textarea></li>
-					<li><select name="ct_delivery_company_<?=$i?>" id="ct_delivery_company_<?=$i?>" class="frm_input" style="width:28%;">
-              <?php foreach($delivery_companys as $data){ ?>
-              <option value="<?=$data["val"]?>" <?=($row["ct_delivery_company"] == $data["val"]) ? "selected" : ""?>><?=$data["name"]?></option>
-              <?php } ?>
-            </select> <input type="text" name="ct_delivery_num_<?=$i?>" id="ct_delivery_num_<?=$i?>" class="frm_input" style="width:50%;padding-left:5px;" value="<?=$row["ct_delivery_num"]?>" placeholder="송장번호 입력" onKeyup="this.value=this.value.replace(/[^-,/_0-9]/g,'');"> <input type="button" value="저장" onclick="save_delivery_info('<?=$row["ct_id"]?>','<?=$i?>')" class="btn" style=" background-color:#ff9900;color:#ffffff;font-weight:bold;height:26px;border-radius:3px;width:18.3%;cursor:pointer;"></li>
-				</ul>
+					<ul >
+						<li><textarea name="barcode<?=$i?>" id="barcode<?=$i?>" rows="" cols="" class="frm_input" style="width:99%;min-height:50px;background-color:#efefef;line-height:14px;resize: none;" readonly><?=$stock_list?></textarea></li>
+						<li>
+							<select name="ct_delivery_company_<?=$i?>" id="ct_delivery_company_<?=$i?>" class="frm_input" style="width:28%;">
+								<?php foreach($delivery_companys as $data){ ?><option value="<?=$data["val"]?>" <?=($row["ct_delivery_company"] == $data["val"]) ? "selected" : ""?>><?=$data["name"]?></option><?php } ?>
+							</select> 
+							<input type="text" name="ct_delivery_num_<?=$i?>" id="ct_delivery_num_<?=$i?>" class="frm_input" style="width:50%;padding-left:5px;" value="<?=$row["ct_delivery_num"]?>" placeholder="송장번호 입력" onKeyup="this.value=this.value.replace(/[^-,/_0-9]/g,'');"> <input type="button" value="저장" onclick="save_delivery_info('<?=$row["ct_id"]?>','<?=$i?>')" class="btn" style=" background-color:#ff9900;color:#ffffff;font-weight:bold;height:26px;border-radius:3px;width:18.3%;cursor:pointer;">
+						</li>
+					</ul>
 				</div>
+
 			</div>
-<?php $i++;}?>
-			
+
+			<?php 
+					$i++;
+				}
+			?>
+
 		</div>
 	</div>
+
+
+
 	<div class="" id="" class="" style="float:left;width:35%;height:400px;position:relative;">
 		<span style="float:left;margin-left:5px;font-weight:bold;">바코드 정보</span>
-		<div id="cover" class="new_form2" style="position:absolute;top:0px;right:0px;width:100%;height:470px;background-color:#efefef">
-			<div style="position:relative;left:-65px;width:150px;height:20px;margin-left:50%;margin-top:65%;">
-				주문 선택 시 활성화 됩니다.
-			</div>
+		
+		<div id="cover" class="new_form2 insert_barcode_list" style="z-index:10;">
+			주문 선택 시 활성화 됩니다.
 		</div>
+		
+		<div id="cover_caid70" class="new_form2 insert_barcode_list" style="z-index:1;">
+			비급여 상품은 바코드 입력불가
+		</div>
+
 		<div id="" class="new_form2">
 			<div id="partner_name" style="margin:10px;">
 				파트너명 : 
@@ -241,12 +307,12 @@ li {
 				</div>
 			</div>
 			<div class="new_form3 parent" style="margin-top:3px;height:41%;overflow-y:auto;overflow-x:hidden;padding:0px">
-				<div id="" class="new_form3" style="width:50px;text-align:center;margin:0px;height:139693px;">
-					<?php for($i=0;$i<10000;$i++){
-						echo (($i!=0)?"<br>":"").($i+1);
-				}?>
+				<div id="" class="new_form3 BarCode_listNum" style="width:50px; text-align:center; margin:0px;">
+					<?php 
+						//for( $i=0; $i<=10000; $i++ ){ echo (($i!=0)?"<br>":"").($i+1); }
+					?>
 				</div>
-				<textarea name="" rows="" cols="" name="barcode" id="barcode" style="padding:5px 5px;height:139682px;resize: none;" onClick="text_remove(this.value)"></textarea>
+				<textarea rows="" cols="" name="barcode" id="barcode" class="area_barcodelist" style="padding:5px 5px; resize:none; overflow-y:hidden;" onClick="text_remove(this.value)"></textarea>
 			</div>
 			<div id="" class="" style="margin-left:10px;">
 				<input type="button" value="오류검사" onclick="error_check();" class="btn" style=" background-color:#555555;color:#ffffff;font-weight:bold;height:26px;border-radius:3px;width:31.6%;cursor:pointer;">
@@ -291,6 +357,20 @@ li {
 </div>
 <div id="toast"></div>
 <script>
+
+	$( document ).on( "keyup", '.new_form2 .area_barcodelist', function() {
+		const lines = $(this).val().split('\n');
+		const max_line = $(".new_form2 #ct_qty").val();
+
+		//const truncatedText = lines.slice(0, maxLines).join('\n');
+		if( lines.length > max_line  ) {
+			alert("바코드는 수량("+max_line+") 만큼 입력 가능 합니다.");
+			const truncatedText = lines.slice(0, max_line).join('\n');
+			$(this).val(truncatedText);
+		}
+
+	});
+
 	function text_remove(a){
 		if(a.includes('엔터') == true){
 			$("#barcode").val("");
@@ -298,6 +378,7 @@ li {
 	}
 	var barcode_org = "";
 	function show_hide(n,p,c){
+
 		for(var i=0;i<<?=count(explode(",",$_REQUEST["barcode_ct_id"]))?>;i++ ){
 			if(i != n){
 				$("#wrap"+i).removeClass('wrap_bg');
@@ -305,7 +386,9 @@ li {
 				$("#btn"+i).val("▼");
 			}
 		}
+
 		if($("#btn"+n).val() == "▼"){
+
 			$("#btn"+n).val("▲");
 			$("#down_arear"+n).show();
 			$("#wrap"+n).addClass('wrap_bg');
@@ -315,27 +398,55 @@ li {
 			$("#od_entId").val($("#entId"+n).val());
 			$("#ct_qty").val($("#ct_qty"+n).val());
 			$("#ct_id").val($("#ct_id"+n).val());
-			$("#stoId").val($("#stoId"+n).val());
-			
+			$("#stoId").val($("#stoId"+n).val());			
 			$("#n").val(n);
+
 			if($("#barcode"+n).val() != "우측 바코드 정보에 바코드를 등록 바랍니다."){
-				if($("#gubun"+n).val() != "비급여"){					
+
+				if($("#gubun"+n).val() != "비급여") {
 					$("#barcode").val($("#barcode"+n).val().replace(/,/g,'\n'));
+
+					let listNumTxt = "";
+					let listHeight = 0;
+					for (let listNum = 1; listNum <= $("#ct_qty"+n).val(); listNum++) {
+						listNumTxt = listNumTxt + listNum + "<br/>";
+						if( listNum > 13 ) listHeight += 14;
+					}
+					$(".BarCode_listNum").html(listNumTxt);
+					$(".BarCode_listNum").height( $(".BarCode_listNum").height() + listHeight );
+					$(".area_barcodelist").height( $(".area_barcodelist").height() + listHeight );
+
 					$("#barcode").attr("disabled",false);
 					var bar_arr = $("#barcode").val().split("\n");
 					$("#total_count").text(bar_arr.length);
+					$("#cover_caid70").css("display","none");
 				}else{
 					$("#total_count").text("0");
 					$("#barcode").val("비급여 상품은 바코드 입력불가");
 					$("#barcode").attr("disabled",true);
+					$("#cover_caid70").css("display","block");
 				}
+
 			}else{
 				if($("#gubun"+n).val() != "비급여"){
 					var txt = '“엔터”로구분하여12자리숫자입력\n연속되는숫자사이에“-”, “~”입력(예시)\n123456789100\n123456789110\n123456789012-19,30,40';
 					$("#barcode").attr("disabled",false);
+					$("#cover_caid70").css("display","none");
+
+					let listNumTxt = "";
+					let listHeight = 0;
+					for (let listNum = 1; listNum <= $("#ct_qty"+n).val(); listNum++) {
+						listNumTxt = listNumTxt + listNum + "<br/>";
+						if( listNum > 13 ) listHeight += 14;
+					}
+					$(".BarCode_listNum").html(listNumTxt);
+					$(".BarCode_listNum").height( $(".BarCode_listNum").height() + listHeight );					
+					$(".area_barcodelist").height( $(".area_barcodelist").height() + listHeight );
+
 				}else{
 					var txt = '비급여 상품은 바코드 입력불가';
-					$("#barcode").attr("disabled",true);
+					$("#barcode").attr("disabled",true);					
+					$("#cover_caid70").css("display","block");
 				}
 				$("#barcode").val(txt);
 				$("#total_count").text("0");
@@ -347,27 +458,19 @@ li {
 			barcode_org = txt;
 			$("#cover").css("display","none");
 		}else{
+
 			$("#cover").css("display","block");
 			$("#wrap"+n).removeClass('wrap_bg');
 			$("#down_arear"+n).hide();
 			$("#btn"+n).val("▼");
 			$("#partner_name").text("파트너명 : ");
-			$("#barcode").val("");
-			$("#ct_qty").val("");
-			$("#ct_id").val("");
-			$("#stoId").val("");
-			$("#od_id").val("");
-			$("#od_mb_id").val("");
-			$("#od_entId").val("");	
+			$("#barcode, #ct_qty, #ct_id, #stoId, #od_id, #od_mb_id, #od_entId, #n").val("");			
 			$("#total_count").text("0");
-			$("#n").val("");
 		}
-		$("#error_chk").val("");
-		$("#error_list").val("");
-		$("#stock_list").val("");		
-		$("#count1").text("0");
-		$("#count2").text("0");
-		$("#count3").text("0");
+
+		$("#error_chk, #error_list, #stock_list").val("");		
+		$("#count1, #count2, #count3").text("0");
+
 	}
 	function partner_id_send(partner_id){
 		parent.partner_id(partner_id); 
@@ -404,6 +507,13 @@ li {
 							$("#ct_delivery_company_"+j).val($("#ct_delivery_company").val());
 						}
 					}*/
+
+					if( $("#ct_delivery_num_"+i).val() != "" ) {
+						window.parent.$(".Delivery"+c).html("입력완료").removeClass('red');
+					} else {						
+						window.parent.$(".Delivery"+c).html("미입력").addClass('red');
+					}
+					
 				}else{
 					toast('배송정보 저장에 실패 했습니다.\n다시 시도해 주세요.');
 					//alert("배송정보 저장에 실패 했습니다.\n다시 시도해 주세요.");
@@ -795,16 +905,19 @@ li {
 			if($("#barcode").val() != ""){
 				if($("#ct_qty").val() == barcode_arr2.length){//수량과 바코드 수와 같으면
 					$("#barcode_qty"+$("#n").val()).html(barcode_arr2.length+"/"+$("#ct_qty").val());
+					window.parent.$(".BarcodeCnt"+ct_id).html(barcode_arr2.length + "/" + $("#ct_qty").val()).removeClass('red');
 				}else{//다르면
-					$("#barcode_qty"+$("#n").val()).html("<font color='red'>"+barcode_arr2.length+"/"+$("#ct_qty").val()+"</font>");
+					$("#barcode_qty"+$("#n").val()).html("<font color='red'>"+barcode_arr2.length+"/"+$("#ct_qty").val()+"</font>");					
+					window.parent.$(".BarcodeCnt"+ct_id).html(barcode_arr2.length + "/" + $("#ct_qty").val()).addClass('red');
 				}
 				$("#barcode"+$("#n").val()).val($("#barcode").val().replace(/\n/g,','));
 			}else{
 				$("#barcode_qty"+$("#n").val()).html("<font color='red'>0/"+$("#ct_qty").val()+"</font>");
+				window.parent.$(".BarcodeCnt"+ct_id).html("0/" + $("#ct_qty").val()).addClass('red');
 				$("#barcode"+$("#n").val()).val("우측 바코드 정보에 바코드를 등록 바랍니다.");
 			}
 			stock_check();
-			toast('등록 되었습니다.');         
+			toast('등록 되었습니다.');
           }
         },
         error: function() {
