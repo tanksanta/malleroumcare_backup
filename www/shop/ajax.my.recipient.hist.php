@@ -151,6 +151,7 @@ for($i = 0; $i < sizeof($list_hist); $i++){
 	$insert_list[$i]['PROD_BAR_NUM'] = $list_hist[$i]['BCD_NO'];
 	$insert_list[$i]['ITEM_NM'] = $list_hist[$i]['WIM_ITM_CD_NM'];
 	$insert_list[$i]['PROD_NM'] = $list_hist[$i]['PRDCT_NM'];
+	$insert_list[$i]['PROC_CD'] = $list_hist[$i]['WIM_CD'];
 	$insert_list[$i]['ORD_STATUS'] = $list_hist[$i]['WEL_PAY_STL_NM'];
 	$insert_list[$i]['ORD_DTM'] = $list_hist[$i]['POF_FR_DT'];
 	$insert_list[$i]['ORD_STR_DTM'] = $list_hist[$i]['POF_FR_DT']?:$list_hist[$i]['CTR_FR_DT'];
@@ -204,21 +205,27 @@ ITEM_NM, PROD_NM, ORD_STATUS, ORD_DTM, ORD_STR_DTM, ORD_END_DTM,
 TOTAL_PRICE, MONTH_PRICE, REG_USR_ID, REG_USR_IP,
 MODIFY_USR_ID, MODIFY_USR_IP, PEN_BUDGET, SYNC_GOVERN) VALUES ";
 */
-$query = "SHOW COLUMNS FROM pen_purchase_hist WHERE `Field` = 'CNCL_YN';";//업데이트멤버 없을 시 추가
+$query = "SHOW COLUMNS FROM pen_purchase_hist WHERE `Field` = 'CNCL_YN';";//계약상태 없을 시 추가
 	$wzres = sql_fetch( $query );
 	if(!$wzres['Field']) {
 		sql_query("ALTER TABLE `pen_purchase_hist`
 		ADD `CNCL_YN` varchar(10) NULL DEFAULT '정상' COMMENT '계약상태' AFTER PEN_BUDGET", true);
 	}
+$query = "SHOW COLUMNS FROM pen_purchase_hist WHERE `Field` = 'PROC_CD';";//품목코드 없을 시 추가
+	$wzres = sql_fetch( $query );
+	if(!$wzres['Field']) {
+		sql_query("ALTER TABLE `pen_purchase_hist`
+		ADD PROC_CD varchar(30) NULL DEFAULT null COMMENT '품목코드' AFTER PROD_NM", true);
+	}
 
-$sql = "INSERT INTO pen_purchase_hist (PEN_EXPI_ST_DTM, PEN_EXPI_ED_DTM, PEN_BUDGET, PAST_YM, ENT_ID, PEN_NM, PEN_LTM_NUM, PEN_REC_GRA_NM, PEN_TYPE_NM, PEN_TYPE_CD, PROD_PAY_CODE, PROD_BAR_NUM, ITEM_NM, PROD_NM, ORD_STATUS, ORD_DTM, ORD_STR_DTM, ORD_END_DTM, TOTAL_PRICE, MONTH_PRICE, REG_USR_ID, REG_USR_IP, MODIFY_USR_ID, MODIFY_USR_IP, SYNC_GOVERN,CNCL_YN) VALUES ";
+$sql = "INSERT INTO pen_purchase_hist (PEN_EXPI_ST_DTM, PEN_EXPI_ED_DTM, PEN_BUDGET, PAST_YM, ENT_ID, PEN_NM, PEN_LTM_NUM, PEN_REC_GRA_NM, PEN_TYPE_NM, PEN_TYPE_CD, PROD_PAY_CODE, PROD_BAR_NUM, ITEM_NM, PROD_NM, PROC_CD, ORD_STATUS, ORD_DTM, ORD_STR_DTM, ORD_END_DTM, TOTAL_PRICE, MONTH_PRICE, REG_USR_ID, REG_USR_IP, MODIFY_USR_ID, MODIFY_USR_IP, SYNC_GOVERN,CNCL_YN) VALUES ";
 
 for($idx = 0; $idx < sizeof($insert_list); $idx++){
 	$sql = $sql."('".$insert_list[$idx]['PEN_EXPI_ST_DTM']."','".$insert_list[$idx]['PEN_EXPI_ED_DTM']."','"
 	.$insert_list[$idx]['PEN_BUDGET']."','".$insert_list[$idx]['PAST_YM']."','".$insert_list[$idx]['ENT_ID']."','"
 	.$insert_list[$idx]['PEN_NM']."','".$insert_list[$idx]['PEN_LTM_NUM']."','".$insert_list[$idx]['PEN_REC_GRA_NM']."','"
 	.$insert_list[$idx]['PEN_TYPE_NM']."','".$insert_list[$idx]['PEN_TYPE_CD']."','".$insert_list[$idx]['PROD_PAY_CODE']."','".$insert_list[$idx]['PROD_BAR_NUM']."','"
-	.$insert_list[$idx]['ITEM_NM']."','".$insert_list[$idx]['PROD_NM']."','".$insert_list[$idx]['ORD_STATUS']."','"
+	.$insert_list[$idx]['ITEM_NM']."','".$insert_list[$idx]['PROD_NM']."','".$insert_list[$idx]['PROC_CD']."','".$insert_list[$idx]['ORD_STATUS']."','"
 	.$insert_list[$idx]['ORD_DTM']."','".$insert_list[$idx]['ORD_STR_DTM']."','".$insert_list[$idx]['ORD_END_DTM']."','"
 	.$insert_list[$idx]['TOTAL_PRICE']."','".$insert_list[$idx]['MONTH_PRICE']."','".$insert_list[$idx]['REG_USR_ID']."','"
 	.$insert_list[$idx]['REG_USR_IP']."','".$insert_list[$idx]['MODIFY_USR_ID']."','".$insert_list[$idx]['MODIFY_USR_IP']."','"
