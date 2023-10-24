@@ -466,7 +466,7 @@ if($od["od_b_tel"]) {
           </div>
 
           <?php if ($gubun != '02') { ?>
-          <div class="folding_box id_<?php echo $options[$k]['ct_id']; ?>" data-id="<?php echo $options[$k]['ct_id']; ?>">
+          <div class="folding_box id_<?php echo $options[$k]['ct_id']; ?>" data-id="<?php echo $options[$k]['ct_id']; ?>" data-ct-status="<?=$options[$k]['ct_status']; ?>">
             <?php if ($options[$k]["ct_qty"] >= 2) { ?>
             <div class="span">
               
@@ -806,8 +806,12 @@ if($od["od_b_tel"]) {
         }
 
         var ct_id = $(this).data('id');
-        validateBarcodeBulk(ct_id);
-        checkApprovedBarcodeBulk(ct_id);
+        var ct_status= $(this).data('ct-status');
+        if ((ct_status !== '배송' && ct_status !== '완료')) {
+          validateBarcodeBulk(ct_id);
+          checkApprovedBarcodeBulk(ct_id);
+        }
+        
       });
     }
 
