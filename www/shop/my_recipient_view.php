@@ -1320,7 +1320,7 @@ function rent_item_list(c_month){
 }
 
 function downloadExcel(mode,rh_id1=false) {
-    var href = './rental_item_efrom.excel.download.php';
+    var href = './rental_item_eform.excel.download.php';
 	if(rh_id1 != false){
 		$("#rh_id").val(rh_id1);
 	}
