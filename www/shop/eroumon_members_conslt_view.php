@@ -110,6 +110,41 @@
                 $sql = (" CALL `PROC_EROUMCARE_CONSLT_UPDATE`('BPLC', {$_MC_cON}, {$_MCR_cON}, '{$_MCR_STTUS_CD}', '{$_MCR_TEXT}', '{$_MCR_ID}'); ");
                 $sql_result = "";
                 $sql_result = sql_fetch( $sql , "" , $g5['eroumon_db'] ); mysqli_next_result($g5['eroumon_db']);
+//======================CS04:상담거절, CS06:상담완료 시 알림톡 발송===============================================================================================
+				if($_MCR_STTUS_CD == "CS04" || $_MCR_STTUS_CD == "CS06"){
+					if($_MCR_STTUS_CD == "CS06"){//상담완료 시 알림톡
+						$alimtalk_contents = $sql_result['MBR_NM']."님, 상담이 완료되었습니다.\n상담한 장기요양기관이 마음에 드실 경우 이로움ON에서 상담기관 추천하기 및 관심설정이 가능합니다.\n\n다른 장기요양기관과의 재상담을 원하실 경우\n\n상담 내역 관리에서 재상담 신청이 가능한 점 참고 부탁드립니다.";
+						$result2 = send_alim_talk2('CONSLT_REQUEST_'.$sql_result['MBR_TELNO'], $sql_result['MBR_TELNO'], 'ON_00001', $alimtalk_contents, array(
+							'button' => [
+							  array(
+								'name' => '◼︎ 상담내역 바로가기',
+								'type' => 'WL',
+								'url_mobile' => 'https://eroum.co.kr/membership/conslt/appl/list',
+								'url_pc' => 'https://eroum.co.kr/membership/conslt/appl/list'
+							  )
+							]
+						  ),'','1:1상담 진행 완료','2');//내용은 템플릿과 동일 해야 함 
+					}else{//상담거절 시 알림톡
+						$alimtalk_contents = $sql_result['MBR_NM']."님, 요청하신 1:1 상담이 취소되었습니다.\n\n◼︎ 상담 취소일 : ".date("Y-m-d")."\n\n상담을 원하시는 경우 이로움ON에서 다시 상담을 요청해 주세요.";
+						$result2 = send_alim_talk2('CONSLT_CANCEL_'.$sql_result['MBR_TELNO'], $sql_result['MBR_TELNO'], 'ON_00002', $alimtalk_contents, array(
+							'button' => [
+							  array(
+								'name' => '◼︎ 요양정보 간편조회',
+								'type' => 'WL',
+								'url_mobile' => 'https://eroum.co.kr/main/recipter/list',
+								'url_pc' => 'https://eroum.co.kr/main/recipter/list'
+							  ),
+							  array(
+								'name' => '◼︎ 인정 등급 예상 테스트',
+								'type' => 'WL',
+								'url_mobile' => 'https://eroum.co.kr/main/cntnts/test',
+								'url_pc' => 'https://eroum.co.kr/main/cntnts/test'
+							  )
+							]
+						  ),'','상담 취소 안내','2');//내용은 템플릿과 동일 해야 함 
+					}
+				}
+//======================CS04:상담거절, CS06:상담완료 시 알림톡 발송===============================================================================================
             }
         }
     }

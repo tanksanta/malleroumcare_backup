@@ -372,8 +372,8 @@ insert_statistics("LOGIN", $member['mb_id'], $member['mb_level'], "로그인", $
 if(is_array($mb2) && $mb2["mb_type"] == "default" && $auto_login){
 	set_cookie('ck_mb_id', '', 0);
 	set_cookie('ck_auto', '', 0);
-	alert('직원 계정은 자동로그인이 적용되지 않습니다.', G5_URL);
+	alert('직원 계정은 자동로그인이 적용되지 않습니다.', G5_URL.$_POST['go_page']);
 	exit;
 }
-goto_url(G5_URL);
+goto_url(G5_URL.$_POST['go_page']);
 ?>

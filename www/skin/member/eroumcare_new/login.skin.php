@@ -25,6 +25,11 @@ if($header_skin)
                 <div class="joinWrap">
                     <!-- 입력 폼 -->
                     <form action="#" method="get">
+					<?php if(strpos($_SERVER["HTTP_REFERER"],"eroumcare.com/") !== false){
+						
+						?>
+						<input type="hidden" name="go_page" value="<?=explode("eroumcare.com",$_SERVER["HTTP_REFERER"])[1]?>">
+					<?php }?>
                         <fieldset>
                             <legend class="blind">아이디/비밀번호</legend>
                             <p class="field table-box">

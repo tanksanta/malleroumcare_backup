@@ -2127,11 +2127,18 @@ function get_biztalk_token() {
 
 // 비즈톡 알림톡 전송
 function send_alim_talk($msgIdx, $recipient, $tmpltCode, $message, $attach = null, $token = null) {
-  if(!$token)
-    $token = get_biztalk_token();
+  if(!$token && ($_SESSION["biztalk_token"] == "" || time()>$_SESSION["token_time"])){
+		$_SESSION["biztalk_token"] = $token = get_biztalk_token();
+		$_SESSION["token_time"] = strtotime("+1 days");
+	  }elseif($_SESSION["biztalk_token"] != "" && time()<$_SESSION["token_time"]){
+		$token = $_SESSION["biztalk_token"];
+	  }
 
   if(!$token) return null;
-
+	
+  if(strpos($_SERVER['HTTP_HOST'],".eroumcare")){
+	$recipient = "";//테스트서버에서는 테스트 폰으로만 알림톡 전송
+  }
   $data = array(
     'msgIdx' => $msgIdx,
     'countryCode' => '82',
@@ -2143,6 +2150,43 @@ function send_alim_talk($msgIdx, $recipient, $tmpltCode, $message, $attach = nul
   );
 
   if($attach) $data['attach'] = $attach;
+
+  $result = biztalk_api_call('/v2/kko/sendAlimTalk', $data, $token);
+
+  return $result;
+}
+
+// 비즈톡 알림톡 전송2(타이틀 강조, @이로움on 선택 발송 가능 
+function send_alim_talk2($msgIdx, $recipient, $tmpltCode, $message, $attach = null, $token = null, $title = null, $sender_key = null) {
+  if(!$token && ($_SESSION["biztalk_token"] == "" || time()>$_SESSION["token_time"])){
+		$_SESSION["biztalk_token"] = $token = get_biztalk_token();
+		$_SESSION["token_time"] = strtotime("+1 days");
+	  }elseif($_SESSION["biztalk_token"] != "" && time()<$_SESSION["token_time"]){
+		$token = $_SESSION["biztalk_token"];
+	  }
+
+  if(!$token) return null;
+
+  if(!$sender_key){
+	$sender_key = BIZTALK_API_SENDER_KEY;
+  }else{
+	$sender_key = BIZTALK_API_SENDER_KEY2;//@이로움on 선택
+  }
+  if(strpos($_SERVER['HTTP_HOST'],".eroumcare")){
+	$recipient = "";//테스트서버에서는 테스트 폰으로만 알림톡 전송
+  }
+  $data = array(
+    'msgIdx' => $msgIdx,
+    'countryCode' => '82',
+    'recipient' => $recipient,
+    'senderKey' => $sender_key,
+    'resMethod' => 'PUSH',
+    'tmpltCode' => $tmpltCode,
+    'message' => $message
+  );
+
+  if($attach) $data['attach'] = $attach;
+  if($title) $data['title'] = $title;
 
   $result = biztalk_api_call('/v2/kko/sendAlimTalk', $data, $token);
 
