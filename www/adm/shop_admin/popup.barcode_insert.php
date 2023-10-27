@@ -306,13 +306,16 @@ li {
 					<button type="button" onClick="copy_text('barcode');" class="btn" style="border-radius:3px;width:25px;padding:0px 3px;"><img src="/img/copy.png" width="14" border="0" title="바코드 복사" ></button>&nbsp;<button type="button" onClick="barcode_del();" class="btn" style="border-radius:3px;width:25px;padding:0px 3px;" id="del_btn"><img src="/img/trash.png" width="20"border="0" title="바코드 삭제"></button>
 				</div>
 			</div>
-			<div class="new_form3 parent" style="margin-top:3px;height:41%;overflow-y:auto;overflow-x:hidden;padding:0px">
+			<div class="new_form3 parent" style="margin-top:3px;height:39%;overflow-y:auto;overflow-x:hidden;padding:0px">
 				<div id="" class="new_form3 BarCode_listNum" style="width:50px; text-align:center; margin:0px;">
 					<?php 
 						//for( $i=0; $i<=10000; $i++ ){ echo (($i!=0)?"<br>":"").($i+1); }
 					?>
 				</div>
 				<textarea rows="" cols="" name="barcode" id="barcode" class="area_barcodelist" style="padding:5px 5px; resize:none; overflow-y:hidden;" onClick="text_remove(this.value)"></textarea>
+			</div>
+			<div id="error_text" class="" style="height:4%;margin:-8px 0px 0px 10px;color:red;">
+				
 			</div>
 			<div id="" class="" style="margin-left:10px;">
 				<input type="button" value="오류검사" onclick="error_check();" class="btn" style=" background-color:#555555;color:#ffffff;font-weight:bold;height:26px;border-radius:3px;width:31.6%;cursor:pointer;">
@@ -364,7 +367,8 @@ li {
 
 		//const truncatedText = lines.slice(0, maxLines).join('\n');
 		if( lines.length > max_line  ) {
-			alert("바코드는 수량("+max_line+") 만큼 입력 가능 합니다.");
+			//alert("바코드는 수량("+max_line+") 만큼 입력 가능 합니다.");
+			$("#error_text").html("바코드는 수량("+max_line+") 만큼 입력 가능 합니다.");
 			const truncatedText = lines.slice(0, max_line).join('\n');
 			$(this).val(truncatedText);
 		}
@@ -560,6 +564,7 @@ li {
 	}
 	
 	function error_check(){//오류검사
+		$("#error_text").html("");
 		if(barcode_disabled()==false){
 			return false;
 		}
