@@ -99,7 +99,7 @@
         <tr class="tr-content">
           <td colspan="2"><?=$item['ca_name']?></td>
           <td><?=$item['it_code']?></td>
-          <td class="center">V(<?=$item['it_qty']?>)</td>
+          <td class="center">V</td>
           <td class="center">&nbsp;</td>
           <td colspan="2" class="center"><?=$item['it_date']?> (판매일)</td>
           <td class="right"><?=number_format($item['it_price'])?></td>
@@ -118,7 +118,7 @@
           <td colspan="2"><?=$item['ca_name']?></td>
           <td><?=$item['it_code']?></td>
           <td class="center">&nbsp;</td>
-          <td class="center">V(<?=$item['it_qty']?>)</td>
+          <td class="center">V</td>
           <td colspan="2" class="center"><?=$item['it_date']?></td>
           <td class="right"><?=number_format($item['it_price'])?></td>
           <td colspan="2"><?=$eform['entNm']?></td>
