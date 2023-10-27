@@ -254,7 +254,7 @@
 
 
                 <!-- 06.안전손잡이 -->
-                <div class="banner01_BarWrap" onclick="location.href='<?=G5_BBS_URL;?>/board.php?bo_table=faq&wr_id=6'">
+                <div class="banner01_BarWrap" onclick="location.href='<?=G5_BBS_URL;?>/board.php?bo_table=faq&wr_id=52'">
                     <div class="banner01_img">
                         <img src="<?=G5_IMG_URL;?>/new_main_eroum/thkc_img_safe.png" alt="안전손잡이">
                     </div>
