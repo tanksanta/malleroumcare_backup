@@ -72,7 +72,7 @@
             ));
 
             if(!$result || $result['errorYN'] != 'N')
-                alert('비밀번호가 틀립니다.');
+                alert('비밀번호가 틀립니다.', G5_BBS_URL."/member_confirm.php?url=member_info_newform.php");
         }
     }
 

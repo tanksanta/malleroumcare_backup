@@ -109,6 +109,10 @@ $mb_partner_auth_n         = !$mb['mb_partner_auth']       ? 'checked="checked"'
 $mb_order_approve_y        =  $mb['mb_order_approve'] == 1       ? 'checked="checked"' : '';
 $mb_order_approve_n         = $mb['mb_order_approve'] == 0       ? 'checked="checked"' : '';
 
+// 1:1매칭 서비스 동의 여부(해당 값이 Y일 경우 메뉴가 활성화됨.)
+$mb_giup_matching_y        =  $mb['mb_giup_matching'] == 'Y'    ? 'checked="checked"' : '';
+$mb_giup_matching_n         = $mb['mb_giup_matching'] != 'Y'    ? 'checked="checked"' : '';
+
 // 딜러 여부
 $mb_dealer_y        =  $mb['mb_dealer']       ? 'checked="checked"' : '';
 $mb_dealer_n         = !$mb['mb_dealer']       ? 'checked="checked"' : '';
@@ -518,7 +522,32 @@ label {
             <input type="text" name="mb_thezone" value="<?php echo $mb['mb_thezone'] ?>" id="mb_thezone" class="frm_input" size="30" maxlength="50" placeholder="<?php echo $mb_thezone_placeholder ?>">
         </td>
     </tr>
-    
+
+    <?php if($w){ ?>
+    <tr>
+        <th scope="row">공인인증서</th>
+        <td colspan="3">
+            <?php if($mb["cert_reg_sts"] == "Y") { 	$cert_data_ref =  explode("|",$mb["cert_data_ref"]); ?>
+            <div>공인인증서 등록</div>
+            <div class="thkc_cont_txt">* 등록(변경)일 : <?=$mb["cert_reg_date"]?></div>            
+            <div class="thkc_cont_txt">* 인증서 만료일 : <?=base64_decode($cert_data_ref[2]);?></div>
+            <?php } else { ?>
+            <div>공인인증서 미등록</div>
+            <?php } ?>
+        </td>
+    </tr>    
+    <?php } ?>
+
+    <tr>
+        <th scope="row">장기요양 매칭상담 서비스</th>
+        <td colspan="3">
+            <input type="radio" name="mb_giup_matching" value="Y" id="mb_giup_matching_yes" <?php echo $mb_giup_matching_y; ?>>
+            <label for="mb_giup_matching_yes">신청</label>
+            <input type="radio" name="mb_giup_matching" value="N" id="mb_giup_matching_no" <?php echo $mb_giup_matching_n; ?>>
+            <label for="mb_giup_matching_no">미신청</label>
+        </td>
+    </tr>
+
     <tr>
         <th scope="row">딜러 여부</th>
         <td colspan="3">

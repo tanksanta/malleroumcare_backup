@@ -169,6 +169,7 @@ if ($w == '') {
 $mb_partner_date_pay_date = isset($_POST['mb_partner_date_pay_date'])             ? trim($_POST['mb_partner_date_pay_date'])           : "";
 
 $_POST['mb_order_approve'] = isset($_POST['mb_order_approve']) ? (int)$_POST['mb_order_approve'] : 1;
+$_POST['mb_giup_matching'] = $_POST['mb_giup_matching'] ? $_POST['mb_giup_matching'] : 'N';
 $_POST['mb_dealer'] = $_POST['mb_dealer'] ? (int)$_POST['mb_dealer'] : 0;
 
 if ($msg = valid_mb_nick($mb_nick))     alert($msg, "", true, true);
@@ -243,6 +244,7 @@ $sql_common = "  mb_name = '{$_POST['mb_name']}',
                  mb_giup_tax_email = '{$mb_giup_tax_email}',
                  mb_giup_manager_name = '{$mb_giup_manager_name}',
                  mb_giup_manager_tel = '{$mb_giup_manager_tel}',
+                 mb_giup_matching = '{$_POST['mb_giup_matching']}',
                  mb_partner_type = '{$mb_partner_type_text}',
                  mb_partner_auth = '{$_POST['mb_partner_auth']}',
                  mb_partner_date = '{$_POST['mb_partner_date']}',
@@ -644,7 +646,8 @@ if( $w == '' || $w == 'u' ){
                     mb_giup_zip2 = '{$resInfo["entZip02"]}',
                     mb_giup_addr1 = '{$resInfo["entAddr"]}',
                     mb_giup_addr2 = '{$resInfo["entAddrDetail"]}',
-                    mb_giup_boss_name = '{$resInfo["entCeoNm"]}',
+                    mb_giup_boss_name = '{$resInfo["entCeoNm"]}',                    
+                    mb_giup_matching = '{$resInfo["mb_giup_matching"]}',
                     mb_email = '{$resInfo["usrMail"]}',
                     mb_fax = '{$resInfo["entFax"]}',
                     mb_authCd = '{$resInfo["authCd"]}',

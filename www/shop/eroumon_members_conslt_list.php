@@ -8,9 +8,9 @@
     /* // = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
     /* //  *  */
     /* //  *  */
-    /* //  * (주)티에이치케이컴퍼 & 이로움 - [ THKcompany & E-Roum ] */
+    /* //  * (주)티에이치케이컴퍼 & 이로움Care & 이로움ON - [ THKcompany & EroumCare & EroumON ] */
     /* //  *  */
-    /* //  * Program Name : EROUMCARE Platform! = EroumON_Order Ver:0.1 */
+    /* //  * Program Name : EROUMCARE Platform! & EroumON 1:1 Matching Service Ver:1.0 */
     /* //  * Homepage : https://eroumcare.com , Tel : 02-830-1301 , Fax : 02-830-1308 , Technical contact : dev@thkc.co.kr */
     /* //  * Copyright (c) 2023 THKC Co,Ltd.  All rights reserved. */
     /* //  *  */
@@ -52,7 +52,31 @@
         </code>
 
     */
-    
+
+    /*
+    		// 이로움ON 상태값 == == == == == == == == == == == == == == == == == ==
+            MC_ST = CS01 : 접수
+			MC_ST = CS02 : 배정
+			MC_ST = CS03 : 상담자 취소
+			MC_ST = CS04 : 사업소 취소
+			MC_ST = CS05 : 진행
+			MC_ST = CS06 : 완료
+			MC_ST = CS07 : 재접수
+			MC_ST = CS08 : 재배정
+			MC_ST = CS09 : THKC 취소
+            
+            // 이로움Care 상태값 == == == == == == == == == == == == == == == == == ==
+            MCR_ST = CS01 : 상담 신청 접수
+            MCR_ST = CS02 : 상담 신청 접수
+            MCR_ST = CS03 : 상담 취소(고객)
+            MCR_ST = CS04 : 상담 취소(사업소)
+            MCR_ST = CS05 : 상담 진행 중
+            MCR_ST = CS06 : 상담 완료
+            MCR_ST = CS07 : 상담 신청 접수
+            MCR_ST = CS08 : 상담 신청 접수
+            MCR_ST = CS09 : 상담 취소(THKC)
+    */
+
     /* // == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == */
 
     include_once('./_common.php');
@@ -63,7 +87,7 @@
     @include_once(G5_LIB_PATH.'/apms.thema.lib.php');
     @include_once($order_skin_path.'/config.skin.php');
 
-    $g5['title'] = '고객상담 신청관리';
+    $g5['title'] = '수급자 상담관리';
 
     include_once('./_head.php');
  
@@ -89,10 +113,10 @@
         $search = clean_xss_attributes( clean_xss_tags( get_search_string( $_POST['search'] ) ) );
 
         // 상태값 선택에 따른 SQL 쿼리문.
-        if( $srchConsltSttus=="CS02" ) $_Search = "AND (MCR.CONSLT_STTUS=''CS02'')";
-        else if( $srchConsltSttus=="CS05" ) $_Search = "AND (MCR.CONSLT_STTUS=''CS05'')";
-        else if( $srchConsltSttus=="CANCEL" ) $_Search = "AND ((MCR.CONSLT_STTUS=''CS03'') OR (MCR.CONSLT_STTUS=''CS04'') OR (MCR.CONSLT_STTUS=''CS09''))";
-        else if( $srchConsltSttus=="CS06" ) $_Search = "AND (MCR.CONSLT_STTUS=''CS06'')";
+        if( $srchConsltSttus=="CS02" ) $_Search = "AND ((MCR.CONSLT_STTUS=''CS02'') OR (MCR.CONSLT_STTUS=''CS08''))";                                           // 상담 접수 중
+        else if( $srchConsltSttus=="CS05" ) $_Search = "AND (MCR.CONSLT_STTUS=''CS05'')";                                                                       // 상담 진행 중
+        else if( $srchConsltSttus=="CANCEL" ) $_Search = "AND ((MCR.CONSLT_STTUS=''CS03'') OR (MCR.CONSLT_STTUS=''CS04'') OR (MCR.CONSLT_STTUS=''CS09''))";     // 상담 취소
+        else if( $srchConsltSttus=="CS06" ) $_Search = "AND (MCR.CONSLT_STTUS=''CS06'')";                                                                       // 상담 완료
         
         // 검색에 따른 (전체, 이름, 연락처) SQL 쿼리문 - 해당 쿼리는 LIKE를 기반으로 한다.
         if( $sel_field=="NM" ) $_Search .= "AND (MC.MBR_NM LIKE ''%{$search}%'')";
@@ -139,7 +163,11 @@
 
     <section class="wrap">
         <div class="sub_section_tit"><?=$g5['title']?></div>
+        <?php
+        /* 23.10.20 : 서원 - 기획 요청에 따른 해당 버튼 삭제 처리.
         <button type="button" class="" id="view_link" Onclick="window.open('https://eroum.co.kr/members/login','_blank'); ">이로움ON 맴버스<br />바로가기</button>
+        */
+        ?>
     </section>
 
 
@@ -148,7 +176,7 @@
 
         <table class="new_form_table">
             <tr>
-                <td style="width:160px; height: 45px; text-align:right;"><strong>검색기간</strong></td>
+                <td style="width:160px; height: 45px; text-align:right;">상담배정일</td>
                 <td style="padding: 10px 25px;" class="sch_last">
 
                     <button type="button" class="select_date newbutton" onclick="javascript:set_date('전체');">전체</button>
@@ -163,7 +191,7 @@
                 </td>
             </tr>
             <tr>
-                <td style="width:160px; height: 45px; text-align:right;"><strong>상담진행상태</strong></td>
+                <td style="width:160px; height: 45px; text-align:right;">상담진행상태</td>
                 <td style="padding: 10px 25px;">
                     <select name="srchConsltSttus" id="srchConsltSttus" class="form-control w-84">
                         <option value="">선택</option>
@@ -175,12 +203,12 @@
                 </td>
             </tr>  
             <tr>
-                <td style="width:160px; height: 45px; text-align:right;"><strong>검색어</strong></td>
+                <td style="width:160px; height: 45px; text-align:right;">검색어</td>
                 <td style="padding: 10px 25px;">
                     <select name="sel_field" id="sel_field" class="inupt_s">
                         <option value="all" <?=get_selected($sel_field, 'all'); ?>>전체</option>
-                        <option value="NM" <?=get_selected($sel_field, 'NM'); ?>>성명</option>
-                        <option value="TELNO" <?=get_selected($sel_field, 'TELNO'); ?>>연락처</option>
+                        <option value="NM" <?=get_selected($sel_field, 'NM'); ?>>수급자명</option>
+                        <option value="TELNO" <?=get_selected($sel_field, 'TELNO'); ?>>상담받을 연락처</option>
                     </select>&nbsp;
                     <input type="text" id="search"  name="search" value="<?=$search; ?>" class="frm_input" size="30" maxlength="25" autocomplete="off" style="width:250px;">&nbsp;
                     <input type="submit" value="검색" class="btn_submit" id="_submit" style="width:80px; height:35px; padding: 0px; background: #333;">
@@ -213,14 +241,12 @@
         <thead>
             <tr>
                 <th style="width:">번호</th>
-                <th style="width: 100px;">상담진행상태</th>
-                <th style="width: 100px;">성명</th>
-                <th style="width: ;">성별</th>
-                <th style="width: ;">연락처</th>
-                <th style="width: ;">만나이</th>
-                <th style="width: ;">생년월일</th>
-                <th style="width: ;">거주지주소</th>
-                <th style="width: 150px;">상담배정일<br/>(상담신청일)</th>
+                <th style="width: 150px;">상담진행상태</th>
+                <th style="width: 150px;">수급자 성명</th>
+                <th style="width: ;">상담받을 연락처</th>
+                <th style="width: ;">실거주지주소</th>
+                <th style="width: 150px;">상담신청일시</th>
+                <th style="width: 150px;">상담배정일시</th>
             </tr>
         </thead>
         <tbody>
@@ -228,29 +254,41 @@
 
             for($i=0; $row=sql_fetch_array($sql_result); $i++) {
                 $bg = 'bg'.($i%2);
-                //var_dump($row);
-                
-                $birthday = new DateTime($row['BRDT']); // 생년월일
-                $age = $birthday->diff( new DateTime(date('ymd')) )->y; // 만나이 계산
 
                 $_conslt_st = false;
-                if( $row['CONSLT_STTUS']==="CS03" || $row['CONSLT_STTUS']==="CS04" || $row['CONSLT_STTUS']==="CS09" ) { $_conslt_st = true; }
+                if( $row['CUR_CONSLT_RESULT_NO'] !== $row['BPLC_CONSLT_NO'] ) { $_conslt_st = true; }
+                else if( $row['MCR_ST']==="CS01" 
+                            || $row['MCR_ST']==="CS02" 
+                            || $row['MCR_ST']==="CS03" 
+                            || $row['MCR_ST']==="CS04" 
+                            || $row['MCR_ST']==="CS07" 
+                            || $row['MCR_ST']==="CS08" 
+                            || $row['MCR_ST']==="CS09" ) { $_conslt_st = true; }
+                else if( $row['MCR_ST']==="CS06" ) {
+                    // 상담완료 이후 48시간 초과시 화면 마스킹
+                    $currentTime = strtotime($row['CONSLT_DT']); // 현재 시간을 타임스탬프로 변환
+                    $futureTime = $currentTime + (48 * 3600); // 48시간 후의 타임스탬프 계산 (48시간 * 3600초)    
+                    //if( $futureTime < strtotime( date('Y-m-d H:i:s') ) ) { $_conslt_st = true; }
+                }
+
         ?>    
             <tr class="<?=$bg?>" >
 
                 <td style="text-align: center;"><?=($total_count - (($page - 1) * $page_rows) - $i);?></td>
                 <td style="text-align: center;">
                     <a href="./eroumon_members_conslt_view.php?consltID=<?=$row['BPLC_CONSLT_NO'];?>&<?=$qstr?>">
-                        <?php if( $_conslt_st ) { ?><span style="color:red;"><?php } ?><?=$row['Hangeul_CONSLT_STTUS']?><?php if( $_conslt_st ) { ?></span><?php } ?>
+                        <span style="<?=( $_conslt_st && ($row['MCR_ST']!=="CS06") )?"color:red;":"" ?>"><?=$row['Hangeul_CONSLT_STTUS']?></span>
                     </a>
                 </td>
-                <td style="text-align: center;"><a href="./eroumon_members_conslt_view.php?consltID=<?=$row['BPLC_CONSLT_NO'];?>&<?=$qstr?>" class="link_btn"><?=(!$_conslt_st)?$row['MBR_NM']:Masking_Name($row['MBR_NM']);?></a></td>
-                <td style="text-align: center;"><?=(!$_conslt_st)?$row['Hangeul_GENDER']:"-";?></td>
-                <td style="text-align: center;"><?=(!$_conslt_st)?$row['MBR_TELNO']:"-";?></td>
-                <td style="text-align: center;"><?=(!$_conslt_st)?$age."세":"-";?></td>
-                <td style="text-align: center;"><?=(!$_conslt_st)?substr($row['BRDT'],0,4)."/".substr($row['BRDT'],4,2)."/".substr($row['BRDT'],6,2):"-";?></td>
-                <td style="text-align: center; font-size:13px;"><?=(!$_conslt_st)?"(".$row['ZIP'].")".$row['ADDR']."<br/>".$row['DADDR']:"-";?></td>
-                <td style="text-align: center;"><?=$row['MCR_REG_DT']."<br/><span style='font-size:12px;'>(".$row['MC_REG_DT']?>)</span></td>
+                <td style="text-align: center;">
+                    <a href="./eroumon_members_conslt_view.php?consltID=<?=$row['BPLC_CONSLT_NO'];?>&<?=$qstr?>" class="link_btn">
+                        <?=( !$_conslt_st || ($row['MCR_ST']==="CS02") || ($row['MCR_ST']==="CS08") )?$row['MBR_NM']:Masking_Name($row['MBR_NM']);?>
+                    </a>
+                </td>
+                <td style="text-align: center;"><?=(!$_conslt_st)?Masking_Tel($row['MBR_TELNO']):"-";?></td>
+                <td style="text-align: center; font-size:13px;"><?=(!$_conslt_st)?$row['ZIP']." ".$row['ADDR']:"-";?></td>
+                <td style="text-align: center;"><?=$row['MC_REG_DT']?></span></td>
+                <td style="text-align: center;"><?=$row['MCR_REG_DT']?></span></td>
 
             </tr>
         <?php } ?>
@@ -260,7 +298,11 @@
     </div>
 
     <div style="height:50px; padding: 10px 0px;"> 
+    <?php
+    /*  23.10.30 : 서원 - 변경된 리스트 및 데이터에 따른 엑셀 추출 데이터 양식이 정의되지 않아 해당 기능 임의 숨김처리 진행함.
         <button type="button" class="btn-primary btn-excel">엑셀 다운로드</button>
+    */
+    ?>
     </div>
 
     <?=$pagelist = get_paging($config['cf_write_pages'], $page, $total_page, $_SERVER['SCRIPT_NAME'].'?'.$qstr);?>
@@ -358,11 +400,11 @@
         .new_form .submit .buttons { position:absolute; top:6px; right:15px; }
         .new_form .submit .buttons button { background:none !important; padding-left:0px; width: auto !important; margin-right: 10px; border:0; }
 
-        .new_form_table { padding:10px 20px; width:100%; margin: 0 auto; color:#666666; box-sizing: border-box; background-color: #f8f8fa; }
-        .new_form_table th { width:150px; text-align:left; border-bottom:1px solid #e1e2e2; padding:12px 20px; }
+        .new_form_table { padding:10px 20px; width:100%; margin: 0 auto; color:#666666; box-sizing: border-box; background-color: #faf7f5; }
+        .new_form_table th { width:150px; text-align:left; border-bottom:1px solid #dad9d5; padding:12px 20px; }
         .new_form_table tr:last-child th { border-bottom:0; }
         .new_form_table tr:last-child td { border-bottom:0; }
-        .new_form_table td { border:0; padding:2px 0; border-bottom:1px solid #e1e2e2; line-height:30px; }
+        .new_form_table td { border:0; padding:2px 0; border-bottom:1px solid #dad9d5; line-height:30px; font-weight:500;}
         .new_form_table td.date { font-size:0px; }
         .new_form_table td.date .sch_last { display:inline-block; font-size:13px; margin-left:10px; vertical-align: middle; }
         .new_form_table td select { font-size: 12px; color: #555; appearance: none; -webkit-appearance: none; -moz-appearance: none; height: 24px !important; padding: 2px 25px 0px 3px; background: #ffffff url('/adm/shop_admin/img/admin_select_n.gif') no-repeat right 8px center; border:1px solid #dbdde2; border-radius: 0px; width: 100px; height: 33px !important; padding: 0px 13px !important; }
@@ -407,6 +449,8 @@
         .link_btn{ align-items: center; border-radius: 0.5rem; border: solid 1px #C1C1C1; display: inline-flex; font-weight: 700; justify-content: center; line-height: 1; padding: 1.25rem 0.125rem; width: 100%; --tw-shadow: 0px 0.154em 0.154em #00000027; --tw-shadow-colored: 0px 0.154em 0.154em var(--tw-shadow-color); box-shadow: var(--tw-ring-offset-shadow,0 0 #0000),var(--tw-ring-shadow,0 0 #0000),var(--tw-shadow); }
         .list_box #table_list td { padding:5px; }
         .btn-excel { float:right; border-radius: 0.5rem; background: #000; padding: 5px 10px; }
+
+        .pg_current, .pg_page { margin:0px 4px; height:30px; }
 
     </style>
 

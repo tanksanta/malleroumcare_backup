@@ -8,9 +8,9 @@
     /* // = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
     /* //  *  */
     /* //  *  */
-    /* //  * (주)티에이치케이컴퍼 & 이로움 - [ THKcompany & E-Roum ] */
+    /* //  * (주)티에이치케이컴퍼 & 이로움Care & 이로움ON - [ THKcompany & EroumCare & EroumON ] */
     /* //  *  */
-    /* //  * Program Name : EROUMCARE Platform! = EroumON_Order Ver:0.1 */
+    /* //  * Program Name : EROUMCARE Platform! & EroumON 1:1 Matching Service Ver:1.0 */
     /* //  * Homepage : https://eroumcare.com , Tel : 02-830-1301 , Fax : 02-830-1308 , Technical contact : dev@thkc.co.kr */
     /* //  * Copyright (c) 2023 THKC Co,Ltd.  All rights reserved. */
     /* //  *  */
@@ -22,7 +22,7 @@
     /* // */
     /* // */
     /* // */
-
+    
     /* // == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == */
     /* // 파일명 : /www/shop/eroumon_members_conslt_view.php */
     /* // 파일 설명 : 이로움ON(1.5)에서 발생한 고객(맴버)의 상담관련 업무를 처리하는 뷰 페이지. */
@@ -52,7 +52,31 @@
         </code>
 
     */
-    
+
+    /*
+        // 이로움ON 상태값 == == == == == == == == == == == == == == == == == ==
+        MC_ST = CS01 : 접수
+        MC_ST = CS02 : 배정
+        MC_ST = CS03 : 상담자 취소
+        MC_ST = CS04 : 사업소 취소
+        MC_ST = CS05 : 진행
+        MC_ST = CS06 : 완료
+        MC_ST = CS07 : 재접수
+        MC_ST = CS08 : 재배정
+        MC_ST = CS09 : THKC 취소
+        
+        // 이로움Care 상태값 == == == == == == == == == == == == == == == == == ==
+        MCR_ST = CS01 : 상담 신청 접수
+        MCR_ST = CS02 : 상담 신청 접수
+        MCR_ST = CS03 : 상담 취소(고객)
+        MCR_ST = CS04 : 상담 취소(사업소)
+        MCR_ST = CS05 : 상담 진행 중
+        MCR_ST = CS06 : 상담 완료
+        MCR_ST = CS07 : 상담 신청 접수
+        MCR_ST = CS08 : 상담 신청 접수
+        MCR_ST = CS09 : 상담 취소(THKC)
+    */
+
     /* // == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == */
 
     include_once('./_common.php');
@@ -89,7 +113,7 @@
     // POST 처리 부분 시작
     // == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == ==
 
-    // 해당 페이지에서 REQUEST 이벤트가 발생하고, POST일 경우 질문지 데이터 업데이트를 위한 코드 동작.
+    // 해당 페이지에서 REQUEST 이벤트가 발생하고, POST일 경우 데이터 업데이트를 위한 코드 동작.
     if( ( $_SERVER['REQUEST_URI'] === ($_SERVER['PHP_SELF']."?".$_SERVER['QUERY_STRING']) ) && ($_SERVER['REQUEST_METHOD']==="POST") ) {
 
         // POST값으로 넘겨 받은 데이터에 대한 SQL인젝션 쿼리 부분 처리.
@@ -100,17 +124,21 @@
         $_MCR_TEXT = clean_xss_attributes( clean_xss_tags( $_POST['MCR_TEXT'] ) );
 
         if( $eroumon_connect_db ) { 
+            
             // 프로시저 : CALL `PROC_EROUMCARE_CONSLT`('모드','회원사업자번호', '검색시작일', '검색종료일','페이지포인터시작','리스트수량','검색조건');
             $sql = (" CALL `PROC_EROUMCARE_CONSLT`('view','{$member['mb_giup_bnum']}','','','','','{$_consltID}'); ");
             $sql_result = "";
             $sql_result = sql_fetch( $sql , "" , $g5['eroumon_db'] ); mysqli_next_result($g5['eroumon_db']);
             
-            if( ($sql_result['CONSLT_STTUS']!=$_MCR_STTUS_CD) && ($sql_result['CONSLT_NO']===$_MC_cON) && ($sql_result['BPLC_CONSLT_NO']===$_MCR_cON)  ) {
+            if( ($sql_result['MCR_ST']!=$_MCR_STTUS_CD) && ($sql_result['CONSLT_NO']===$_MC_cON) && ($sql_result['BPLC_CONSLT_NO']===$_MCR_cON)  ) {
+                
                 // 프로시저 : CALL `PROC_EROUMCARE_CONSLT_UPDATE`('모드', 상담신청NO, 상담배정NO, '변결될상태값', '완료또는 거부시 사유또는 내용', '배정 당시 사업소아이디');                        
                 $sql = (" CALL `PROC_EROUMCARE_CONSLT_UPDATE`('BPLC', {$_MC_cON}, {$_MCR_cON}, '{$_MCR_STTUS_CD}', '{$_MCR_TEXT}', '{$_MCR_ID}'); ");
                 $sql_result = "";
                 $sql_result = sql_fetch( $sql , "" , $g5['eroumon_db'] ); mysqli_next_result($g5['eroumon_db']);
-//======================CS04:상담거절, CS06:상담완료 시 알림톡 발송===============================================================================================
+                
+
+                //======================CS04:상담거절, CS06:상담완료 시 알림톡 발송===============================================================================================
 				if($_MCR_STTUS_CD == "CS04" || $_MCR_STTUS_CD == "CS06"){
 					if($_MCR_STTUS_CD == "CS06"){//상담완료 시 알림톡
 						$alimtalk_contents = $sql_result['MBR_NM']."님, 상담이 완료되었습니다.\n상담한 장기요양기관이 마음에 드실 경우 이로움ON에서 상담기관 추천하기 및 관심설정이 가능합니다.\n\n다른 장기요양기관과의 재상담을 원하실 경우\n\n상담 내역 관리에서 재상담 신청이 가능한 점 참고 부탁드립니다.";
@@ -144,7 +172,8 @@
 						  ),'','상담 취소 안내','2');//내용은 템플릿과 동일 해야 함 
 					}
 				}
-//======================CS04:상담거절, CS06:상담완료 시 알림톡 발송===============================================================================================
+                //======================CS04:상담거절, CS06:상담완료 시 알림톡 발송===============================================================================================
+
             }
         }
     }
@@ -170,17 +199,33 @@
 
 
     $_conslt_st = false;
-    if( $sql_result['CONSLT_STTUS']==="CS03" || $sql_result['CONSLT_STTUS']==="CS04" || $sql_result['CONSLT_STTUS']==="CS09" ) { $_conslt_st = true; }
+    if( $sql_result['CUR_CONSLT_RESULT_NO'] !== $sql_result['BPLC_CONSLT_NO'] ) { $_conslt_st = true; }
+    else if( $sql_result['MCR_ST']==="CS01" 
+                || $sql_result['MCR_ST']==="CS02" 
+                || $sql_result['MCR_ST']==="CS03" 
+                || $sql_result['MCR_ST']==="CS04" 
+                || $sql_result['MCR_ST']==="CS07" 
+                || $sql_result['MCR_ST']==="CS08" 
+                || $sql_result['MCR_ST']==="CS09" ) { $_conslt_st = true; }
+    else if( $sql_result['MCR_ST']==="CS06" ) {
+        // 상담완료 이후 48시간 초과시 화면 마스킹
+        $currentTime = strtotime($sql_result['CONSLT_DT']); // 현재 시간을 타임스탬프로 변환
+        $futureTime = $currentTime + (48 * 3600); // 48시간 후의 타임스탬프 계산 (48시간 * 3600초)    
+        if( $futureTime < strtotime( date('Y-m-d H:i:s') ) ) { $_conslt_st = true; }
+    }
 
     if( !is_array($sql_result) ) { alert("[이로움ON] 1:1 상담 정보를 찾을 수 없습니다.", G5_SHOP_URL . "/eroumon_members_conslt_list.php".(($qstr)?"?".$qstr:"")); }
 
 ?>
 
-
     <section class="wrap">
         <div class="sub_section_tit"><?=$g5['title']?></div>
+        <?php
+        /*
         <button type="button" id="view_link" class="top_view_style" Onclick="window.open('https://eroum.co.kr/members/login','_blank'); ">이로움ON 맴버스<br />바로가기</button>
         <button type="button" id="view_list" class="top_view_style" Onclick="location.href = '<?=G5_SHOP_URL?>/eroumon_members_conslt_list.php?<?=$qstr?>'; ">목록</button>
+        */
+        ?>
     </section>
 
     <form class="form" role="form" name="form_eroumon_conslt" id="form_eroumon_conslt" action="<?=$_SERVER['PHP_SELF'];?>?consltID=<?=$_consltID?>" method="post">
@@ -192,29 +237,55 @@
         <input type="hidden" name="MCR_TEXT" value="">
         <input type="hidden" name="_qstr" value="<?=$qstr?>">
 
-        <section class="wrap"><div class="sub_section_tit" style="font-size: 20px;">상담 대상자 정보</div></section>
+        <section class="wrap"><div class="sub_section_tit" style="font-size: 20px;">상담정보</div></section>
 
         <div class="list_box">
             <table id="table_list">
-            <thead>
+                <colgroup>
+						<col width="20%"/>
+						<col width="30%"/>
+						<col width="20%"/>
+						<col width="30%"/>
+                </colgroup>
                 <tr>
-                    <th>성명</th><td><?=(!$_conslt_st)?$sql_result['MBR_NM']:Masking_Name($sql_result['MBR_NM']);?></td><th>성별</th><td><?=(!$_conslt_st)?$sql_result['Hangeul_GENDER']:"-"?></td>
+                    <th>수급자 성명</th><td><?=( !$_conslt_st || ($sql_result['MCR_ST']==="CS02") || ($sql_result['MCR_ST']==="CS08") )?$sql_result['MBR_NM']:Masking_Name($sql_result['MBR_NM']);?></td>
+                    <th>수급자와의 관계</th><td><?=(!$_conslt_st)?$sql_result['Hangeul_RELATION_CD']:"-"?></td>
                 </tr><tr>
-                    <th>연락처</th><td><?=(!$_conslt_st)?$sql_result['MBR_TELNO']:"-";?></td><th>생년월일</th><td><?=(!$_conslt_st)?substr($sql_result['BRDT'],0,4)."/".substr($sql_result['BRDT'],4,2)."/".substr($sql_result['BRDT'],6,2):"-";?></td>
+                    <th>ON회원아이디</th><td><?=(!$_conslt_st)?$sql_result['REG_ID']:"-"?></td>
+                    <th>상담유형</th><td><?=(!$_conslt_st || ($sql_result['MCR_ST']==="CS02") || ($sql_result['MCR_ST']==="CS08") )?$sql_result['Hangeul_PREV_PATH']:"-"?></td>
                 </tr><tr>
-                    <th>거주지 주소</th><td colspan='3'><?=(!$_conslt_st)?"(".$sql_result['ZIP'].")".$sql_result['ADDR']."<br/>".$sql_result['DADDR']:"-";?></td>
+                    <th>성별</th><td><?=(!$_conslt_st)?$sql_result['Hangeul_GENDER']:"-"?></td>
+                    <th>상담유형 상세</th>
+                    <td>
+                        <?php if( (!$_conslt_st) && ($sql_result['PREV_PATH'] == "test") ) { ?>
+                            <a href="javascript:void(0);" id="TestResult" data-rno="<?=$sql_result['RECIPIENTS_NO']?>" class="link_btn">상세보기</a>
+                        <?php } else if( (!$_conslt_st) && ($sql_result['PREV_PATH'] == "simpleSearch") ) { ?>
+                            <a href="javascript:void(0);" id="simpleSearchResult" data-pennum="<?=$sql_result['RCPER_RCOGN_NO']?>" data-pennm="<?=$sql_result['MBR_NM']?>" class="link_btn">상세보기</a>
+                        <?php } else { echo("-"); } ?>
+                    </td>
                 </tr><tr>
-                    <th>상담 신청일</th><td><?=$sql_result['MC_REG_DT']?></td><th>상담진행상태</th><td><?=$sql_result['Hangeul_CONSLT_STTUS']?></td>
+                    <th>생년월일</th><td><?=(!$_conslt_st)?$sql_result['BRDT']:"-";?></td>
+                    <th>요양인정번호</th><td><?php if( !$_conslt_st ) { ?><?=($sql_result['RCPER_RCOGN_NO'])?"있음":"없음";?><?php } else { echo("-"); } ?></td>
                 </tr><tr>
-                    <th>상담 배정 일시</th><td colspan='3'><?=$sql_result['MCR_REG_DT']?></td>
+                    <th>상담받을 연락처</th><td><?=(!$_conslt_st)?$sql_result['MBR_TELNO']:"-";?></td>
+                    <th>상담신청일시</th><td><?=$sql_result['MC_REG_DT']?></td>
+                </tr><tr>
+                    <th>실거주지 주소</th><td colspan="3"><?=(!$_conslt_st)?$sql_result['ZIP']." ".$sql_result['ADDR']." ".$sql_result['DADDR']:"-";?></td>
+                </tr><tr>
+                    <th>상담진행형태</th><td colspan="3"><?=$sql_result['Hangeul_CONSLT_STTUS']?></td>
                 </tr>
-            </thead>
-            <tbody>
-            </tbody>
             </table>
         </div>
-        
-        <?php if( (($sql_result['CONSLT_STTUS']=="CS03") || ($sql_result['CONSLT_STTUS']=="CS04") || ($sql_result['CONSLT_STTUS']=="CS09")) && ($sql_result['CANCL_RESN']) ) {?>
+
+        <?php if( $sql_result['CUR_CONSLT_RESULT_NO'] !== $sql_result['BPLC_CONSLT_NO'] ) { ?>
+            <span>※ 수급자의 요청으로 인해 정보가 삭제 되었습니다.</span>
+        <?php } else if( $sql_result['MCR_ST']==="CS06" ) { ?>
+            <span>※ 상담완료 처리 이후 48시간까지 상담정보를 확인할수 있습니다.</span>
+        <?php } ?>
+
+        <div style="height:20px;"></div>
+
+        <?php if( (($sql_result['MCR_ST']=="CS03") || ($sql_result['MCR_ST']=="CS04") || ($sql_result['MCR_ST']=="CS09")) && ($sql_result['CANCL_RESN']) ) {?>
 
         <section class="wrap"><div class="sub_section_tit" style="font-size: 20px;">상담 취소 사유</div></section>
         <div class="list_box">
@@ -228,19 +299,32 @@
             </table>
         </div>
 
-        <?php } else if( ($sql_result['CONSLT_STTUS']=="CS05") || ($sql_result['CONSLT_STTUS']=="CS06") ) { ?>
+        <?php } else if( ($sql_result['MCR_ST']=="CS05") || ($sql_result['MCR_ST']=="CS06") ) { ?>
         
         <section class="wrap"><div class="sub_section_tit" style="font-size: 20px;">상담 내용(맴버스관리자메모)</div></section>
         <div class="list_box">
             <table id="table_list">
+                <colgroup>
+                    <col width="20%"/>
+                    <col width="80%"/>
+                <c/olgroup>
             <tbody>
                 <tr>
                     <th>상담진행상태</th>
-                    <td><?=$sql_result['Hangeul_CONSLT_STTUS']?></td>
+                    <td>
+                        <?=$sql_result['Hangeul_CONSLT_STTUS']?>
+                        <?php if( $sql_result['MCR_ST']=="CS06" ) { /* echo(" ( " . $sql_result['CONSLT_DT']) . ")";*/ } ?>
+                    </td>
                 </tr>
                 <tr style="height:120px;">
                     <th>상담내용</th>
-                    <td><textarea id="consltDtls" name="consltDtls" class="CONSLT_DTLS " title="메모" cols="30" rows="5"><?=$sql_result['CONSLT_DTLS']?></textarea></td>
+                    <td>
+                    <?php if( $sql_result['MCR_ST']=="CS06" ) { ?>
+                        <?=nl2br( $sql_result['CONSLT_DTLS'] );?>
+                    <?php } else { ?>
+                        <textarea id="consltDtls" name="consltDtls" class="CONSLT_DTLS " title="메모" cols="30" rows="5"><?=$sql_result['CONSLT_DTLS']?></textarea>
+                    <?php } ?>
+                    </td>
                 </tr>      
             </tbody>
             </table>
@@ -249,19 +333,26 @@
         <?php } ?>
 
         <div class="list_box text-right">
-            <?php if( ($sql_result['CONSLT_STTUS']=="CS02") || ($sql_result['CONSLT_STTUS']=="CS08") ) { ?>
+            <?php if( ($sql_result['MCR_ST']=="CS02") || ($sql_result['MCR_ST']=="CS08") ) { ?>
             <button type="button" id="STTUS_CO5" class="btn-list btn-success btn-lg" data-sttus="CS05">상담수락</button>
             <button type="button" id="STTUS_CO4" class="btn-list btn-danger btn-lg" data-sttus="CS04">상담거부</button>
             <?php } ?>
 
 
-            <?php if( ($sql_result['CONSLT_STTUS']=="CS01") || ($sql_result['CONSLT_STTUS']=="CS05") || ($sql_result['CONSLT_STTUS']=="CS07") ) { ?>
-            <button type="button" id="STTUS_CO3" class="btn-list btn-danger btn-lg" data-sttus="CS03">상담취소</button>
+            <?php if( ($sql_result['MCR_ST']=="CS01") || ($sql_result['MCR_ST']=="CS05") || ($sql_result['MCR_ST']=="CS07") ) { ?>
+            <?php
+                /*
+                    // 23.10.25 : 서원  - 기획팀(박은정차장) 요청으로 해당 기능 버튼 숨김 처리함. !!!!!!!!!!!!!
+                    <button type="button" id="STTUS_CO3" class="btn-list btn-danger btn-lg" data-sttus="CS03">상담취소</button>
+                */
+            ?>
             <?php } ?>
             
-            <?php if( ($sql_result['CONSLT_STTUS']=="CS05") ) { ?>
-            <button type="submit" id="STTUS_CO6" class="btn-list btn-info btn-lg" data-sttus="CS06">상담완료</button>
+            <?php if( ($sql_result['MCR_ST']=="CS05") ) { ?>
+            <button type="submit" id="STTUS_CO6" class="btn-list btn-success btn-lg" data-sttus="CS06">상담완료</button>
             <?php } ?>
+            
+            <button type="button" id="LIST" class="btn-list btn-info btn-lg" Onclick="location.href = '<?=G5_SHOP_URL?>/eroumon_members_conslt_list.php?<?=$qstr?>'; ">목록</button>
         </div>
 
     </form>
@@ -270,13 +361,11 @@
         <div class="visual">
         <div class="visalWrap">
 
-            <!-- title -->
             <div class="headerTitle">
                 <h5>상담 취소 사유 입력</h5>
                 <div class="popup_box_close" onclick="$('body').removeClass('modal-open'); $('#Cancel_popup_box').hide();"><i class="fa fa-times"></i></div>
             </div>
 
-            <!-- contents -->
             <div class="contentsWrap">
                 <label>상담 취소 사유를 입력해 주세요</label>
                 <textarea id="CANCL_RESN" title="메모" cols="30" rows="5"></textarea>
@@ -293,83 +382,157 @@
         </div>
     </div>
 
-<script>
-    
-    $('#STTUS_CO3').on('click', function (e) {
-        e.preventDefault();
-        $('#STTUS_CO3_save').data('sttus', $(this).data('sttus')); 
-        $('body').addClass('modal-open');
-        $('#Cancel_popup_box').show();
-        return;
-    });
-
-    $('#STTUS_CO3_save').on('click', function (e) {
-        e.preventDefault();
-        $('input[name="MCR_TEXT"]').val( $('#Cancel_popup_box #CANCL_RESN').val() );
-        if( !$('input[name="MCR_TEXT"]').val() ) { alert("상담 취소 사유를 입력해주세요."); return false; }
-        Click_Submit( $(this).data('sttus') );
-        return;
-    });
-
-    $('#STTUS_CO4').on('click', function (e) {
-        e.preventDefault();        
-        if( confirm("상담 신청을 거부 하시겠습니까?")) { Click_Submit( $(this).data('sttus') ); }
-        return;
-    });
-
-    $('#STTUS_CO5').on('click', function (e) {
-        e.preventDefault();
-        if( confirm("상담 신청을 수락 하시겠습니까?")) { Click_Submit( $(this).data('sttus') ); }
-        return;
-    });
-
-    $('#STTUS_CO6').on('click', function (e) {
-        e.preventDefault();        
-        $('input[name="MCR_TEXT"]').val( $('#consltDtls').val() );
-        Click_Submit( $(this).data('sttus') );
-        return;
-    });
-
-    function Click_Submit(sttus) {
-        $('input[name="MCR_STTUS_CD"]').val( sttus );
-        $('#form_eroumon_conslt').submit();
-        return;
-    }
-
-</script>
+    <div style="padding: 100px 0px;"></div>
 
 
-<style>
-    /* 팝업 */
-    #Cancel_popup_box { display: none; position: fixed; width: 100%; height: 100%; left: 0; top: 0; z-index:999; background: rgba(0, 0, 0, 0.8); }
-    #Cancel_popup_box .visual { width:400px; height:250px; max-height: 80%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; }
-    #Cancel_popup_box .visual .headerTitle { background: #111111; padding: 2px 15px; color:white; display: flex; justify-content: space-between; }
-    #Cancel_popup_box .visual .headerTitle h5 { font-size: 20px; }
-    #Cancel_popup_box .visual .headerTitle .cancel i { color: white; }
-    #Cancel_popup_box .visual .headerTitle .cancel i:hover { color: #93D500; }
-    #Cancel_popup_box .visual .contentsWrap { text-align:center; padding: 15px; background-color: white; }
-    #Cancel_popup_box .visual .contentsWrap label { width:95%; text-align: left; }
-    #Cancel_popup_box .visual .contentsWrap textarea { width:95%; border-radius: 0.5rem; resize: none; line-height: normal; padding:10px; }
-    #Cancel_popup_box .popup_box_close { position:absolute; top:5px; right: 15px; color: white; font-size: 2.5em; cursor:pointer; }
+    <!-- 231020 인정등급 예상 결과테스트 모달 -->
+    <div id="popupTestResultBox" class="Popup_TestResult"><div></div></div>
+    <!-- 231020 인정등급 예상 결과테스트 모달 -->
+
+    <!-- 231025 수급자 조회용 모달 -->
+    <div id="popupsimpleSearchBox" class="Popup_simpleSearch"><div></div></div>
+    <!-- 231025 수급자 조회용 모달 -->
 
 
-    .top_view_style { position: absolute; color: #333; font-weight: normal; font-size: 14px; line-height: 20px; height: 60px; padding: 5px 36px; border-radius: 3px; vertical-align: middle; background-color: #000; cursor: pointer; }
-    #view_list { background-color: #fff; color: #000; border: 1px solid #000; right: 175px; top: 8px; }
-    #view_link { color: #fff; border: none; right: 0px; top: 8px; }
+    <script>
+        
+        $('#STTUS_CO3').on('click', function (e) {
+            e.preventDefault();
+            $('#STTUS_CO3_save').data('sttus', $(this).data('sttus')); 
+            $('body').addClass('modal-open');
+            $('#Cancel_popup_box').show();
+            return;
+        });
+
+        $('#STTUS_CO3_save').on('click', function (e) {
+            e.preventDefault();
+            $('input[name="MCR_TEXT"]').val( $('#Cancel_popup_box #CANCL_RESN').val() );
+            if( !$('input[name="MCR_TEXT"]').val() ) { alert("상담 취소 사유를 입력해주세요."); return false; }
+            Click_Submit( $(this).data('sttus') );
+            return;
+        });
+
+        $('#STTUS_CO4').on('click', function (e) {
+            e.preventDefault();        
+            if( confirm("상담 신청을 거부 하시겠습니까?")) { Click_Submit( $(this).data('sttus') ); }
+            return;
+        });
+
+        $('#STTUS_CO5').on('click', function (e) {
+            e.preventDefault();
+            if( confirm("상담 신청을 수락 하시겠습니까?")) { Click_Submit( $(this).data('sttus') ); }
+            return;
+        });
+
+        $('#STTUS_CO6').on('click', function (e) {
+            e.preventDefault();        
+            $('input[name="MCR_TEXT"]').val( $('#consltDtls').val() );
+            Click_Submit( $(this).data('sttus') );
+            return;
+        });
+
+        $('#TestResult').on('click', function (e) {
+            e.preventDefault();
+            $(".Popup_TestResult > div").html("");
+            $(".Popup_TestResult > div").append("<iframe></iframe>");
+
+            var iframeDocument = $('.Popup_TestResult iframe')[0].contentDocument;
+            var form = $('<form action="/shop/popup.eroumon_members_testresult.php" method="post"></form>');
+            form.append('<input type="hidden" name="RECIPIENTS_NO" value="' + $(this).data('rno') + '">'); // POST 데이터 추가
+            iframeDocument.body.appendChild(form[0]);
+            form[0].submit();
+
+            $(".Popup_TestResult iframe").load(function(){
+                $('body').addClass('modal-open');
+                $(".Popup_TestResult").show();
+            });
+            return;
+        });
 
 
-    .list_box #table_list th { width: 160px; text-align:right; padding-right:10px; }
-    .list_box #table_list td { border-top: 1px solid #ddd; }
-    .list_box .btn-list { border-radius: 5px; margin : 20px 3px; padding : 10px 24px; }
+        $('#simpleSearchResult').on('click', function (e) {
+            e.preventDefault();
+            $(".Popup_simpleSearch > div").html("");
+            $(".Popup_simpleSearch > div").append("<iframe></iframe>");
+
+            var iframeDocument = $('.Popup_simpleSearch iframe')[0].contentDocument;
+            var form = $('<form action="/shop/popup.eroumon_members_simplesearch.php" method="post"></form>');
+            form.append('<input type="hidden" name="penNum" value="' + $(this).data('pennum') + '">'); // POST 데이터 추가
+            form.append('<input type="hidden" name="penNm" value="' + $(this).data('pennm') + '">'); // POST 데이터 추가
+            iframeDocument.body.appendChild(form[0]);
+            form[0].submit();
+
+            $(".Popup_simpleSearch iframe").load(function(){
+                $('body').addClass('modal-open');
+                $(".Popup_simpleSearch").show();
+            });
+            return;
+        });
+
+        function Click_Submit(sttus) {
+            $('input[name="MCR_STTUS_CD"]').val( sttus );
+            $('#form_eroumon_conslt').submit();
+            return;
+        }
+
+    </script>
 
 
-    .CONSLT_DTLS { border-radius: 0.5rem; width:100%; padding:10px; resize: none; line-height: normal; height: 150px; }
+    <style>
+        /* 팝업 */
+        #Cancel_popup_box { display: none; position: fixed; width: 100%; height: 100%; left: 0; top: 0; z-index:999; background: rgba(0, 0, 0, 0.8); }
+        #Cancel_popup_box .visual { width:400px; height:250px; max-height: 80%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; }
+        #Cancel_popup_box .visual .headerTitle { background: #111111; padding: 2px 15px; color:white; display: flex; justify-content: space-between; }
+        #Cancel_popup_box .visual .headerTitle h5 { font-size: 20px; }
+        #Cancel_popup_box .visual .headerTitle .cancel i { color: white; }
+        #Cancel_popup_box .visual .headerTitle .cancel i:hover { color: #93D500; }
+        #Cancel_popup_box .visual .contentsWrap { text-align:center; padding: 15px; background-color: white; }
+        #Cancel_popup_box .visual .contentsWrap label { width:95%; text-align: left; }
+        #Cancel_popup_box .visual .contentsWrap textarea { width:95%; border-radius: 0.5rem; resize: none; line-height: normal; padding:10px; }
+        #Cancel_popup_box .popup_box_close { position:absolute; top:5px; right: 15px; color: white; font-size: 2.5em; cursor:pointer; }
 
-</style>
+
+        /* 인정등급 예상 결과테스트 모달 */
+        .Popup_TestResult { display: none; position: fixed; width: 100vw; height: 100vh; left: 0; top: 0; z-index: 99999999; background-color: rgba(0, 0, 0, 0.6); table-layout: fixed; }
+        .Popup_TestResult > div {  width: 850px; height: 100%; margin: auto; vertical-align: middle; }
+        .Popup_TestResult iframe { position: relative; width: 100%; height: 750px; border: 0; background-color: #FFF; top:5%; }
+        @media (max-width : 750px){
+            .Popup_TestResult > div { padding:0%; }
+            .Popup_TestResult iframe { width: 100%; height: 95%; left: 0; margin-left: 0; }
+        }
+
+        /* 수급자 조회용 모달 */
+        .Popup_simpleSearch { display: none; position: fixed; width: 100vw; height: 100vh; left: 0; top: 0; z-index: 99999999; background-color: rgba(0, 0, 0, 0.6); table-layout: fixed; }
+        .Popup_simpleSearch > div {  width: 700px; height: 100%; margin: auto; vertical-align: middle; }
+        .Popup_simpleSearch iframe { position: relative; width: 100%; height: 800px; border: 0; background-color: #FFF; top:5%; }
+        @media (max-width : 750px){
+            .Popup_simpleSearch > div { padding:0%; }
+            .Popup_simpleSearch iframe { width: 100%; height: 95%; left: 0; margin-left: 0; }
+        }
+
+        .top_view_style { position: absolute; color: #333; font-weight: normal; font-size: 14px; line-height: 20px; height: 60px; padding: 5px 36px; border-radius: 3px; vertical-align: middle; background-color: #000; cursor: pointer; }
+        #view_list { background-color: #fff; color: #000; border: 1px solid #000; right: 175px; top: 8px; }
+        #view_link { color: #fff; border: none; right: 0px; top: 8px; }
+
+        .list_box #table_list { font-weight:500; }
+        .list_box #table_list th { border: 1px solid #dad9d5; background-color: #faf7f5;  font-weight:500;  width: 160px; text-align:right; padding-right:10px; }
+        .list_box #table_list td { border: 1px solid #dad9d5;  font-weight:500; }
+        .list_box .btn-list { border-radius: 4px; padding: 10px 24px; font-size:16px; font-weight:700; }
+
+        .list_box .btn-list.btn-success { background-color: #3c80b7; }
+        .list_box .btn-list.bnt-danger { background-color: #d9534f; }
+        .list_box #LIST { background-color: #7f7f7f; }
+
+        .link_btn{ align-items: center; border-radius: 8px; border: solid 1px #999; display: inline-flex; font-weight: 500; justify-content: center; line-height: 1; padding: 8px 15px; --tw-shadow: 0px 0.154em 0.154em #00000027; --tw-shadow-colored: 0px 0.154em 0.154em var(--tw-shadow-color); box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.10); }
+
+        .CONSLT_DTLS { border-radius: 0.5rem; width:100%; padding:10px; resize: none; line-height: normal; height: 150px; }
+
+    </style>
+
+
 
 
 <?php
-    
     @include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
     include_once('./_tail.php');
 ?>
