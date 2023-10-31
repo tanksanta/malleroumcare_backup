@@ -8,9 +8,9 @@
     /* // = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
     /* //  *  */
     /* //  *  */
-    /* //  * (주)티에이치케이컴퍼 & 이로움 - [ THKcompany & E-Roum ] */
+    /* //  * (주)티에이치케이컴퍼 & 이로움Care & 이로움ON - [ THKcompany & EroumCare & EroumON ] */
     /* //  *  */
-    /* //  * Program Name : EROUMCARE Platform! = Renewal Ver:1.0 */
+    /* //  * Program Name : EROUMCARE Platform! & EroumON 1:1 Matching Service Ver:1.0 */
     /* //  * Homepage : https://eroumcare.com , Tel : 02-830-1301 , Fax : 02-830-1308 , Technical contact : dev@thkc.co.kr */
     /* //  * Copyright (c) 2023 THKC Co,Ltd.  All rights reserved. */
     /* //  *  */
@@ -170,6 +170,10 @@
         $writer = PHPExcel_IOFactory::createWriter($excel, 'Excel2007');
         $writer->save($_dir_path.$_fileName);
 
+        sql_query(" UPDATE g5_member
+                    SET mb_giup_matching = 'Y'
+                    WHERE mb_id = '{$member['mb_id']}';        
+        ");
     }
     
     // 23.08.22 : 서원 - [사업소] 수급자매칭서비스 콘텐츠 추가 요청 / 이미지 추가.

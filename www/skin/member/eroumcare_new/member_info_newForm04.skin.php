@@ -118,7 +118,7 @@
 
                                     </div>
                                 </div>
-                                <div class="thkc_cont_txt">*파일유형은 png, jpg, gif 용량은 3Mbyte 이하만 등록가능합니다.</div>
+                                <div class="thkc_cont_txt">* 파일유형은 png, jpg, gif 용량은 3Mbyte 이하만 등록가능합니다.</div>
                                 <div class="error-txt error"></div>
 
                             </div>
@@ -147,14 +147,39 @@
                         <div class="table-box m15">
                             <div class="tit">공인인증서</div>
                             <div class="thkc_cont">
-                                <?php if($member["cert_data_ref"] != "") { ?>
+                                <?php if($member["cert_reg_sts"] == "Y") { 	$cert_data_ref =  explode("|",$member["cert_data_ref"]); ?>
                                 <div>공인인증서가 등록되어있습니다.</div>
+                                <div class="thkc_cont_txt">* 등록(변경)일 : <?=$member["cert_reg_date"]?> | 인증서 만료일 : <?=base64_decode($cert_data_ref[2]);?></div>
                                 <?php } else { ?>
-                                    공인인증서를 등록하세요.
+                                <div>공인인증서를 등록하세요.</div>
                                 <?php } ?>
                             </div>
                         </div>
                         <div class="thkc_btnWrap_03"><button class="on" onClick="tilko_call('1');">변경/갱신</button></div>
+                    </div>
+                    <!-- 요양정보조회 end -->
+                </div>
+
+                <!-- 기타 서비스 -->
+                <div class="thkc_joinWrap">
+                    <!-- title 기타 서비스 -->
+                    <div class="joinTitle">
+                        <div class="boxLeft">기타 서비스</div>
+                    </div>
+
+                    <!-- table 이로움ON -->
+                    <div class="thkc_tableWrap">
+                        <div class="table-box m15">
+                            <div class="tit">장기요양 매칭상담 서비스 </div>
+                            <div class="thkc_cont">
+                                <?php if($member["mb_giup_matching"] == "Y") { ?>
+                                <div>서비스가 신청되어 있습니다.</div>
+                                <?php } else { ?>
+                                <div>서비스가 신청되어 있지 않습니다.</div>                                
+                                <div class="thkc_cont_txt">* 서비스 신청은 고객센터에 문의 하시기 바랍니다,</div>
+                                <?php } ?>
+                            </div>
+                        </div>
                     </div>
                     <!-- 요양정보조회 end -->
                 </div>
