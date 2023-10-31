@@ -157,6 +157,25 @@ if (file_exists($dbconfig_file)) {
     // sql_set_charset('utf8', $sys_connect_db);
     // if(defined('G5_MYSQL_SET_MODE') && SYS_MYSQL_SET_MODE) sql_query("SET SESSION sql_mode = ''", false, $sys_connect_db);
     // if(defined('G5_TIMEZONE')) sql_query(" set time_zone = '".G5_TIMEZONE."'", false, $sys_connect_db);
+
+    // = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - =
+    // 이로움ON DB Connect Start
+    // = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - =
+    try {
+        $eroumon_connect_db = @mysqli_connect(EROUMON_HOST, EROUMON_USER, EROUMON_PASSWORD, EROUMON_DB);
+                
+        if($eroumon_connect_db ) {
+            $eroumon_select_db = mysqli_select_db($eroumon_connect_db, EROUMON_DB);
+            $g5['eroumon_db'] = $eroumon_connect_db;        
+            sql_set_charset('utf8', $eroumon_connect_db);
+            if(defined('G5_MYSQL_SET_MODE') && EROUMON_SET_MODE) sql_query("SET SESSION sql_mode = ''", false, $eroumon_connect_db);
+            if(defined('G5_TIMEZONE')) sql_query(" set time_zone = '".G5_TIMEZONE."'", false, $eroumon_connect_db);
+        }
+    } catch (\Throwable $th) { }
+
+    // = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - =
+    // 이로움ON DB Connect End
+    // = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - =
 } else {
 ?>
 
