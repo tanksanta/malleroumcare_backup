@@ -91,6 +91,12 @@ define('EROUMCARE_API_STOCK_UPDATE',                            EROUMCARE_API_HO
 define('EROUMCARE_API_STOCK_DELETE_MULTI',                      EROUMCARE_API_HOST . '/api/stock/deleteMulti');
 // 장바구니 정보
 define('EROUMCARE_API_SELECT_PROD_INFO_AJAX_BY_SHOP',           EROUMCARE_API_HOST . '/api/prod/selectPro2000ProdInfoAjaxByShop.do');
+
+// 23.10.04 : 서원 - 분류(카테고리) 추가
+define('EROUMCARE_API_PROD_INSERTCATEGORY',                             EROUMCARE_API_HOST . '/api/prod/insertCategory');
+// 23.10.04 : 서원 - 분류(카테고리) 업데이트
+define('EROUMCARE_API_PROD_UPDATECATEGORY',                             EROUMCARE_API_HOST . '/api/prod/updateCategory');
+
 // 상품 등록
 define('EROUMCARE_API_PROD_INSERT',                             EROUMCARE_API_HOST . '/api/prod/insert');
 // 상품 업데이트
@@ -147,6 +153,7 @@ define('BIZTALK_API_HOST', 'https://www.biztalk-api.com');
 define('BIZTALK_API_BS_ID', 'thkc1300');
 define('BIZTALK_API_BS_PWD', 'd267d7b9d328031338f3bdffc9c1a7345b182ef8');
 define('BIZTALK_API_SENDER_KEY', '4034a64c0543fbef8c1eb5647972105343cdd69d'); // 채널 키값 - (아이디) @eroumcare
+define('BIZTALK_API_SENDER_KEY2', '2e5552e22835e9b39513ca90bb8be84a57167dad'); // 채널 키값 - (아이디) @이로움on
 //define('BIZTALK_API_SENDER_KEY', '34fbabc21279a4883a334bbe8509cc90f0c373a3'); // 채널 키값 - (아이디) @thkc1300
 
 // 카카오 디벨로퍼스 REST API 연동
@@ -173,7 +180,7 @@ define('eroumAPI_Key',   'f9793511dea35edee3181513b640a928644025a66e5bccdac8836c
 
 //이로움 1.5 API 연동 url
 if(strpos($_SERVER['HTTP_HOST'],".eroumcare")){
-	define('eroumAPI_url',   'https://eroum.icubesystems.co.kr/eroumcareApi/bplcRecv/callback.json');//dev,test,local 일때
+	define('eroumAPI_url',   'https://test.eroum.co.kr/eroumcareApi/bplcRecv/callback.json');//dev,test,local 일때
 }else{
 	define('eroumAPI_url',   'https://eroum.co.kr/eroumcareApi/bplcRecv/callback.json');//상용서버일때
 }
