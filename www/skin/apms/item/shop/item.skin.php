@@ -106,7 +106,7 @@ if ($it['ca_id']) {
 -->
 
 <style>
-  .rental_use_info_btn {background: #333333;box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.20);width:320px; padding: 20px; color: #FFF; text-align: center; font-size: 22px;font-weight: 700;cursor:pointer;margin: 15px auto;}
+  .rental_use_info_btn {background: #333333;box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.20);width:320px; padding: 20px; color: #FFF; text-align: center; font-size: 22px;font-weight: 700;cursor:pointer;margin: 50px auto;}
   .item-head .item-thumb img { width: 100px; height: 100px; }
   .ca_info { font-weight: 400 !important; }
   .ca_info > .help-block { float: right; margin-right:20px; font-size: 14px; }
@@ -144,7 +144,7 @@ if ($it['ca_id']) {
     .selfPriceInfo > p { font-size: 14px; }     
   }
   @media (max-width : 1198px){
-	.rental_use_info_btn {width:100%;}
+	.rental_use_info_btn {width:100%; font-size: 18px; padding: 15px 20px;}
   }
 </style>
 
