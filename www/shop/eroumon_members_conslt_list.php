@@ -207,7 +207,7 @@
                 <td style="padding: 10px 25px;">
                     <select name="sel_field" id="sel_field" class="inupt_s">
                         <option value="all" <?=get_selected($sel_field, 'all'); ?>>전체</option>
-                        <option value="NM" <?=get_selected($sel_field, 'NM'); ?>>수급자명</option>
+                        <option value="NM" <?=get_selected($sel_field, 'NM'); ?>>수급자 성명</option>
                         <option value="TELNO" <?=get_selected($sel_field, 'TELNO'); ?>>상담받을 연락처</option>
                     </select>&nbsp;
                     <input type="text" id="search"  name="search" value="<?=$search; ?>" class="frm_input" size="30" maxlength="25" autocomplete="off" style="width:250px;">&nbsp;
@@ -265,6 +265,10 @@
                             || $row['MCR_ST']==="CS08" 
                             || $row['MCR_ST']==="CS09" ) { $_conslt_st = true; }
                 else if( $row['MCR_ST']==="CS06" ) {
+
+                    // 23.11.01 : 서원 - 상담완료 산태에서 상담신청건의 상태값이 재신청일 일 경우 마스킹 처리
+                    if($row['MC_ST']==="CS07") { $_conslt_st = true; }
+
                     // 상담완료 이후 48시간 초과시 화면 마스킹
                     $currentTime = strtotime($row['CONSLT_DT']); // 현재 시간을 타임스탬프로 변환
                     $futureTime = $currentTime + (48 * 3600); // 48시간 후의 타임스탬프 계산 (48시간 * 3600초)    

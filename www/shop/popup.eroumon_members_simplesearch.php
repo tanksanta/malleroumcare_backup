@@ -51,6 +51,21 @@
     $_penNm = clean_xss_attributes( clean_xss_tags( get_search_string( $_POST['penNm'] ) ) );    
     if( !$_penNum || !$_penNm ) { alert("수급자 정보를 확인할 수 없습니다."); }
 
+
+	/* SQL 처리 부분 시작 ====  ====  ====  ====  ====  ====  ====  ====  ====  ====  ====  ====  ====  ====  ====  ====  ====  ====  ==== */
+	
+	$sql = "	SELECT ProdPayCode 
+				FROM g5_shop_item 
+				WHERE (ca_id LIKE '1070%') OR (ca_id2 LIKE '1070%') 
+				GROUP BY ProdPayCode
+	";
+	$sql_result = sql_query($sql);
+	$data_array = mysqli_fetch_all($sql_result, MYSQLI_ASSOC);
+	$prodPayCodeArray = [];
+	$prodPayCodeArray = array_column($data_array, "ProdPayCode");
+
+	/* SQL 처리 부분 종료 ====  ====  ====  ====  ====  ====  ====  ====  ====  ====  ====  ====  ====  ====  ====  ====  ====  ====  ==== */
+
 ?>
 
 <!DOCTYPE html>
@@ -394,7 +409,7 @@
             #popupHeaderTopWrap:after { display: block; content: ''; clear: both; }
             #popupHeaderTopWrap > div { height: 100%; line-height: 22px; }
             #popupHeaderTopWrap > .title { float: left; font-weight: bold; color: #FFF; font-size: 16px; line-height: 28px; }
-            #popupHeaderTopWrap > .close { float: right; padding-right: 22px; }
+            #popupHeaderTopWrap > .close { float: right; padding-right: 32px; }
             #popupHeaderTopWrap > .close > a { color: #FFF; font-size: 30px; top: -2px; text-decoration: none; }
 
             /* 고정 하단 */
@@ -488,7 +503,7 @@
 
 	        	const ID = "<?=$_penNum;?>";
 	        	const RN = "<?=$_penNm;?>";
-				
+								
 				$(".panNm").text( RN );
 				
 				const RecipientInquiryDT = localStorage.getItem(ID+'_RecipientInquiryDT');
@@ -503,7 +518,17 @@
 					const ds_toolPayLmtList = JSON.parse(localStorage.getItem(ID+'_ds_toolPayLmtList'));
 					const recipientToolList = JSON.parse(localStorage.getItem(ID+'_recipientToolList'));
 					const ds_ctrHistTotalList = JSON.parse(localStorage.getItem(ID+'_ds_ctrHistTotalList'));
-
+/*
+					console.log( "== == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == " );
+					console.log( ds_welToolTgtList );
+					console.log( "== == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == " );
+					console.log( ds_toolPayLmtList );
+					console.log( "== == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == " );
+					console.log( recipientToolList );
+					console.log( "== == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == " );
+					console.log( ds_ctrHistTotalList );
+					console.log( "== == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == " );
+*/
                     Set_Display( ds_welToolTgtList, ds_toolPayLmtList, recipientToolList, ds_ctrHistTotalList );
 
 				} else {
@@ -518,7 +543,17 @@
 		                    const ds_toolPayLmtList = result.data.recipientContractDetail.Result.ds_toolPayLmtList;
 		                    const recipientToolList = result.data.recipientToolList;
 		                    const ds_ctrHistTotalList = result.data.recipientContractDetail.Result.ds_ctrHistTotalList
-
+/*
+							console.log( "== == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == " );
+							console.log( ds_welToolTgtList );
+							console.log( "== == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == " );
+							console.log( ds_toolPayLmtList );
+							console.log( "== == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == " );
+							console.log( recipientToolList );
+							console.log( "== == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == " );
+							console.log( ds_ctrHistTotalList );
+							console.log( "== == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == " );
+*/
 		                    // 로컬 스토리지 저장.
 		                    localStorage.setItem(ID+'_ds_welToolTgtList', JSON.stringify(ds_welToolTgtList));
 		                    localStorage.setItem(ID+'_ds_toolPayLmtList', JSON.stringify(ds_toolPayLmtList));
@@ -548,11 +583,10 @@
                             //console.log( errorMessage );
                             //console.log( errorCode );
 
-                            if( errorCode === 1 ) { 
-                                alert("공인인증서가 등록되어어 있지 않습니다.\n<?=(!$_isMobile)?' 컴퓨터에서':'';?> 공인인증서를 재등록 해 주세요."); }
+                            if( errorCode === 1 ) { alert("공인인증서가 등록되어어 있지 않습니다.\n<?=(!$_isMobile)?' 컴퓨터에서':'';?> 공인인증서를 재등록 해 주세요."); }
                             else if( errorCode === 2 ) { pwd_insert(); }
                             else if( errorCode === 3 ) { alert("등록된 인증서가 사용 기간이 만료 되었습니다.\n<?=(!$_isMobile)?' 컴퓨터에서':'';?> 공인인증서를 재등록 해 주세요."); }
-                            else if( errorCode === 4 ) { alert("수급자 요양정보조회에 대한 데이터를 확인할 수 없습니다."); }
+                            else if( errorCode === 4 ) { alert("수급자의 요양정보를 확인할 수 없습니다."); }
                             else if( errorCode === 5 ) { ent_num_insert(); }
 
 							$("#loading").hide();
@@ -593,7 +627,19 @@
                 '경사로(실외용)': '1',
                 '수동침대': '1'
 			};
-			
+
+			const UseDurable = {
+				'이동변기': '5',
+				'목욕의자': '5',
+				'성인용보행기': '5',
+				'지팡이': '2',
+				'욕창예방매트리스': '3',
+				'욕창예방방석': '3',
+				'경사로(실내용)': '2'
+			};
+
+			const tmpItemList = <?=json_encode($prodPayCodeArray)?> ;
+
 			function Set_Display( ds_welToolTgtList, ds_toolPayLmtList, recipientToolList, ds_ctrHistTotalList ) {
 
 				// 수급자 정보 셋팅
@@ -671,7 +717,7 @@
 				//적용기간
 				$(".penAppDtm").text( applydtm );
 				$("#APDT_FR_DT").val( applydtm.substr(0,10) );
-				$("#APDT_TO_DT").val( applydtm.substr(0,10) );
+				$("#APDT_TO_DT").val( applydtm.substr(13,10) );
 			}
 
 			
@@ -683,13 +729,23 @@
 					_arrayToolList['rent'] = [];
 
 				// 구매 - 가능 품목
-				for(var i = 0; i < recipientToolList['ds_payPsbl1'].length; i++) { 
-					_arrayToolList['sale'][ recipientToolList['ds_payPsbl1'][i]['WIM_ITM_CD'].replace(' ','') ] = { 'use': 1 };
+				for(var i = 0; i < recipientToolList['ds_payPsbl1'].length; i++) {
+					const ItemNM = recipientToolList['ds_payPsbl1'][i]['WIM_ITM_CD'].replace(' ','');
+					if( ItemNM === "미끄럼방지용품" ) {
+						_arrayToolList['sale'][ "미끄럼방지용품_양말" ] = { 'use': 1 };
+						_arrayToolList['sale'][ "미끄럼방지용품_매트/방지액" ] = { 'use': 1 };
+					}
+					else { _arrayToolList['sale'][ ItemNM ] = { 'use': 1 }; }
 				}
 
 				// 구매 - 불가 품목
-				for(var i = 0; i < recipientToolList['ds_payPsbl2'].length; i++) { 
-					_arrayToolList['sale'][ recipientToolList['ds_payPsbl2'][i]['WIM_ITM_CD'].replace(' ','') ] = { 'use': 0 };
+				for(var i = 0; i < recipientToolList['ds_payPsbl2'].length; i++) {
+					const ItemNM = recipientToolList['ds_payPsbl2'][i]['WIM_ITM_CD'].replace(' ','');
+					if( ItemNM === "미끄럼방지용품" ) { 
+						_arrayToolList['sale'][ "미끄럼방지용품_양말" ] = { 'use': 0 };
+						_arrayToolList['sale'][ "미끄럼방지용품_매트/방지액" ] = { 'use': 0 };
+					}
+					else { _arrayToolList['sale'][ ItemNM ] = { 'use': 0 }; }
 				}
 
 				// 대여 - 가능 품목
@@ -708,40 +764,76 @@
 
 			function pen_userSet_ItemCnt( tableList, ds_ctrHistTotalList ) {
 		        
-		        var useFrDt = new Date( $("#APDT_FR_DT").val() );
-		        var useToDt = new Date( $("#APDT_TO_DT").val() );
-		        var amount = 0;
-		        var totalmoney = 1600000;
-
+		        const useFrDt = new Date( $("#APDT_FR_DT").val() + " 00:00:00" );
+		        const useToDt = new Date( $("#APDT_TO_DT").val() + " 23:59:59" );
+		        const totalmoney = 1600000;
+		        let amount = 0;
+ 
 				Object.entries(ds_ctrHistTotalList).forEach(([key, value]) => {
 
+					const itemDt = new Date( value['POF_FR_DT'].substr(0,4) + '-' + value['POF_FR_DT'].substr(4,2) + '-' + value['POF_FR_DT'].substr(6,2) );
 
-					var itemDt = new Date( value['POF_FR_DT'].substr(0,4) + '-' + value['POF_FR_DT'].substr(4,2) + '-' + value['POF_FR_DT'].substr(6,2) );
+					//console.log( itemDt );
 					//console.log( value['WIM_ITM_CD_NM'], value['POF_FR_DT'], value['WIM_CD'], value['PERIOD'], value['WEL_PAY_STL_NM'] );
-
 
 					value['WIM_ITM_CD_NM'] = value['WIM_ITM_CD_NM'].replace(' ','');
 
-					if( value['WEL_PAY_STL_NM'] === "판매" ) {
-						const key = value['WIM_ITM_CD_NM'];
+					const ItemNM = value['WIM_ITM_CD_NM'];
+					const DateY = UseDurable[ItemNM];
 
-						if( useFrDt.getTime() > itemDt.getTime() ) { return; }
-						if(tableList['sale'][key]['cnt']) { tableList['sale'][key]['cnt'] += 1; } 
-						else { tableList['sale'][key]['cnt'] = 1; }
+					let UseDurable_DT = itemDt;
+					if( DateY ) {
+						UseDurable_DT = UseDurable_DT.setFullYear( UseDurable_DT.getFullYear() + Number(DateY) );
+						//console.log( UseDurable_DT );
+					}
 
-						amount += Number(value['TOT_AMT']);
+					if( value['WEL_PAY_STL_NM'] === "판매" ) {						
+
+						if( useFrDt.getTime() > UseDurable_DT ) { return; }
+
+						if( ItemNM === "미끄럼방지용품" ) {
+							//console.log( value['WIM_CD'] );
+
+							let val_ck = false;
+								val_ck = tmpItemList.includes( value['WIM_CD'] );
+
+							if( val_ck ) {
+								if( tableList['sale'][ItemNM+"_양말"]['cnt'] ) { tableList['sale'][ItemNM+"_양말"]['cnt'] += 1; } else { tableList['sale'][ItemNM+"_양말"]['cnt'] = 1; }
+							} else {
+								if( tableList['sale'][ItemNM+"_매트/방지액"]['cnt'] ) { tableList['sale'][ItemNM+"_매트/방지액"]['cnt'] += 1; } else { tableList['sale'][ItemNM+"_매트/방지액"]['cnt'] = 1; }
+							}
+
+						} 
+						else { if( tableList['sale'][ItemNM]['cnt'] ) { tableList['sale'][ItemNM]['cnt'] += 1; } else { tableList['sale'][ItemNM]['cnt'] = 1; } }
+						
+						//console.log( $("#APDT_FR_DT").val(), value['POF_FR_DT'].substr(0,4) + '-' + value['POF_FR_DT'].substr(4,2) + '-' + value['POF_FR_DT'].substr(6,2) );
+						//console.log( useFrDt, itemDt, UseDurable_DT );
+						//console.log( "=====>", useFrDt, value['POF_FR_DT'], itemDt, UseDurable_DT, value['TOT_AMT'], amount );
+
+						const tmpitemDt = new Date( value['POF_FR_DT'].substr(0,4) + '-' + value['POF_FR_DT'].substr(4,2) + '-' + value['POF_FR_DT'].substr(6,2) );
+						if( useFrDt.getTime() > tmpitemDt.getTime() ) { return; }
+						amount += Number(value['TOT_AMT']);						
+
 					}
 					else if( value['WEL_PAY_STL_NM'] === "대여" ) {
-						const key = value['WIM_ITM_CD_NM'];
 
-                        if( useToDt.getTime() < itemDt.getTime() ) { return; }
-						if( (useFrDt.getTime() > itemDt.getTime()) && (useToDt.getTime() > itemDt.getTime()) ) { return; }
-                        //console.log( value['WIM_ITM_CD_NM'], value['POF_FR_DT'], value['WIM_CD'], value['PERIOD'], value['WEL_PAY_STL_NM'] );
+						let period_Fr = "";
+							period_Fr = new Date( value['PERIOD'].substr(0,4) + '-' + value['PERIOD'].substr(5,2) + '-' + value['PERIOD'].substr(8,2) );
 
-						if( tableList['rent'][key]['cnt'] ) { tableList['rent'][key]['cnt'] += 1; } 
-						else { tableList['rent'][key]['cnt'] = 1; }
+						let period_To = "";							
+		        			period_To = new Date( value['PERIOD'].substr(11,4) + '-' + value['PERIOD'].substr(16,2) + '-' + value['PERIOD'].substr(19,2) + " 23:59:59" );
+						
+						console.log(  value['PERIOD'].substr(11,4) + '-' + value['PERIOD'].substr(16,2) + '-' + value['PERIOD'].substr(19,2) );
+						//console.log( "useFrDt", useFrDt.getTime(), "Fr", period_Fr.getTime(), "useToDt", useToDt.getTime(), "To", period_To.getTime() );
+						console.log( "=====>", value['WIM_ITM_CD_NM'], value['POF_FR_DT'], value['WIM_CD'], value['PERIOD'], value['WEL_PAY_STL_NM'], useFrDt, value['POF_FR_DT'], itemDt, UseDurable_DT, value['TOT_AMT'], amount );
 
-						amount += Number(value['TOT_AMT']);
+						if( (useFrDt.getTime() < period_Fr.getTime()) && ( useToDt.getTime() > period_Fr.getTime() ) ) {
+
+							if( tableList['rent'][ItemNM]['cnt'] ) { tableList['rent'][ItemNM]['cnt'] += 1; } 
+							else { tableList['rent'][ItemNM]['cnt'] = 1; }
+
+							amount += Number(value['TOT_AMT']);
+						}
 					}
 
 				});
@@ -759,13 +851,16 @@
 
 			function pen_listSet_Item( TableList, ItemCnt ) {
 
-				var No = 1;
-				$('#table_sale').empty();
-				Object.entries(TableList['sale']).forEach(([key, value]) => {
+				var No = 0;
+				let flag = true;
 
-					var sale = "";
-					var cnt_Sale = "";
-					var cnt_Stock = "";
+				$('#table_sale').empty();  
+				Object.entries(TableList['sale']).forEach(([key, value]) => {
+					
+					let tNo = No;
+					let sale = "";
+					let cnt_Sale = "";
+					let cnt_Stock = "";
 
 					if( value['use'] ) { 
 						sale = `<font color='blue'>급여가능</font>`;
@@ -777,18 +872,23 @@
 						cnt_Stock = `<div class='NotApplicable'>해당없음</div>`;
 					}
 
+					if( key.includes( "미끄럼방지용품" ) ) {
+						if( flag ) { 
+							tNo = ++No; 
+							flag = false;
+						}
+						if( key.includes( "미끄럼방지용품_양말" ) ) { tNo = No + "-1"; }
+						else if( key.includes( "미끄럼방지용품_매트/방지액" ) ) { tNo = (No) + "-2"; } 
 
-		            var row = `
-		            	<tr id="" class="normal-row">
-							<td colspan="1">` + No + `</td>
-							<td colspan="4">` + key + `</td>
-							<td colspan="2">` + sale + `</td>
-							<td colspan="2">` + cnt_Sale + `</td>
-							<td colspan="1">` + cnt_Stock + `</td>
+					} else { tNo = ++No; }
+					
+					let row = `
+						<tr id="" class="normal-row">
+							<td colspan="1">` + tNo + `</td> <td colspan="4">` + key + `</td> <td colspan="2">` + sale + `</td> <td colspan="2">` + cnt_Sale + `</td> <td colspan="1">` + cnt_Stock + `</td>
 						</tr>
 					`;
+					
 					$('#table_sale').append( row );
-					No++;
 
 				});
 
@@ -797,29 +897,28 @@
 				$('#table_rental').empty();
 				Object.entries(TableList['rent']).forEach(([key, value]) => {
 
-					var sale = "";
-					var cnt_Sale = "";
-					var cnt_Stock = "";
+					let sale = "";
+					let cnt_Sale = "";
+					let cnt_Stock = "";
 
 					if( value['use'] ) { 
 						sale = `<font color='blue'>급여가능</font>`;
-						cnt_Sale = (value['cnt']?value['cnt']:0) + `개`;
-						cnt_Stock = (value['cnt']?ItemCnt[key]-value['cnt']:ItemCnt[key]) + `개`;
+						let _Sale = (value['cnt']?value['cnt']:0);
+						cnt_Sale = (_Sale>=1?1:0) + `개`;
+						let _Stock = (value['cnt']?ItemCnt[key]-value['cnt']:ItemCnt[key]);
+						cnt_Stock = (_Stock<0?"0":_Stock) + `개`;
 					} else { 
 						sale = `<font color='red'>급여불가</font>`;
 						cnt_Sale = `<div class='NotApplicable'>해당없음</div>`;
 						cnt_Stock = `<div class='NotApplicable'>해당없음</div>`;
 					}
 
-		            var row = `
+		            let row = `
 		            	<tr id="" class="normal-row">
-							<td colspan="1">` + No + `</td>
-							<td colspan="4">` + key + `</td>
-							<td colspan="2">` + sale + `</td>
-							<td colspan="2">` + cnt_Sale + `</td>
-							<td colspan="1">` + cnt_Stock + `</td>
+							<td colspan="1">` + No + `</td> <td colspan="4">` + key + `</td> <td colspan="2">` + sale + `</td> <td colspan="2">` + cnt_Sale + `</td> <td colspan="1">` + cnt_Stock + `</td>
 						</tr>
 					`;
+
 					$('#table_rental').append( row );
 					No++;
 

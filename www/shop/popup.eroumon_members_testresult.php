@@ -59,7 +59,7 @@
 
     $apiKey = eroumAPI_Key;//"f9793511dea35edee3181513b640a928644025a66e5bccdac8836cfadb875856";f9793511dea35edee3181513b640a928644025a66e5bccdac8836cfadb875856
     $ch = curl_init(); // 리소스 초기화
-    curl_setopt($ch, CURLOPT_URL, "https://test.eroum.co.kr/test/result.html?recipientsNo=".$_POST['RECIPIENTS_NO']);
+    curl_setopt($ch, CURLOPT_URL, eroum_HOST . "/test/result.html?recipientsNo=".$_POST['RECIPIENTS_NO']);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, false);
     curl_setopt($ch, CURLOPT_POST, false);
 	curl_setopt($ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
@@ -89,7 +89,7 @@
         #popupHeaderTopWrap:after { display: block; content: ''; clear: both; }
         #popupHeaderTopWrap > div { height: 100%; line-height: 22px; }
         #popupHeaderTopWrap > .title { float: left; font-weight: bold; color: #FFF; font-size: 16px; line-height: 28px; }
-        #popupHeaderTopWrap > .close { float: right; padding-right: 22px; }
+        #popupHeaderTopWrap > .close { float: right; padding-right: 32px; }
         #popupHeaderTopWrap > .close > a { color: #FFF; font-size: 30px; top: -2px; text-decoration: none; }
 
         /* 고정 하단 */

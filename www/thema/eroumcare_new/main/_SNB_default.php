@@ -357,10 +357,7 @@
                         <hr>
                         <div class="office_menu">
                             <ul>
-                                <?php if( $member['mb_giup_matching'] == "Y" ) { ?>
-                                <li><img src="<?=G5_IMG_URL;?>/new_main_eroum/thkc_ico_manage09.svg" alt="수급자 상담관리"><a href="/shop/eroumon_members_conslt_list.php">수급자 상담관리</a></li>
-                                <?php } ?>
-
+                                <li><img src="<?=G5_IMG_URL;?>/new_main_eroum/thkc_ico_manage09.svg" alt="수급자 상담관리"><a href="<?=( $member['mb_giup_matching'] == "Y" )?"/shop/eroumon_members_conslt_list.php":"/bbs/board.php?bo_table=notice&wr_id=180"?>">수급자 상담관리</a></li>
                                 <?php
                                     // ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  
                                     // 23.03.07 : 서원 - 이로움ON 에서 발생한 주문 정보에 대한 페이지 링크
