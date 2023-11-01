@@ -358,9 +358,7 @@
                         <div class="office_menu">
                             <ul>
                                 <?php if( $member['mb_giup_matching'] == "Y" ) { ?>
-                                    <li><img src="<?=G5_IMG_URL;?>/new_main_eroum/thkc_ico_manage09.svg" alt="수급자 상담관리"><a href="/shop/eroumon_members_conslt_list.php">수급자 상담관리</a></li>
-                                <?php } else { ?>
-                                    <li><img src="<?=G5_IMG_URL;?>/new_main_eroum/thkc_ico_manage09.svg" alt="수급자 상담관리"><a href="/shop/forms_eroumon_matchingservice.php">수급자 상담관리</a></li>
+                                <li><img src="<?=G5_IMG_URL;?>/new_main_eroum/thkc_ico_manage09.svg" alt="수급자 상담관리"><a href="/shop/eroumon_members_conslt_list.php">수급자 상담관리</a></li>
                                 <?php } ?>
 
                                 <?php
