@@ -180,8 +180,10 @@ define('eroumAPI_Key',   'f9793511dea35edee3181513b640a928644025a66e5bccdac8836c
 
 //이로움 1.5 API 연동 url
 if(strpos($_SERVER['HTTP_HOST'],".eroumcare")){
+    define('eroum_HOST', 'https://test.eroum.co.kr');
 	define('eroumAPI_url',   'https://test.eroum.co.kr/eroumcareApi/bplcRecv/callback.json');//dev,test,local 일때
 }else{
+    define('eroum_HOST', 'https://eroum.co.kr');
 	define('eroumAPI_url',   'https://eroum.co.kr/eroumcareApi/bplcRecv/callback.json');//상용서버일때
 }
 

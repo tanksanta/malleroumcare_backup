@@ -131,8 +131,10 @@
             $sql_result = sql_fetch( $sql , "" , $g5['eroumon_db'] ); mysqli_next_result($g5['eroumon_db']);
             
             if( ($sql_result['MCR_ST']!=$_MCR_STTUS_CD) && ($sql_result['CONSLT_NO']===$_MC_cON) && ($sql_result['BPLC_CONSLT_NO']===$_MCR_cON)  ) {
-				$MBR_NM = $sql_result['MBR_NM'];//수급자명
+
+                $RGTR = $sql_result['RGTR']; // 상담신청 회원명
 				$MBR_TELNO = $sql_result['MBR_TELNO'];//수급자 연락처
+
                 // 프로시저 : CALL `PROC_EROUMCARE_CONSLT_UPDATE`('모드', 상담신청NO, 상담배정NO, '변결될상태값', '완료또는 거부시 사유또는 내용', '배정 당시 사업소아이디');                        
                 $sql = (" CALL `PROC_EROUMCARE_CONSLT_UPDATE`('BPLC', {$_MC_cON}, {$_MCR_cON}, '{$_MCR_STTUS_CD}', '{$_MCR_TEXT}', '{$_MCR_ID}'); ");
                 $sql_result = "";
@@ -142,7 +144,7 @@
                 //======================CS04:상담거절, CS06:상담완료 시 알림톡 발송===============================================================================================
 				if($_MCR_STTUS_CD == "CS04" || $_MCR_STTUS_CD == "CS06"){
 					if($_MCR_STTUS_CD == "CS06"){//상담완료 시 알림톡
-						$alimtalk_contents = $MBR_NM."님, 상담이 완료되었습니다.\n상담한 장기요양기관이 마음에 드실 경우 이로움ON에서 상담기관 추천하기 및 관심설정이 가능합니다.\n\n다른 장기요양기관과의 재상담을 원하실 경우\n\n상담 내역 관리에서 재상담 신청이 가능한 점 참고 부탁드립니다.";
+						$alimtalk_contents = $RGTR."님, 상담이 완료되었습니다.\n상담한 장기요양기관이 마음에 드실 경우 이로움ON에서 상담기관 추천하기 및 관심설정이 가능합니다.\n\n다른 장기요양기관과의 재상담을 원하실 경우\n\n상담 내역 관리에서 재상담 신청이 가능한 점 참고 부탁드립니다.";
 						$result2 = send_alim_talk2('CONSLT_REQUEST_'.$MBR_TELNO, $MBR_TELNO, 'ON_00001', $alimtalk_contents, array(
 							'button' => [
 							  array(
@@ -154,7 +156,7 @@
 							]
 						  ),'','1:1상담 진행 완료','2');//내용은 템플릿과 동일 해야 함 
 					}else{//상담거절 시 알림톡
-						$alimtalk_contents = $MBR_NM."님, 요청하신 1:1 상담이 취소되었습니다.\n\n◼︎ 상담 취소일 : ".date("Y-m-d")."\n\n상담을 원하시는 경우 이로움ON에서 다시 상담을 요청해 주세요.";
+						$alimtalk_contents = $RGTR."님, 요청하신 1:1 상담이 취소되었습니다.\n\n◼︎ 상담 취소일 : ".date("Y-m-d")."\n\n상담을 원하시는 경우 이로움ON에서 다시 상담을 요청해 주세요.";
 						$result2 = send_alim_talk2('CONSLT_CANCEL_'.$MBR_TELNO, $MBR_TELNO, 'ON_00002', $alimtalk_contents, array(
 							'button' => [
 							  array(
@@ -209,10 +211,14 @@
                 || $sql_result['MCR_ST']==="CS08" 
                 || $sql_result['MCR_ST']==="CS09" ) { $_conslt_st = true; }
     else if( $sql_result['MCR_ST']==="CS06" ) {
+
+         // 23.11.01 : 서원 - 상담완료 산태에서 상담신청건의 상태값이 재신청일 일 경우 마스킹 처리
+         if($sql_result['MC_ST']==="CS07") { $_conslt_st = true; }
+
         // 상담완료 이후 48시간 초과시 화면 마스킹
         $currentTime = strtotime($sql_result['CONSLT_DT']); // 현재 시간을 타임스탬프로 변환
         $futureTime = $currentTime + (48 * 3600); // 48시간 후의 타임스탬프 계산 (48시간 * 3600초)    
-        if( $futureTime < strtotime( date('Y-m-d H:i:s') ) ) { $_conslt_st = true; }
+        //if( $futureTime < strtotime( date('Y-m-d H:i:s') ) ) { $_conslt_st = true; }
     }
 
     if( !is_array($sql_result) ) { alert("[이로움ON] 1:1 상담 정보를 찾을 수 없습니다.", G5_SHOP_URL . "/eroumon_members_conslt_list.php".(($qstr)?"?".$qstr:"")); }
@@ -273,15 +279,15 @@
                 </tr><tr>
                     <th>실거주지 주소</th><td colspan="3"><?=(!$_conslt_st)?$sql_result['ZIP']." ".$sql_result['ADDR']." ".$sql_result['DADDR']:"-";?></td>
                 </tr><tr>
-                    <th>상담진행형태</th><td colspan="3"><?=$sql_result['Hangeul_CONSLT_STTUS']?></td>
+                    <th>상담진행상태</th><td colspan="3"><?=$sql_result['Hangeul_CONSLT_STTUS']?></td>
                 </tr>
             </table>
         </div>
 
-        <?php if( $sql_result['CUR_CONSLT_RESULT_NO'] !== $sql_result['BPLC_CONSLT_NO'] ) { ?>
+        <?php if( ($sql_result['CUR_CONSLT_RESULT_NO'] !== $sql_result['BPLC_CONSLT_NO']) || ($sql_result['MC_ST']==="CS07") ) { ?>
             <span>※ 수급자의 요청으로 인해 정보가 삭제 되었습니다.</span>
         <?php } else if( $sql_result['MCR_ST']==="CS06" ) { ?>
-            <span>※ 상담완료 처리 이후 48시간까지 상담정보를 확인할수 있습니다.</span>
+            <!-- span>※ 상담완료 처리 이후 48시간까지 상담정보를 확인할수 있습니다.</span -->
         <?php } ?>
 
         <div style="height:20px;"></div>
