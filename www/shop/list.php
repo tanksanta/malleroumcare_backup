@@ -94,7 +94,7 @@ if($ca_sub) {
 	$ca_sub_idx = 1;
 	foreach($ca_sub as $sub) {
 		$ca_id_sub = $ca_id.$sub;
-		$where .= " or ca_id like '$ca_id_sub%'
+		$where .= " or jt.ca_id like '$ca_id_sub%'
 		or ca_id2 like '$ca_id_sub%'
 		or ca_id3 like '$ca_id_sub%' 
 		or ca_id4 like '$ca_id_sub%'
@@ -105,14 +105,14 @@ if($ca_sub) {
 		or ca_id9 like '$ca_id_sub%' 
 		or ca_id10 like '$ca_id_sub%'
 		";
-		$ca_sub_orderby .= " when (ca_id like '$ca_id_sub%'
+		$ca_sub_orderby .= " when (jt.ca_id like '$ca_id_sub%'
 		or ca_id2 like '$ca_id_sub%'
 		or ca_id3 like '$ca_id_sub%') then $ca_sub_idx ";
 		$ca_sub_idx++;
 	}
 	$ca_sub_orderby .= " end, ";
 } else {
-	$where .= " or ca_id like '$ca_id%'
+	$where .= " or jt.ca_id like '$ca_id%'
 	or ca_id2 like '$ca_id%'
 	or ca_id3 like '$ca_id%'
 	or ca_id4 like '$ca_id%'
@@ -146,7 +146,7 @@ $where .= $sql_apms_where;
 if($_COOKIE["prodSupYn"] == "Y" || $_COOKIE["prodSupYn"] == "N"){
 	$prodSupYn = $_COOKIE["prodSupYn"];
 }*/
-if(!$prodSupYn) $prodSupYn = 'Y';
+if(!$prodSupYn && $prodRentalYn != "Y") $prodSupYn = 'Y';
 
 if($prodSupYn) {
 	//setcookie("prodSupYn", $prodSupYn, time() + 86400 * 3650, "/");
@@ -154,6 +154,12 @@ if($prodSupYn) {
 	if($prodSupYn == "Y" || $prodSupYn == "N"){
 		$where .= " AND prodSupYn = '{$prodSupYn}'";
 	}
+}
+
+if($prodRentalYn == "Y"){
+	$where .= " AND it_10_subj = 'rental'";
+}else{
+	$where .= " AND it_10_subj != 'rental'";
 }
 
 // 기타설정(태그선택)
@@ -208,7 +214,9 @@ if ($page < 1) $page = 1;
 $from_record = ($page - 1) * $item_rows;
 
 // 전체 페이지 계산
-$row2 = sql_fetch(" select count(*) as cnt from `{$g5['g5_shop_item_table']}` where $where ");
+$row2 = sql_fetch(" select count(*) as cnt from `{$g5['g5_shop_item_table']}` as jt
+INNER JOIN g5_shop_category c ON jt.ca_id = c.ca_id AND c.ca_use='1'
+where $where ");
 
 // if selected count is 0 then it means it has searched from the subcategory
 // which is dedicated from previous selection 2022.08.03 by Jake
@@ -229,13 +237,16 @@ $num = $total_count - ($page - 1) * $item_rows;
 
 // 커스텀 인덱스
 if ($sort != 'custom') {
-	$list_sql = "select * from `{$g5['g5_shop_item_table']}` where $where order by $ca_sub_orderby $order_by limit $from_record, $item_rows";
+	$list_sql = "select * from `{$g5['g5_shop_item_table']}` as jt
+	INNER JOIN g5_shop_category c ON jt.ca_id = c.ca_id AND c.ca_use='1'
+	where  $where order by $ca_sub_orderby $order_by limit $from_record, $item_rows";
 } else {
 	$list_sql = "select *
 				 from (select *
 					   from `{$g5['g5_shop_item_table']}` a
 					   left join (select it_id as temp_it_id, ca_id as temp_ca_id, custom_index from g5_shop_item_custom_index) b
 					   on (a.it_id = b.temp_it_id) and  (temp_ca_id = '{$ca_id}')) jt
+					   INNER JOIN g5_shop_category c ON jt.ca_id = c.ca_id AND c.ca_use='1' 
 				 where $where order by $ca_sub_orderby custom_index is null asc, custom_index asc, pt_num asc, it_id asc limit $from_record, $item_rows
 				 ";
 }
