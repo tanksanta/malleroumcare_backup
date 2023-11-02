@@ -42,7 +42,7 @@
     <!-- 고정 상단 -->
     <div id="popupHeaderTopWrap">
         <div class="title">인정등급 예상 테스트 결과</div>
-        <div class="close"> <a href="javascript:void(0);" onclick="parent.$('body').removeClass('modal-open'); parent.$('.Popup_TestResult').hide();" > &times; </a> </div>
+        <div class="close"> <a href="javascript:void(0);" onclick="setClose();" > &times; </a> </div>
     </div>
     
     <div style="height:20px;"></div>
@@ -60,27 +60,42 @@
     $apiKey = eroumAPI_Key;//"f9793511dea35edee3181513b640a928644025a66e5bccdac8836cfadb875856";f9793511dea35edee3181513b640a928644025a66e5bccdac8836cfadb875856
     $ch = curl_init(); // 리소스 초기화
     curl_setopt($ch, CURLOPT_URL, eroum_HOST . "/test/result.html?recipientsNo=".$_POST['RECIPIENTS_NO']);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, false);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_POST, false);
 	curl_setopt($ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
 	curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);//ssl 접근시 필요
 	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);//ssl 접근시 필요
 	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 2); // 최초 연결 시도 2초 이내 불가시 연결 취소
     curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-      'eroumAPI_Key:'.$apiKey,
-      'Content-Type: application/json'
+      'eroumAPI_Key:'.$apiKey
     ));
  
     $_result = curl_exec($ch); // 데이터 요청 후 수신
     curl_close($ch);  // 리소스 해제
+
+    if( $_result === "인증되지 않은 접근" ) { alert($_result); exit(); }
+    else if( $_result === " 테스트 항목이 모두 완료되지 않음" ) { alert($_result); exit(); }
+    else if( $_result === "결과 가져오기 실패" ) { alert($_result); exit(); }
+    else { echo( $_result ); }
+
 ?>
 
     <div style="height:30px;"></div>
 
     <!-- 고정 하단 -->
     <div id="popupFooterBtnWrap">
-        <a href="javascript:void(0);" class="btn btn_close" onclick="parent.$('body').removeClass('modal-open'); parent.$('.Popup_TestResult').hide();" > 닫 기 </a>
+        <a href="javascript:void(0);" class="btn btn_close" onclick="setClose();" > 닫 기 </a>
     </div>
+
+    <script>
+
+        // 팝업창 닫기.
+        function setClose() { 
+            parent.$('.Popup_TestResult').hide();
+            parent.$('body').removeClass('modal-open');
+        }
+
+    </script>
 
     <style>
         
