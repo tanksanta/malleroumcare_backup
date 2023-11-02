@@ -106,6 +106,7 @@ if ($it['ca_id']) {
 -->
 
 <style>
+  .rental_use_info_btn {background: #333333;box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.20);width:320px; padding: 20px; color: #FFF; text-align: center; font-size: 22px;font-weight: 700;cursor:pointer;margin: 50px auto;}
   .item-head .item-thumb img { width: 100px; height: 100px; }
   .ca_info { font-weight: 400 !important; }
   .ca_info > .help-block { float: right; margin-right:20px; font-size: 14px; }
@@ -141,6 +142,9 @@ if ($it['ca_id']) {
     body { padding-bottom: 130px; }
     .btn_top_scroll { bottom: 140px; }
     .selfPriceInfo > p { font-size: 14px; }     
+  }
+  @media (max-width : 1198px){
+	.rental_use_info_btn {width:100%; font-size: 18px; padding: 15px 20px;}
   }
 </style>
 
@@ -524,18 +528,29 @@ if ($it['ca_id']) {
     </div>
     <script>
     $(function() {
-      $('.samhwa-item-info-opener').click(function() {
-        $('.samhwa-item-info').show();
+      
+	  $('.samhwa-item-info-opener').click(function() {
+      <?php if($it['it_10_subj'] != "rental"){?>
+		$('.samhwa-item-info').show();
+	  <?php }else{?>
+		location.href='<?=$it["it_10"]?>'
+	  <?php }?>
       });
       $('.item-info-arrowbtn').click(function() {
         $('.samhwa-item-info').hide();
       });
+	  
     });
     </script>
     <?php if ($is_orderable && $member['mb_type'] !== 'normal') { ?>
     <div class="samhwa-item-info-opener mobile">
       <ul class="item-buy-btn">
-        <li class="buy"><input type="submit" onclick="document.pressed=this.value;" value="상품주문" class="btn btn-color btn-block <?php echo $it['prodSupYn'] === 'N' ? 'disabled' : ''; ?>"></li>
+        <?php if($it['it_10_subj'] == "rental"){?>
+			<li style="width:100%">
+				<input type="button" value="렌탈주문" style="width:100%;height: 65px;font-size: 25px;font-weight: 500;background-color: #ef7c00;color: #fff !important;border: none !important;border-radius: 0px !important;cursor: pointer;outline: none;">
+			</li>
+		<?php }else{?>
+		<li class="buy"><input type="submit" onclick="document.pressed=this.value;" value="상품주문" class="btn btn-color btn-block <?php echo $it['prodSupYn'] === 'N' ? 'disabled' : ''; ?>"></li>
         <li class="cart">
           <div class="cart-ok">
             <p>장바구니에 담았습니다.</p>
@@ -546,6 +561,7 @@ if ($it['ca_id']) {
           </div>
           <input type="submit" onclick="document.pressed=this.value;" value="장바구니" class="btn btn-color btn-block">
         </li>
+		<?php }?>
       </ul>
     </div>
     <?php } ?>
@@ -691,8 +707,9 @@ if ($it['ca_id']) {
           <?php if($it['it_type9']){ ?><p class="p_box" style="border:1px solid <?=$default['de_it_type9_color']?>; color:<?=$default['de_it_type9_color']?>;"><?=$default['de_it_type9_name']?></p><?php } ?>
           <?php if($it['it_type10'] || $is_soldout){ ?><p class="p_box" style="border:1px solid <?=$default['de_it_type10_color']?>; color:<?=$default['de_it_type10_color']?>;"><?=$default['de_it_type10_name']?></p><?php } ?>
           <?php if($it['it_type11']){ ?><p class="p_box" style="border:1px solid <?=$default['de_it_type11_color']?>; color:<?=$default['de_it_type11_color']?>;"><?=substr($it['it_deadline'],0,5)." ".$default['de_it_type11_name']?></p><?php } ?>
-          <?php if($it['it_10_subj'] == 'rental'){ ?><p class="p_box" style="border:1px solid red; background-color: red; color:white;"><a href="<?=$it['it_10']?>">렌탈</a></p><?php } ?>
+          <?php if($it['it_10_subj'] == 'rental'){ ?><!--p class="p_box" style="border:1px solid red; background-color: red; color:white;"><a href="<?=$it['it_10']?>">렌탈</a></p --><?php } ?>
 		  <?php if($it['it_type12']){ ?><p class="p_box" style="border:1px solid <?=$default['de_it_type12_color']?>; color:<?=$default['de_it_type12_color']?>;"><?=$default['de_it_type12_name']?></p><?php } ?>
+		  <?php if($it['it_type13']){ ?><p class="p_box" style="border:1px solid <?=$default['de_it_type13_color']?>; color:<?=$default['de_it_type13_color']?>;"><?=$default['de_it_type13_name']?></p><?php } ?>
         </div>
       </div>
 
@@ -1132,7 +1149,12 @@ if ($it['ca_id']) {
       <?php if ($is_orderable && $member['mb_type'] !== 'normal') { ?>
         <div style="text-align:center;" class="item-btns">
           <ul class="item-buy-btn">
-            <li class="buy"><input type="submit" onclick="document.pressed=this.value;" value="상품주문" class="btn btn-<?php echo $btn2;?> btn-block <?php echo $it['prodSupYn'] === 'N' ? 'disabled' : ''; ?>"></li>
+       <?php if($it['it_10_subj'] == "rental"){?>
+			<li style="width:100%">
+				<input type="button" onclick="rental_link()" value="렌탈주문" style="width:100%;height: 65px;font-size: 25px;font-weight: 500;background-color: #ef7c00;color: #fff !important;border: none !important;border-radius: 0px !important;cursor: pointer;outline: none;">
+			</li>
+		<?php }else{?>
+			<li class="buy"><input type="submit" onclick="document.pressed=this.value;" value="상품주문" class="btn btn-<?php echo $btn2;?> btn-block <?php echo $it['prodSupYn'] === 'N' ? 'disabled' : ''; ?>"></li>
             <li class="cart">
               <div class="cart-ok">
                 <p class="pc">선택하신 상품을 장바구니에 담았습니다.</p>
@@ -1144,6 +1166,7 @@ if ($it['ca_id']) {
               </div>
               <input type="submit" onclick="document.pressed=this.value;" value="장바구니" class="btn btn-<?php echo $btn1;?> btn-block">
             </li>
+		<?php }?>
           </ul>
         </div>
         <?php if ( $it['it_10'] != "1") { ?> <!-- 여분필드 10에 네이버페이 노출 1로 할 경우 노출안됨 -->
@@ -1180,6 +1203,10 @@ if ($it['ca_id']) {
           $("select.it_option").addClass("form-control input-sm");
           $("select.it_supply").addClass("form-control input-sm");
         });
+		
+		function rental_link(){
+			window.open('about:blank').location.href='<?=$it["it_10"]?>';
+		}
 
         // 재입고SMS 알림
         function popup_stocksms(it_id, ca_id) {
@@ -1601,6 +1628,22 @@ if ($it['ca_id']) {
       var offset = $("#div" + seq).offset();
       $('html, body').animate({scrollTop : offset.top - 150}, 400);
   }
+  var view = 0;
+  function rental_use_info(){
+	if(view == 0){//이용방법 펼치기전		
+		$("#rental_use_info").fadeIn( 'slow' );
+		$("#rental_use_info_btn").css("display","none");
+		$("#rental_use_info_btn2").css("display","block");
+		view = 1;
+	}else{		
+		$("#rental_use_info").css("display","none");
+		$("#rental_use_info_btn").css("display","block");
+		$("#rental_use_info_btn2").css("display","none");
+		view = 0;
+		var offset = $("#rental_use_info1").offset();
+		$('html, body').animate({scrollTop : offset.top + $( "#rental_use_info1" ).height()}, 100);
+	}
+  }
 </script>
 
 
@@ -1626,7 +1669,22 @@ if ($it['ca_id']) {
       <li class="pc"><a href="#"  onclick="fnMove('4')" ><b>교환/반품/배송정보</b></a></li>
     </ul>
     <div class="tab-pane active" id="div1"> <!-- id="item-explan" -->
-      <div class="item-explan">
+      <?php if($it['it_10_subj'] == "rental"){?>
+		<div class="item-explan">
+		<img src="/img/rental_use_info_1.jpg" width="100%" id="rental_use_info1">
+		<div id="rental_use_info_btn"  class="rental_use_info_btn" onClick="rental_use_info();">
+			이용 방법 상세보기&nbsp;&nbsp;<i class="fa-solid fa-chevron-down"></i>
+		</div>
+		<div id="rental_use_info" style="display:none;">
+		<img src="/img/rental_use_info_2.jpg" width="100%">
+		</div>
+		<div id="rental_use_info_btn2" class="rental_use_info_btn" style="display:none" onClick="rental_use_info();">
+			이용 방법 접기&nbsp;&nbsp;<i class="fa-solid fa-chevron-up"></i>
+		</div>
+		<!--input type="button" value="이용 방법 상세보기 ▼" id="rental_use_info_btn" style="background: #333333;box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.20);display: flex;width: 320px;padding: 20px;flex-direction: column;justify-content:center;align-items: center;gap: 10px;color: #FFF; text-align: center; font-size: 22px;font-weight: 700;" onClick="rental_use_info();"-->
+		</div>
+	  <?php }?>
+	  <div class="item-explan">
         <?php if ($it['pt_explan']) { // 구매회원에게만 추가로 보이는 상세설명 ?>
           <div class="well"><?php echo apms_explan($it['pt_explan']); ?></div>
         <?php } ?>
