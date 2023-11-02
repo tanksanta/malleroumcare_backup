@@ -157,13 +157,13 @@
 						  ),'','1:1상담 진행 완료','2');//내용은 템플릿과 동일 해야 함 
 					}else{//상담거절 시 알림톡
 						$alimtalk_contents = $RGTR."님, 요청하신 1:1 상담이 취소되었습니다.\n\n◼︎ 상담 취소일 : ".date("Y-m-d")."\n\n상담을 원하시는 경우 이로움ON에서 다시 상담을 요청해 주세요.";
-						$result2 = send_alim_talk2('CONSLT_CANCEL_'.$MBR_TELNO, $MBR_TELNO, 'ON_00002', $alimtalk_contents, array(
+						$result2 = send_alim_talk2('CONSLT_CANCEL_'.$MBR_TELNO, $MBR_TELNO, 'ON_00002-', $alimtalk_contents, array(
 							'button' => [
 							  array(
 								'name' => '◼︎ 요양정보 간편조회',
 								'type' => 'WL',
-								'url_mobile' => 'https://eroum.co.kr/main/recipter/list',
-								'url_pc' => 'https://eroum.co.kr/main/recipter/list'
+								'url_mobile' => 'https://eroum.co.kr/main/recipter/sub',
+								'url_pc' => 'https://eroum.co.kr/main/recipter/sub'
 							  ),
 							  array(
 								'name' => '◼︎ 인정 등급 예상 테스트',
