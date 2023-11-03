@@ -2137,7 +2137,7 @@ function send_alim_talk($msgIdx, $recipient, $tmpltCode, $message, $attach = nul
   if(!$token) return null;
 	
   if(strpos($_SERVER['HTTP_HOST'],".eroumcare")){
-	$recipient = "01067651301";//테스트서버에서는 테스트 폰으로만 알림톡 전송 01067651301
+	$recipient = "01067461302";//테스트서버에서는 테스트 폰으로만 알림톡 전송 01067461302
   }
   $data = array(
     'msgIdx' => $msgIdx,
@@ -2173,7 +2173,7 @@ function send_alim_talk2($msgIdx, $recipient, $tmpltCode, $message, $attach = nu
 	$sender_key = BIZTALK_API_SENDER_KEY2;//@이로움on 선택
   }
   if(strpos($_SERVER['HTTP_HOST'],".eroumcare")){
-	$recipient = "01067651301";//테스트서버에서는 테스트 폰으로만 알림톡 전송 01067651301
+	$recipient = "01067461302";//테스트서버에서는 테스트 폰으로만 알림톡 전송 01067461302
   }
   $data = array(
     'msgIdx' => $msgIdx,
