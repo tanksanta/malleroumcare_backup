@@ -101,6 +101,15 @@
 
     if( $eroumon_connect_db ) { 
 
+        $_Search = "";
+
+        $fr_date = clean_xss_attributes( clean_xss_tags( get_search_string( $_GET['fr_date'] ) ) );        
+        $to_date = clean_xss_attributes( clean_xss_tags( get_search_string( $_GET['to_date'] ) ) );
+        
+        $search = clean_xss_attributes( clean_xss_tags( get_search_string( $_GET['search'] ) ) );
+        $srchConsltSttus = clean_xss_attributes( clean_xss_tags( get_search_string( $_GET['srchConsltSttus'] ) ) );
+        $sel_field = clean_xss_attributes( clean_xss_tags( get_search_string( $_GET['sel_field'] ) ) );
+
         // 날짜검색
         if ($fr_date && $to_date) {
             $to_date = $to_date . ' 23:59:59';
@@ -109,20 +118,17 @@
             $to_date = date("Y-m-d H:i:s",strtotime("0 day", time()));
         }
 
-        $_Search = "";
-        $search = clean_xss_attributes( clean_xss_tags( get_search_string( $_POST['search'] ) ) );
-
         // 상태값 선택에 따른 SQL 쿼리문.
-        if( $srchConsltSttus=="CS02" ) $_Search = "AND ((MCR.CONSLT_STTUS=''CS02'') OR (MCR.CONSLT_STTUS=''CS08''))";                                           // 상담 접수 중
-        else if( $srchConsltSttus=="CS05" ) $_Search = "AND (MCR.CONSLT_STTUS=''CS05'')";                                                                       // 상담 진행 중
-        else if( $srchConsltSttus=="CANCEL" ) $_Search = "AND ((MCR.CONSLT_STTUS=''CS03'') OR (MCR.CONSLT_STTUS=''CS04'') OR (MCR.CONSLT_STTUS=''CS09''))";     // 상담 취소
-        else if( $srchConsltSttus=="CS06" ) $_Search = "AND (MCR.CONSLT_STTUS=''CS06'')";                                                                       // 상담 완료
+        if( $srchConsltSttus == "CS02" ) $_Search = "AND ((MCR.CONSLT_STTUS=''CS02'') OR (MCR.CONSLT_STTUS=''CS08''))";                                           // 상담 접수 중
+        else if( $srchConsltSttus == "CS05" ) $_Search = "AND (MCR.CONSLT_STTUS=''CS05'')";                                                                       // 상담 진행 중
+        else if( $srchConsltSttus == "CANCEL" ) $_Search = "AND ((MCR.CONSLT_STTUS=''CS03'') OR (MCR.CONSLT_STTUS=''CS04'') OR (MCR.CONSLT_STTUS=''CS09''))";     // 상담 취소
+        else if( $srchConsltSttus == "CS06" ) $_Search = "AND (MCR.CONSLT_STTUS=''CS06'')";                                                                       // 상담 완료
         
         // 검색에 따른 (전체, 이름, 연락처) SQL 쿼리문 - 해당 쿼리는 LIKE를 기반으로 한다.
-        if( $sel_field=="NM" ) $_Search .= "AND (MC.MBR_NM LIKE ''%{$search}%'')";
-        else if( $sel_field=="TELNO" ) $_Search .= "AND (MC.MBR_TELNO LIKE ''%{$search}%'')";
-        else if( $sel_field=="all" && $search ) $_Search .= "AND ((MC.MBR_NM LIKE ''%{$search}%'') OR (MC.MBR_TELNO LIKE ''%{$search}%''))";
-
+        if( $sel_field == "NM" ) $_Search .= "AND (MC.MBR_NM LIKE ''%{$search}%'')";
+        else if( $sel_field == "TELNO" ) $_Search .= "AND (MC.MBR_TELNO LIKE ''%{$search}%'')";
+        else if( $sel_field == "all" && $search ) $_Search .= "AND ((MC.MBR_NM LIKE ''%{$search}%'') OR (MC.MBR_TELNO LIKE ''%{$search}%''))";
+        
         // 페이지 진입에 따른 조건 기준으로 검색된 검색 개수.
         $sql = (" CALL `PROC_EROUMCARE_CONSLT`('cnt','{$member['mb_giup_bnum']}', '{$fr_date}', '{$to_date}', NULL, NULL, '{$_Search}'); ");
         $sql_result = "";
@@ -152,7 +158,7 @@
     // == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == ==
 
     // 페이징 되는 주소 파라미터
-    $qstr = ("fr_date={$fr_date}&to_date=".substr($to_date,0,10)."&srchConsltSttus={$srchConsltSttus}&sel_field={$sel_field}&page={$page}&list_num={$list_num}");
+    $qstr = ("fr_date={$fr_date}&to_date=".substr($to_date,0,10)."&srchConsltSttus={$srchConsltSttus}&sel_field={$sel_field}&page={$page}&search={$search}&list_num={$list_num}");
 
     // == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == ==
     // 페이지 처리 부분 종료

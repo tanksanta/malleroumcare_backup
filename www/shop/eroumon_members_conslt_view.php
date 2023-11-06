@@ -98,7 +98,7 @@
     $qstr = "";
     if( $_SERVER['REQUEST_METHOD']==="GET" ) {
         // 페이징 되는 주소 파라미터
-        $qstr = ("fr_date={$fr_date}&to_date=".substr($to_date,0,10)."&srchConsltSttus={$srchConsltSttus}&sel_field={$sel_field}&page={$page}&list_num={$list_num}");
+        $qstr = ("fr_date={$fr_date}&to_date=".substr($to_date,0,10)."&srchConsltSttus={$srchConsltSttus}&sel_field={$sel_field}&search={$search}&page={$page}&list_num={$list_num}");
     } else if( $_SERVER['REQUEST_METHOD']==="POST" ) {
         // POST로 넘겨 받은 view진입전 페이지 값 처리.
         $qstr = $_qstr;
