@@ -265,9 +265,9 @@
                     <th>상담유형 상세</th>
                     <td>
                         <?php if( (!$_conslt_st) && ($sql_result['PREV_PATH'] == "test") ) { ?>
-                            <a href="javascript:void(0);" id="TestResult" data-rno="<?=$sql_result['RECIPIENTS_NO']?>" class="link_btn">상세보기</a>
+                            <a href="javascript:void(0);" id="TestResult" data-rno="<?=$sql_result['RECIPIENTS_NO']?>" class="link_btn">테스트 결과</a>
                         <?php } else if( (!$_conslt_st) && ($sql_result['PREV_PATH'] == "simpleSearch") ) { ?>
-                            <a href="javascript:void(0);" id="simpleSearchResult" data-pennum="<?=$sql_result['RCPER_RCOGN_NO']?>" data-pennm="<?=$sql_result['MBR_NM']?>" class="link_btn">상세보기</a>
+                            <a href="javascript:void(0);" id="simpleSearchResult" data-pennum="<?=$sql_result['RCPER_RCOGN_NO']?>" data-pennm="<?=$sql_result['MBR_NM']?>" class="link_btn">요양정보조회</a>
                         <?php } else { echo("-"); } ?>
                     </td>
                 </tr><tr>
