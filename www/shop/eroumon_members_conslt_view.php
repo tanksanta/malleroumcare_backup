@@ -201,24 +201,24 @@
     // == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == ==
 
 
-    $_conslt_st = false;
-    if( $sql_result['CUR_CONSLT_RESULT_NO'] !== $sql_result['BPLC_CONSLT_NO'] ) { $_conslt_st = true; }
+    $_hide = false;
+    if( $sql_result['CUR_CONSLT_RESULT_NO'] !== $sql_result['BPLC_CONSLT_NO'] ) { $_hide = true; }
     else if( $sql_result['MCR_ST']==="CS01" 
                 || $sql_result['MCR_ST']==="CS02" 
                 || $sql_result['MCR_ST']==="CS03" 
                 || $sql_result['MCR_ST']==="CS04" 
                 || $sql_result['MCR_ST']==="CS07" 
                 || $sql_result['MCR_ST']==="CS08" 
-                || $sql_result['MCR_ST']==="CS09" ) { $_conslt_st = true; }
+                || $sql_result['MCR_ST']==="CS09" ) { $_hide = true; }
     else if( $sql_result['MCR_ST']==="CS06" ) {
 
          // 23.11.01 : 서원 - 상담완료 산태에서 상담신청건의 상태값이 재신청일 일 경우 마스킹 처리
-         if($sql_result['MC_ST']==="CS07") { $_conslt_st = true; }
+         if($sql_result['MC_ST']==="CS07") { $_hide = true; }
 
         // 상담완료 이후 48시간 초과시 화면 마스킹
         $currentTime = strtotime($sql_result['CONSLT_DT']); // 현재 시간을 타임스탬프로 변환
         $futureTime = $currentTime + (48 * 3600); // 48시간 후의 타임스탬프 계산 (48시간 * 3600초)    
-        //if( $futureTime < strtotime( date('Y-m-d H:i:s') ) ) { $_conslt_st = true; }
+        //if( $futureTime < strtotime( date('Y-m-d H:i:s') ) ) { $_hide = true; }
     }
 
     if( !is_array($sql_result) ) { alert("[이로움ON] 1:1 상담 정보를 찾을 수 없습니다.", G5_SHOP_URL . "/eroumon_members_conslt_list.php".(($qstr)?"?".$qstr:"")); }
@@ -255,31 +255,47 @@
 						<col width="30%"/>
                 </colgroup>
                 <tr>
-                    <th>수급자 성명</th><td><?=( !$_conslt_st || ($sql_result['MCR_ST']==="CS02") || ($sql_result['MCR_ST']==="CS08") )?$sql_result['MBR_NM']:Masking_Name($sql_result['MBR_NM']);?></td>
-                    <th>수급자와의 관계</th><td><?=(!$_conslt_st)?$sql_result['Hangeul_RELATION_CD']:"-"?></td>
+                    <th>수급자 성명</th>
+                    <td><?=( !$_hide || ($sql_result['MCR_ST']==="CS02") || ($sql_result['MCR_ST']==="CS08") )?$sql_result['MBR_NM']:Masking_Name($sql_result['MBR_NM']);?></td>
+
+                    <th>수급자와의 관계</th>
+                    <td><?=(!$_hide)?$sql_result['Hangeul_RELATION_CD']:"-"?></td>
                 </tr><tr>
-                    <th>ON회원아이디</th><td><?=(!$_conslt_st)?$sql_result['REG_ID']:"-"?></td>
-                    <th>상담유형</th><td><?=(!$_conslt_st || ($sql_result['MCR_ST']==="CS02") || ($sql_result['MCR_ST']==="CS08") )?$sql_result['Hangeul_PREV_PATH']:"-"?></td>
+                    <th>ON회원아이디</th>
+                    <td><?=(!$_hide)?$sql_result['REG_ID']:"-"?></td>
+
+                    <th>상담유형</th>
+                    <td><?=(!$_hide || ($sql_result['MCR_ST']==="CS02") || ($sql_result['MCR_ST']==="CS08") )?$sql_result['Hangeul_PREV_PATH']:"-"?></td>
                 </tr><tr>
-                    <th>성별</th><td><?=(!$_conslt_st)?$sql_result['Hangeul_GENDER']:"-"?></td>
+                    <th>성별</th>
+                    <td><?=(!$_hide)?$sql_result['Hangeul_GENDER']:"-"?></td>
+
                     <th>상담유형 상세</th>
                     <td>
-                        <?php if( (!$_conslt_st) && ($sql_result['PREV_PATH'] == "test") ) { ?>
-                            <a href="javascript:void(0);" id="TestResult" data-rno="<?=$sql_result['RECIPIENTS_NO']?>" class="link_btn">테스트 결과</a>
-                        <?php } else if( (!$_conslt_st) && ($sql_result['PREV_PATH'] == "simpleSearch") ) { ?>
-                            <a href="javascript:void(0);" id="simpleSearchResult" data-pennum="<?=$sql_result['RCPER_RCOGN_NO']?>" data-pennm="<?=$sql_result['MBR_NM']?>" class="link_btn">요양정보조회</a>
+                        <?php if( (!$_hide) && ($sql_result['PREV_PATH'] === "test") ) { ?>
+                        <a href="javascript:void(0);" id="TestResult" data-rno="<?=$sql_result['RECIPIENTS_NO']?>" class="link_btn">테스트 결과</a>
+                        <?php } else if( (!$_hide) && ($sql_result['PREV_PATH'] === "simpleSearch") ) { ?>
+                        <a href="javascript:void(0);" id="simpleSearchResult" data-pennum="<?=$sql_result['RCPER_RCOGN_NO']?>" data-pennm="<?=$sql_result['MBR_NM']?>" class="link_btn">요양정보조회</a>
                         <?php } else { echo("-"); } ?>
                     </td>
                 </tr><tr>
-                    <th>생년월일</th><td><?=(!$_conslt_st)?$sql_result['BRDT']:"-";?></td>
-                    <th>요양인정번호</th><td><?php if( !$_conslt_st ) { ?><?=($sql_result['RCPER_RCOGN_NO'])?"있음":"없음";?><?php } else { echo("-"); } ?></td>
+                    <th>생년월일</th>
+                    <td><?=(!$_hide)?$sql_result['BRDT']:"-";?></td>
+
+                    <th>요양인정번호</th>
+                    <td><?php if( !$_hide ) { ?><?=($sql_result['RCPER_RCOGN_NO'])?"있음":"없음";?><?php } else { echo("-"); } ?></td>
                 </tr><tr>
-                    <th>상담받을 연락처</th><td><?=(!$_conslt_st)?$sql_result['MBR_TELNO']:"-";?></td>
-                    <th>상담신청일시</th><td><?=$sql_result['MC_REG_DT']?></td>
+                    <th>상담받을 연락처</th>
+                    <td><?=(!$_hide)?$sql_result['MBR_TELNO']:"-";?></td>
+
+                    <th>상담신청일시</th>
+                    <td><?=$sql_result['MC_REG_DT']?></td>
                 </tr><tr>
-                    <th>실거주지 주소</th><td colspan="3"><?=(!$_conslt_st)?$sql_result['ZIP']." ".$sql_result['ADDR']." ".$sql_result['DADDR']:"-";?></td>
+                    <th>실거주지 주소</th>
+                    <td colspan="3"><?=(!$_hide)?$sql_result['ZIP']." ".$sql_result['ADDR']." ".$sql_result['DADDR']:"-";?></td>
                 </tr><tr>
-                    <th>상담진행상태</th><td colspan="3"><?=$sql_result['Hangeul_CONSLT_STTUS']?></td>
+                    <th>상담진행상태</th>
+                    <td colspan="3"><?=$sql_result['Hangeul_CONSLT_STTUS']?></td>
                 </tr>
             </table>
         </div>
@@ -292,7 +308,7 @@
 
         <div style="height:20px;"></div>
 
-        <?php if( (($sql_result['MCR_ST']=="CS03") || ($sql_result['MCR_ST']=="CS04") || ($sql_result['MCR_ST']=="CS09")) && ($sql_result['CANCL_RESN']) ) {?>
+        <?php if( (($sql_result['MCR_ST']==="CS03") || ($sql_result['MCR_ST']==="CS04") || ($sql_result['MCR_ST']==="CS09")) && ($sql_result['CANCL_RESN']) ) {?>
 
         <section class="wrap"><div class="sub_section_tit" style="font-size: 20px;">상담 취소 사유</div></section>
         <div class="list_box">
@@ -306,7 +322,7 @@
             </table>
         </div>
 
-        <?php } else if( ($sql_result['MCR_ST']=="CS05") || ($sql_result['MCR_ST']=="CS06") ) { ?>
+        <?php } else if( ($sql_result['MCR_ST']==="CS05") || ($sql_result['MCR_ST']==="CS06") ) { ?>
         
         <section class="wrap"><div class="sub_section_tit" style="font-size: 20px;">상담 내용(맴버스관리자메모)</div></section>
         <div class="list_box">
@@ -320,13 +336,13 @@
                     <th>상담진행상태</th>
                     <td>
                         <?=$sql_result['Hangeul_CONSLT_STTUS']?>
-                        <?php if( $sql_result['MCR_ST']=="CS06" ) { /* echo(" ( " . $sql_result['CONSLT_DT']) . ")";*/ } ?>
+                        <?php if( $sql_result['MCR_ST']==="CS06" ) { /* echo(" ( " . $sql_result['CONSLT_DT']) . ")";*/ } ?>
                     </td>
                 </tr>
                 <tr style="height:120px;">
                     <th>상담내용</th>
                     <td>
-                    <?php if( $sql_result['MCR_ST']=="CS06" ) { ?>
+                    <?php if( $sql_result['MCR_ST']==="CS06" ) { ?>
                         <?=nl2br( $sql_result['CONSLT_DTLS'] );?>
                     <?php } else { ?>
                         <textarea id="consltDtls" name="consltDtls" class="CONSLT_DTLS " title="메모" cols="30" rows="5"><?=$sql_result['CONSLT_DTLS']?></textarea>
@@ -340,13 +356,13 @@
         <?php } ?>
 
         <div class="list_box text-right">
-            <?php if( ($sql_result['MCR_ST']=="CS02") || ($sql_result['MCR_ST']=="CS08") ) { ?>
+            <?php if( ($sql_result['MCR_ST']==="CS02") || ($sql_result['MCR_ST']==="CS08") ) { ?>
             <button type="button" id="STTUS_CO5" class="btn-list btn-success btn-lg" data-sttus="CS05">상담수락</button>
             <button type="button" id="STTUS_CO4" class="btn-list btn-danger btn-lg" data-sttus="CS04">상담거부</button>
             <?php } ?>
 
 
-            <?php if( ($sql_result['MCR_ST']=="CS01") || ($sql_result['MCR_ST']=="CS05") || ($sql_result['MCR_ST']=="CS07") ) { ?>
+            <?php if( ($sql_result['MCR_ST']==="CS01") || ($sql_result['MCR_ST']==="CS05") || ($sql_result['MCR_ST']==="CS07") ) { ?>
             <?php
                 /*
                     // 23.10.25 : 서원  - 기획팀(박은정차장) 요청으로 해당 기능 버튼 숨김 처리함. !!!!!!!!!!!!!
@@ -355,7 +371,7 @@
             ?>
             <?php } ?>
             
-            <?php if( ($sql_result['MCR_ST']=="CS05") ) { ?>
+            <?php if( ($sql_result['MCR_ST']==="CS05") ) { ?>
             <button type="submit" id="STTUS_CO6" class="btn-list btn-success btn-lg" data-sttus="CS06">상담완료</button>
             <?php } ?>
             
@@ -391,14 +407,8 @@
 
     <div style="padding: 100px 0px;"></div>
 
-
-    <!-- 231020 인정등급 예상 결과테스트 모달 -->
-    <div id="popupTestResultBox" class="Popup_TestResult"><div></div></div>
-    <!-- 231020 인정등급 예상 결과테스트 모달 -->
-
-    <!-- 231025 수급자 조회용 모달 -->
-    <div id="popupsimpleSearchBox" class="Popup_simpleSearch"><div></div></div>
-    <!-- 231025 수급자 조회용 모달 -->
+    <!-- 231020 인정등급 예상 결과테스트 모달 --><div id="popupTestResultBox" class="Popup_TestResult"><div></div></div><!-- 231020 인정등급 예상 결과테스트 모달 -->
+    <!-- 231025 수급자 조회용 모달 --><div id="popupsimpleSearchBox" class="Popup_simpleSearch"><div></div></div><!-- 231025 수급자 조회용 모달 -->
 
 
     <script>
@@ -535,8 +545,6 @@
         .CONSLT_DTLS { border-radius: 0.5rem; width:100%; padding:10px; resize: none; line-height: normal; height: 150px; }
 
     </style>
-
-
 
 
 <?php

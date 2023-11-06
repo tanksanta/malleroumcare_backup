@@ -261,44 +261,61 @@
             for($i=0; $row=sql_fetch_array($sql_result); $i++) {
                 $bg = 'bg'.($i%2);
 
-                $_conslt_st = false;
-                if( $row['CUR_CONSLT_RESULT_NO'] !== $row['BPLC_CONSLT_NO'] ) { $_conslt_st = true; }
+                $_hide = false;
+
+                if( $row['CUR_CONSLT_RESULT_NO'] !== $row['BPLC_CONSLT_NO'] ) { $_hide = true; }
                 else if( $row['MCR_ST']==="CS01" 
                             || $row['MCR_ST']==="CS02" 
                             || $row['MCR_ST']==="CS03" 
                             || $row['MCR_ST']==="CS04" 
                             || $row['MCR_ST']==="CS07" 
                             || $row['MCR_ST']==="CS08" 
-                            || $row['MCR_ST']==="CS09" ) { $_conslt_st = true; }
+                            || $row['MCR_ST']==="CS09" ) { $_hide = true; }
                 else if( $row['MCR_ST']==="CS06" ) {
 
                     // 23.11.01 : 서원 - 상담완료 산태에서 상담신청건의 상태값이 재신청일 일 경우 마스킹 처리
-                    if($row['MC_ST']==="CS07") { $_conslt_st = true; }
+                    if($row['MC_ST']==="CS07") { $_hide = true; }
 
                     // 상담완료 이후 48시간 초과시 화면 마스킹
                     $currentTime = strtotime($row['CONSLT_DT']); // 현재 시간을 타임스탬프로 변환
                     $futureTime = $currentTime + (48 * 3600); // 48시간 후의 타임스탬프 계산 (48시간 * 3600초)    
-                    //if( $futureTime < strtotime( date('Y-m-d H:i:s') ) ) { $_conslt_st = true; }
+                    //if( $futureTime < strtotime( date('Y-m-d H:i:s') ) ) { $_hide = true; }
                 }
-
         ?>    
             <tr class="<?=$bg?>" >
 
-                <td style="text-align: center;"><?=($total_count - (($page - 1) * $page_rows) - $i);?></td>
                 <td style="text-align: center;">
+                    <?php /* 주석 : 번호 */ ?>
+                    <?=($total_count - (($page - 1) * $page_rows) - $i);?>
+                </td>
+                <td style="text-align: center;">
+                    <?php /* 주석 : 상담진행상태 */ ?>
                     <a href="./eroumon_members_conslt_view.php?consltID=<?=$row['BPLC_CONSLT_NO'];?>&<?=$qstr?>">
-                        <span style="<?=( $_conslt_st && ($row['MCR_ST']!=="CS06") )?"color:red;":"" ?>"><?=$row['Hangeul_CONSLT_STTUS']?></span>
+                        <span style="<?=( $_hide && ($row['MCR_ST']!=="CS06") )?"color:red;":"" ?>"><?=$row['Hangeul_CONSLT_STTUS']?></span>
                     </a>
                 </td>
                 <td style="text-align: center;">
+                    <?php /* 주석 : 수급자 성명 */ ?>
                     <a href="./eroumon_members_conslt_view.php?consltID=<?=$row['BPLC_CONSLT_NO'];?>&<?=$qstr?>" class="link_btn">
-                        <?=( !$_conslt_st || ($row['MCR_ST']==="CS02") || ($row['MCR_ST']==="CS08") )?$row['MBR_NM']:Masking_Name($row['MBR_NM']);?>
+                        <?=( !$_hide && (($row['MCR_ST']==="CS05") || ($row['MCR_ST']==="CS06")) )?$row['MBR_NM']:Masking_Name($row['MBR_NM']);?>
                     </a>
                 </td>
-                <td style="text-align: center;"><?=(!$_conslt_st)?Masking_Tel($row['MBR_TELNO']):"-";?></td>
-                <td style="text-align: center; font-size:13px;"><?=(!$_conslt_st)?$row['ZIP']." ".$row['ADDR']:"-";?></td>
-                <td style="text-align: center;"><?=$row['MC_REG_DT']?></span></td>
-                <td style="text-align: center;"><?=$row['MCR_REG_DT']?></span></td>
+                <td style="text-align: center;">
+                    <?php /* 주석 : 상담받을 연락처 */ ?>
+                    <?=(!$_hide)?Masking_Tel($row['MBR_TELNO']):"-";?>
+                </td>
+                <td style="text-align: center; font-size:13px;">
+                    <?php /* 주석 : 실거주지주소 */ ?>
+                    <?=(!$_hide)?$row['ZIP']." ".$row['ADDR']:"-";?>
+                </td>
+                <td style="text-align: center;">
+                    <?php /* 주석 : 상담신청일시 */ ?>
+                    <?=$row['MC_REG_DT']?>
+                </td>
+                <td style="text-align: center;">
+                    <?php /* 주석 : 상담배정일시 */ ?>
+                    <?=$row['MCR_REG_DT']?>
+                </td>
 
             </tr>
         <?php } ?>
