@@ -57,6 +57,13 @@ if(!isset($config['cf_facebook_appid'])) {
                     ADD `cf_twitter_secret` VARCHAR(255) NOT NULL AFTER `cf_twitter_key` ", true);
 }
 
+//알림톡 사용 유무 설정 필드 생성
+if(!isset($config['cf_alim_use'])) {
+    sql_query(" ALTER TABLE `{$g5['config_table']}`
+                    ADD `cf_alim_use` VARCHAR(5) NOT NULL DEFAULT 'Y' AFTER `cf_10`,
+                    ADD `cf_alim_num` VARCHAR(20) NULL AFTER `cf_10`", true);
+}
+
 // uniqid 테이블이 없을 경우 생성
 if(!sql_query(" DESC {$g5['uniqid_table']} ", false)) {
     sql_query(" CREATE TABLE IF NOT EXISTS `{$g5['uniqid_table']}` (
@@ -278,6 +285,7 @@ $pg_anchor = '<ul class="anchor">
     <li><a href="#anc_cf_sns">SNS</a></li>
     <li><a href="#anc_cf_lay">레이아웃 추가설정</a></li>
     <li><a href="#anc_cf_sms">SMS</a></li>
+	<li><a href="#anc_cf_alim">알림톡설정</a></li>
     <li><a href="#anc_cf_extra">여분필드</a></li>
 </ul>';
 
@@ -1358,6 +1366,40 @@ if ($config['cf_sms_use'] && $config['cf_icode_id'] && $config['cf_icode_pw']) {
             </td>
         </tr>
         <?php } ?>
+        </tbody>
+        </table>
+    </div>
+</section>
+
+<section id="anc_cf_alim">
+    <h2 class="h2_frm">알림톡</h2>
+    <?php echo $pg_anchor ?>
+
+    <div class="tbl_frm01 tbl_wrap">
+        <table>
+        <caption>알림톡 설정</caption>
+        <colgroup>
+            <col class="grid_4">
+            <col>
+        </colgroup>
+        <tbody>
+        <tr>
+            <th scope="row"><label for="cf_alim_use">알림톡 사용</label></th>
+            <td>
+                <select id="cf_alim_use" name="cf_alim_use">
+                    <option value="N" <?php echo get_selected($config['cf_alim_use'], 'N'); ?>>사용안함</option>
+                    <option value="Y" <?php echo get_selected($config['cf_alim_use'], 'Y'); ?>>사용함</option>
+                </select>
+            </td>
+        </tr>        
+        <tr>
+            <th scope="row"><label for="cf_alim_num">알림톡 모니터링 번호</label></th>
+            <td>
+                <?php echo help("테스트 서버 알림톡 모니터링 번호를 입력합니다.\n 등록 된 번호가 있을 경우 해당 번호로만 알림톡이 발송 됩니다.(테스트 서버에서만 작동)"); ?>
+                <input type="text" name="cf_alim_num" value="<?php echo $config['cf_alim_num']; ?>" id="cf_alim_num" class="frm_input" size="20">
+            </td>
+        </tr>
+        
         </tbody>
         </table>
     </div>
