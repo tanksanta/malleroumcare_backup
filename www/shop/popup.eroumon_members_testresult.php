@@ -34,8 +34,10 @@
 
     if(!$is_member) { alert("먼저 로그인하세요."); }
     
-    if(strpos($_SERVER['REQUEST_METHOD'], 'POST') === false) { alert(""); }
-    if( !$_POST['RECIPIENTS_NO'] || ($_POST['RECIPIENTS_NO'] === "undefined") ) { alert(""); }
+    $view_err = false;
+
+    if(strpos($_SERVER['REQUEST_METHOD'], 'POST') === false) { $view_err = true; }
+    if( !$_POST['RECIPIENTS_NO'] || ($_POST['RECIPIENTS_NO'] === "undefined") ) { $view_err = true; }
 
 ?>
 
@@ -66,18 +68,29 @@
 	curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);//ssl 접근시 필요
 	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);//ssl 접근시 필요
 	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 2); // 최초 연결 시도 2초 이내 불가시 연결 취소
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-      'eroumAPI_Key:'.$apiKey
-    ));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array( 'eroumAPI_Key:'.$apiKey ));
  
     $_result = curl_exec($ch); // 데이터 요청 후 수신
     curl_close($ch);  // 리소스 해제
 
-    if( $_result === "인증되지 않은 접근" ) { alert($_result); exit(); }
-    else if( $_result === " 테스트 항목이 모두 완료되지 않음" ) { alert($_result); exit(); }
-    else if( $_result === "결과 가져오기 실패" ) { alert($_result); exit(); }
-    else { echo( $_result ); }
+    if( $_result === "인증되지 않은 접근" ) { $view_err = true; }
+    else if( $_result === "테스트 항목이 모두 완료되지 않음" ) { $view_err = true; }
+    else if( $_result === "결과 가져오기 실패" ) { $view_err = true; }
+    else {  }
 
+    /* 23.11.07 : 서원 - 이로움ON 에서 가져오는 데이터에 에러가 없다면 인정등급테스트 메일링코드 출력. // 문제가 있다면 에러 화면 출력! */
+    if( $view_err ) { 
+        echo("
+            <div style=\"width:100%; margin:25% 0px; text-align:center; font-family:'Noto Sans KR',sans-serif;\">
+                <img src='/img/warn1.png' alt='경고'>
+                <p>죄송합니다.</p>
+                <p><span style=\"font-weight:900;\">일시적 오류</span>가 발생했습니다.</p>
+                <p>잠시후 다시 시도해 주세요.</p>
+            </div>
+        ");
+    } else {        
+        echo( $_result );
+    }
 ?>
 
     <div style="height:30px;"></div>
