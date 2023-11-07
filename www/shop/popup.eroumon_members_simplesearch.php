@@ -41,11 +41,33 @@
 
     if( !$is_member ) { alert("먼저 로그인하세요."); }
     if( $member['mb_type'] !== 'default' ) { alert("사업소 회원만 접근 가능합니다."); }
-    if( ($member["cert_reg_sts"]!="Y") || (!$member["cert_data_ref"]) ) { alert("공인인증서 등록 후 확인 가능합니다.\\n회원정보 수정 메뉴에서 공인인증서 등록 후 사용해주세요."); }
+
+	$_errCK = false;
+	$_msg = "";
+	$_url = "";
+    if( ($member["cert_reg_sts"]!="Y") || (!$member["cert_data_ref"]) ) { 
+		$_errCK = true;
+		$_msg = "공인인증서 등록 후 확인 가능합니다. \\n회원정보 수정 메뉴에서 공인인증서 등록 후 사용해주세요.";
+		$_url = "/bbs/member_confirm.php?url=member_info_newform.php&STEP=stop04";
+	}
 	if( $member["cert_data_ref"] ) {
         $cert_data_ref =  explode("|",$member["cert_data_ref"]);
-        if( strtotime(base64_decode($cert_data_ref[2])." 23:59:59") < time() ) { alert("등록된 인증서의 기간이 만료 되었습니다. \\n회원정보 수정 메뉴에서 새로운 공인인증서를 등록 후 사용해주세요."); }
+        if( strtotime(base64_decode($cert_data_ref[2])." 23:59:59") < time() ) { 
+			$_errCK = true;
+			$_msg = "등록된 인증서의 기간이 만료 되었습니다. \\n회원정보 수정 메뉴에서 새로운 공인인증서를 등록 후 사용해주세요.";
+			$_url = "/bbs/member_confirm.php?url=member_info_newform.php&STEP=stop04";
+		}
     }
+
+	if( $_errCK ) {
+		echo("
+			<script>
+				alert('" . $_msg . "');
+				window.parent.document.location.href = '" . $_url . "';
+			</script>
+		");
+	}
+
 
     $_penNum = clean_xss_attributes( clean_xss_tags( get_search_string( $_POST['penNum'] ) ) );
     $_penNm = clean_xss_attributes( clean_xss_tags( get_search_string( $_POST['penNm'] ) ) );    
@@ -603,39 +625,38 @@
 	        });
 
 			const ItemCnt = {
-                '이동변기': '1',
-                '목욕의자': '1',
-                '안전손잡이': '10',
-                '미끄럼방지용품': '11',
-                '미끄럼방지용품_양말': '6',
-                '미끄럼방지용품_매트/방지액': '5',
-                '미끄럼방지용품_시스템미등록': '5',
-                '간이변기': '2',
-                '지팡이': '1',
-                '욕창예방매트리스': '1',
-                '욕창예방방석': '1',
-                '자세변환용구': '5',
-                '성인용보행기': '2',
-                '요실금팬티': '4',
-                '경사로(실내용)': '6',
-                '수동휠체어': '1',
-                '전동침대': '1',
-                '욕창예방매트리스': '1',
-                '이동욕조': '1',
-                '목욕리프트': '1',
-                '배회감지기': '1',
-                '경사로(실외용)': '1',
-                '수동침대': '1'
+				'간이변기': 2
+				,'경사로(실내용)': 6
+				,'경사로(실외용)': 1
+				,'미끄럼방지용품': 11
+				,'미끄럼방지용품_매트/방지액': 5
+				,'미끄럼방지용품_시스템미등록': 5
+				,'미끄럼방지용품_양말': 6
+				,'목욕의자': 1
+				,'목욕리프트': 1
+				,'배회감지기': 1
+				,'성인용보행기': 2
+				,'수동침대': 1
+				,'수동휠체어': 1
+				,'안전손잡이': 10
+				,'이동변기': 1
+				,'이동욕조': 1
+				,'자세변환용구': 5
+				,'전동침대': 1
+				,'지팡이': 1
+				,'욕창예방매트리스': 1
+				,'욕창예방방석': 1
+				,'요실금팬티': 4
 			};
 
 			const UseDurable = {
-				'이동변기': '5',
-				'목욕의자': '5',
-				'성인용보행기': '5',
-				'지팡이': '2',
-				'욕창예방매트리스': '3',
-				'욕창예방방석': '3',
-				'경사로(실내용)': '2'
+				'경사로(실내용)': 2
+				,'목욕의자': 5
+				,'성인용보행기': 5
+				,'욕창예방매트리스': 3
+				,'욕창예방방석': 3
+				,'이동변기': 5
+				,'지팡이': 2
 			};
 
 			const tmpItemList = <?=json_encode($prodPayCodeArray)?> ;
