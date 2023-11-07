@@ -2125,8 +2125,12 @@ function get_biztalk_token() {
   return $result['token'] ?: null;
 }
 
+define('cf_alim_use', $config['cf_alim_use']);//알림톡 사용유무
+define('cf_alim_num', $config['cf_alim_num']);//알림톡 모니터링 번호
+
 // 비즈톡 알림톡 전송
 function send_alim_talk($msgIdx, $recipient, $tmpltCode, $message, $attach = null, $token = null) {
+  if(cf_alim_use != 'Y') return null;
   if(!$token && ($_SESSION["biztalk_token"] == "" || time()>$_SESSION["token_time"])){
 		$_SESSION["biztalk_token"] = $token = get_biztalk_token();
 		$_SESSION["token_time"] = strtotime("+1 days");
@@ -2137,7 +2141,7 @@ function send_alim_talk($msgIdx, $recipient, $tmpltCode, $message, $attach = nul
   if(!$token) return null;
 	
   if(strpos($_SERVER['HTTP_HOST'],".eroumcare")){
-	$recipient = "01067651301";//테스트서버에서는 테스트 폰으로만 알림톡 전송 01067651301
+	$recipient = cf_alim_num;//테스트서버에서는 테스트 폰으로만 알림톡 전송 01067461302
   }
   $data = array(
     'msgIdx' => $msgIdx,
@@ -2158,6 +2162,7 @@ function send_alim_talk($msgIdx, $recipient, $tmpltCode, $message, $attach = nul
 
 // 비즈톡 알림톡 전송2(타이틀 강조, @이로움on 선택 발송 가능 
 function send_alim_talk2($msgIdx, $recipient, $tmpltCode, $message, $attach = null, $token = null, $title = null, $sender_key = null) {
+  if(cf_alim_use != 'Y') return null;
   if(!$token && ($_SESSION["biztalk_token"] == "" || time()>$_SESSION["token_time"])){
 		$_SESSION["biztalk_token"] = $token = get_biztalk_token();
 		$_SESSION["token_time"] = strtotime("+1 days");
@@ -2173,7 +2178,7 @@ function send_alim_talk2($msgIdx, $recipient, $tmpltCode, $message, $attach = nu
 	$sender_key = BIZTALK_API_SENDER_KEY2;//@이로움on 선택
   }
   if(strpos($_SERVER['HTTP_HOST'],".eroumcare")){
-	$recipient = "01067651301";//테스트서버에서는 테스트 폰으로만 알림톡 전송 01067651301
+	$recipient = cf_alim_num;//테스트서버에서는 테스트 폰으로만 알림톡 전송 01067461302
   }
   $data = array(
     'msgIdx' => $msgIdx,
