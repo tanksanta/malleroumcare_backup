@@ -208,7 +208,9 @@ foreach($affected_it_ids as $it_id) {
     $it_ids .= '&it_id%5B%5D=' . $it_id;
 }
 
-$searchProdSupYN=$_POST['searchProdSupYN'];
+$stx = urlencode( clean_xss_attributes( clean_xss_tags( get_search_string( $_POST['stx'] ) ) ) ); // 23.11.08 : 서원 - 한글 검색에 따른 URL 인코딩;
+$searchProdSupYN = $_POST['searchProdSupYN'];
+
 alert("선택 상품이 정상적으로 ".$tex." 되었습니다.","./itemlist.php?sca=$sca&amp;sst=$sst&amp;page_rows=$page_rows&amp;sod=$sod&amp;sfl=$sfl&amp;stx=$stx&amp;page=$page&searchProdSupYN={$searchProdSupYN}{$it_ids}");
 //goto_url("./itemlist.php?sca=$sca&amp;sst=$sst&amp;page_rows=$page_rows&amp;sod=$sod&amp;sfl=$sfl&amp;stx=$stx&amp;page=$page&searchProdSupYN={$searchProdSupYN}{$it_ids}");
 ?>
