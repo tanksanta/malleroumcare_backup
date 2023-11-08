@@ -42,13 +42,25 @@ if($_POST['status'] != null && $_POST['status'] == "search"){
 	  }
 	}
 
-    $sql_update = "UPDATE macro_request SET ".$update." birth = '{$birth}',
-    grade = '{$grade}',
-    type = '{$type}',
-    percent = '{$percent}',
-    penApplyDtm = '{$penApplyDtm}',
-    penExpiDtm = '{$penExpiDtm}',
-    rem_amount = '{$rem_amount}', updated_at = now() WHERE mb_id = '{$mb_id}' and recipient_name = '{$recipient_name}' and recipient_num = '{$recipient_num}';";
+    $sql_del = "delete from macro_request WHERE mb_id = '{$mb_id}' and recipient_name = '{$recipient_name}' and recipient_num = '{$recipient_num}';";
+	sql_query($sql_del);
+
+	$default = "
+		mb_id = '{$mb_id}',
+		status = 'U',
+		recipient_name = '{$recipient_name}',
+		recipient_num = '{$recipient_num}',
+		birth = '{$birth}',
+		grade = '{$grade}',
+		type = '{$type}',
+		percent = '{$percent}',
+		penApplyDtm = '{$penApplyDtm}',
+		penExpiDtm = '{$penExpiDtm}',
+		rem_amount = '{$rem_amount}',
+		updated_at = now()
+	";
+
+	$sql_update = "INSERT INTO `macro_request` SET ".$update.$default;
 } else {
     $sql_update = "UPDATE macro_request SET updated_at = now(), status = 'R' WHERE mb_id = '{$mb_id}' and recipient_name = '{$recipient_name}' and recipient_num = '{$recipient_num}';";
 }
