@@ -90,6 +90,14 @@ if($_REQUEST["option"] == "1"){//공인인증서 등록
 					<?php }else{?>// 응답코드 > 0000
 						parent.$('#cert_guide_popup_box').trigger('click')
 					<?php }?>
+
+					<?php 
+						// 23.11.07 : 서원 - 사업소 '회원정보수정' 페이지에서 인증서 등록을 진행하고, 정상 처리되었을 경우 상위 부모창을 새로고침 함.
+						if( strpos($_SERVER['HTTP_REFERER'], "/bbs/member_info_newform.php") !== false ) { 
+							echo("parent.location.reload();");
+						}					
+					?>
+
 					  },
 					error : function(XMLHttpRequest, textStatus, errorThrown){ // 비동기 통신이 실패할경우 error 콜백으로 들어옵니다.
 						alert("통신 실패.")

@@ -22,6 +22,9 @@ if( function_exists('social_member_comfirm_redirect') && (! $url || $url === 're
 // 23.04.10 : 서원 - 회원 정보 수정 페이지 변경으로 인한 해당 페이지 경로 하드코딩.
 $url = "member_info_newform.php";
 
+// 23.11.03 : 서원 - 스탭별 페이지에 비밀번호 인증하고, 바로가기 위한 값을 추가로 붙임.
+if( $_GET['STEP'] ) { $url .= "?STEP=".$_GET['STEP']; }
+
 
 // Page ID
 $pid = 'confirm';
