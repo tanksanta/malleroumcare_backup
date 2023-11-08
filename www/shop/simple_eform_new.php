@@ -355,7 +355,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 			<div class="col-sm-5">
 				<label class="col-pen-nm1">
 				<img src="/skin/apms/order/new_basic/image/icon_17.png">
-				<input type="text" name="do_date" id="do_date" class="datepicker form-control input-sm" value="<?php if($dc){ echo substr($dc['do_date'],0,10);}else{ echo date("Y-m-d");} ?>" <?php if($dc) echo "data-orig=\"" . $dc['do_date'] . "\""; ?> placeholder="계약일자" style="width:330px !important;padding-left:40px;">
+				<input type="text" name="do_date" id="do_date" class="datepicker form-control input-sm" value="<?php if($dc && $dc['do_date'] != "0000-00-00 00:00:00"){ echo substr($dc['do_date'],0,10);}else{ echo date("Y-m-d");} ?>" <?php if($dc && $dc['do_date'] != "0000-00-00 00:00:00") echo "data-orig=\"" . $dc['do_date'] . "\""; ?> placeholder="계약일자" style="width:330px !important;padding-left:40px;">
 				</label>
 			</div>		
 		</div>
