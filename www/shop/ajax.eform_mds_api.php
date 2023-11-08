@@ -263,9 +263,11 @@ header('Content-type: application/json');
 			`dl_browser` = '$browser',
 			`dl_datetime` = '$datetime'
 			");
+			if($eform['penNm'] != "" && $ent['mb_hp'] != ""){//테스트 서버에서의 오발송을 차단하기 위함
 			 //알림톡보내기 ======================================================================================================================
 			 send_alim_talk('ENT_EF_'.$uuid, $ent['mb_hp'], 'ent_eform_result', "\"[이로움]\n\n{$eform['penNm']}님과 전자계약이 체결되었습니다.\"");
 			 //================================================================================================================================
+			}
 			//}
 		}elseif($arrResponse["event"]["type"] == "document_rejected"){//서명거절 document_rejected
 			$sql = "update `eform_document` set dc_sign_datetime=now(),dc_status='5' WHERE dc_id=UNHEX('".$dc_id2."')";
@@ -614,8 +616,8 @@ if($_REQUEST["signed"] == "ok"){?>
 			$it_name["all"][$count_total] = $row["it_name"];
 			$it_code["all"][$count_total] = $row["it_code"];
 			$it_barcode["all"][$count_total] = $row["it_barcode"];
-			$sale_gubun["all"][$count_total] = ($row["gubun"] == "00")?"V(1)":"";
-			$rant_gubun["all"][$count_total] = ($row["gubun"] == "00")?"":"V(1)";
+			$sale_gubun["all"][$count_total] = ($row["gubun"] == "00")?"V":"";
+			$rant_gubun["all"][$count_total] = ($row["gubun"] == "00")?"":"V";
 			$it_date["all"][$count_total] = $row["it_date"];
 			$it_price["all"][$count_total] = $row["it_price"];
 			$it_price_pen["all"][$count_total] = $row["it_price_pen"];
