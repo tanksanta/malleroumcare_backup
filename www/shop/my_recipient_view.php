@@ -1,8 +1,48 @@
 <?php
 include_once("./_common.php");
 define('_RECIPIENT_', true);
-
+add_javascript('<script src="'.G5_JS_URL.'/jquery.fileDownload.js"></script>', 0);
 include_once("./_head.php");
+
+$query = "SHOW tables LIKE 'eform_rent_hist'";//eform_rent_hist 테이블 유무 확인
+$wzres = sql_num_rows( sql_query($query) );
+if($wzres < 1) {
+	sql_query("
+		CREATE TABLE `eform_rent_hist` (
+		  `rh_id` int(11) NOT NULL AUTO_INCREMENT,
+		  `entId` varchar(255) NOT NULL COMMENT '장기요양기관ID',
+		  `entNm` varchar(255) NOT NULL COMMENT '장기요양기관명',
+		  `entNum` varchar(255) NOT NULL COMMENT '장기요양기관번호',
+		  `penId` varchar(255) NOT NULL COMMENT '수급자ID',
+		  `confirm_date` date NOT NULL COMMENT '확인일시',
+		  `create_month` varchar(20) NOT NULL COMMENT '생성월',
+		  `entConAcc` varchar(255) DEFAULT NULL COMMENT '특이사항',
+		  `penRecTypeCd` varchar(10) NOT NULL DEFAULT '01' COMMENT '확인사항(방문:02,유선:01)',
+		  `it_ids` varchar(255) NOT NULL COMMENT '상품id(eform_document_item)',
+		  `it_dates` varchar(255) NOT NULL COMMENT '상품별계약기간',
+		  `it_end_date` varchar(20) NOT NULL COMMENT '상품중 마지막 계약 종료일',
+		  `reg_date` datetime NOT NULL COMMENT '생성일',
+		  PRIMARY KEY (`rh_id`),
+		  KEY `it_end_date` (`it_end_date`,`entId`,`penId`)
+		) ENGINE=InnoDB DEFAULT CHARSET=utf8
+	");
+}
+
+/**
+* 기존에 있던  eform_document_item 테이블을 재사용하기 위한 작업
+* 새로이 필요한 컬럼(it_rental_price)이 존재하는지 확인 후, 없으면 새로 추가하는 작업 진행
+*/
+$sql_check2 = "
+  show columns from eform_document_item where field in ('it_rental_price');
+";
+$res_check2 = sql_query($sql_check2);
+if(sql_num_rows($res_check2) == 0){
+
+  $append_col2 = "alter table eform_document_item ".
+                "add column it_rental_price int(11) NULL DEFAULT NULL COMMENT '월대여가(급여제공기록용)' after it_price";
+  sql_query($append_col2);
+}
+
 
 // 수급자 연결 끊음
 unset($_SESSION['recipient']);
@@ -610,6 +650,31 @@ $(function() {
 </script>
 
 <style>
+/*테이블 */
+.section_wrap table {
+    width: 100%;
+    height: fit-content;
+    border-collapse: collapse;
+}
+
+.section_wrap th {
+    border: 1px solid #ddd;
+    border-left-style: none;
+    border-right-style: none;
+    text-align: center;
+    font-size: medium;
+    font-weight: bold;
+    padding: 0.8% 0%;
+	background-color:#F2F2F2;
+}
+.section_wrap td {
+    font-weight: normal;
+    border: 1px solid #ddd;
+    text-align: center;
+    font-size: medium;
+    padding: 0.5% 0%;
+}
+
 .btn_so_sch:disabled {
   background-color: #bbb;
 }
@@ -652,6 +717,12 @@ $(function() {
   font-size: 2.5em;
   cursor:pointer;
 }
+
+.c_month {
+	display:inline;
+	margin-right:9px;
+}
+
 @media (max-width: 1020px) {
   #item_popup_box iframe {
     width: 100%;
@@ -663,9 +734,60 @@ $(function() {
     bottom:0px;
   }
 }
+
+@media (max-width: 768px){
+	.c_month {
+		display:block;
+		text-align:right;
+		margin-bottom:10px;
+	}
+}
+
+@media (max-width: 700px){
+	.popup_box_con2{
+		width:96% !important;
+		left:50% !important;
+		margin-left:-48% !important;
+		height:650px !important;
+	}
+}
+
 @media (max-width: 480px){
     .btn_so_sch { height: fit-content; font-size: small; }
     .btn_so_edit { height: fit-content; font-size: small; }
+	.section_wrap th {
+		font-size: small;
+	}
+	.section_wrap td {
+		font-size: small;
+	}
+	.pop_tail {
+		font-size: small;
+	}
+
+
+}
+
+@media (max-width: 400px){
+	.section_wrap th {
+		font-size: x-small;
+	}
+	.section_wrap td {
+		font-size: x-small;
+	}
+	.pop_tail {
+		font-size: x-small;
+	}
+
+	.popup_box_con{
+		width:96% !important;
+		left:50% !important;
+		margin-left:-48% !important;
+	}
+
+	.pop_con {
+		font-size: small;
+	}
 }
 
 /* 인증서 비번 팝업 - 인증서 업로드 추가 */
@@ -728,14 +850,79 @@ $(function() {
   transform: translate(-50%, -50%);
   background: white;
 }
+.popup_box2 {
+	display: none;
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	left: 0;
+	top: 0;
+	z-index: 9999;
+	background: rgba(0, 0, 0, 0.5);		
+}
+
+.popup_box_con {
+	padding:20px;
+	position: relative;
+	background: #ffffff;
+	z-index: 99999;
+	height:620px;
+	margin-top:-310px;
+	margin-left:-200px;
+	width:400px;
+	left:50%;
+	top:50%;
+}
+
+.popup_box_con2 {
+	padding:20px;
+	position: relative;
+	background: #ffffff;
+	z-index: 99999;
+	height:620px;
+	margin-top:-310px;
+	margin-left:-350px;
+	width:700px;
+	left:50%;
+	top:50%;
+}
+table.ui-datepicker-calendar { display:none; }
+#loading_excel {
+    display: none;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 9999;
+    background: rgba(0, 0, 0, 0.3);
+  }
+  #loading_excel .loading_modal {
+    position: absolute;
+    width: 400px;
+    padding: 30px 20px;
+    background: #fff;
+    text-align: center;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  #loading_excel .loading_modal p {
+    padding: 0;
+    font-size: 16px;
+  }
+  #loading_excel .loading_modal img {
+    display: block;
+    margin: 20px auto;
+  }
+  #loading_excel .loading_modal button {
+    padding: 10px 30px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
 </style>
 <!-- =========================================================== -->
-
-
-
-
-
-
     <?php
     if($pen_ent) {
       $pen_mb = get_member($pen_ent['pen_mb_id'], 'mb_name');
@@ -804,6 +991,76 @@ $(function() {
     </div>
   </div>
 
+  <div class="sub_title_wrap">
+    <div class="sub_title l_title">
+      대여계약 급여제공기록 BETA
+    </div>
+	<div class="cart_btn_wrap r_btn_wrap">      
+      <div class="c_month"><b>생성월 선택</b>
+	  <select name="create_month" id="create_month" class="form-control input-sm" style="width:90px;display:inline;" onChange="rent_item_list(this.value)">
+		<option value="<?=date("Y-m")?>" selected><?=date("Y-m")?></option>
+		<option value="<?=date("Y-m",strtotime("-1 month",time()))?>"><?=date("Y-m",strtotime("-1 month",time()))?></option>
+		<option value="<?=date("Y-m",strtotime("-2 month",time()))?>"><?=date("Y-m",strtotime("-2 month",time()))?></option>
+		<option value="<?=date("Y-m",strtotime("-3 month",time()))?>"><?=date("Y-m",strtotime("-3 month",time()))?></option>
+      </select>
+	  </div>
+	  <a class="c_btn primary" style="background-color:#666666;" href="javascript:rent_efrom_open();">급여제공기록 생성</a>
+	  <a class="c_btn" href="javascript:rent_efrom_hist_open();">급여제공기록 이력</a>
+    </div>
+  </div>
+<?php //대여 진행중인 계약 유무 확인  
+	$sql = "SELECT a.* FROM `eform_document_item` a 
+			INNER JOIN `eform_document` AS b 
+			ON a.dc_id = b.dc_id 
+			AND b.entId='{$member['mb_entId']}' 
+			AND b.dc_status='3'
+			AND penId='{$pen['penId']}'
+			WHERE a.gubun='01'
+			AND a.it_rental_price IS NOT NULL
+			AND (CURDATE() BETWEEN CONCAT(SUBSTR(a.it_date,1,7),'-01') AND CONCAT(SUBSTR(a.it_date,12,7),'-31'))
+			ORDER BY SUBSTR(a.it_date,1,10) ASC";
+	$result = sql_query($sql);
+	$count_01 = sql_num_rows($result);
+	if($count_01 == 0){
+		$html = "진행중인 대여계약이 없습니다.";
+	}else{
+		$html = "<table>";
+		$html .= "	<colgroup><col width='5%'><col width='25%'><col width='25%'><col width='20%'><col width='25%'></colgroup>";
+		$html .= "	<tr><th>선택</th><th>상품명</th><th>품목명</th><th>계약기간</th><th>상품바코드</th></tr>";
+		while($row = sql_fetch_array($result)){
+			$first_date = substr($row['it_date'],0,10);
+			$last_date = substr($row['it_date'],11,10);
+			$first_date2 = (substr($first_date,0,7) == date("Y-m"))?$first_date:date("Y-m")."-01";
+			$last_date2 = (substr($last_date,0,7) == date("Y-m"))?$last_date: date("Y-m")."-".date("t");
+			$html .= "	<tr>";
+			$html .= "		<td><input type='checkbox' name='it_id[]' data-name='{$row['it_name']}' data-date1='{$first_date2}' data-date2='{$last_date2}' value='{$row['it_id']}'></td>";
+			$html .= "		<td>{$row['it_name']}</td>";
+			$html .= "		<td>{$row['ca_name']}</td>";
+			$html .= "		<td>{$first_date} ~ {$last_date}</td>";
+			$html .= "		<td>{$row['it_code']}-{$row['it_barcode']}</td>";
+			$html .= "	</tr>";
+		}		
+		$html .= "</table>";
+	}
+?>
+  <div class="section_wrap" style="text-align: center; margin-bottom:30px;" id="rental_item_list">
+	<?=$html?>
+  </div>
+<?php
+$sql = "SELECT MIN(a.dc_sign_datetime) as start_time FROM `eform_document` AS a 
+INNER JOIN `eform_document_item` AS b ON a.dc_id = b.dc_id AND b.it_rental_price IS NOT NULL
+WHERE a.dc_status='3'" ;
+$row = sql_fetch($sql);
+$start_date = substr($row["start_time"],0,10);
+if($start_date != ""){
+?>
+  <div style="margin-top:-20px;">
+	<font color="red">※ 대여계약 급여제공기록 서비스는 <b><?=$start_date?></b> 이후 계약 된 품목부터 이용 하실 수 있습니다.</font>
+  </div>
+<?php }?>
+  <div style="margin-top:0px;margin-bottom:15px;">
+	<font color="#999999">해당 기능은 베타버전입니다. 사용 중에 발생하는 불편 사항이나 개선점은 고객센터에 문의 하시기 바랍니다.</font>
+  </div>
   <div class="memo_wrap">
     <div class="sub_title_wrap">
       <div class="sub_title l_title">
@@ -865,6 +1122,68 @@ $(function() {
     <?php } ?>
   </div>
 
+  <div id="popup_box3" class="popup_box2">
+    <div id="" class="popup_box_con">
+		<div style="top:0px;width:100%;">		
+		<span style="float:right;cursor:pointer;margin-top:-15px;" onClick="rent_efrom_close();" title="돌아가기" >X</span>
+		</div>
+		<div class="form-group" style="text-align:center;border-bottom:1px solid #333333;height:25px;">
+			<span class="" style="text-align:center;font-weight:bold;font-size:16px;">대여계약 급여제공기록 생성</span>
+        </div>
+<form method="post" id="download_excel">
+		<div class="form-group pop_con" style="margin-top:10px;">
+			<input type="hidden" name="mode" value="w">
+			<input type="hidden" name="penId" value="<?=$_GET['id']?>">
+			<input type="hidden" name="it_ids"  id="it_ids" value="">
+			<input type="hidden" name="it_dates"  id="it_dates" value="">
+			<b>생성월</b><br>
+			<input readonly type="text" name="create_month" id='sdate2' class="form-control input-sm" value="<?=date("Y-m")?>"><br>
+			<b>계약기간</b><br>
+			<div id="it_list" class="" style="width:100%;height:210px;overflow-y:auto;">
+			
+			</div>
+			<br>
+			<b>특이사항</b><br>
+			<textarea name="entConAcc" rows="4" cols="" class="form-control input-sm" placeholder="100자까지 입력 가능합니다." style="resize: none;" maxlength="100" id="textBox"></textarea><br>
+			<b>확인사항</b>&nbsp;
+			<select name="penRecTypeCd" id="penRecTypeCd" class="form-control input-sm" style="width:20%;display:inline;">
+				<option value="01" selected>유선</option>
+				<option value="02">방문</option>				
+			</select>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>확인일시</b>&nbsp;
+			<input type="text" name="confirm_date" id="confirm_date" class="form-control input-sm" style="width:30%;display:inline;" value="<?=date("Y-m-d")?>" readonly>			
+        </div>	
+		<div style="margin-top:10px;text-align:center;border-top:1px solid #333333;height:40px;padding-top:10px;">
+			<input type="button" value="등록" onclick="downloadExcel('w')" style="height:30px;line-height:30px !important;padding: 0 13px;vertical-align: top;font-weight: bold;letter-spacing: -1px;background-color: white;border: 1px solid #b5b5b5;color: black !important;">
+        </div>
+</form>
+	</div>	
+</div>
+
+  <div id="popup_box4" class="popup_box2">
+    <div id="" class="popup_box_con2" >
+		<form method="post" id='download_excel2'>
+			<input type="hidden" name="mode" value="m">
+			<input type="hidden" name="rh_id" id="rh_id" value="">
+		</form>
+		<div style="top:0px;width:100%;">		
+		<span style="float:right;cursor:pointer;margin-top:-15px;" onClick="rent_efrom_close();" title="돌아가기" >X</span>
+		</div>
+		<div class="form-group" style="text-align:center;border-bottom:1px solid #333333;height:40px;">
+			<span class="" style="text-align:center;font-weight:bold;font-size:18px;">대여계약 급여제공기록 이력</span>
+        </div>
+
+		<div class="form-group section_wrap" id="eform_rent_hist" style="border:0px; padding: 0px; height:460px; overflow-x:auto;border-radius: 0px;">
+		<!-- 대여계약 급여제공기록 이력 리스트 -->
+        </div>	
+		<div style="margin-top:10px;text-align:left;border-top:1px solid #333333;height:40px;padding-top:10px;" class="pop_tail">
+			이력 정보는 계약 종료 날짜 기준 다음달 1일에 자동 삭제됩니다.<br>
+			<font color="red">※ 계약기간(종료일)이 계약생성일보다 이전인 경우 계약생성일 기준으로 다음달 1일에 삭제됩니다.</font>
+        </div>
+
+	</div>	
+</div>
+
   <style>
   .list-more a {
     margin-top:50px;
@@ -890,7 +1209,15 @@ $(function() {
 <div id="popup_rec">
   <div></div>
 </div>
-
+<!-- 엑셀 다운로드 -->
+<div id="loading_excel">
+  <div class="loading_modal">
+    <p>엑셀파일 다운로드 중입니다.</p>
+    <p>잠시만 기다려주세요.</p>
+    <img src="/shop/img/loading.gif" alt="loading">
+    <button onclick="cancelExcelDownload();" class="btn_cancel_excel">취소</button>
+  </div>
+</div>
 <?php
 $t_recipient_order = get_tutorial('recipient_order');
 $t_recipient_add = get_tutorial('recipient_add');
@@ -918,8 +1245,116 @@ show_eroumcare_popup({
   function redirect_item(href) {
       location.href = href;
     }
+
+function rent_efrom_open(){//대여계약 급여제공기록 생성 팝업
+	var it_id = [];
+	var it_date = [];
+	var item = $("input[name='it_id[]']:checked");
+    var html_val = "";
+	for(var i = 0; i < item.length; i++) {
+		it_id.push($(item[i]).val());
+		it_date.push($(item[i]).data('date1')+"~"+$(item[i]).data('date2'));
+		$(item[i]).data('name')
+		if(i != 0){
+			html_val += "<br>";
+		}	
+		html_val += $(item[i]).data('name')+"<br><input type='text' name='' value='"+$(item[i]).data('date1')+"' class='form-control input-sm' style='width:47%;display:inline;' readonly> ~ <input type='text' name='' value='"+$(item[i]).data('date2')+"' class='form-control input-sm' style='width:47%;display:inline;' readonly>";
+	}
+	
+    if(!it_id.length) {
+		alert('계약 상품을 선택하세요.');
+		return false;
+    }
+
+	$("#sdate2").val($("#create_month").val());
+	$("#it_list").html(html_val);
+	$("#it_ids").val(it_id);
+	$("#it_dates").val(it_date);
+	$('body').addClass('modal-open');
+	$('#popup_box3').show();
+}
+
+function rent_efrom_hist_open(){//대여계약 급여제공기록 생성 팝업
+	$("#eform_rent_hist").html("");
+	$.post('ajax.eform_rent_hist.php', {
+	  id: '<?=$_GET["id"]?>',
+    }, 'json')
+    .done(function(data) {
+      if(data.message){
+		  alert(data.message);
+	  }else{
+		  $("#eform_rent_hist").html(data.html); 
+		  $('body').addClass('modal-open');
+		  $('#popup_box4').show();
+	  }
+    })
+    .fail(function($xhr) {
+      var data = $xhr.responseJSON;
+      alert(data && data.message);
+    });	
+}
+
+function rent_efrom_close(){
+	$('#popup_box3').hide();
+	$('#popup_box4').hide();
+	$('body').removeClass('modal-open');
+}
+
+function rent_item_list(c_month){
+	$("#rental_item_list").html("");
+	$.post('ajax.rental_item_list.php', {
+      c_month: c_month,
+	  id: '<?=$_GET["id"]?>',
+    }, 'json')
+    .done(function(data) {
+      if(data.message){
+		  alert(data.message);
+	  }else{
+		  $("#rental_item_list").html(data.html); 
+	  }
+    })
+    .fail(function($xhr) {
+      var data = $xhr.responseJSON;
+      alert(data && data.message);
+    });
+}
+
+function downloadExcel(mode,rh_id1=false) {
+    var href = './rental_item_eform.excel.download.php';
+	if(rh_id1 != false){
+		$("#rh_id").val(rh_id1);
+	}
+	var datas = (mode=='w')? $("#download_excel").serialize() : $("#download_excel2").serialize();
+    //alert(JSON.stringify(datas));
+	
+	$('#loading_excel').show();
+    EXCEL_DOWNLOADER = $.fileDownload(href, {
+      httpMethod: "POST",
+      data: datas
+    })
+      .always(function() {
+        $('#loading_excel').hide();
+      });
+}
+
+function cancelExcelDownload() {
+    if (EXCEL_DOWNLOADER != null) {
+      EXCEL_DOWNLOADER.abort();
+    }
+    $('#loading_excel').hide();
+}
   
 $(function() {
+	$('#textBox').keyup(function (e) {
+		let content = $(this).val();		
+		// 글자수 제한
+		if (content.length > 101) {
+			// 100자 부터는 타이핑 되지 않도록
+			$(this).val($(this).val().substring(0, 101));
+			// 100자 넘으면 알림창 뜨도록
+			alert('글자수는 101자까지 입력 가능합니다.');
+		};
+	});
 
   $(document).on('click', '#delete_recipient', function() {    
     if(!confirm('삭제된 수급자 정보는 복구 할 수 없습니다.\r\n삭제 하시겠습니까?')) {
