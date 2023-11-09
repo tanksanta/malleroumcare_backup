@@ -573,7 +573,7 @@ $(function() {
 		          if(result.errorYN == "Y") {
 		            alert(result.message);
 		          } else {
-		            alert('완료되었습니다');
+		            //alert('완료되었습니다');
 		            window.location.href = "./my_recipient_view.php?id="+data.penId;
 		          }
 		        })
