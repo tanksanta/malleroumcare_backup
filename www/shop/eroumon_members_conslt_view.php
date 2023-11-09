@@ -133,7 +133,9 @@
             if( ($sql_result['MCR_ST']!=$_MCR_STTUS_CD) && ($sql_result['CONSLT_NO']===$_MC_cON) && ($sql_result['BPLC_CONSLT_NO']===$_MCR_cON)  ) {
 
                 $RGTR = $sql_result['RGTR']; // 상담신청 회원명
-				$MBR_TELNO = $sql_result['MBR_TELNO'];//수급자 연락처
+				$MBR_TELNO = $sql_result['MBR_TELNO'];//상담신청 연락처
+				$MBR_NM = $sql_result['MBR_NM'];//수급자 성명
+				$Hangeul_RELATION_CD = $sql_result['Hangeul_RELATION_CD'];//수급자와의 관계
 
                 // 프로시저 : CALL `PROC_EROUMCARE_CONSLT_UPDATE`('모드', 상담신청NO, 상담배정NO, '변결될상태값', '완료또는 거부시 사유또는 내용', '배정 당시 사업소아이디');                        
                 $sql = (" CALL `PROC_EROUMCARE_CONSLT_UPDATE`('BPLC', {$_MC_cON}, {$_MCR_cON}, '{$_MCR_STTUS_CD}', '{$_MCR_TEXT}', '{$_MCR_ID}'); ");
@@ -144,8 +146,9 @@
                 //======================CS04:상담거절, CS06:상담완료 시 알림톡 발송===============================================================================================
 				if($_MCR_STTUS_CD == "CS04" || $_MCR_STTUS_CD == "CS06"){
 					if($_MCR_STTUS_CD == "CS06"){//상담완료 시 알림톡
-						$alimtalk_contents = $RGTR."님, 상담이 완료되었습니다.\n상담한 장기요양기관이 마음에 드실 경우 이로움ON에서 상담기관 추천하기 및 관심설정이 가능합니다.\n\n다른 장기요양기관과의 재상담을 원하실 경우\n\n상담 내역 관리에서 재상담 신청이 가능한 점 참고 부탁드립니다.";
-						$result2 = send_alim_talk2('CONSLT_REQUEST_'.$MBR_TELNO, $MBR_TELNO, 'ON_00001', $alimtalk_contents, array(
+						//$alimtalk_contents = $RGTR."님, 상담이 완료되었습니다.\n\n[수급자 정보]\n성명:상담한 장기요양기관이 마음에 드실 경우 이로움ON에서 상담기관 추천하기 및 관심설정이 가능합니다.\n\n다른 장기요양기관과의 재상담을 원하실 경우\n\n상담 내역 관리에서 재상담 신청이 가능한 점 참고 부탁드립니다.";
+						$alimtalk_contents = $RGTR."님, 상담이 완료되었습니다.\n\n[수급자 정보]\n성명: ".$MBR_NM." 님\n회원님과의 관계 : ".$Hangeul_RELATION_CD."\n\n상담한 장기요양기관이 마음에 드실 경우 이로움ON에서 상담기관 추천이 가능합니다.\n\n다른 장기요양기관과의 재상담을 원하실 경우 상담 내역 관리에서 재상담 신청이 가능합니다.\n\n* 재상담은 총 2회만 가능합니다.";
+						$result2 = send_alim_talk2('CONSLT_REQUEST_'.$MBR_TELNO, $MBR_TELNO, 'ON_0006', $alimtalk_contents, array(
 							'button' => [
 							  array(
 								'name' => '◼︎ 상담내역 바로가기',
@@ -156,8 +159,9 @@
 							]
 						  ),'','1:1상담 진행 완료','2');//내용은 템플릿과 동일 해야 함 
 					}else{//상담거절 시 알림톡
-						$alimtalk_contents = $RGTR."님, 요청하신 1:1 상담이 취소되었습니다.\n\n◼︎ 상담 취소일 : ".date("Y-m-d")."\n\n상담을 원하시는 경우 이로움ON에서 다시 상담을 요청해 주세요.";
-						$result2 = send_alim_talk2('CONSLT_CANCEL_'.$MBR_TELNO, $MBR_TELNO, 'ON_00002-', $alimtalk_contents, array(
+						//$alimtalk_contents = $RGTR."님, 요청하신 1:1 상담이 취소되었습니다.\n\n◼︎ 상담 취소일 : ".date("Y-m-d")."\n\n상담을 원하시는 경우 이로움ON에서 다시 상담을 요청해 주세요.";
+						$alimtalk_contents = $RGTR."님, 1:1 상담이 취소되었습니다.\n\n[수급자 정보]\n성명: ".$MBR_NM." 님\n회원님과의 관계 : ".$Hangeul_RELATION_CD."\n상담 취소일 : ".date("Y-m-d")."\n\n상담을 원하시는 경우 이로움ON에서 다시 상담을 요청해 주세요.";
+						$result2 = send_alim_talk2('CONSLT_CANCEL_'.$MBR_TELNO, $MBR_TELNO, 'ON_0007', $alimtalk_contents, array(
 							'button' => [
 							  array(
 								'name' => '◼︎ 요양정보 간편조회',
