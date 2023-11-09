@@ -765,7 +765,7 @@ function form_check(act) {
       <a href="javascript::" class="btn eroumcare_btn2" id="recipient_excel_download" title="수급자 엑셀 다운로드">수급자 엑셀 다운로드</a>
       <a href="./my_recipient_write.php" class="btn eroumcare_btn2" title="수급자 등록">수급자 등록</a>
       <a href="./recipientexcel.php" onclick="return excelform(this.href);" target="_blank" class="btn eroumcare_btn2" title="수급자일괄등록">수급자일괄등록</a>
-      <?php if($mobile_yn == 'Pc'){?><a href="javascript:;" class="btn eroumcare_btn2" title="인증서 재 등록하기" onClick="tilko_call('1');">인증서 재 등록하기</a><?php }?>
+      <?php if($mobile_yn == 'Pc'){?><a href="javascript:;" class="btn eroumcare_btn2" title="인증서 재 등록하기" onClick="alert('공인인증서 등록 시 발급 용도 [용도제한용]으로 재등록 부탁드립니다.');tilko_call('1');">인증서 재 등록하기</a><?php }?>
       <?php /*<div class="tooltip_btn">
         <a href="./recipientexcel_b.php" onclick="return excelform(this.href);" target="_blank" class="btn eroumcare_btn2" title="B사 엑셀 일괄등록">
           B사 엑셀 일괄등록
