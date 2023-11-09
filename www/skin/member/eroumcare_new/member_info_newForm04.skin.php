@@ -340,7 +340,6 @@
 
 
                 function tilko_call(a=1){
-					alert("공인인증서 등록 시 발급 용도 [용도제한용]으로 등록 부탁드립니다.");
                     $("#tilko").attr("src","/tilko_test.php?option="+a);
                 }
 
