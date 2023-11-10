@@ -177,8 +177,23 @@ else if ($type == 'contract_c') {
         $sum += $row['cnt'];
     }
     $results['contract_c'] = $arr;
+
+	//누적2
+    $sql = "SELECT COUNT(*) as cnt FROM eform_document_log2 WHERE dl_log like '%생성%'";
+    $total_cnt2 = sql_fetch($sql);
+
+    //각 일자별22
+    $sql = "SELECT COUNT(*) as cnt, DATE(dl_datetime) as ms_date FROM eform_document_log2 WHERE dl_log like '%생성%' AND dl_datetime BETWEEN '{$fr_date}' AND '{$to_date}' GROUP BY ms_date; ";
+    $result = sql_query($sql);
+    $arr2 = [];
+    $sum2 = 0;
+    while($row=sql_fetch_array($result)) {
+        $arr2[$row['ms_date']] = $row['cnt'];
+        $sum2 += $row['cnt'];
+    }
+    $results['contract_c2'] = $arr2;
     // var_dump($results);
-    $colspan = 2;
+    $colspan = 3;
 }
 else if ($type == 'contract_s') {
     //누적
@@ -195,8 +210,23 @@ else if ($type == 'contract_s') {
         $sum += $row['cnt'];
     }
     $results['contract_s'] = $arr;
+
+	//누적2
+    $sql = "SELECT COUNT(*) as cnt FROM eform_document_log2 WHERE dl_log like '%서명%'";
+    $total_cnt2 = sql_fetch($sql);
+
+    //각 일자별
+    $sql = "SELECT COUNT(*) as cnt, DATE(dl_datetime) as ms_date FROM eform_document_log2 WHERE dl_log like '%서명%' AND dl_datetime BETWEEN '{$fr_date}' AND '{$to_date}' GROUP BY ms_date; ";
+    $result = sql_query($sql);
+    $arr2 = [];
+    $sum2 = 0;
+    while($row=sql_fetch_array($result)) {
+        $arr2[$row['ms_date']] = $row['cnt'];
+        $sum2 += $row['cnt'];
+    }
+    $results['contract_s2'] = $arr2;
     // var_dump($results);
-    $colspan = 2;
+    $colspan = 3;
 }
 else if ($type == 'login_daily') {
     //누적
@@ -473,8 +503,10 @@ else if ($type == 'recipient') {
                 <th scope="col">제안서 발송</th>
             <?php } else if ($type == 'contract_c') { ?>
                 <th scope="col">계약서 생성</th>
+				<th scope="col">대여계약 급여제공기록지 생성</th>
             <?php } else if ($type == 'contract_s') { ?>
                 <th scope="col">계약서 서명</th>
+				<th scope="col">대여계약 급여제공기록지 서명</th>
             <?php } else if ($type == 'recipient') { ?>
                 <th scope="col">등록한 수급자</th>
             <?php } else if ($type == 'order_c') { ?>
@@ -509,11 +541,14 @@ else if ($type == 'recipient') {
                 <?php } ?>
             <?php } else if ($type == 'amount') { ?>
                 <td><?php echo number_format($total_amount['amount']) ?></td>
-            <?php } else if ($type == 'login_daily' || $type == 'login_user' || $type == 'proposal_c' || $type == 'proposal_s' || $type == 'contract_c' || $type == 'contract_s' || $type == 'order_c' || $type == 'order_user') { ?>
+            <?php } else if ($type == 'login_daily' || $type == 'login_user' || $type == 'proposal_c' || $type == 'proposal_s' || $type == 'order_c' || $type == 'order_user') { ?>
                 <td><?php echo $total_cnt['cnt'] ?></td>
             <?php } else if ($type == 'recipient') { ?>
                 <td><?php echo $total_cnt['cnt'] ?></td>
-            <?php } ?>
+            <?php }else if($type == 'contract_c' ||  $type == 'contract_s'){ ?>
+				<td><?php echo $total_cnt['cnt'] ?></td>
+				<td><?php echo $total_cnt2['cnt'] ?></td>
+			<?php }?>
         </tr>
     <?php } else { 
         $st_date = $arr_inquiry[0]['occur_date'] != null ?explode(' ', $arr_inquiry[0]['occur_date'])[0] :''; // 날짜 바뀌는 것을 체크
@@ -679,8 +714,10 @@ else if ($type == 'recipient') {
                 array_push($datas, $results['proposal_s'][$thisDate] ?: 0);
             } else if ($type == 'contract_c') {
                 array_push($datas, $results['contract_c'][$thisDate] ?: 0);
+				array_push($datas, $results['contract_c2'][$thisDate] ?: 0);
             } else if ($type == 'contract_s') {
                 array_push($datas, $results['contract_s'][$thisDate] ?: 0);
+				array_push($datas, $results['contract_s2'][$thisDate] ?: 0);
             } else if ($type == 'recipient') {
                 array_push($datas, $results['recipient'][$thisDate] ?: 0);
             } else if ($type == 'order_c') {
@@ -713,12 +750,14 @@ else if ($type == 'recipient') {
     <?php
     }
 
-    if ($type == 'amount' || $type == 'proposal_c' || $type == 'proposal_s' || $type == 'contract_c' || $type == 'contract_s' || $type == 'login_daily' || $type == 'login_user') {
+    if ($type == 'amount' || $type == 'proposal_c' || $type == 'proposal_s'  || $type == 'login_daily' || $type == 'login_user') {
         echo "<tr class='bg0'><td>소계</td><td>{$sum}</td></tr>";
     }
     else if ($type == 'order_c') {
         echo "<tr class='bg0'><td>소계</td><td>{$sum_all}</td><td>{$sum_admin}</td><td>{$sum_user}</td></tr>";
-    }
+    }else if ($type == 'contract_c' || $type == 'contract_s'){
+		echo "<tr class='bg0'><td>소계</td><td>{$sum}</td><td>{$sum2}</td></tr>";
+	}
     if ($i == 0)
         echo '<tr><td colspan="'.$colspan.'" class="empty_table">자료가 없거나 관리자에 의해 삭제되었습니다.</td></tr>';
     ?>

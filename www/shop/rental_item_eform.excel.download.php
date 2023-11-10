@@ -9,8 +9,21 @@ if($_POST["mode"] == "w"){//등록 시
 	$sql11 = "SELECT MAX(SUBSTRING(it_date,12,10)) AS it_end_date FROM eform_document_item WHERE it_id IN (".$_POST['it_ids'].")";
 	$row = sql_fetch($sql11);
 	$it_end_date = $row["it_end_date"];
-	$sql = "insert into eform_rent_hist SET entId='{$member['mb_entId']}',entNm='{$member['mb_entNm']}',entNum='{$member['mb_ent_num']}',penId='{$_POST['penId']}',confirm_date='{$_POST['confirm_date']}',create_month='{$_POST['create_month']}',entConAcc='{$_POST['entConAcc']}',penRecTypeCd='{$_POST['penRecTypeCd']}',it_ids='{$_POST['it_ids']}',it_dates='{$_POST['it_dates']}',it_end_date='{$it_end_date}',reg_date=now()";//급여제공기록 이력 등록
+	$sql = "insert into eform_rent_hist SET entId='{$member['mb_entId']}',entNm='{$member['mb_entNm']}',entNum='{$member['mb_ent_num']}',penId='{$_POST['penId']}',confirm_date='{$_POST['confirm_date']}',create_month='{$_POST['create_month']}',entConAcc='{$_POST['entConAcc']}',penRecTypeCd='{$_POST['penRecTypeCd']}',it_ids='{$_POST['it_ids']}',it_dates='{$_POST['it_dates']}',it_end_date='{$it_end_date}',reg_date=now(),contract_sign_relation='{$_POST['contract_sign_relation']}',contract_sign_relation_nm='{$_POST['contract_sign_relation_nm']}',pen_guardian_nm='{$_POST['pen_guardian_nm']}'";//급여제공기록 이력 등록
 	sql_query($sql);
+	$uuid = mysql_insert_id();
+	// 계약서 로그 작성
+	$log = '전자계약서를 생성했습니다.';
+	$ip = $_SERVER['REMOTE_ADDR'];
+	$browser = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
+	$datetime = date('Y-m-d H:i:s');
+	sql_query("INSERT INTO `eform_document_log2` SET
+	`dc_id` = '$uuid',
+	`dl_log` = '$log',
+	`dl_ip` = '$ip',
+	`dl_browser` = '$browser',
+	`dl_datetime` = '$datetime'
+	");
 }else{//이력 조회 시
 	$sql = "select * from eform_rent_hist where rh_id='{$_POST['rh_id']}'";
 	$row = sql_fetch($sql);
@@ -21,6 +34,23 @@ if($_POST["mode"] == "w"){//등록 시
 	$_POST['penRecTypeCd'] = $row["penRecTypeCd"];
 	$_POST['it_ids'] = $row["it_ids"];
 	$_POST['it_dates'] = $row["it_dates"];
+	$_POST['contract_sign_relation'] = $row["contract_sign_relation"];//관계코드
+	$_POST['contract_sign_relation_nm'] = $row["contract_sign_relation_nm"];//기타관계명
+	$_POST['pen_guardian_nm'] = $row["pen_guardian_nm"];//서명자명
+}
+switch($_POST['contract_sign_relation']){
+	case '1':
+	$contract_sign_relation_con = "수급자와의 관계 : [     ] 본인   [  √  ] 가족   [     ] 친족   [     ] 기타 (      )";
+	break;
+	case '2':
+	$contract_sign_relation_con = "수급자와의 관계 : [     ] 본인   [     ] 가족   [  √  ] 친족   [     ] 기타 (      )";
+	break;
+	case '3':
+	$contract_sign_relation_con = "수급자와의 관계 : [     ] 본인   [     ] 가족   [     ] 친족   [  √  ] 기타 (".$_POST['contract_sign_relation_nm'].")";
+	break;
+	default:
+	$contract_sign_relation_con = "수급자와의 관계 : [  √  ] 본인   [     ] 가족   [     ] 친족   [     ] 기타 (      )";
+	break;
 }
 
  //수급자 정보
@@ -35,6 +65,7 @@ $pen_nm = $pen['penNm'];
 $it_id = explode(",",$_POST['it_ids']);
 $row_count = count($it_id);
 $it_date = explode(",",$_POST['it_dates']);
+
 for($ii = 0; $ii < $row_count; $ii++ ){
 	$it_dates2[$it_id[$ii]] = $it_date[$ii];
 }
@@ -264,10 +295,10 @@ $excel->setActiveSheetIndex(0)->setCellValue('B'.(12+$item_count), "특이사항
 $excel->setActiveSheetIndex(0)->setCellValue('D'.(12+$item_count), $_POST["entConAcc"]);
 $excel->setActiveSheetIndex(0)->setCellValue('B'.(13+$item_count), "확인자");
 $excel->setActiveSheetIndex(0)->setCellValue('C'.(13+$item_count), "사업소\n담당자");
-$excel->setActiveSheetIndex(0)->setCellValue('D'.(13+$item_count), "( 서명 또는 인 )   ");
+$excel->setActiveSheetIndex(0)->setCellValue('D'.(13+$item_count), $member["mb_entNm"]."                              ( 서명 또는 인 )   ");
 $excel->setActiveSheetIndex(0)->setCellValue('C'.(14+$item_count), "수급자\n또는\n보호자");
-$excel->setActiveSheetIndex(0)->setCellValue('D'.(14+$item_count), "( 서명 또는 인 )  ");
-$excel->setActiveSheetIndex(0)->setCellValue('D'.(15+$item_count), "수급자와의 관계 : [     ] 본인   [     ] 가족   [     ] 친족   [     ] 기타(                   )");
+$excel->setActiveSheetIndex(0)->setCellValue('D'.(14+$item_count), $_POST['pen_guardian_nm']."                              ( 서명 또는 인 )   ");
+$excel->setActiveSheetIndex(0)->setCellValue('D'.(15+$item_count), $contract_sign_relation_con);
 $excel->setActiveSheetIndex(0)->setCellValue('B'.(16+$item_count), "확인일시");
 $excel->setActiveSheetIndex(0)->setCellValue('D'.(16+$item_count), substr($_POST["confirm_date"],0,4)." 년    ".substr($_POST["confirm_date"],5,2)." 월    ".substr($_POST["confirm_date"],8,2)." 일");
 $excel->setActiveSheetIndex(0)->setCellValue('G'.(16+$item_count), "확인방법");
@@ -326,8 +357,8 @@ $sheet->getStyle('I3')->getFont()->setSize(7);
 $sheet->getStyle('B4:I'.(19+$item_count))->getFont()->setSize(8);
 
 //폰트 색상
-$sheet->getStyle('D'.(13+$item_count))->getFont()->getColor()->setARGB("aaaaaa");
-$sheet->getStyle('D'.(14+$item_count))->getFont()->getColor()->setARGB("aaaaaa");
+$sheet->getStyle('D'.(13+$item_count))->getFont()->getColor()->setARGB("333333");
+$sheet->getStyle('D'.(14+$item_count))->getFont()->getColor()->setARGB("333333");
 
 // 전체 테두리 지정
 $border = [

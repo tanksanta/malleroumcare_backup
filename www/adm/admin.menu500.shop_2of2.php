@@ -17,6 +17,7 @@ $menu['menu500'] = array (
     array('500140', '보관함현황', G5_ADMIN_URL.'/shop_admin/wishlist.php', 'sst_wish'),
     //array('500210', '가격비교사이트', G5_ADMIN_URL.'/shop_admin/price.php', 'sst_compare', 1),
 	array('500900', '간편계약서관리', G5_ADMIN_URL.'/shop_admin/eform.php', ''),
+	array('500810', '급여제공기록관리', G5_ADMIN_URL.'/shop_admin/eform_rent.php', ''),
     array('500150', '대금청구서관리', G5_ADMIN_URL.'/shop_admin/payment_OnlineBilling.php', 'payment_OnlineBilling')
 );
 ?>

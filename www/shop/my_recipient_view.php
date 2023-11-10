@@ -28,6 +28,40 @@ if($wzres < 1) {
 	");
 }
 
+$query2 = "SHOW tables LIKE 'eform_document_log2'";//eform_document_log2 테이블 유무 확인
+$wzres2 = sql_num_rows( sql_query($query2) );
+if($wzres2 < 1) {
+	sql_query("
+		CREATE TABLE `eform_document_log2` (
+  `dl_id` int(11) NOT NULL AUTO_INCREMENT,
+  `dc_id` binary(16) NOT NULL,
+  `dl_log` text NOT NULL,
+  `dl_ip` varchar(255) NOT NULL DEFAULT '',
+  `dl_browser` text NOT NULL,
+  `dl_datetime` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`dl_id`),
+  KEY `index1` (`dc_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+	");
+}
+
+$query3 = "show columns from eform_rent_hist where field in ('rh_status');";//eform_rent_hist 테이블 유무 확인
+$wzres3 = sql_num_rows( sql_query($query3) );
+if($wzres3 < 1) {
+	sql_query("
+		alter table eform_rent_hist 
+		add column doc_id varchar(255) NULL DEFAULT '' COMMENT '모두싸인문서ID' after rh_id,
+		add column rh_status int(11) NULL DEFAULT 11 COMMENT '계약서상태 (0: 삭제, 11: 작성완료, 2: 서명완료, 3: 서명완료(이전계약서), 4:서명요청, 5:서명거절)' after doc_id,
+		add column contract_sign_relation tinyint(1) NOT NULL DEFAULT 0 COMMENT '0:본인,1:가족,2:친족,3:기타' after rh_status,
+		add column contract_sign_relation_nm varchar(50) NULL DEFAULT '' COMMENT '기타관계' after contract_sign_relation,
+		add column pen_guardian_nm varchar(50) NULL DEFAULT '' COMMENT '보호자명' after contract_sign_relation_nm,
+		add column dc_sign_send_datetime datetime NOT NULL COMMENT '서명요청일' after reg_date,
+		add column dc_sign_datetime datetime NOT NULL COMMENT '서명완료일' after dc_sign_send_datetime		
+		;
+	");
+	sql_query("ALTER TABLE eform_rent_hist ADD INDEX rh_id (rh_id, doc_id,rh_status,reg_date,dc_sign_send_datetime,dc_sign_datetime,entId,penId);");
+}
+
 /**
 * 기존에 있던  eform_document_item 테이블을 재사용하기 위한 작업
 * 새로이 필요한 컬럼(it_rental_price)이 존재하는지 확인 후, 없으면 새로 추가하는 작업 진행
@@ -850,6 +884,7 @@ $(function() {
   transform: translate(-50%, -50%);
   background: white;
 }
+
 .popup_box2 {
 	display: none;
 	position: fixed;
@@ -997,7 +1032,7 @@ table.ui-datepicker-calendar { display:none; }
     </div>
 	<div class="cart_btn_wrap r_btn_wrap">      
       <div class="c_month"><b>생성월 선택</b>
-	  <select name="create_month" id="create_month" class="form-control input-sm" style="width:90px;display:inline;" onChange="rent_item_list(this.value)">
+	  <select name="create_month" id="create_month" class="form-control input-sm" style="width:90px;display:inline;" onChange="rent_item_list()">
 		<option value="<?=date("Y-m")?>" selected><?=date("Y-m")?></option>
 		<option value="<?=date("Y-m",strtotime("-1 month",time()))?>"><?=date("Y-m",strtotime("-1 month",time()))?></option>
 		<option value="<?=date("Y-m",strtotime("-2 month",time()))?>"><?=date("Y-m",strtotime("-2 month",time()))?></option>
@@ -1005,46 +1040,12 @@ table.ui-datepicker-calendar { display:none; }
       </select>
 	  </div>
 	  <a class="c_btn primary" style="background-color:#666666;" href="javascript:rent_efrom_open();">급여제공기록 생성</a>
-	  <a class="c_btn" href="javascript:rent_efrom_hist_open();">급여제공기록 이력</a>
+	  <a class="c_btn primary" href="javascript:rent_efrom_hist_open();">급여제공기록 관리</a>
     </div>
   </div>
-<?php //대여 진행중인 계약 유무 확인  
-	$sql = "SELECT a.* FROM `eform_document_item` a 
-			INNER JOIN `eform_document` AS b 
-			ON a.dc_id = b.dc_id 
-			AND b.entId='{$member['mb_entId']}' 
-			AND b.dc_status='3'
-			AND penId='{$pen['penId']}'
-			WHERE a.gubun='01'
-			AND a.it_rental_price IS NOT NULL
-			AND (CURDATE() BETWEEN CONCAT(SUBSTR(a.it_date,1,7),'-01') AND CONCAT(SUBSTR(a.it_date,12,7),'-31'))
-			ORDER BY SUBSTR(a.it_date,1,10) ASC";
-	$result = sql_query($sql);
-	$count_01 = sql_num_rows($result);
-	if($count_01 == 0){
-		$html = "진행중인 대여계약이 없습니다.";
-	}else{
-		$html = "<table>";
-		$html .= "	<colgroup><col width='5%'><col width='25%'><col width='25%'><col width='20%'><col width='25%'></colgroup>";
-		$html .= "	<tr><th>선택</th><th>상품명</th><th>품목명</th><th>계약기간</th><th>상품바코드</th></tr>";
-		while($row = sql_fetch_array($result)){
-			$first_date = substr($row['it_date'],0,10);
-			$last_date = substr($row['it_date'],11,10);
-			$first_date2 = (substr($first_date,0,7) == date("Y-m"))?$first_date:date("Y-m")."-01";
-			$last_date2 = (substr($last_date,0,7) == date("Y-m"))?$last_date: date("Y-m")."-".date("t");
-			$html .= "	<tr>";
-			$html .= "		<td><input type='checkbox' name='it_id[]' data-name='{$row['it_name']}' data-date1='{$first_date2}' data-date2='{$last_date2}' value='{$row['it_id']}'></td>";
-			$html .= "		<td>{$row['it_name']}</td>";
-			$html .= "		<td>{$row['ca_name']}</td>";
-			$html .= "		<td>{$first_date} ~ {$last_date}</td>";
-			$html .= "		<td>{$row['it_code']}-{$row['it_barcode']}</td>";
-			$html .= "	</tr>";
-		}		
-		$html .= "</table>";
-	}
-?>
+
   <div class="section_wrap" style="text-align: center; margin-bottom:30px;" id="rental_item_list">
-	<?=$html?>
+
   </div>
 <?php
 $sql = "SELECT MIN(a.dc_sign_datetime) as start_time FROM `eform_document` AS a 
@@ -1133,18 +1134,29 @@ if($start_date != ""){
 <form method="post" id="download_excel">
 		<div class="form-group pop_con" style="margin-top:10px;">
 			<input type="hidden" name="mode" value="w">
+			<input type="hidden" id="penNm" value="<?=$pen['penNm']?>">
 			<input type="hidden" name="penId" value="<?=$_GET['id']?>">
 			<input type="hidden" name="it_ids"  id="it_ids" value="">
 			<input type="hidden" name="it_dates"  id="it_dates" value="">
 			<b>생성월</b><br>
-			<input readonly type="text" name="create_month" id='sdate2' class="form-control input-sm" value="<?=date("Y-m")?>"><br>
+			<input readonly type="text" name="create_month" id='sdate2' class="form-control input-sm" value="<?=date("Y-m")?>" style="margin-bottom:10px;">
 			<b>계약기간</b><br>
-			<div id="it_list" class="" style="width:100%;height:210px;overflow-y:auto;">
+			<div id="it_list" class="" style="width:100%;height:170px;overflow-y:auto;margin-bottom:10px;">
 			
 			</div>
-			<br>
+			<b>수급자와의 관계</b><br>
+			<div style="width:100%;height:70px;">
+			<select name="contract_sign_relation" id="contract_sign_relation" class="form-control input-sm" style="width:25%;display:inline;margin-bottom:5px" onChange="relation_change()">
+				<option value="0" selected>본인</option>
+				<option value="1">가족</option>	
+				<option value="2">친족</option>	
+				<option value="3">기타</option>	
+			</select>
+			<input type="text" name="pen_guardian_nm" id="pen_guardian_nm" class="form-control input-sm" style="width:70%;display:inline;margin-left:3%;margin-bottom:5px;" value="<?=$pen['penNm']?>" maxlength="4" placeholder="성명을 입력하세요." readonly>
+			<input type="text" name="contract_sign_relation_nm" id="contract_sign_relation_nm" class="form-control input-sm" style="width:70%;display:inline;margin-bottom:10px;margin-left:29%;display:none;" value="" maxlength="7" placeholder="기타관계를 입력하세요.">
+			</div>
 			<b>특이사항</b><br>
-			<textarea name="entConAcc" rows="4" cols="" class="form-control input-sm" placeholder="100자까지 입력 가능합니다." style="resize: none;" maxlength="100" id="textBox"></textarea><br>
+			<textarea name="entConAcc" rows="3" cols="" class="form-control input-sm" placeholder="100자까지 입력 가능합니다." style="resize: none;margin-bottom:10px;" maxlength="100" id="textBox"></textarea>
 			<b>확인사항</b>&nbsp;
 			<select name="penRecTypeCd" id="penRecTypeCd" class="form-control input-sm" style="width:20%;display:inline;">
 				<option value="01" selected>유선</option>
@@ -1154,7 +1166,7 @@ if($start_date != ""){
 			<input type="text" name="confirm_date" id="confirm_date" class="form-control input-sm" style="width:30%;display:inline;" value="<?=date("Y-m-d")?>" readonly>			
         </div>	
 		<div style="margin-top:10px;text-align:center;border-top:1px solid #333333;height:40px;padding-top:10px;">
-			<input type="button" value="등록" onclick="downloadExcel('w')" style="height:30px;line-height:30px !important;padding: 0 13px;vertical-align: top;font-weight: bold;letter-spacing: -1px;background-color: white;border: 1px solid #b5b5b5;color: black !important;">
+			<input type="button" value="등록" onclick="return downloadExcel('w')" style="height:30px;line-height:30px !important;padding: 0 13px;vertical-align: top;font-weight: bold;letter-spacing: -1px;background-color: white;border: 1px solid #b5b5b5;color: black !important;">
         </div>
 </form>
 	</div>	
@@ -1170,14 +1182,14 @@ if($start_date != ""){
 		<span style="float:right;cursor:pointer;margin-top:-15px;" onClick="rent_efrom_close();" title="돌아가기" >X</span>
 		</div>
 		<div class="form-group" style="text-align:center;border-bottom:1px solid #333333;height:40px;">
-			<span class="" style="text-align:center;font-weight:bold;font-size:18px;">대여계약 급여제공기록 이력</span>
+			<span class="" style="text-align:center;font-weight:bold;font-size:18px;">대여계약 급여제공기록 관리</span>
         </div>
 
 		<div class="form-group section_wrap" id="eform_rent_hist" style="border:0px; padding: 0px; height:460px; overflow-x:auto;border-radius: 0px;">
 		<!-- 대여계약 급여제공기록 이력 리스트 -->
         </div>	
 		<div style="margin-top:10px;text-align:left;border-top:1px solid #333333;height:40px;padding-top:10px;" class="pop_tail">
-			이력 정보는 계약 종료 날짜 기준 다음달 1일에 자동 삭제됩니다.<br>
+			생성된 급여제공기록 정보는 계약 종료 날짜 기준 다음달 1일에 자동 삭제됩니다.(단, 전자서명은 제외)<br>
 			<font color="red">※ 계약기간(종료일)이 계약생성일보다 이전인 경우 계약생성일 기준으로 다음달 1일에 삭제됩니다.</font>
         </div>
 
@@ -1241,10 +1253,26 @@ show_eroumcare_popup({
 } 
 ?>
 
+<?php include_once('./popup_sign_send2.php');?>
+
+
 <script>
-  function redirect_item(href) {
-      location.href = href;
-    }
+function relation_change(){
+	$("#contract_sign_relation_nm").css("display","none");
+	$("#contract_sign_relation_nm").val("");
+	$("#pen_guardian_nm").val("");
+	$("#pen_guardian_nm").attr("readonly",false);
+	if($("#contract_sign_relation").val() == "0"){//본인
+		$("#pen_guardian_nm").attr("readonly",true);
+		$("#pen_guardian_nm").val($("#penNm").val());
+	}else if($("#contract_sign_relation").val() == "3"){//기타
+		$("#contract_sign_relation_nm").css("display","block");
+	}
+}
+
+function redirect_item(href) {
+    location.href = href;
+}
 
 function rent_efrom_open(){//대여계약 급여제공기록 생성 팝업
 	var it_id = [];
@@ -1300,7 +1328,8 @@ function rent_efrom_close(){
 	$('body').removeClass('modal-open');
 }
 
-function rent_item_list(c_month){
+function rent_item_list(){
+	var c_month = $("#create_month").val();
 	$("#rental_item_list").html("");
 	$.post('ajax.rental_item_list.php', {
       c_month: c_month,
@@ -1320,7 +1349,20 @@ function rent_item_list(c_month){
 }
 
 function downloadExcel(mode,rh_id1=false) {
-    var href = './rental_item_eform.excel.download.php';
+    if($("#contract_sign_relation").val() != "0" && mode == "w"){//본인이 아닐경우,생성 시
+		if($("#pen_guardian_nm").val() == ""){//보호자 성명이 없을 경우
+			alert("성명을 입력하세요.");
+			$("#pen_guardian_nm").focus();
+			return false;
+		}
+		if($("#contract_sign_relation_nm").val() == ""){//보호자 성명이 없을 경우
+			alert("기타관계를 입력하세요.");
+			$("#contract_sign_relation_nm").focus();
+			return false;
+		}
+	}	
+	
+	var href = './rental_item_eform.excel.download.php';
 	if(rh_id1 != false){
 		$("#rh_id").val(rh_id1);
 	}
@@ -1345,6 +1387,8 @@ function cancelExcelDownload() {
 }
   
 $(function() {
+	rent_item_list();//생성월 선택
+
 	$('#textBox').keyup(function (e) {
 		let content = $(this).val();		
 		// 글자수 제한

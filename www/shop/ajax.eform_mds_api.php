@@ -43,235 +43,263 @@ header('Content-type: application/json');
 		$data = "";
 		$arrResponse2 = get_modusign($API_Key64,$api_url,$type,$data);
 		$dc_id2 = ($arrResponse2["metadatas"][0]["key"] == "dc_id")? strtoupper($arrResponse2["metadatas"][0]["value"]) : strtoupper($arrResponse2["metadatas"][1]["value"]);
+		$dc_ids = explode("_",$dc_id2);
+		
 		$log_dir = $_SERVER["DOCUMENT_ROOT"].'/data/log/';
 		//$log_dir = "/home/root...등의 절대경로 ";
 	    $log_txt = "\r\n";
 		$log_txt .= '(' . date("Y-m-d H:i:s") . ')' .$arrResponse["event"]["type"]. "\r\n";
 		if($arrResponse["event"]["type"] == "document_all_signed"){// 서명완료
-			$sql = "update `eform_document` set dc_sign_datetime=now(),dc_status='3' WHERE dc_id=UNHEX('".$dc_id2."')";
-			$log_txt .= "-- 계약서 ".$dc_id2." 서명 완료(".$arrResponse2["metadatas"][0]["value"].")\r\n";
-			sql_query($sql);
-			//if($is_simple_efrom) {
-			  $uuid = $dc_id2; 
-			  $dc_status = '3';
-			  $eform = sql_fetch("SELECT * FROM `eform_document` WHERE `dc_id` = UNHEX('$uuid')");
-			  $ent = sql_fetch(" SELECT * FROM g5_member WHERE mb_entId = '{$eform['entId']}' ");
-			  // 간편 계약서 작성 시 바코드 입력한 상품 '재고소진' 상태로 재고 등록
-			  $sql = "
-				SELECT
-				  i.*,
-				  x.it_id as id
-				FROM
-				  eform_document_item i
-				LEFT JOIN
-				  g5_shop_item x ON x.it_id = (
-					select it_id
-					from g5_shop_item
-					where
-					  ProdPayCode = i.it_code and
-					  (
-						( i.gubun = '00' and ca_id like '10%' ) or
-						( i.gubun = '01' and ca_id like '20%' )
+			if($dc_ids[0] == "rent"){//대여계약 급여제공기록 계약 시
+				$sql = "update `eform_rent_hist` set dc_sign_datetime=now(),rh_status='3' WHERE rh_id='".$dc_ids[1]."'";
+				$log_txt .= "-- 대여계약 급여제공기록 계약서 ".$arrResponse["document"]["id"]." 서명 완료(".$arrResponse2["metadatas"][0]["value"].")\r\n";
+				sql_query($sql);
+
+				//서명완료 로그 =====================================================================================================================
+				 // 계약서 로그 작성
+				$ip = $_SERVER['REMOTE_ADDR'];
+				$browser = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
+				$datetime = date('Y-m-d H:i:s');
+				$log = '전자계약서에 서명했습니다.';
+
+				sql_query("INSERT INTO `eform_document_log2` SET
+				`dc_id` = '$dc_ids[1]',
+				`dl_log` = '$log',
+				`dl_ip` = '$ip',
+				`dl_browser` = '$browser',
+				`dl_datetime` = '$datetime'
+				");
+			}else{
+				$sql = "update `eform_document` set dc_sign_datetime=now(),dc_status='3' WHERE dc_id=UNHEX('".$dc_id2."')";
+				$log_txt .= "-- 계약서 ".$dc_id2." 서명 완료(".$arrResponse2["metadatas"][0]["value"].")\r\n";
+				sql_query($sql);
+				//if($is_simple_efrom) {
+				  $uuid = $dc_id2; 
+				  $dc_status = '3';
+				  $eform = sql_fetch("SELECT * FROM `eform_document` WHERE `dc_id` = UNHEX('$uuid')");
+				  $ent = sql_fetch(" SELECT * FROM g5_member WHERE mb_entId = '{$eform['entId']}' ");
+				  // 간편 계약서 작성 시 바코드 입력한 상품 '재고소진' 상태로 재고 등록
+				  $sql = "
+					SELECT
+					  i.*,
+					  x.it_id as id
+					FROM
+					  eform_document_item i
+					LEFT JOIN
+					  g5_shop_item x ON x.it_id = (
+						select it_id
+						from g5_shop_item
+						where
+						  ProdPayCode = i.it_code and
+						  (
+							( i.gubun = '00' and ca_id like '10%' ) or
+							( i.gubun = '01' and ca_id like '20%' )
+						  )
+						limit 1
 					  )
-					limit 1
-				  )
-				WHERE
-				  dc_id = UNHEX('$uuid')
-				ORDER BY
-				  i.it_id ASC
-			  ";
-			  $result = sql_query($sql);
+					WHERE
+					  dc_id = UNHEX('$uuid')
+					ORDER BY
+					  i.it_id ASC
+				  ";
+				  $result = sql_query($sql);
 
-			  $stock_insert = [];
-			  $stock_update = [];
-			  $rental_data_table = [];
-			  while($row = sql_fetch_array($result)) {
-				if(strlen($row['it_barcode']) == 12) { // 바코드 12자리 정상적으로 입력한 경우
-				  if($row['gubun'] == '00') {
-					// 판매
-					// 재고에 있는지 조회
-					$stock_result="";
-					$result = api_post_call(EROUMCARE_API_STOCK_SELECT_DETAIL_LIST, array(
-						'entId' => $ent['mb_entId'],
-						'usrId' => $ent['mb_id'],
-						'prodId' => $row['id'],
-						'prodBarNum' => $row['it_barcode']
-					  ));
+				  $stock_insert = [];
+				  $stock_update = [];
+				  $rental_data_table = [];
+				  while($row = sql_fetch_array($result)) {
+					if(strlen($row['it_barcode']) == 12) { // 바코드 12자리 정상적으로 입력한 경우
+					  if($row['gubun'] == '00') {
+						// 판매
+						// 재고에 있는지 조회
+						$stock_result="";
+						$result = api_post_call(EROUMCARE_API_STOCK_SELECT_DETAIL_LIST, array(
+							'entId' => $ent['mb_entId'],
+							'usrId' => $ent['mb_id'],
+							'prodId' => $row['id'],
+							'prodBarNum' => $row['it_barcode']
+						  ));
 
 
-					  if($result['errorYN'] == 'N' && $result['data']) {
-						$stock_result = $result['data'];
+						  if($result['errorYN'] == 'N' && $result['data']) {
+							$stock_result = $result['data'];
+						  }
+						if($stock_result) {
+						  // 재고에 있으면
+						  $stock = $stock_result[0];
+						  // 재고가 판매완료 상태가 아니면 판매완료로 업데이트
+						  $stock['stateCd'] != '02';
+						  $stock_update[] = array(
+							'stoId' => $stock['stoId'],
+							'prodBarNum' => $row['it_barcode'],
+							'stateCd' => '02'
+						  );
+						} else {
+						  // 재고에 없으면
+						  // 보유재고로 판매완료로 등록
+						  $stock_insert[] = array(
+							'prodId' => $row['id'],
+							'prodBarNum' => $row['it_barcode'],
+							'stateCd' => '02'
+						  );
+						}
+					  } else {
+						// 대여
+						$str_date = substr($row['it_date'], 0, 10);
+						$end_date = substr($row['it_date'], 11, 10);
+
+						// rental_data_table에 입력해둠 (나중에 재고 업데이트/등록 후 대여로그 작성하기 위해)
+						$rental_data_table["{$row['id']}-{$row['it_barcode']}"] = array(
+						  'strdate' => $str_date,
+						  'enddate' => $end_date
+						);
+
+						// 재고에 있는지 조회
+						$stock_result="";
+						$result = api_post_call(EROUMCARE_API_STOCK_SELECT_DETAIL_LIST, array(
+							'entId' => $ent['mb_entId'],
+							'usrId' => $ent['mb_id'],
+							'prodId' => $row['id'],
+							'prodBarNum' => $row['it_barcode']
+						  ));
+
+
+						  if($result['errorYN'] == 'N' && $result['data']) {
+							$stock_result = $result['data'];
+						  }
+						if($stock_result) {
+						  // 재고가 있으면
+						  $stock = $stock_result[0];
+						  // 재고 대여완료로 업데이트
+						  $stock_update[] = array(
+							'stoId' => $stock['stoId'],
+							'prodId' => $row['id'],
+							'prodBarNum' => $row['it_barcode'],
+							'stateCd' => '02'
+						  );
+						} else {
+						  // 재고에 없으면
+						  // 보유재고에 등록
+						  $stock_insert[] = array(
+							'prodId' => $row['id'],
+							'prodBarNum' => $row['it_barcode'],
+							'stateCd' => '02',
+							'initialContractDate' => date('Y-m-d H:i:s', strtotime($str_date))
+						  );
+						}
 					  }
-					if($stock_result) {
-					  // 재고에 있으면
-					  $stock = $stock_result[0];
-					  // 재고가 판매완료 상태가 아니면 판매완료로 업데이트
-					  $stock['stateCd'] != '02';
-					  $stock_update[] = array(
-						'stoId' => $stock['stoId'],
-						'prodBarNum' => $row['it_barcode'],
-						'stateCd' => '02'
-					  );
-					} else {
-					  // 재고에 없으면
-					  // 보유재고로 판매완료로 등록
-					  $stock_insert[] = array(
-						'prodId' => $row['id'],
-						'prodBarNum' => $row['it_barcode'],
-						'stateCd' => '02'
-					  );
-					}
-				  } else {
-					// 대여
-					$str_date = substr($row['it_date'], 0, 10);
-					$end_date = substr($row['it_date'], 11, 10);
-
-					// rental_data_table에 입력해둠 (나중에 재고 업데이트/등록 후 대여로그 작성하기 위해)
-					$rental_data_table["{$row['id']}-{$row['it_barcode']}"] = array(
-					  'strdate' => $str_date,
-					  'enddate' => $end_date
-					);
-
-					// 재고에 있는지 조회
-					$stock_result="";
-					$result = api_post_call(EROUMCARE_API_STOCK_SELECT_DETAIL_LIST, array(
-						'entId' => $ent['mb_entId'],
-						'usrId' => $ent['mb_id'],
-						'prodId' => $row['id'],
-						'prodBarNum' => $row['it_barcode']
-					  ));
-
-
-					  if($result['errorYN'] == 'N' && $result['data']) {
-						$stock_result = $result['data'];
-					  }
-					if($stock_result) {
-					  // 재고가 있으면
-					  $stock = $stock_result[0];
-					  // 재고 대여완료로 업데이트
-					  $stock_update[] = array(
-						'stoId' => $stock['stoId'],
-						'prodId' => $row['id'],
-						'prodBarNum' => $row['it_barcode'],
-						'stateCd' => '02'
-					  );
-					} else {
-					  // 재고에 없으면
-					  // 보유재고에 등록
-					  $stock_insert[] = array(
-						'prodId' => $row['id'],
-						'prodBarNum' => $row['it_barcode'],
-						'stateCd' => '02',
-						'initialContractDate' => date('Y-m-d H:i:s', strtotime($str_date))
-					  );
 					}
 				  }
+
+				  // 재고 insert
+				  if($stock_insert) {
+					$insert_result = api_post_call(EROUMCARE_API_STOCK_INSERT, array(
+					  'usrId' => $ent["mb_id"],
+					  'entId' => $ent["mb_entId"],
+					  'prods' => $stock_insert
+					));
+
+					// 대여로그 작성
+					foreach($insert_result['data'] as $row) {
+					  $rental_data = $rental_data_table["{$row['prodId']}-{$row['prodBarNum']}"];
+					  if(!$rental_data) continue;
+
+					  $rental_log_id = "rental_log".round(microtime(true)).rand();
+					  $dis_total_date = G5_TIME_YMDHIS;
+
+					  sql_query("
+						INSERT INTO
+						  g5_rental_log
+						SET
+						  rental_log_Id = '{$rental_log_id}',
+						  stoId = '{$row['stoId']}',
+						  ordId = '',
+						  strdate = '{$rental_data['strdate']}',
+						  enddate = '{$rental_data['enddate']}',
+						  dis_total_date = '{$dis_total_date}',
+						  ren_person = '{$eform['penNm']}',
+						  rental_log_division = '2'
+					  ");
+					}
+				  }
+
+				  // 재고 update
+				  if($stock_update) {
+					$update_result = api_post_call(EROUMCARE_API_STOCK_UPDATE, array(
+					  'usrId' => $ent["mb_id"],
+					  'entId' => $ent["mb_entId"],
+					  'prods' => $stock_update
+					));
+
+					// 대여로그 작성
+					foreach($stock_update as $row) {
+					  $rental_data = $rental_data_table["{$row['prodId']}-{$row['prodBarNum']}"];
+					  if(!$rental_data) continue;
+
+					  // 이미 같은 기간동안의 대여로그가 작성되어있는지 검색
+					  $check_result = sql_fetch("
+						SELECT
+						  rental_log_Id
+						FROM
+						  g5_rental_log
+						WHERE
+						  stoId = '{$row['stoId']}' and
+						  strdate = '{$rental_data['strdate']}' and
+						  enddate = '{$rental_data['enddate']}' and
+						  rental_log_division = '2'
+					  ");
+
+					  // 이미 작성된 로그면 건너뜀
+					  if($check_result['rental_log_Id']) continue;
+
+					  $rental_log_id = "rental_log".round(microtime(true)).rand();
+					  $dis_total_date = G5_TIME_YMDHIS;
+
+					  sql_query("
+						INSERT INTO
+						  g5_rental_log
+						SET
+						  rental_log_Id = '{$rental_log_id}',
+						  stoId = '{$row['stoId']}',
+						  ordId = '',
+						  strdate = '{$rental_data['strdate']}',
+						  enddate = '{$rental_data['enddate']}',
+						  dis_total_date = '{$dis_total_date}',
+						  ren_person = '{$eform['penNm']}',
+						  rental_log_division = '2'
+					  ");
+					}
+				  }
+				 //서명완료 로그 =====================================================================================================================
+				 // 계약서 로그 작성
+				$ip = $_SERVER['REMOTE_ADDR'];
+				$browser = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
+				$timestamp = time();
+				$datetime = date('Y-m-d H:i:s', $timestamp);
+				$log = '전자계약서에 서명했습니다.';
+
+				sql_query("INSERT INTO `eform_document_log` SET
+				`dc_id` = UNHEX('$uuid'),
+				`dl_log` = '$log',
+				`dl_ip` = '$ip',
+				`dl_browser` = '$browser',
+				`dl_datetime` = '$datetime'
+				");
+				if($eform['penNm'] != "" && $ent['mb_hp'] != ""){//테스트 서버에서의 오발송을 차단하기 위함
+				 //알림톡보내기 ======================================================================================================================
+				 send_alim_talk('ENT_EF_'.$uuid, $ent['mb_hp'], 'ent_eform_result', "\"[이로움]\n\n{$eform['penNm']}님과 전자계약이 체결되었습니다.\"");
+				 //================================================================================================================================
 				}
-			  }
-
-			  // 재고 insert
-			  if($stock_insert) {
-				$insert_result = api_post_call(EROUMCARE_API_STOCK_INSERT, array(
-				  'usrId' => $ent["mb_id"],
-				  'entId' => $ent["mb_entId"],
-				  'prods' => $stock_insert
-				));
-
-				// 대여로그 작성
-				foreach($insert_result['data'] as $row) {
-				  $rental_data = $rental_data_table["{$row['prodId']}-{$row['prodBarNum']}"];
-				  if(!$rental_data) continue;
-
-				  $rental_log_id = "rental_log".round(microtime(true)).rand();
-				  $dis_total_date = G5_TIME_YMDHIS;
-
-				  sql_query("
-					INSERT INTO
-					  g5_rental_log
-					SET
-					  rental_log_Id = '{$rental_log_id}',
-					  stoId = '{$row['stoId']}',
-					  ordId = '',
-					  strdate = '{$rental_data['strdate']}',
-					  enddate = '{$rental_data['enddate']}',
-					  dis_total_date = '{$dis_total_date}',
-					  ren_person = '{$eform['penNm']}',
-					  rental_log_division = '2'
-				  ");
-				}
-			  }
-
-			  // 재고 update
-			  if($stock_update) {
-				$update_result = api_post_call(EROUMCARE_API_STOCK_UPDATE, array(
-				  'usrId' => $ent["mb_id"],
-				  'entId' => $ent["mb_entId"],
-				  'prods' => $stock_update
-				));
-
-				// 대여로그 작성
-				foreach($stock_update as $row) {
-				  $rental_data = $rental_data_table["{$row['prodId']}-{$row['prodBarNum']}"];
-				  if(!$rental_data) continue;
-
-				  // 이미 같은 기간동안의 대여로그가 작성되어있는지 검색
-				  $check_result = sql_fetch("
-					SELECT
-					  rental_log_Id
-					FROM
-					  g5_rental_log
-					WHERE
-					  stoId = '{$row['stoId']}' and
-					  strdate = '{$rental_data['strdate']}' and
-					  enddate = '{$rental_data['enddate']}' and
-					  rental_log_division = '2'
-				  ");
-
-				  // 이미 작성된 로그면 건너뜀
-				  if($check_result['rental_log_Id']) continue;
-
-				  $rental_log_id = "rental_log".round(microtime(true)).rand();
-				  $dis_total_date = G5_TIME_YMDHIS;
-
-				  sql_query("
-					INSERT INTO
-					  g5_rental_log
-					SET
-					  rental_log_Id = '{$rental_log_id}',
-					  stoId = '{$row['stoId']}',
-					  ordId = '',
-					  strdate = '{$rental_data['strdate']}',
-					  enddate = '{$rental_data['enddate']}',
-					  dis_total_date = '{$dis_total_date}',
-					  ren_person = '{$eform['penNm']}',
-					  rental_log_division = '2'
-				  ");
-				}
-			  }
-			 //서명완료 로그 =====================================================================================================================
-			 // 계약서 로그 작성
-			$ip = $_SERVER['REMOTE_ADDR'];
-			$browser = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
-			$timestamp = time();
-			$datetime = date('Y-m-d H:i:s', $timestamp);
-			$log = '전자계약서에 서명했습니다.';
-
-			sql_query("INSERT INTO `eform_document_log` SET
-			`dc_id` = UNHEX('$uuid'),
-			`dl_log` = '$log',
-			`dl_ip` = '$ip',
-			`dl_browser` = '$browser',
-			`dl_datetime` = '$datetime'
-			");
-			if($eform['penNm'] != "" && $ent['mb_hp'] != ""){//테스트 서버에서의 오발송을 차단하기 위함
-			 //알림톡보내기 ======================================================================================================================
-			 send_alim_talk('ENT_EF_'.$uuid, $ent['mb_hp'], 'ent_eform_result', "\"[이로움]\n\n{$eform['penNm']}님과 전자계약이 체결되었습니다.\"");
-			 //================================================================================================================================
+				//}
 			}
-			//}
 		}elseif($arrResponse["event"]["type"] == "document_rejected"){//서명거절 document_rejected
-			$sql = "update `eform_document` set dc_sign_datetime=now(),dc_status='5' WHERE dc_id=UNHEX('".$dc_id2."')";
-			$log_txt .= "-- 계약서 ".$dc_id2." 서명 거절\r\n".$sql;
+			if($dc_ids[0] == "rent"){//대여계약 급여제공기록 계약 시
+				$sql = "update `eform_rent_hist` set dc_sign_datetime=now(),rh_status='5' WHERE rh_id='".$dc_ids[1]."'";
+				$log_txt .= "-- 대여계약 급여제공기록 계약서 ".$arrResponse["document"]["id"]." 서명 거절";
+			}else{
+				$sql = "update `eform_document` set dc_sign_datetime=now(),dc_status='5' WHERE dc_id=UNHEX('".$dc_id2."')";
+				$log_txt .= "-- 계약서 ".$dc_id2." 서명 거절";
+			}			
 			sql_query($sql);
 		}elseif($arrResponse["event"]["type"] == "document_POST_canceled"){//서명요청취소
 			$log_txt .= "-- 계약서 ".$dc_id2." 서명 요청취소";
@@ -954,23 +982,47 @@ fclose($log_file);
 	$data = '';
 	$arrResponse = get_modusign($API_Key64,$api_url,$type,$data);//메타데이터 확인
 	$dc_id =  strtoupper($arrResponse["metadatas"][0]["value"]);
+	$dc_ids = explode("_",$dc_id);
 	$url = "";
-	$sql = "SELECT dc_status FROM `eform_document` WHERE dc_id=UNHEX('".$dc_id."')";
-	$row=sql_fetch($sql);
-	if($row["dc_status"] == "3" || $row["dc_status"] == "5"){
-		$url = $row["dc_status"];
-	}else{
-		for($i=0;$i<16;$i++){
-			$sql = "SELECT dc_status FROM `eform_document` WHERE dc_id=UNHEX('".$dc_id."')";
-			$row=sql_fetch($sql);
-			if($row["dc_status"] == "3" || $row["dc_status"] == "5"){
-				$url = $i;
-				break;
-			}elseif($i == 15){
-				$url = $i;
-				break;
+	$rent = "";
+	if($dc_ids[0] == "rent"){//대여계약 급여제공기록 계약 시
+		$sql = "SELECT dc_status FROM `eform_rent_hist` WHERE rh_id='".$dc_ids[1]."'";
+		$row=sql_fetch($sql);
+		if($row["rh_status"] == "3" || $row["hr_status"] == "5"){
+			$url = $row["dc_status"];
+		}else{
+			for($i=0;$i<16;$i++){
+				$sql = "SELECT dc_status FROM `eform_rent_hist` WHERE rh_id='".$dc_id."'";
+				$row=sql_fetch($sql);
+				if($row["rh_status"] == "3" || $row["rh_status"] == "5"){
+					$url = $i;
+					break;
+				}elseif($i == 15){
+					$url = $i;
+					break;
+				}
+				sleep(1);
 			}
-			sleep(1);
+		}
+		$rent = "1";
+	}else{	
+		$sql = "SELECT dc_status FROM `eform_document` WHERE dc_id=UNHEX('".$dc_id."')";
+		$row=sql_fetch($sql);
+		if($row["dc_status"] == "3" || $row["dc_status"] == "5"){
+			$url = $row["dc_status"];
+		}else{
+			for($i=0;$i<16;$i++){
+				$sql = "SELECT dc_status FROM `eform_document` WHERE dc_id=UNHEX('".$dc_id."')";
+				$row=sql_fetch($sql);
+				if($row["dc_status"] == "3" || $row["dc_status"] == "5"){
+					$url = $i;
+					break;
+				}elseif($i == 15){
+					$url = $i;
+					break;
+				}
+				sleep(1);
+			}
 		}
 	}
 	//$url = $dc_id;
@@ -978,6 +1030,7 @@ fclose($log_file);
 	if($url != ""){
 		$response2["url"] = $url;
 		$response2["api_stat"] = "1";
+		$response2["rent"] = $rent;
 	}else{
 		$response2["url"] = "url생성실패";
 	}
