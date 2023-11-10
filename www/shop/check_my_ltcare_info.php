@@ -354,7 +354,7 @@ input[type="number"]::-webkit-inner-spin-button {
 </section>
 <p style="width: 100%; background: #f5f5f5; height: 1px; display: inline-block; content: ' '"/>
 <p id = "rep_cnt" style="float:left; display: inline-block; line-height: 20px; font-weight:bold; font-size:18px; margin : 5px 0px;">조회결과 <?php if($result_arr == null){echo "0";}else{echo sizeof($result_arr);}?>명</p>
-<?php if($mobile_yn == 'Pc'){?><button class="btn_write" style="float:right;width:150px;" onClick="tilko_call('1');">인증서 재 등록하기</button><?php }?>
+<?php if($mobile_yn == 'Pc'){?><button class="btn_write" style="float:right;width:150px;" onClick="alert('공인인증서 등록 시 발급 용도 [용도제한용]으로 재등록 부탁드립니다.');tilko_call('1');">인증서 재 등록하기</button><?php }?>
 <div id="list_wrap" class="list_box" style="margin-top:20px;">
     <div class="table_box">
         <table id="table_list">

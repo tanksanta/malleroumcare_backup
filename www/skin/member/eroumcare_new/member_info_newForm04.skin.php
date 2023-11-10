@@ -155,7 +155,7 @@
                                 <?php } ?>
                             </div>
                         </div>
-                        <div class="thkc_btnWrap_03"><button class="on" onClick="tilko_call('1');">변경/갱신</button></div>
+                        <div class="thkc_btnWrap_03"><button class="on" onClick="alert('공인인증서 등록 시 발급 용도 [용도제한용]으로 등록 부탁드립니다.');tilko_call('1');">변경/갱신</button></div>
                     </div>
                     <!-- 요양정보조회 end -->
                 </div>
