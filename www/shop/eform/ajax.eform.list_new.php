@@ -217,7 +217,7 @@ for($i = 0; $row = sql_fetch_array($result); $i++) {
     // - 전부 바코드 입력이 되어있는 경우는 상품 주문하기 출력 X
     $it_count = sql_fetch(" select count(*) as cnt from eform_document_item where dc_id = unhex('{$row['uuid']}') and it_barcode = '' ");
     if($it_count['cnt'] > 0)
-      echo '<br><a href="/shop/simple_order.php?dc_id='.$row["uuid"].'" class="btn_grey">상품 주문하기</a>';
+      echo '<br><a href="javascript:it_filter(\''.$row["uuid"].'\');" class="btn_grey">상품 주문하기</a>';
   }
   ?>
 </td>

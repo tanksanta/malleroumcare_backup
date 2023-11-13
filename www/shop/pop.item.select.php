@@ -15,7 +15,7 @@ $sql_search = "";
 if($no_option == 'nonReimbursement'){ // 간편 계약서에서 검색 시 : 유통+비유통+급여
     $sql_search .= " $where (a.ca_id LIKE '10%' OR a.ca_id LIKE '20%') ";
 }else { // 이외의 검색(간편 주문서 + 주문 변경 + 간편제안서) : 유통+급여+비급여+보장구
-    $sql_search .= " $where prodSupYn = 'Y' ";
+    $sql_search .= " $where prodSupYn = 'Y'  AND it_soldout = '0' ";
     $where = " and ";
     $sql_search .= " $where (a.ca_id LIKE '10%' OR a.ca_id LIKE '20%' OR a.ca_id LIKE '70%' OR a.ca_id LIKE '80%') ";
 }
