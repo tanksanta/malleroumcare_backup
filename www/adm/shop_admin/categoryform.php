@@ -210,6 +210,8 @@ if(USE_G5_THEME) {
                 // 23.10.05 : 서원 - WMDS쪽 신규 API가 추가됨에 따라 해당 API에서 'itemId' 값을 Key값으로 사용함으로 해당 값은 등록이후 변경 불가능 해야함.
                 //                   해당 값이 변경될 경우 WMDS에서 찾을 수 없음.
                 if ( (mb_strlen($subid)<=4) && $subid ) {
+                    // 23.11.13 : 서원 - 품목 코드 자동생성 코드 추가.
+                    if( !$ca['itemId'] ) { $ca['itemId'] = "ITM".date("Y").date("m").date("d").substr(time(),5,5); } // 품목코드 자동생성. 
                 ?>
                     <input type="text" name="itemId" value="<?=$ca['itemId']; ?>" id="itemId" required class="required frm_input">
                 <?php } else { ?>
