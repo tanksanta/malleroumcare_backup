@@ -725,4 +725,26 @@
 		}
 	}
 
+	function it_filter(dc_id){//비유통,품절상품 상품주문 불가 안내
+		$.ajax({
+		  type : "POST",  
+		  url: './ajax.eform_order_it_filter.php',
+		  data: {"dc_id":dc_id},
+		  dataType:"json",
+		  success : function(res){ 
+			if(res.N_count > 0){				
+				alert("비유통 및 품절상품은 상품주문이 불가능합니다.\n[ 주문불가 상품 ]\n"+res.msg);
+				if(res.Y_count == 0){
+					return false;
+				}
+			}
+			location.href="./simple_order.php?dc_id="+dc_id;
+		  },
+		  error : function(XMLHttpRequest, textStatus, errorThrown){ 
+			loading_onoff('off');
+					alert("통신 실패.")
+				}
+		});
+	}
+
 </script>
