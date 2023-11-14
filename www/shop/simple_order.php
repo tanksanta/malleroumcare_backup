@@ -1693,7 +1693,7 @@ $(function() {
         eform_document d
       LEFT JOIN
         eform_document_item i ON d.dc_id = i.dc_id
-      LEFT JOIN
+      INNER JOIN
         g5_shop_item x ON x.it_id = (
           select it_id
           from g5_shop_item
@@ -1703,6 +1703,7 @@ $(function() {
               ( i.gubun = '00' and ca_id like '10%' ) or
               ( i.gubun = '01' and ca_id like '20%' )
             )
+		  and prodSupYn = 'Y' and it_soldout = '0'
           limit 1
         )
       WHERE
