@@ -159,7 +159,7 @@ if($prodSupYn) {
 if($prodRentalYn == "Y"){
 	$where .= " AND it_10_subj = 'rental'";
 }else{
-	$where .= " AND it_10_subj != 'rental'";
+	//$where .= " AND it_10_subj != 'rental'";
 }
 
 // 기타설정(태그선택)
