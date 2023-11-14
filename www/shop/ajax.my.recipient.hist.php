@@ -101,7 +101,7 @@ if(sizeof(array_keys($mapping_list_this))> 0){
 		if(sizeof(array_values($mapping_list_this)[$i])>1){
 			$list_tmp = [];
 			for($ind=0;$ind<sizeof(array_values($mapping_list_this)[$i]);$ind++){
-				$_key = array_values($mapping_list_this)[$i][$ind]['BCD_NO']."/".array_values($mapping_list_this)[$i][$ind]['POF_FR_DT'];
+				$_key = array_values($mapping_list_this)[$i][$ind]['BCD_NO']."/".array_values($mapping_list_this)[$i][$ind]['POF_FR_DT']."/".array_values($mapping_list_this)[$i][$ind]['PROC_CD'];//동일날짜,동일 바코드로 인한 오류 발생으로 품목코드 추가
 				$list_tmp[$_key] = array_values($mapping_list_this)[$i][$ind]['TOT_AMT'];
 			}
 			$result_mapping[array_keys($mapping_list_this)[$i]] = $list_tmp;
@@ -160,7 +160,7 @@ for($i = 0; $i < sizeof($list_hist); $i++){
 	$insert_list[$i]['TOTAL_PRICE'] = $list_hist[$i]['TOT_AMT'];	
 	$t_key = strval($list_hist[$i]['BCD_NO']);		
 	if($result_mapping[$t_key]){
-		$tmp_key = $list_hist[$i]['BCD_NO']."/".$list_hist[$i]['PERIOD'];
+		$tmp_key = $list_hist[$i]['BCD_NO']."/".$list_hist[$i]['PERIOD']."/".$list_hist[$i]['PROC_CD'];//동일날짜,동일 바코드로 인한 오류 발생으로 품목코드 추가
 		for($idx=0;$idx<sizeof(array_keys($result_mapping[$t_key]));$idx++){
 			if(array_keys($result_mapping[$t_key])[$idx] == $tmp_key){
 				error_log(var_export("*******key : ".array_keys($result_mapping[$t_key])[$idx],1));
