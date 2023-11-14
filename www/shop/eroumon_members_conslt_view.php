@@ -194,11 +194,11 @@
             $sql_result = sql_fetch( $sql , "" , $g5['eroumon_db'] ); mysqli_next_result($g5['eroumon_db']);
             
             if( ($sql_result['MCR_ST']!=$_MCR_STTUS_CD) && ($sql_result['CONSLT_NO']==$_MC_cON) && ($sql_result['BPLC_CONSLT_NO']==$_MCR_cON)  ) {
-
-                $RGTR = $sql_result['RGTR']; // 상담신청 회원명
+				$RGTR = $sql_result['RGTR']; // 상담신청 회원명
 				$MBR_TELNO = $sql_result['MBR_TELNO'];//상담신청 연락처
 				$MBR_NM = $sql_result['MBR_NM'];//수급자 성명
 				$Hangeul_RELATION_CD = $sql_result['Hangeul_RELATION_CD'];//수급자와의 관계
+				$Hangeul_PREV_PATH = $sql_result['Hangeul_PREV_PATH'];//상담유형
 
                 // 프로시저 : CALL `PROC_EROUMCARE_CONSLT_UPDATE`('모드', 상담신청NO, 상담배정NO, '변결될상태값', '완료또는 거부시 사유또는 내용', '배정 당시 사업소아이디');
                 //            해당 프로시저에 대한 로직을 API로 변경 해야 할 이슈가 있음(23.11.09).
@@ -246,17 +246,31 @@
 
                     // 알림톡 발송 : CS06 - 상담완료 시작 = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
                     //$alimtalk_contents = $RGTR."님, 상담이 완료되었습니다.\n\n[수급자 정보]\n성명:상담한 장기요양기관이 마음에 드실 경우 이로움ON에서 상담기관 추천하기 및 관심설정이 가능합니다.\n\n다른 장기요양기관과의 재상담을 원하실 경우\n\n상담 내역 관리에서 재상담 신청이 가능한 점 참고 부탁드립니다.";
-                    $alimtalk_contents = $RGTR."님, 상담이 완료되었습니다.\n\n[수급자 정보]\n성명: ".$MBR_NM." 님\n회원님과의 관계 : ".$Hangeul_RELATION_CD."\n\n상담한 장기요양기관이 마음에 드실 경우 이로움ON에서 상담기관 추천이 가능합니다.\n\n다른 장기요양기관과의 재상담을 원하실 경우 상담 내역 관리에서 재상담 신청이 가능합니다.\n\n* 재상담은 총 2회만 가능합니다.";
-                    $result2 = send_alim_talk2('CONSLT_REQUEST_'.$MBR_TELNO, $MBR_TELNO, 'ON_0006', $alimtalk_contents, array(
-                        'button' => [
-                            array(
-                                'name' => '◼︎ 상담내역 바로가기',
-                                'type' => 'WL',
-                                'url_mobile' => 'https://eroum.co.kr/membership/conslt/appl/list',
-                                'url_pc' => 'https://eroum.co.kr/membership/conslt/appl/list'
-                            )
-                        ]
-                    ),'','1:1상담 진행 완료','2');//내용은 템플릿과 동일 해야 함
+                    if($Hangeul_PREV_PATH == "인정등급상담"){//상담유형이 "인정등급상담" 일 경우
+							$alimtalk_contents = $RGTR."님, 상담이 완료되었습니다.\n\n[수급자 정보]\n성명: ".$MBR_NM." 님\n회원님과의 관계 : ".$Hangeul_RELATION_CD."\n\n상담한 장기요양기관이 마음에 드실 경우 이로움ON에서 상담기관 추천이 가능합니다.\n\n다른 장기요양기관과의 재상담을 원하실 경우 상담 내역 관리에서 재상담 신청이 가능합니다.\n\n* 재상담은 총 2회만 가능합니다.";
+							$result2 = send_alim_talk2('CONSLT_REQUEST_'.$MBR_TELNO, $MBR_TELNO, 'ON_0006', $alimtalk_contents, array(
+								'button' => [
+								  array(
+									'name' => '◼︎ 상담내역 바로가기',
+									'type' => 'WL',
+									'url_mobile' => 'https://eroum.co.kr/membership/conslt/appl/list',
+									'url_pc' => 'https://eroum.co.kr/membership/conslt/appl/list'
+								  )
+								]
+							  ),'','1:1상담 진행 완료','2');//내용은 템플릿과 동일 해야 함 
+						}else{//상담유형이 "요양정보상담" 일 경우
+							$alimtalk_contents = $RGTR."님, 상담이 완료되었습니다.\n\n[수급자 정보]\n성명: ".$MBR_NM." 님\n회원님과의 관계 : ".$Hangeul_RELATION_CD."\n\n상담한 장기요양기관이 마음에 드실 경우 이로움ON에서 상담기관 추천이 가능합니다.";
+							$result2 = send_alim_talk2('CONSLT_REQUEST_'.$MBR_TELNO, $MBR_TELNO, 'ON_0008', $alimtalk_contents, array(
+								'button' => [
+								  array(
+									'name' => '◼︎ 상담내역 바로가기',
+									'type' => 'WL',
+									'url_mobile' => 'https://eroum.co.kr/membership/conslt/appl/list',
+									'url_pc' => 'https://eroum.co.kr/membership/conslt/appl/list'
+								  )
+								]
+							  ),'','1:1상담 진행 완료','2');//내용은 템플릿과 동일 해야 함 
+						}
                     // 알림톡 발송 : CS06 - 상담완료 종료 = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 
                     // E-Mail 발송 : CS05 - 상담수락 시작 = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
