@@ -211,7 +211,9 @@ if(USE_G5_THEME) {
                 //                   해당 값이 변경될 경우 WMDS에서 찾을 수 없음.
                 if ( (mb_strlen($subid)<=4) && $subid ) {
                     // 23.11.13 : 서원 - 품목 코드 자동생성 코드 추가.
-                    if( !$ca['itemId'] ) { $ca['itemId'] = "ITM".date("Y").date("m").date("d").substr(time(),5,5); } // 품목코드 자동생성. 
+                    //                  ( 대/중/소/ 이하 소하위  중 대분류 이하 중분류 생성시 대분류 코드를 따라 가지 않도록 신규 자동 생성 코드를 적용 한다. )
+                    //                  ITM + 년 + 월 + 일 + 타임 증가값
+                    if( !$ca['itemId'] || (mb_strlen($subid)>2) ) { $ca['itemId'] = "ITM".date("Y").date("m").date("d").substr(time(),5,5); } // 품목코드 자동생성. 
                 ?>
                     <input type="text" name="itemId" value="<?=$ca['itemId']; ?>" id="itemId" required class="required frm_input">
                 <?php } else { ?>
