@@ -234,7 +234,7 @@
                     $_url = eroum_HOST . "/api/members/conslt/rejectEmail.json?bplcConsltNo=".$_MCR_cON;
                     $_method = "POST";
                     $_headers = [ 
-                        'eroumAPI_Key:'.$apiKey
+                        'eroumAPI_Key:' . eroumAPI_Key
                     ];
                     $_data = "";
                     $api_result = Curl_Request( $_url, $_method, $_headers, $_data );
@@ -263,7 +263,7 @@
                     $_url = eroum_HOST . "/api/members/conslt/completeEmail.json?bplcConsltNo=".$_MCR_cON;
                     $_method = "POST";
                     $_headers = [ 
-                        'eroumAPI_Key:'.$apiKey
+                        'eroumAPI_Key:' . eroumAPI_Key
                     ];
                     $_data = "";                   
                     $api_result = Curl_Request( $_url, $_method, $_headers, $_data );
