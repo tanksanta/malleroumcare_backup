@@ -67,7 +67,7 @@ if($eform) {
 }
 */
 $nonReimbursement = $eform!=1 ?" OR a.ca_id LIKE '70%' OR a.ca_id LIKE '80%'":"";
-$prodsupyn_sql = $eform!=1 ?" AND a.prodSupYn = 'Y' ":"";
+$prodsupyn_sql = $eform!=1 ?" AND a.prodSupYn = 'Y' AND a.it_soldout = '0' ":"";
 
 $sql = "
   SELECT
