@@ -11,7 +11,8 @@ if($_POST["mode"] == "w"){//등록 시
 	$it_end_date = $row["it_end_date"];
 	$sql = "insert into eform_rent_hist SET entId='{$member['mb_entId']}',entNm='{$member['mb_entNm']}',entNum='{$member['mb_ent_num']}',penId='{$_POST['penId']}',confirm_date='{$_POST['confirm_date']}',create_month='{$_POST['create_month']}',entConAcc='{$_POST['entConAcc']}',penRecTypeCd='{$_POST['penRecTypeCd']}',it_ids='{$_POST['it_ids']}',it_dates='{$_POST['it_dates']}',it_end_date='{$it_end_date}',reg_date=now(),contract_sign_relation='{$_POST['contract_sign_relation']}',contract_sign_relation_nm='{$_POST['contract_sign_relation_nm']}',pen_guardian_nm='{$_POST['pen_guardian_nm']}'";//급여제공기록 이력 등록
 	sql_query($sql);
-	$uuid = mysql_insert_id();
+	$row2 = sql_fetch("select MAX(rh_id) as uuid from eform_rent_hist");
+	$uuid = $row2["uuid"];
 	// 계약서 로그 작성
 	$log = '전자계약서를 생성했습니다.';
 	$ip = $_SERVER['REMOTE_ADDR'];
@@ -24,6 +25,7 @@ if($_POST["mode"] == "w"){//등록 시
 	`dl_browser` = '$browser',
 	`dl_datetime` = '$datetime'
 	");
+	
 }else{//이력 조회 시
 	$sql = "select * from eform_rent_hist where rh_id='{$_POST['rh_id']}'";
 	$row = sql_fetch($sql);
@@ -402,7 +404,7 @@ $objDrawing->setWorksheet($excel->getActiveSheet());
 */
 
 header("Content-Type: application/octet-stream");
-header("Content-Disposition: attachment; filename=\"장기요양급여제공기록지(".$pen['penNm']."_".$pen['penLtmNum']."_".$create_month.")_".date("Ymd").".xlsx\"");
+header("Content-Disposition: attachment; filename=\"장기요양급여제공기록지(".$pen['penNm']."_".$pen['penLtmNum']."_".$_POST["confirm_date"]."_".$create_month.")_".date("Ymd").".xlsx\"");
 header("Cache-Control: max-age=0");
 header('Set-Cookie: fileDownload=true; path=/');
 

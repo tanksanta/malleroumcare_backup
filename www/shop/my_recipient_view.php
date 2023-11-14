@@ -798,6 +798,9 @@ $(function() {
 	.pop_tail {
 		font-size: small;
 	}
+	.c_btn {
+		font-size: small !important;
+	}
 
 
 }
@@ -1056,7 +1059,7 @@ $start_date = substr($row["start_time"],0,10);
 if($start_date != ""){
 ?>
   <div style="margin-top:-20px;">
-	<font color="red">※ 대여계약 급여제공기록 서비스는 <b><?=$start_date?></b> 이후 계약 된 품목부터 이용 하실 수 있습니다.</font>
+	<font color="red">※ 대여계약 급여제공기록 서비스는 <b><?=$start_date?></b> 이후 전자서명이 완료된 계약부터 이용 하실 수 있습니다.</font>
   </div>
 <?php }?>
   <div style="margin-top:0px;margin-bottom:15px;">
@@ -1355,7 +1358,7 @@ function downloadExcel(mode,rh_id1=false) {
 			$("#pen_guardian_nm").focus();
 			return false;
 		}
-		if($("#contract_sign_relation_nm").val() == ""){//보호자 성명이 없을 경우
+		if($("#contract_sign_relation_nm").val() == "" && $("#contract_sign_relation").val() == "3"){//기타관계가 없을 경우
 			alert("기타관계를 입력하세요.");
 			$("#contract_sign_relation_nm").focus();
 			return false;
@@ -1368,15 +1371,31 @@ function downloadExcel(mode,rh_id1=false) {
 	}
 	var datas = (mode=='w')? $("#download_excel").serialize() : $("#download_excel2").serialize();
     //alert(JSON.stringify(datas));
-	
-	$('#loading_excel').show();
-    EXCEL_DOWNLOADER = $.fileDownload(href, {
-      httpMethod: "POST",
-      data: datas
-    })
-      .always(function() {
-        $('#loading_excel').hide();
-      });
+	var mobile_yn = '<?=$mobile_yn?>';
+	if(mobile_yn != "Pc"){
+		if(mode=='w'){
+			$("#download_excel").attr("action",href).submit();
+			rent_item_list();
+			rent_efrom_close();
+			alert("급여제공기록지가 생성되었습니다.\n급여제공기록 관리에서 전자서명을 진행할 수 있습니다.");
+		}else{
+			$("#download_excel2").attr("action",href).submit();			
+		}
+	}else{	
+		$('#loading_excel').show();
+		EXCEL_DOWNLOADER = $.fileDownload(href, {
+		  httpMethod: "POST",
+		  data: datas
+		})
+		.always(function() {
+			$('#loading_excel').hide();
+			if(mode=='w'){
+				rent_item_list();
+				rent_efrom_close();
+				alert("급여제공기록지가 생성되었습니다.\n급여제공기록 관리에서 전자서명을 진행할 수 있습니다.");
+			}
+		});
+	}
 }
 
 function cancelExcelDownload() {

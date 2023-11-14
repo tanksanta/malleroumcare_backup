@@ -93,7 +93,7 @@ $pen_tel = str_replace(".","",$pen_tel);
             <div class="se_sch_hd2" >서명요청</div>
         </div>
 		<div id="" style="float:left;width:100%;">
-			<table style="width:357px">
+			<table style="width:100%">
 			<tr>
 				<th width="90">수급자 관계</th>
 				<th width="110">서명방식</th>
@@ -127,7 +127,7 @@ $pen_tel = str_replace(".","",$pen_tel);
             <div class="se_sch_hd2">서명 진행상황 확인</div>
         </div>
 		<div id="" style="float:left;width:100%;">
-			<table style="width:357px">
+			<table style="width:100%">
 			<tr >
 				<th width="100">수급자 관계</th>
 				<th>방식</th>
@@ -155,7 +155,7 @@ $pen_tel = str_replace(".","",$pen_tel);
             <div class="se_sch_hd2">서명 거절 사유 보기</div>
         </div>
 		<div id="" style="float:left;width:100%;">
-			<table style="width:357px">
+			<table style="width:100%">
 			<tr >
 				<th>대상자</th>
 				<td style="border-top:1px solid #ddd;"><span id="rejection_member"></span></td>
