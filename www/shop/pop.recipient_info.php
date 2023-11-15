@@ -1069,10 +1069,8 @@ if($member["cert_data_ref"] != ""){
 								cnt2 = contract_cnt2[rent_y[i]['WIM_ITM_CD']+'00']; 
                                 item_period = item_period==0?0:item_period-cnt2;                                
                                 var tmp_cnt = Number(tool_list_cnt[rent_y[i]['WIM_ITM_CD'].replace(' ', '')+'00'])-cnt2-item_period < 0 ? 0 : Number(tool_list_cnt[rent_y[i]['WIM_ITM_CD'].replace(' ', '')+'00'])-cnt2-item_period;
-								if(rent_y[i]['WIM_ITM_CD'].replace(' ', '') == "욕창예방매트리스"){
-									if(gumae_cnt22 == '0'){
-										tmp_cnt = '0'; 
-									}
+								if(gumae_cnt22 == '0' && rent_y[i]['WIM_ITM_CD'].replace(' ', '') == "욕창예방매트리스"){
+									tmp_cnt = '0'; 
 								}
                                 var row = `<tr id="${'daeyeo'+index}" class="normal-row">
                                                 <td colspan="1">${i+1}</td>
@@ -1100,7 +1098,7 @@ if($member["cert_data_ref"] != ""){
                                 } 
                             } else {
 								var tmp_cnt = Number(tool_list_cnt[rent_y[i]['WIM_ITM_CD'].replace(' ', '')+'00'])-cnt2-item_period;
-								if(gumae_cnt22 == '0'){
+								if(gumae_cnt22 == '0' && rent_y[i]['WIM_ITM_CD'].replace(' ', '') == "욕창예방매트리스"){
 									tmp_cnt = '0'; 
 								}
                                 var row = `<tr id="${'daeyeo'+index}">
@@ -1961,10 +1959,8 @@ if($member["cert_data_ref"] != ""){
 								cnt2 = contract_cnt2[rent_y[i]['WIM_ITM_CD']+'00']; 
                                 item_period = item_period==0?0:item_period-cnt2;                                
                                 var tmp_cnt = Number(tool_list_cnt[rent_y[i]['WIM_ITM_CD'].replace(' ', '')+'00'])-cnt2-item_period < 0 ? 0 : Number(tool_list_cnt[rent_y[i]['WIM_ITM_CD'].replace(' ', '')+'00'])-cnt2-item_period;
-								if(rent_y[i]['WIM_ITM_CD'].replace(' ', '') == "욕창예방매트리스"){
-									if(gumae_cnt22 == '0'){
-										tmp_cnt = '0'; 
-									}
+								if(gumae_cnt22 == '0' && rent_y[i]['WIM_ITM_CD'].replace(' ', '') == "욕창예방매트리스"){
+									tmp_cnt = '0'; 
 								}
                                 var row = `<tr id="${'daeyeo'+index}" class="normal-row">
                                                 <td colspan="1">${i+1}</td>
@@ -1992,7 +1988,7 @@ if($member["cert_data_ref"] != ""){
                                 } 
                             } else {
 								var tmp_cnt = Number(tool_list_cnt[rent_y[i]['WIM_ITM_CD'].replace(' ', '')+'00'])-cnt2-item_period;
-								if(gumae_cnt22 == '0'){
+								if(gumae_cnt22 == '0' && rent_y[i]['WIM_ITM_CD'].replace(' ', '') == "욕창예방매트리스"){
 									tmp_cnt = '0'; 
 								}
                                 var row = `<tr id="${'daeyeo'+index}">
