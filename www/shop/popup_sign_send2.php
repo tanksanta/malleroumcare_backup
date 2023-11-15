@@ -414,8 +414,7 @@ $pen_tel = str_replace(".","",$pen_tel);
 				//$("#view_doc").attr("src",data.url);
 				//$('#iframe_wrap').fadeIn( 'slow' );
 				loading_onoff('off');
-				var PopupDoc = window.open('', "PopupDoc", "width=1200,height=900");
-				PopupDoc.location = data.url;
+				window.open(data.url, "PopupDoc", "width=1000,height=1000");
 			}else{
 				alert(data.url);//url 생성실패 알림
 			}
@@ -441,8 +440,7 @@ $pen_tel = str_replace(".","",$pen_tel);
 			}
 			if(data.url != "url생성실패"){				
 				loading_onoff('off');
-				var PopupDoc = window.open('', "PopupDoc", "width=1000,height=1000");
-				PopupDoc.location = data.url;
+				window.open(data.url, "PopupDoc", "width=1000,height=1000");
 			}else{
 				alert(data.url);//url 생성실패 알림
 			}
