@@ -482,6 +482,28 @@ add_javascript(G5_POSTCODE_JS, 0);
 <script>
 
 $(function() {
+//수급자 세션이 있을 경우 수급자 자동 선택
+<?php if($_SESSION['recipient']['penId']!=""){?>
+	$("#pen_type_1").prop("checked",true);
+	var pen = {
+		penId: '<?=$_SESSION["recipient"]["penId"]?>',
+		penNm: '<?=$_SESSION["recipient"]["penNm"]?>',
+		penLtmNum: '<?=substr($_SESSION["recipient"]["penLtmNum"],0,6)?>*****',
+		penConNum: '<?=$_SESSION["recipient"]["penConNum"]?>',
+		penConPnum: '<?=$_SESSION["recipient"]["penConPnum"]?>',
+		penRecGraCd: '<?=$_SESSION["recipient"]["penRecGraCd"]?>',
+		penRecGraNm: '<?=$_SESSION["recipient"]["penRecGraNm"]?>',
+		penTypeCd: '<?=$_SESSION["recipient"]["penTypeCd"]?>',
+		penTypeNm: '<?=$_SESSION["recipient"]["penTypeNm"]?>',
+		penBirth: '<?=$_SESSION["recipient"]["penBirth"]?>',
+		penGender: '<?=$_SESSION["recipient"]["penGender"]?>',
+		penZip: '<?=$_SESSION["recipient"]["penZip"]?>',
+		penAddr: '<?=$_SESSION["recipient"]["penAddr"]?>',
+		penAddrDtl: '<?=$_SESSION["recipient"]["penAddrDtl"]?>',
+	  };
+
+	  select_recipient(pen);
+<?php }?>
   window.addEventListener("keydown",function(event){
 	if(event.keyCode == "116"){
 		$("#checkUnload").val("1");
