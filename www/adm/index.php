@@ -1,8 +1,8 @@
 <?php
 $sub_menu = '100000';
 include_once('./_common.php');
-if ($is_admin != 'super')
-    alert('최고관리자만 접근 가능합니다.');
+//if ($is_admin != 'super')
+//    alert('최고관리자만 접근 가능합니다.');
 //아미나빌더 설치체크
 if(!isset($config['as_thema'])) {
 	goto_url(G5_ADMIN_URL.'/apms_admin/apms.admin.php');
