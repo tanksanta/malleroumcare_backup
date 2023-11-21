@@ -190,6 +190,28 @@ if ($w == "")
                     ca_name = '$ca_name',
                     $sql_common ";
     sql_query($sql);
+
+    // *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-*
+    // 23.10.04 : 서원 - eroumAPI신규추가 [ 카테고리 정보 추가 부분 시작 ]
+    //                   EROUMCARE_API_PROD_INSERTCATEGORY - /api/prod/insertCategory
+    // *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-*
+    $_itemId = clean_xss_attributes( clean_xss_tags( get_search_string( $_POST['itemId'] ) ) );
+    $_cnt = sql_fetch(" SELECT COUNT(ca_id) AS CNT FROM {$g5['g5_shop_category_table']} WHERE itemId = '$_itemId' ", false);
+    if( $_cnt['CNT'] == 1 ) {
+        $sendData = [];
+        $sendData["ca_name"]        = clean_xss_attributes( clean_xss_tags( get_search_string( $_POST['ca_name'] ) ) );
+        $sendData["gubun"]          = $cate_gubun_table[substr($ca_id, 0, 2)];
+        $sendData["ca_limit_month"] = clean_xss_attributes( clean_xss_tags( get_search_string( $_POST['ca_limit_month'] ) ) );
+        $sendData["ca_limit_num"]   = clean_xss_attributes( clean_xss_tags( get_search_string( $_POST['ca_limit_num'] ) ) );
+        $sendData["ca_use"]         = ($_POST['ca_use']?"01":"02") ;
+        $sendData["usrId"]          = $member['mb_id'];
+        $sendData["itemId"]         = clean_xss_attributes( clean_xss_tags( get_search_string( $_POST['itemId'] ) ) );
+        $res = get_eroumcare(EROUMCARE_API_PROD_INSERTCATEGORY, $sendData);
+    }    
+    // *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-*
+    // 23.10.04 : 서원 - eroumAPI신규추가 [ 카테고리 정보 추가 부분 종료 ]
+    // *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-*
+
 }
 else if ($w == "u")
 {
@@ -227,7 +249,29 @@ else if ($w == "u")
         if ($is_admin != 'super')
             $sql .= " and ca_mb_id = '{$member['mb_id']}' ";
         sql_query($sql);
-    }
+    } 
+
+
+    // *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-*
+    // 23.10.05 : 서원 - eroumAPI신규추가 [ 카테고리 정보 수정 부분 시작 ]
+    //                   EROUMCARE_API_PROD_UPDATECATEGORY - /api/prod/updateCategory
+    //                   카테고리 수정은 1차 카테고리인 ca_id 값이 4자리를 가지고 있는 카테고리만 수정이 가능하며, 하위 카테고리는 WMDS에 처리하지 않는다.
+    // *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-*
+    if( ($cate_gubun_table[substr($ca_id, 0, 2)]) && (mb_strlen($ca_id)<=4) && (mb_strlen($ca_id)>2) ) {
+        $sendData = [];
+        $sendData["ca_name"]        = clean_xss_attributes( clean_xss_tags( get_search_string( $_POST['ca_name'] ) ) );
+        $sendData["gubun"]          = $cate_gubun_table[substr($ca_id, 0, 2)];
+        $sendData["ca_limit_month"] = clean_xss_attributes( clean_xss_tags( get_search_string( $_POST['ca_limit_month'] ) ) );
+        $sendData["ca_limit_num"]   = clean_xss_attributes( clean_xss_tags( get_search_string( $_POST['ca_limit_num'] ) ) );
+        $sendData["ca_use"]         = ($_POST['ca_use']?"01":"02") ;
+        $sendData["usrId"]          = $member['mb_id'];
+        $sendData["itemId"]         = clean_xss_attributes( clean_xss_tags( get_search_string( $_POST['itemId'] ) ) );
+        $res = get_eroumcare(EROUMCARE_API_PROD_UPDATECATEGORY, $sendData);
+    }        
+    // *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-*
+    // 23.10.05 : 서원 - eroumAPI신규추가 [ 카테고리 정보 수정 부분 종료 ]
+    // *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-*
+
 }
 else if ($w == "d")
 {
@@ -259,6 +303,26 @@ else if ($w == "d")
     // 분류 삭제
     $sql = " delete from {$g5['g5_shop_category_table']} where ca_id = '$ca_id' ";
     sql_query($sql);
+
+
+    // *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-*
+    // 23.10.05 : 서원 - eroumAPI신규추가 [ 카테고리 정보 수정 부분 시작 ]
+    //                   EROUMCARE_API_PROD_UPDATECATEGORY - /api/prod/updateCategory
+    //                   프론트단에서 삭제 처리 되지만 WMDS에서는 해당 Key값을 다른 테이블에서 외래키 참조하고 있음으로 삭제하지 않으며, 미사용으로 처리 해놓음.
+    //                   단, 이럴 경우 동일 최상위 대분류에서 이전의 품목코드가 프론트(이로움Care)에서 입력될 경우 문제의 소지가 있음.
+    // *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-*
+    $_itemId = clean_xss_attributes( clean_xss_tags( get_search_string( $_GET['itemId'] ) ) );
+    $_cnt = sql_fetch(" SELECT COUNT(ca_id) AS CNT FROM {$g5['g5_shop_category_table']} WHERE itemId = '$_itemId' AND ca_id LIKE '".substr($ca_id, 0, 4)."%'; ", false);
+    if( $_cnt['CNT'] == 0 ) {
+        $sendData = [];
+        $sendData["ca_use"]         = "02" ;
+        $sendData["usrId"]          = $member['mb_id'];
+        $sendData["itemId"]         = $_itemId;
+        $res = get_eroumcare(EROUMCARE_API_PROD_UPDATECATEGORY, $sendData);
+    }    
+    // *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-*
+    // 23.10.05 : 서원 - eroumAPI신규추가 [ 카테고리 정보 수정 부분 종료 ]
+    // *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-* *-*
 }
 
 if(function_exists('get_admin_captcha_by'))
