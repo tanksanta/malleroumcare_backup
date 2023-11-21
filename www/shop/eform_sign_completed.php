@@ -28,7 +28,7 @@ include_once('./_common.php');
 				return false;				
 			}			
 			if(data.url != "url생성실패"){
-				completed();
+				completed(data.rent);
 			}else{
 				alert(res.url);//url 생성실패 알림
 			}
@@ -40,8 +40,14 @@ include_once('./_common.php');
 	});
 	
 		
-	function completed(){
-		opener.location.reload();
+	function completed(rent){
+		if(rent == 1){//대여계약 급여제공기록 계약 시
+			$('body',opener.document).removeClass('modal-open');
+			$('#popup_box8',opener.document).hide();
+			opener.rent_efrom_hist_open()
+		}else{
+			opener.location.reload();
+		}
 		window.close();
 	}
 </script>
