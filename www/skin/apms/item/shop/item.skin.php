@@ -1628,18 +1628,18 @@ if ($it['ca_id']) {
       var offset = $("#div" + seq).offset();
       $('html, body').animate({scrollTop : offset.top - 150}, 400);
   }
-  var view = 0;
+  var view2 = 0;
   function rental_use_info(){
-	if(view == 0){//이용방법 펼치기전		
+	if(view2 == 0){//이용방법 펼치기전		
 		$("#rental_use_info").fadeIn( 'slow' );
 		$("#rental_use_info_btn").css("display","none");
 		$("#rental_use_info_btn2").css("display","block");
-		view = 1;
+		view2 = 1;
 	}else{		
 		$("#rental_use_info").css("display","none");
 		$("#rental_use_info_btn").css("display","block");
 		$("#rental_use_info_btn2").css("display","none");
-		view = 0;
+		view2 = 0;
 		var offset = $("#rental_use_info1").offset();
 		$('html, body').animate({scrollTop : offset.top + $( "#rental_use_info1" ).height()}, 100);
 	}
