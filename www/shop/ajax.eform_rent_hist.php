@@ -20,7 +20,7 @@ $last_month = date("Y-m",strtotime("-1 month",time()));//지난달
 	$count_01 = sql_num_rows($result);
 	$html = "<table>";	
 	$html .= "	<colgroup><col width='27%'><col width='30%'><col width='21%'><col width='7%'><col width='18%'></colgroup>";
-	$html .= "	<tr style='position: sticky;top: 0px;border: 1px solid #ddd !important;'><th>생성날짜</th><th>상품명</th><th>계약기간</th><th>확인<br>방법</th><th>상태정보</th></tr>";
+	$html .= "	<tr style='position: sticky;top: -1px;border: 1px solid #ddd !important;'><th>생성날짜</th><th>상품명</th><th>계약기간</th><th>확인<br>방법</th><th>상태정보</th></tr>";
 	
 	if($count_01 == 0){
 		$html .= "	<tr>";
