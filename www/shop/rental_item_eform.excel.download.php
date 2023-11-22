@@ -9,7 +9,8 @@ if($_POST["mode"] == "w"){//등록 시
 	$sql11 = "SELECT MAX(SUBSTRING(it_date,12,10)) AS it_end_date FROM eform_document_item WHERE it_id IN (".$_POST['it_ids'].")";
 	$row = sql_fetch($sql11);
 	$it_end_date = $row["it_end_date"];
-	$sql = "insert into eform_rent_hist SET entId='{$member['mb_entId']}',entNm='{$member['mb_entNm']}',entNum='{$member['mb_ent_num']}',penId='{$_POST['penId']}',confirm_date='{$_POST['confirm_date']}',create_month='{$_POST['create_month']}',entConAcc='{$_POST['entConAcc']}',penRecTypeCd='{$_POST['penRecTypeCd']}',it_ids='{$_POST['it_ids']}',it_dates='{$_POST['it_dates']}',it_end_date='{$it_end_date}',reg_date=now(),contract_sign_relation='{$_POST['contract_sign_relation']}',contract_sign_relation_nm='{$_POST['contract_sign_relation_nm']}',pen_guardian_nm='{$_POST['pen_guardian_nm']}'";//급여제공기록 이력 등록
+	$entNm = ($member['mb_entNm'])? $member['mb_entNm']: $member['mb_giup_bname'];
+	$sql = "insert into eform_rent_hist SET entId='{$member['mb_entId']}',entNm='{$entNm}',entNum='{$member['mb_ent_num']}',penId='{$_POST['penId']}',confirm_date='{$_POST['confirm_date']}',create_month='{$_POST['create_month']}',entConAcc='{$_POST['entConAcc']}',penRecTypeCd='{$_POST['penRecTypeCd']}',it_ids='{$_POST['it_ids']}',it_dates='{$_POST['it_dates']}',it_end_date='{$it_end_date}',reg_date=now(),contract_sign_relation='{$_POST['contract_sign_relation']}',contract_sign_relation_nm='{$_POST['contract_sign_relation_nm']}',pen_guardian_nm='{$_POST['pen_guardian_nm']}'";//급여제공기록 이력 등록
 	sql_query($sql);
 	$row2 = sql_fetch("select MAX(rh_id) as uuid from eform_rent_hist");
 	$uuid = $row2["uuid"];
