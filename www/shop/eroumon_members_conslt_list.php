@@ -168,7 +168,10 @@
 
 
     <section class="wrap">
-        <div class="sub_section_tit"><?=$g5['title']?></div>
+        <div class="sub_section_tit">            
+            <?php /* 23.09.13 : 서원 - 스마트 서비스 매뉴얼 추가 */?>
+            <p><?=$g5['title']?> <a href="javascript:void(0);" onclick="window.open('<?=G5_DATA_URL;?>/file/이로움_스마트_서비스_06_매칭서비스가이드_수급자상담관리.pdf');" class="thkc_btnManual">사용방법 확인하기</a></p>
+        </div>
         <?php
         /* 23.10.20 : 서원 - 기획 요청에 따른 해당 버튼 삭제 처리.
         <button type="button" class="" id="view_link" Onclick="window.open('https://eroum.co.kr/members/login','_blank'); ">이로움ON 맴버스<br />바로가기</button>
