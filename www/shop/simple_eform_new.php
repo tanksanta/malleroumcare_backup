@@ -213,7 +213,36 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
     display: block;
     position: absolute;
     top: 5px;
-    left: 23px;
+    left: 8px;
+	}
+
+	/*테이블 */
+.section_wrap {
+	font-size: small;
+    font-weight: bold;
+}
+.section_wrap table {
+    width: 100%;
+    height: fit-content;
+    border-collapse: collapse;
+}
+
+.section_wrap th {
+    border: 1px solid #ddd;
+    border-left-style: none;
+    border-right-style: none;
+    text-align: center;
+    font-size: small;
+    font-weight: bold;
+    padding: 0.8% 0%;
+	background-color:#F2F2F2;
+}
+.section_wrap td {
+    font-weight: normal;
+    border: 1px solid #ddd;
+    text-align: center;
+    font-size: small;
+    padding: 0.5% 0%;
 }
 
 </style>
@@ -247,36 +276,35 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
             </label>
           </div>
 		  <div class="form-group">
-            <div class="se_sch_hd" style="margin-left:15px;">수급자 정보</div>
+            <div class="se_sch_hd">수급자 정보</div>
           </div>
           <div class="form-group has-feedback">
-			<label class="col-sm-2 control-label" style="width:150px;"><b>수급자명</b></label>
-			<div class="col-sm-9">
+			<label class="col-sm-2 control-label" style="width:80px;padding-left:0px;float:left;"><b>수급자명</b></label>
+			<div class="col-sm-9" style="width:363px !important;float:right;padding-left:0px;">
 			  <label class="col-pen-nm">
-				<img style="display: none;" src="<?php echo THEMA_URL; ?>/assets/img/icon_search.png" >
+				<img style="display: none;left:8px;" src="<?php echo THEMA_URL; ?>/assets/img/icon_search.png" >
 			  <input type="hidden" name="penAddrDtl2" id="penAddrDtl2"><input type="hidden" name="penAddr_jibeon" id="penAddr_jibeon">
-              <input type="hidden" name="penId" id="penId" value="<?php if($dc) echo $dc['penId']; ?>" <?php if($dc) echo "data-orig=\"{$dc['penId']}\""; ?>>
+              <input type="hidden" name="penId" id="penId" value="<?php if($dc) echo $dc['penId']; ?>" <?php if($dc) echo "data-orig=\"{$dc['penId']}\""; ?> >
               <input type="text" name="penNm" id="penNm" class="form-control input-sm pen_id_flexdatalist" value="<?php if($dc) echo $dc['penNm']; ?>" placeholder="수급자명" <?php if($dc) echo "data-orig=\"{$dc['penNm']}\""; ?> >
 			  </label>
 			  <label>
-				<button type="button" id="btn_pen" class="btn btn-black btn-sm" style="margin-top:0px;height:34px" onClick="$('#pen_type_1').trigger('click');">목록에서 검색</button>
-
+				<button type="button" id="btn_pen" class="btn btn-black btn-sm" style="margin-top:0px;height:34px" onClick="$('#pen_type_1').trigger('click');">&nbsp;&nbsp;목록에서 검색&nbsp;&nbsp;</button>
 			  </label>
 			</div>	
 		  </div>
 		  <div class="form-group has-feedback">
-			<label class="col-sm-2 control-label"  style="width:150px;"><b>요양인정번호</b></label>
-			<div class="col-sm-9" style="width:363px !important;">
+			<label class="col-sm-2 control-label"  style="width:80px;padding-left:0px;float:left;"><b>요양인정번호</b></label>
+			<div class="col-sm-9" style="width:363px !important;float:right;padding-left:0px;">
 			  <label>
 				L <input type="text" name="penLtmNum" id="penLtmNum" class="form-control input-sm" value="<?php if($dc) echo preg_replace('/L([0-9]{10})/', '${1}', $dc['penLtmNum']); ?>" placeholder="10자리 입력" readonly <?php if($dc) echo "data-orig=\"" . preg_replace('/L([0-9]{10})/', '${1}', $dc['penLtmNum']) . "\""; ?>  style="width:319px !important;">
 			  </label>
 			</div>	
 		  </div>
 		  <div class="form-group has-feedback">
-			<label class="col-sm-2 control-label"  style="width:150px;"><b>본인부담금율</b></label>
-			<div class="col-sm-2 control-label2" style="width:150px;">
+			<label class="col-sm-2 control-label"  style="width:80px;padding-left:0px;float:left;"><b>본인부담금율</b></label>
+			<div class="col-sm-9" style="width:363px !important;float:right;padding-left:0px;">
 			  <label>
-				<select name="penTypeCd" id="penTypeCd" class="form-control input-sm" <?php if($dc) echo "data-orig=\"{$dc['penTypeCd']}\""; ?> onChange="pen_ltm_show(this.value);">
+				<select name="penTypeCd" id="penTypeCd" class="form-control input-sm" <?php if($dc) echo "data-orig=\"{$dc['penTypeCd']}\""; ?> onChange="pen_ltm_show(this.value);" style="width:330px !important;">
 					<option value="00" <?php if($dc) echo get_selected($dc['penTypeCd'], '00'); ?>>일반 15%</option>
 					<option value="01" <?php if($dc) echo get_selected($dc['penTypeCd'], '01'); ?>>감경 9%</option>
 					<option value="02" <?php if($dc) echo get_selected($dc['penTypeCd'], '02'); ?>>감경 6%</option>
@@ -285,10 +313,12 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 				  </select>
 			  </label>
 			</div>
-			<label class="col-sm-2 control-label3"  style="width:150px;"><b>인정등급</b></label>
-			<div class="col-sm-2 control-label" style>
+		</div>
+		<div class="form-group has-feedback">
+			<label class="col-sm-2 control-label"  style="width:80px;padding-left:0px;float:left;"><b>인정등급</b></label>
+			<div class="col-sm-9" style="width:363px !important;float:right;padding-left:0px;">
 			  <label>
-				<select name="penRecGraCd" id="penRecGraCd" class="form-control input-sm" <?php if($dc) echo "data-orig=\"{$dc['penRecGraCd']}\""; ?>>
+				<select name="penRecGraCd" id="penRecGraCd" class="form-control input-sm" <?php if($dc) echo "data-orig=\"{$dc['penRecGraCd']}\""; ?> style="width:330px !important;">
 					<option value="00" <?php if($dc) echo get_selected($dc['penRecGraCd'], '00'); ?>>등급외</option>
 					<option value="01" <?php if($dc) echo get_selected($dc['penRecGraCd'], '01'); ?>>1등급</option>
 					<option value="02" <?php if($dc) echo get_selected($dc['penRecGraCd'], '02'); ?>>2등급</option>
@@ -301,22 +331,24 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 			</div>
 		  </div>
 		  <div class="form-group has-feedback">
-			<label class="col-sm-2 control-label"  style="width:150px;"><b>휴대폰번호</b></label>
-			<div class="col-sm-2 control-label2" style="width:150px;">
+			<label class="col-sm-2 control-label"  style="width:80px;padding-left:0px;float:left;"><b>휴대폰번호</b></label>
+			<div class="col-sm-9" style="width:363px !important;float:right;padding-left:0px;">
 			  <label>
-				<input type="text" maxlength="11" oninput="max_length_check(this)" name="penConNum" id="penConNum" class="form-control input-sm" value="<?php if($dc) echo $dc['penConNum']; ?>" <?php if($dc) echo "data-orig=\"{$dc['penConNum']}\""; ?>>
+				<input type="text" maxlength="11" oninput="max_length_check(this)" name="penConNum" id="penConNum" class="form-control input-sm" value="<?php if($dc) echo $dc['penConNum']; ?>" <?php if($dc) echo "data-orig=\"{$dc['penConNum']}\""; ?> style="width:330px !important;">
 			  </label>
 			</div>
-			<label class="col-sm-2 control-label3"  style="width:150px;"><b>생년월일</b></label>
-			<div class="col-sm-2 control-label">
+		 </div>
+		  <div class="form-group has-feedback">
+			<label class="col-sm-2 control-label"  style="width:80px;padding-left:0px;float:left;"><b>생년월일</b></label>
+			<div class="col-sm-9" style="width:363px !important;float:right;padding-left:0px;">
 			  <label>
-				<input type="text" maxlength="6" oninput="max_length_check(this)"  name="penJumin" id="penJumin" class="form-control input-sm" value="<?php if($dc) echo $dc['penJumin']; ?>" <?php if($dc) echo "data-orig=\"{$dc['penJumin']}\""; ?>>
+				<input type="text" maxlength="6" oninput="max_length_check(this)"  name="penJumin" id="penJumin" class="form-control input-sm" value="<?php if($dc) echo $dc['penJumin']; ?>" <?php if($dc) echo "data-orig=\"{$dc['penJumin']}\"";?> style="width:330px !important;">
 			  </label>
 			</div>
 		  </div>
 		  <div class="form-group has-feedback">
-			<label class="col-sm-2 control-label"  style="width:150px;"><b>유효기간</b></label>
-			<div class="col-sm-9" style="width:363px !important;">
+			<label class="col-sm-2 control-label"  style="width:80px;padding-left:0px;float:left;"><b>유효기간</b></label>
+			<div class="col-sm-9" style="width:363px !important;float:right;padding-left:0px;">
 			  <label>
 				<input type="text" name="penExpiStDtm" id="penExpiStDtm" class="datepicker form-control input-sm" value="<?php if($dc) echo explode(' ~ ', $dc['penExpiDtm'])[0]; ?>" <?php if($dc) echo "data-orig=\"" . explode(' ~ ', $dc['penExpiDtm'])[0] . "\""; ?> style="width:155px !important;">&nbsp;&nbsp;~&nbsp;&nbsp;<input type="text" name="penExpiEdDtm" id="penExpiEdDtm" class="datepicker form-control input-sm" value="<?php if($dc) echo explode(' ~ ', $dc['penExpiDtm'])[1]; ?>" <?php if($dc) echo "data-orig=\"" . explode(' ~ ', $dc['penExpiDtm'])[1] . "\""; ?>  style="width:155px !important;">
 			  </label>
@@ -324,8 +356,8 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 			
 		  </div>
 		<div class="form-group has-feedback">
-			<label class="col-sm-2 control-label" style="width:150px;"><b>우편번호</b></label>
-			<div class="col-sm-9"  style="width:363px !important;">
+			<label class="col-sm-2 control-label" style="width:80px;padding-left:0px;float:left;"><b>우편번호</b></label>
+			<div class="col-sm-9" style="width:363px !important;float:right;padding-left:0px;">
 			  <label>
 				<input type="text" name="penZip" id="penZip" class="form-control input-sm" size="6" maxlength="6" placeholder="우편번호" value="<?php if($dc) echo $dc['penZip']; ?>" <?php if($dc) echo "data-orig=\"{$dc['penZip']}\""; ?>  style="width:258px !important;">
 			  </label>
@@ -335,24 +367,22 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 			</div>	
 		</div>
 		<div class="form-group has-feedback">
-			<label class="col-sm-2 control-label" style="width:150px;"><b>신청인 주소</b></label>
-			<div class="col-sm-8">
-		         
+			<label class="col-sm-2 control-label" style="width:80px;padding-left:0px;float:left;"><b>신청인 주소</b></label>
+			<div class="col-sm-9" style="width:363px !important;float:right;padding-left:0px;">		         
 				<input type="text" name="penAddr" id="penAddr" class="form-control input-sm" size="50" placeholder="신청인 주소" value="<?php if($dc) echo $dc['penAddr']; ?>" <?php if($dc) echo "data-orig=\"{$dc['penAddr']}\""; ?> style="width:330px !important;">
 
 			</div>		
 		</div>
 		<div class="form-group has-feedback">
-			<label class="col-sm-2 control-label" style="width:150px;"><b>상세주소</b></label>
-			<div class="col-sm-5">
-         
+			<label class="col-sm-2 control-label" style="width:80px;padding-left:0px;float:left;"><b>상세주소</b></label>
+			<div class="col-sm-9" style="width:363px !important;float:right;padding-left:0px;">         
 				<input type="text" name="penAddrDtl" id="penAddrDtl" value="<?php if($dc) echo $dc['penAddrDtl']; ?>" class="form-control input-sm" size="50" placeholder="상세주소" <?php if($dc) echo "data-orig=\"{$dc['penAddrDtl']}\""; ?> style="width:330px !important;">
 	
 			</div>		
 		</div>
 		<div class="form-group has-feedback">
-			<label class="col-sm-2 control-label" style="width:150px;"><b>계약일자</b></label>
-			<div class="col-sm-5">
+			<label class="col-sm-2 control-label" style="width:80px;padding-left:0px;float:left;"><b>계약일자</b></label>
+			<div class="col-sm-9" style="width:363px !important;float:right;padding-left:0px;">
 				<label class="col-pen-nm1">
 				<img src="/skin/apms/order/new_basic/image/icon_17.png">
 				<input type="text" name="do_date" id="do_date" class="datepicker form-control input-sm" value="<?php if($dc && $dc['do_date'] != "0000-00-00 00:00:00"){ echo substr($dc['do_date'],0,10);}else{ echo date("Y-m-d");} ?>" <?php if($dc && $dc['do_date'] != "0000-00-00 00:00:00") echo "data-orig=\"" . $dc['do_date'] . "\""; ?> placeholder="계약일자" style="width:330px !important;padding-left:40px;">
@@ -360,8 +390,8 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 			</div>		
 		</div>
 		<div class="form-group has-feedback">
-			<label class="col-sm-2 control-label" style="width:150px;"><b>서명확인방법</b></label>
-			<div class="col-sm-5">
+			<label class="col-sm-2 control-label" style="width:80px;padding-left:0px;float:left;"><b>서명확인방법</b></label>
+			<div class="col-sm-9" style="float:right;padding-left:0px;padding-right:35px;">
 	            <label class="radio-inline">
                   <input type="radio" name="penRecTypeCd_radio" class="penRecTypeCd_radio penRecTypeCd02" value="02" <?php if( !$dc || $dc['penRecTypeCd'] != '02') echo 'checked' ?>> 대면
                 </label>
@@ -372,47 +402,47 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 			</div>		
 		</div>
 		  <div class="form-group" style="border-top:1px solid #aaaaaa;">
-            <div class="se_sch_hd" style="margin-left:15px;padding-top:10px;">계약서 필수정보 입력</div>
+            <div class="se_sch_hd" style="padding-top:10px;">계약서 필수정보 입력</div>
           </div>  
 		  <div class="form-group">
-            <label style="min-width:220px;">
+            <label style="min-width:150px;">
               <input type="checkbox" name="sealFile_chk" id="sealFile_chk" value="1" class="input-sm" style="width:20px;"<?php if($member['sealFile']) { ?>checked<?php }?> onClick="return false;" readonly>&nbsp;&nbsp;&nbsp;<strong>사업자 직인정보 등록 여부</strong><span id="red_text">
 			  <?php if(!$member['sealFile']) { ?><br>&nbsp;&nbsp;&nbsp;&nbsp;<font size="" color="red">* 현재 등록된 직인 정보가 없습니다. </font><?php }?></span>
             </label>
-            <label style="float:right;">
+            <label style="float:right;padding-right:15px;">
               <button type="button" id="btn_ent" class="btn btn-black" >&nbsp;&nbsp;<b>사업자 정보 입력</b>&nbsp;&nbsp;</button>
             </label>
           </div>
 		  <div class="form-group" style="border-top:1px solid #aaaaaa;">
-            <div class="se_sch_hd" style="margin-left:15px;padding-top:10px;">계약서 추가정보 입력</div>
+            <div class="se_sch_hd" style="padding-top:10px;">계약서 추가정보 입력</div>
           </div>
           <div class="form-group">
-            <label style="min-width:220px;">
+            <label style="min-width:150px;">
               <input type="checkbox" name="contract_sign_type" id="contract_sign_type" value="1" class="input-sm" style="width:20px;" <?php if($dc['contract_sign_type'] == 1) { ?>checked<?php }?> onClick="if(this.checked == true){btn_contract_click();}else{$('#applicantRelation2').val('0');applicant_info_chk();}">&nbsp;&nbsp;&nbsp;<strong>대리인 계약 시</strong>
 			  <input type="hidden" name="contract_sign_relation" id="contract_sign_relation" value="<?=$dc['contract_sign_relation']?>" alt="수급인과의 관계">
 			  <input type="hidden" name="contract_sign_name" id="contract_sign_name" value="<?=$dc['contract_sign_name']?>" alt="대리인 성명">
 			  <input type="hidden" name="contract_tel" id="contract_tel" value="<?=$dc['contract_tel']?>" alt="대리인 전화번호">
 			  <input type="hidden" name="contract_addr" id="contract_addr" value="<?=$dc['contract_addr']?>" alt="대리인 주소">
             </label>
-            <label style="float:right;">
+            <label style="float:right;padding-right:15px;">
               <button type="button" id="btn_contract"  class="btn btn-black" onClick="btn_contract_click()"><b>&nbsp;&nbsp;대리인 정보 입력&nbsp;&nbsp;</b></button>
             </label>
 		  </div>
 		  <div class="form-group">
-            <label style="min-width:220px;">
+            <label style="min-width:150px;">
               <input type="checkbox" name="acc_chk" id="acc_chk" value="1" class="input-sm" style="width:20px;" <?php if($dc['entConAcc01'] != "") { ?>checked<?php }?> onClick="if(this.checked == true){btn_acc_click();}">&nbsp;&nbsp;&nbsp;<strong>특약사항 입력 시</strong>
             </label>
-            <label style="float:right;">
+            <label style="float:right;padding-right:15px;">
               <button type="button" id="btn_acc"  class="btn btn-black" onClick="btn_acc_click()"><b>특약사항 정보 입력</b>&nbsp;</button>
 			  <input type="hidden" name="entConAcc01" id="entConAcc01" value="<?=$dc['entConAcc01']?>" alt="특약사항 정보">
 			  <input type="hidden" name="save_conacc" id="save_conacc" value="" alt="특약사항 저장유무">
             </label>
 		  </div>
 		  <div class="form-group" id="ltm_check" style="display:<?php if($dc['penTypeCd'] == "03" || $dc['penTypeCd'] == "04") { echo "block";}else{echo "none";}?>;">
-            <label style="min-width:220px;">
+            <label style="min-width:150px;">
               <input type="checkbox" name="ltm_chk" id="ltm_chk" value="1" class="input-sm" style="width:20px;" <?php if($dc['penTypeCd'] == "03" || $dc['penTypeCd'] == "04") { ?>checked<?php }?>  onClick="return false;" readonly>&nbsp;&nbsp;&nbsp;<strong>장기요양재가서비스 신청 시</strong>
             </label>
-            <label style="float:right;">
+            <label style="float:right;padding-right:15px;">
               <button type="button" id="btn_ltm"  class="btn btn-black" onClick="btn_ltm_click()">&nbsp;&nbsp;<b>신청인 정보 입력</b>&nbsp;&nbsp;</button>
 			  <input type="hidden" name="applicantRelation" id="applicantRelation" value="<?=$dc['applicantRelation']?>" alt="수급인과의 관계">
 			  <input type="hidden" name="applicantNm" id="applicantNm" value="<?=$dc['applicantNm']?>" alt="신청인명">
@@ -432,12 +462,14 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
           </button>
         </div>
       </div>
-      <div id="se_body_wr" class="col-md-6 active<?php //if($dc) echo 'active' ;?>" style="min-width:412px;float:left;padding:15px;">
+      <div id="se_body_wr" class="col-md-6 active<?php //if($dc) echo 'active' ;?>" style="min-width:340px;float:left;padding:15px;">
         <div class="se_item_wr">
           <div class="se_sch_wr">
-            <div class="flex space-between align-items">
-              <div class="se_sch_hd">상품정보</div>
-              <button type="button" class="btn_se_sch" id="btn_se_sch">상품검색</button>
+            <div class="align-items" style="height:30px;">
+              <div class="se_sch_hd" style="float:left;margin-top:5px;">상품정보</div>
+			  <button type="button" class="btn_se_sch" id="btn_se_sch" style="float:right;">상품검색</button>
+              <button type="button" class="btn_se_sch" id="btn_recipient_info" style="float:right;margin-right:5px;display:none;"><span id='warn_img'></span>장기요양정보 확인</button>
+			  
             </div>
             <div class="ipt_se_sch_wr">
               <img src="<?php echo THEMA_URL; ?>/assets/img/icon_search.png" >
@@ -970,6 +1002,81 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 	</div>
 	
 </div>
+
+<div id="popup_box44" class="popup_box2">
+    <div id="" class="popup_box_con" style="height:500px;margin-top:-250px;">
+		<div style="text-align:right;width:100%;padding-right:15px;margin-top:-10px;">
+			<i class="fa-solid fa-xmark" onClick="div_close('popup_box44')" style="cursor:pointer;"></i>
+		</div>
+		<div class="form-group" style="margin-top:-10px;text-align:center;padding:0px 25px;">
+            <div class="se_sch_hd" style="text-align:center;height:40px;border-bottom:1px solid #333333;margin-right:0px;"><span id="pen_name"></span>님 간편계약 장기요양정보 확인</div>
+        </div>
+
+		<div id="" style="float:left;width:100%;margin-left:15px;margin-top:10px;">			
+			<table>			
+			<tr>
+				<td width="90">업데이트 날짜</td>
+				<td>: <span id="lastupdate_sub"></span></td>
+			</tr>
+			<tr>
+				<td>인정 유효기간</td>
+				<td>: <span id="penExpiDtm_sub"></span></td>
+			</tr>
+			<tr>
+				<td>적용 구간</td>
+				<td>: <span id="penAppDtm_sub"></span></td>
+			</tr>
+			</table>			  		
+		</div>
+	
+		<div id="item_info" class="section_wrap" style="float:left;width:100%;padding:15px;height:350px; overflow-x:auto;">
+			판매계약
+			<table style="width: 100%; height: fit-content;border-collapse: collapse;">
+			<colgroup><col width='55%'><col width='15%'><col width='30%'></colgroup>
+			<tr>
+				<th>품목명(상품명)</th>
+				<th>수량</th>
+				<th>계약가능</th>
+			</tr>
+			<tr>
+				<td>지팡이<br>(NS)</td>
+				<td>1개</td>
+				<td>1개</td>
+			</tr>
+			<tr>
+				<td>지팡이<br>(NS)</td>
+				<td>2개</td>
+				<td><font style="color:red;font-weight:bold;">1개<br>계약한도초과</font></td>
+			</tr>
+			</table>
+			<br>
+			대여계약
+			<table>
+			<colgroup><col width='55%'><col width='15%'><col width='30%'></colgroup>
+			<tr>
+				<th>품목명(상품명)</th>
+				<th>수량</th>
+				<th>계약가능</th>
+			</tr>
+			<tr>
+				<td>욕창예방매트리스<br>AD-1300 MUTE FOAM</td>
+				<td>1개</td>
+				<td>1개</td>
+			</tr>
+			<tr>
+				<td>욕창예방매트리스<br>AD-1300 MUTE FOAM</td>
+				<td>1개</td>
+				<td><font style="color:red;font-weight:bold;">급여불가</font></td>
+			</tr>
+
+			</table>
+
+		</div>
+		
+	</div>
+	</div>
+	
+</div>
 <?php include_once('./popup_sign_send.php');?>
 <style>
 #barcode_popup_iframe {
@@ -1442,6 +1549,7 @@ if(obj.gubun == '대여') {
   get_stock_data(obj.it_id);
   check_no_item();
   save_eform();
+  recipent_check();//장기요양정보 검색
 }
 
 // 바코드 최대길이 체크
@@ -1877,7 +1985,7 @@ function toggle_pen_id_flexdatalist(on) {
 function select_recipient(obj) {
   pen_info = obj;
   update_pen(obj);
-
+  recipent_check();
   // 본인부담금율이 '기초0%' 혹은 '의료6%'인 경우
   if($('#penTypeCd').val() == '03' || $('#penTypeCd').val() == '04'){
 
@@ -2034,6 +2142,55 @@ $('#btn_pen').click(function() {
   $('body').addClass('modal-open');
   $('#popup_box').show();
   $('.popup_box_bottom').show();
+});
+
+function recipent_check(){
+	
+	if($("#penId").val() == ""){//수급자 수동입력 시
+		$("#btn_recipient_info").css("display","none");
+		return false;
+	}
+	if($("#penId").val() != ""){//penId가 있을 때만 실행
+	  //if($("#dc_view").prop('disabled')){
+		//save_eform();
+	  //}
+	  
+	  //var dc_id = $('input[name="dc_id"]').val();
+	  //alert(dc_id);
+	  var $form = $('#form_simple_eform');
+	var formdata = $form.serialize();
+	  $.post('ajax.eform_recipient_info.php', formdata, 'json')
+	  .done(function(result) {
+		//버튼 상태 변경
+		if(result["alarm_count"]>0){
+			$("#warn_img").html("<img src='/img/warn1.png' style='width:15px;'>&nbsp;&nbsp;");
+			$("#btn_recipient_info").css("border-color","red");
+		}else{
+			$("#warn_img").html("");
+			$("#btn_recipient_info").css("border-color","#ccc");
+		}
+		//내용변경
+		$("#lastupdate_sub").html(result["lastupdate"]);//마지막 업데이트 날짜
+		$("#penExpiDtm_sub").html(result["penExpiDtm"]);//인정유효기간 날짜
+		$("#penAppDtm_sub").html(result["penAppDtm"]);//마지막 업데이트 날짜
+		$("#item_info").html(result["html"]);//상품 정보
+
+		//alert(JSON.stringify(result["test"]));//추후 삭제 
+		
+		$("#btn_recipient_info").css("display","block");
+	  })
+	  .fail(function($xhr) {
+		var data = $xhr.responseJSON;
+		alert(data && data.message);
+	  });
+	}
+}
+//요양정보 확인
+$('#btn_recipient_info').click(function() {
+  //수급자 요양정보,계약가능 상품 정보 조회
+	$("#pen_name").text($("#penNm").val());
+	$('body').addClass('modal-open');
+	$('#popup_box44').show();
 });
 
 // 사업자 정보등록
@@ -2357,6 +2514,7 @@ $(document).on('click', '.it_qty button', function() {
 	  }
       break;
   }
+  recipent_check();//장기요양정보 검색
   update_barcode_field();
 });
 
@@ -2395,6 +2553,7 @@ $(document).on('click', '.btn_del_item', function() {
   }
   $(this).closest('li').remove();
   check_no_item();
+  recipent_check();//장기요양정보 검색
   //save_eform();
 });
 
@@ -2550,6 +2709,7 @@ function check_pen_type() {
 	$('#penAddrDtl').prop('disabled', true);
     toggle_pen_id_flexdatalist(true);
   } else {
+	$("#penId").val("");
     // 신규수급자
     $('.pen_id_flexdatalist').removeClass('active').attr('placeholder', '수급자명');;
     $('.col-pen-nm img').hide();
@@ -2568,6 +2728,7 @@ function check_pen_type() {
     $('#penAddrDtl').prop('disabled', false);
     toggle_pen_id_flexdatalist(false);
   }
+  recipent_check();
 }
 $('input[name="pen_type"]').change(function() {
   update_pen(null);
