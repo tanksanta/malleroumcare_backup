@@ -191,12 +191,12 @@
                 <div id="memberWrap">
                     
                     <?php if($member['mb_level'] >= 9) { ?>
-                    <p class="admPDA_menu"><a href="/shop/release_orderlist.php" class="btn_orderlist">관리자 주문내역 관리</a></p>
+                    <p class="admPDA_menu"><a href="<?=G5_SHOP_URL;?>/release_orderlist.php" class="btn_orderlist">관리자 주문내역 관리</a></p>
                     <?php if(check_auth($member['mb_id'], '400480', 'w')) { ?>
-                    <p class="admPDA_menu"><a href="/shop/release_purchaseorderlist.php" class="btn_orderlist purchaseorderlist">관리자 구매발주 관리</a></p>
+                    <p class="admPDA_menu"><a href="<?=G5_SHOP_URL;?>/release_purchaseorderlist.php" class="btn_orderlist purchaseorderlist">관리자 구매발주 관리</a></p>
                     <?php }
                     if(check_auth($member['mb_id'], '400480', 'w')) { ?>
-                    <p class="admPDA_menu"><a href="/shop/release_stocklist.php" class="btn_orderlist stocklist">보유재고 관리</a></p>
+                    <p class="admPDA_menu"><a href="<?=G5_SHOP_URL;?>/release_stocklist.php" class="btn_orderlist stocklist">보유재고 관리</a></p>
                     <?php } } ?>
 
                     <div class="thkc_memberTitle">
@@ -262,7 +262,7 @@
                             <!-- 장바구니 시작 -->
                             <?php if(get_boxcart_datas_count() > 0) { ?>
                             <div class="mem_shipWrap f_s14">
-                                <a href="/shop/cart.php">
+                                <a href="<?=G5_SHOP_URL;?>/cart.php">
                                     <p><?=($_SESSION['recipient']['penId']=="")?"사업소":$_SESSION['recipient']['penNm']."님";?> 장바구니</p>
                                     <p><span class="mInfo"><?=get_boxcart_datas_count(); ?></span><span class="mUnit">건</span></p>
                                 </a>
@@ -312,13 +312,13 @@
                             <table>
                                 <tr>
                                     <td class="br btn_simple">
-                                        <a href="#none" onclick="location.href='/shop/check_my_ltcare_info.php'">
+                                        <a href="#none" onclick="location.href='<?=G5_SHOP_URL;?>/check_my_ltcare_info.php'">
                                             <img src="<?=G5_IMG_URL;?>/new_main_eroum/thkc_ico_easy01.svg" alt="간편조회">
                                             <p class="simTitle">간편<span class="f_bold700">조회</span></p>
                                         </a>
                                     </td>
                                     <td class="bb btn_simple">
-                                        <a href="#none" onclick="location.href='/shop/item_msg_list.php'">
+                                        <a href="#none" onclick="location.href='<?=G5_SHOP_URL;?>/item_msg_list.php'">
                                             <img src="<?=G5_IMG_URL;?>/new_main_eroum/thkc_ico_easy02.svg" alt="간편제안">
                                             <p class="simTitle">간편<span class="f_bold700">제안</span></p>
                                         </a>
@@ -326,13 +326,13 @@
                                 </tr>
                                 <tr>
                                     <td class="bt btn_simple">
-                                        <a href="#none" onclick="location.href='/shop/simple_order.php'">
+                                        <a href="#none" onclick="location.href='<?=G5_SHOP_URL;?>/simple_order.php'">
                                             <img src="<?=G5_IMG_URL;?>/new_main_eroum/thkc_ico_easy03.svg" alt="간편주문">
                                             <p class="simTitle">간편<span class="f_bold700">주문</span></p>
                                         </a>
                                     </td>
                                     <td class="bl btn_simple">
-                                        <a href="#none" onclick="location.href='/shop/simple_eform.php'">
+                                        <a href="#none" onclick="location.href='<?=G5_SHOP_URL;?>/simple_eform.php'">
                                             <img src="<?=G5_IMG_URL;?>/new_main_eroum/thkc_ico_easy04.svg" alt="간편계약">
                                             <p class="simTitle">간편<span class="f_bold700">계약</span></p>
                                         </a>
@@ -357,7 +357,23 @@
                         <hr>
                         <div class="office_menu">
                             <ul>
-                                <li><img src="<?=G5_IMG_URL;?>/new_main_eroum/thkc_ico_manage09.svg" alt="수급자 상담관리"><a href="<?=( $member['mb_giup_matching'] == "Y" )?"/shop/eroumon_members_conslt_list.php":"/bbs/board.php?bo_table=notice&wr_id=180"?>">수급자 상담관리</a></li>
+                                <?php
+                                    // ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  
+                                    // 23.11.22 : 서원 - 이로움Care와 이로움ON의 매칭 서비스 관련 상태에 따른 링크값 변경.
+                                    //                    기존 mb_giup_matching 컬럼값이 Y or N 일경우에서 N이면서 기신청 사업소 일경우 추가되어 Line IF 처리에서 변경함.
+                                    //                    type1 = Y(신청상태) / type2= Y->N(관리자에의한미신청상태) / type3 = N(미신청상태)
+                                    // ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  
+                                    $_href = "";
+                                    // 신청 상태
+                                    if( $member['mb_giup_matching'] == "Y" ) { $_href = G5_SHOP_URL . "/eroumon_members_conslt_list.php"; }
+                                    // 신청 이후 관리자에 의해 미신청 상태로 변경된 경우
+                                    else if( $member['mb_giup_matching'] == "N" && $member['mb_matching_forms'] ) { $_href = G5_SHOP_URL . "/forms_eroumon_matchingservice.php"; }
+                                    // 미신청 상태
+                                    else if( $member['mb_giup_matching'] == "N" ) { $_href = G5_BBS_URL . "/board.php?bo_table=notice&wr_id=180"; }
+                                    // 기타 오류 방지
+                                    else { $_href = G5_BBS_URL . "/board.php?bo_table=notice&wr_id=180"; }
+                                ?>
+                                <li><img src="<?=G5_IMG_URL;?>/new_main_eroum/thkc_ico_manage09.svg" alt="수급자 상담관리"><a href="<?=$_href;?>">수급자 상담관리</a></li>                                
                                 <?php
                                     // ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  
                                     // 23.03.07 : 서원 - 이로움ON 에서 발생한 주문 정보에 대한 페이지 링크
@@ -371,13 +387,13 @@
                                     ) {
                                     // ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==
                                 ?>
-                                <li><img src="<?=G5_IMG_URL;?>/new_main_eroum/thkc_ico_manage08.svg" alt="복지용구 신청관리"><a href="/shop/eroumon_order_list.php">복지용구 신청관리</a></li>
+                                <li><img src="<?=G5_IMG_URL;?>/new_main_eroum/thkc_ico_manage08.svg" alt="복지용구 신청관리"><a href="<?=G5_SHOP_URL;?>/eroumon_order_list.php">복지용구 신청관리</a></li>
                                 <?php } ?>
-                                <li><img src="<?=G5_IMG_URL;?>/new_main_eroum/thkc_ico_manage01.svg" alt="주문/배송 관리"><a href="/shop/orderinquiry.php">주문/배송 관리</a></li>
-                                <li><img src="<?=G5_IMG_URL;?>/new_main_eroum/thkc_ico_manage02.svg" alt="수급자 관리"><a href="/shop/my_recipient_list.php" onclick="loading_onoff2('on')">수급자 관리</a></li>
-                                <li><img src="<?=G5_IMG_URL;?>/new_main_eroum/thkc_ico_manage03.svg" alt="계약서 관리"><a href="/shop/electronic_manage_new.php">계약서 관리</a></li>
-                                <li><img src="<?=G5_IMG_URL;?>/new_main_eroum/thkc_ico_manage04.svg" alt="청구 내역 관리"><a href="/shop/claim_manage.php">청구 내역 관리</a></li>
-                                <li><img src="<?=G5_IMG_URL;?>/new_main_eroum/thkc_ico_manage05.svg" alt="보유 급여상품 관리"><a href="/shop/sales_Inventory.php">보유 급여상품 관리</a></li>
+                                <li><img src="<?=G5_IMG_URL;?>/new_main_eroum/thkc_ico_manage01.svg" alt="주문/배송 관리"><a href="<?=G5_SHOP_URL;?>/orderinquiry.php">주문/배송 관리</a></li>
+                                <li><img src="<?=G5_IMG_URL;?>/new_main_eroum/thkc_ico_manage02.svg" alt="수급자 관리"><a href="<?=G5_SHOP_URL;?>/my_recipient_list.php" onclick="loading_onoff2('on')">수급자 관리</a></li>
+                                <li><img src="<?=G5_IMG_URL;?>/new_main_eroum/thkc_ico_manage03.svg" alt="계약서 관리"><a href="<?=G5_SHOP_URL;?>/electronic_manage_new.php">계약서 관리</a></li>
+                                <li><img src="<?=G5_IMG_URL;?>/new_main_eroum/thkc_ico_manage04.svg" alt="청구 내역 관리"><a href="<?=G5_SHOP_URL;?>/claim_manage.php">청구 내역 관리</a></li>
+                                <li><img src="<?=G5_IMG_URL;?>/new_main_eroum/thkc_ico_manage05.svg" alt="보유 급여상품 관리"><a href="<?=G5_SHOP_URL;?>/sales_Inventory.php">보유 급여상품 관리</a></li>
                             </ul>
                         </div>
                     </div>
