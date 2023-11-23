@@ -168,10 +168,10 @@ $qstr = ("select_date={$select_date}&amp;matchingY={$matchingY}&amp;matchingN={$
 
           <div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
             <input type="checkbox" class="btn-check" id="matchingY" name="matchingY" value="Y" autocomplete="off"<?=($matchingY == 'Y')?(' checked="checked"'):('');?>>
-            <label class="btn btn-outline-primary" for="matchingY">승인</label>
+            <label class="btn btn-outline-primary" for="matchingY">신청</label>
 
             <input type="checkbox" class="btn-check" id="matchingN" name="matchingN" value="N" autocomplete="off"<?=($matchingN == 'N')?(' checked="checked"'):('');?>>
-            <label class="btn btn-outline-primary" for="matchingN">미승인</label>
+            <label class="btn btn-outline-primary" for="matchingN">신청취소</label>
           </div>
 
         </td>
@@ -231,7 +231,7 @@ $qstr = ("select_date={$select_date}&amp;matchingY={$matchingY}&amp;matchingN={$
         ?>
         <tr class="<?php echo $bg; ?>">
             <td><?=($ListNum-$i)?></td>
-            <td><?=($row['mb_giup_matching']==="Y"?"신청":"미신청")?></td>
+            <td><?=($row['mb_giup_matching']==="Y"?"신청":"신청취소")?></td>
             <td><a href="/adm/member_form.php?w=u&mb_id=<?=($row['mb_id'])?>" target="_blank" class="h2"><?=($row['mb_id'])?></a></td>
             <td><a href="javascript:void(0);" class="btn_eroumon_form_result" data-id="<?=($row['mb_id'])?>" data-yn="<?=($row['mb_giup_matching'])?>" data-dt="<?=($row['mb_matching_dt'])?>"><?=($row['mb_giup_bnum'])?></a></td>
             <td><?=($row['mb_giup_bname'])?></td>

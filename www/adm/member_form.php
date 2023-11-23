@@ -936,9 +936,9 @@ this.form.mb_intercept_date.value=this.form.mb_intercept_date.defaultValue; }">
         </th>
     </tr>
     <tr>
-        <th scope="row">매칭 담당자명</th>
+        <th scope="row">매칭 담당자 성명</th>
         <td colspan="3">
-            <label for="mb_matching_manager_nm" class="sound_only">매칭 담당자명</label>
+            <label for="mb_matching_manager_nm" class="sound_only">매칭 담당자 성명</label>
             <input type="text" name="mb_matching_manager_nm" value="<?php echo $mb['mb_matching_manager_nm'] ?: $mb['mb_matching_manager_nm']; ?>" id="mb_matching_manager_nm" class="frm_input" size="30">
         </td>
     </tr> 

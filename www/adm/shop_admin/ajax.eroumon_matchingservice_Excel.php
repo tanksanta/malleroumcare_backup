@@ -113,29 +113,42 @@ if( $_POST['mode_set']  == "ExcelDown" ) {
 
     $widths  = [
             15,
-            30,
-            30,
-            35,
-            35,
-            15,
+            18,
             25,
-            40
+            20,
+            25,
+            15,
+            20,
+            12,
+            12,
+            12,
+            12,
+            12
         ];
     
     $headers = [
         '회원ID',        
-        '사업소 코드(가입시 기재된 사업자번호)',
-        '사업업소명(회원정보 내 기업명)',
-        '매칭 담당자 성명(설문에 기재한 담당자)',
-        '매칭 담당자 휴대폰번호 (설문에 기재한 번호)',
+        '사업소 코드',
+        '사업업소명',
+        '매칭 담당자 성명',
+        '매칭 담당자 휴대폰번호',
         '사업소 추천코드',
-        '상담신청일시(매칭동의일시)',
-        '문항답변'
+        '상담신청일시',
+        '문항1',
+        '문항2',
+        '문항3',
+        '문항4',
+        '문항5'
     ];
 
     $data = [];
     while( $row = sql_fetch_array($result) ) {
+
+        $row = array_merge( $row , (array)json_decode( $row['mb_matching_forms'] ) );
+        unset( $row['mb_matching_forms'] );
+        
         $data[] = $row;
+
     }
 
     include_once(G5_LIB_PATH."/PHPExcel.php");
@@ -193,7 +206,7 @@ if( $_POST['mode_set']  == "ExcelDown" ) {
         $sheet->getRowDimension($i)->setRowHeight(22);
     }
 
-
+    
     header("Content-Type: application/octet-stream");
     header("Content-Disposition: attachment; filename=\"매칭상담서비스관리_리스트-".$member['mb_id']."-".date("ymd").".xlsx\"");
     header("Cache-Control: max-age=0");
@@ -202,7 +215,7 @@ if( $_POST['mode_set']  == "ExcelDown" ) {
 
     $writer = PHPExcel_IOFactory::createWriter($excel, 'Excel2007');
     $writer->save('php://output');
-
+    
 
 }
 else {
