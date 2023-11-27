@@ -97,7 +97,7 @@ if ($it['ca_id']) {
   $it_list_url = "/shop/list.php?ca_id={$main_ca}";
 }
 
-$rental_use_info_1 = (file_exists($_SERVER['DOCUMENT_ROOT']."/img/rental/rental_use_info_1_".$it["it_thezone2"].".jpg"))? "rental_use_info_1_".$it["it_thezone2"].".jpg":"rental_use_info_1.jpg";//렌탈 이용안내 상 이미지 확인
+$rental_use_info_1 = (file_exists($_SERVER['DOCUMENT_ROOT']."/img/rental/rental_use_info_1_".trim($it["it_thezone2"]).".jpg"))? "rental_use_info_1_".trim($it["it_thezone2"]).".jpg":"rental_use_info_1.jpg";//렌탈 이용안내 상 이미지 확인
 
 
 ?>
