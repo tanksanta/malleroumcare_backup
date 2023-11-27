@@ -96,6 +96,10 @@ if ($it['ca_id']) {
   $main_ca = $it['ca_id'];
   $it_list_url = "/shop/list.php?ca_id={$main_ca}";
 }
+
+$rental_use_info_1 = (file_exists($_SERVER['DOCUMENT_ROOT']."/img/rental/rental_use_info_1_".$it["it_thezone2"].".jpg"))? "rental_use_info_1_".$it["it_thezone2"].".jpg":"rental_use_info_1.jpg";//렌탈 이용안내 상 이미지 확인
+
+
 ?>
 
 
@@ -1671,12 +1675,12 @@ if ($it['ca_id']) {
     <div class="tab-pane active" id="div1"> <!-- id="item-explan" -->
       <?php if($it['it_10_subj'] == "rental"){?>
 		<div class="item-explan">
-		<img src="/img/rental_use_info_1.jpg" width="100%" id="rental_use_info1">
+		<img src="/img/rental/<?=$rental_use_info_1?>" width="100%" id="rental_use_info1">
 		<div id="rental_use_info_btn"  class="rental_use_info_btn" onClick="rental_use_info();">
 			이용 방법 상세보기&nbsp;&nbsp;<i class="fa-solid fa-chevron-down"></i>
 		</div>
 		<div id="rental_use_info" style="display:none;">
-		<img src="/img/rental_use_info_2.jpg" width="100%">
+		<img src="/img/rental/rental_use_info_2.jpg" width="100%">
 		</div>
 		<div id="rental_use_info_btn2" class="rental_use_info_btn" style="display:none" onClick="rental_use_info();">
 			이용 방법 접기&nbsp;&nbsp;<i class="fa-solid fa-chevron-up"></i>
