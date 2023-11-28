@@ -202,8 +202,15 @@ $rental_use_info_1 = (file_exists($_SERVER['DOCUMENT_ROOT']."/img/rental/rental_
         }
         ?>
       </div>-->
+      <script src="/js/textFit.js"></script>
       <script>
       $(function(){
+        if(screen.width > 800){
+			textFit(document.getElementsByClassName('box'), {minFontSize:14, maxFontSize: 20,alignHoriz: true, alignVert: true, multiLine: true,widthOnly: true});
+		}else{
+			textFit(document.getElementsByClassName('box'), {minFontSize:14, maxFontSize:16,alignHoriz: true, alignVert: true, multiLine: true});
+			$(".box").css({"top":"94%"});
+		}
         // 이미지 슬라이드
         $('.item_image_slider').slick({
           dots: true,
@@ -1875,19 +1882,6 @@ $(function() {
 });
 </script>
 
-<script src="/js/textFit.js"></script>
-<script>
-$(document).ready(function(){
-
-	if(screen.width > 800){
-		textFit(document.getElementsByClassName('box'), {minFontSize:14, maxFontSize: 20,alignHoriz: true, alignVert: true, multiLine: true,widthOnly: true});
-	}else{
-		textFit(document.getElementsByClassName('box'), {minFontSize:16, maxFontSize:20,alignHoriz: true, alignVert: true, multiLine: true});
-		$(".box").css({"top":"94%"});
-
-	}
-});
-</script>
 <?php
 // include_once('./itemlist.php'); // 분류목록
 ?>
