@@ -514,8 +514,54 @@
     <!-- 231020 인정등급 예상 결과테스트 모달 --><div id="popupTestResultBox" class="Popup_TestResult"><div></div></div><!-- 231020 인정등급 예상 결과테스트 모달 -->
     <!-- 231025 수급자 조회용 모달 --><div id="popupsimpleSearchBox" class="Popup_simpleSearch"><div></div></div><!-- 231025 수급자 조회용 모달 -->
 
+	<div id="popup_box4" class="popup_box2">
+    <div id="" class="popup_box_con2" >
+		<form method="post" id='download_excel2'>
+			<input type="hidden" name="mode" value="m">
+			<input type="hidden" name="rh_id" id="rh_id" value="">
+		</form>
+		<div style="top:0px;width:100%;">		
+		<span style="float:right;cursor:pointer;margin-top:0px;" onClick="rent_efrom_close();" title="돌아가기" ><i class="fa-solid fa-x" style="font-size:20px;"></i></i></span>
+		</div>
+		<div class="form-group" style="text-align:left;height:40px;">
+			<span class="" style="text-align:left;font-weight:bold;font-size:20px;">상담 거부 사유 입력</span>
+        </div>
+
+		<div class="form-group section_wrap" id="eform_rent_hist" style="border:0px; padding: 0px; height:270px; border-radius: 0px;">
+		<i class="fa-solid fa-circle-exclamation"></i> 상담 거부 사유를 입력해 주세요.<br>
+		<i class="fa-solid fa-circle-exclamation"></i> <font color="red">상담 거부 후 다시 수락할 수 없어요.<br>
+		&nbsp;&nbsp;&nbsp;&nbsp;신중하게 거부해 주세요.</font><br><br>
+		<textarea name="" style="height:165px;width:100%;resize: none;padding:12px;border-radius: 8px;" id="REJECTION_RESN" maxlength="100" placeholder="거부 사유를 100자 이내로 기재해주세요."></textarea>
+		<div class="form-group" style="text-align:right;">
+		<span style="color:#aaa;" id="counter">(0 / 최대 100자)</span>
+		</div>
+        </div>	
+		
+		<div style="margin-top:10px;text-align:center;height:40px;padding-top:10px;">
+			<input type="button" value="저장하기" id="STTUS_CO4_save" data-sttus="CS04" style="padding: 10px 25px;vertical-align: top;font-weight: bold;letter-spacing: -1px;background-color: black;border: 1px solid #b5b5b5;color: white !important;border-radius: 8px;">
+			<input type="button" value="닫기" onclick="return rent_efrom_close()" style="padding: 10px 25px;vertical-align: top;font-weight: bold;letter-spacing: -1px;background-color: white;border: 1px solid #b5b5b5;color: black !important;border-radius: 8px;">
+        </div>
+
+	</div>	
+</div>
+
 
     <script>
+		$('#REJECTION_RESN').keyup(function (e){
+			var content = $(this).val();
+			$('#counter').html("("+content.length+" / 최대 100자)");    //글자수 실시간 카운팅    
+			if (content.length > 100){        
+				alert("최대 100자까지 입력 가능합니다.");        
+				$(this).val(content.substring(0, 101));
+				$('#counter').html("(100 / 최대 100자)");    
+			}
+		});
+		
+		function rent_efrom_close(){
+			$('#popup_box4').hide();
+			$('body').removeClass('modal-open');
+			$('#REJECTION_RESN').val("")
+		}
         
         $('#STTUS_CO3').on('click', function (e) {
             e.preventDefault();
@@ -533,11 +579,25 @@
             return;
         });
 
-        $('#STTUS_CO4').on('click', function (e) {
+        $('#STTUS_CO4_save').on('click', function (e) {
             e.preventDefault();        
-            if( confirm("상담 신청을 거부 하시겠습니까?")) { Click_Submit( $(this).data('sttus') ); }
-            return;
+            $('input[name="MCR_TEXT"]').val( $('#REJECTION_RESN').val() );
+            if( !$('input[name="MCR_TEXT"]').val() ) { alert("상담 거부 사유를 입력해주세요."); $('#REJECTION_RESN').focus(); return false; }
+            Click_Submit( $(this).data('sttus') );
+			
+			//if( confirm("상담 신청을 거부 하시겠습니까?")) { Click_Submit( $(this).data('sttus') ); }
+            //return;
         });
+
+		$('#STTUS_CO4').on('click', function (e) {
+            e.preventDefault();
+			$('body').addClass('modal-open');
+			$('#popup_box4').show();
+			
+			//if( confirm("상담 신청을 거부 하시겠습니까?")) { Click_Submit( $(this).data('sttus') ); }
+            //return;
+        });
+
 
         $('#STTUS_CO5').on('click', function (e) {
             e.preventDefault();
@@ -647,7 +707,38 @@
         .link_btn{ align-items: center; border-radius: 8px; border: solid 1px #999; display: inline-flex; font-weight: 500; justify-content: center; line-height: 1; padding: 8px 15px; --tw-shadow: 0px 0.154em 0.154em #00000027; --tw-shadow-colored: 0px 0.154em 0.154em var(--tw-shadow-color); box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.10); }
 
         .CONSLT_DTLS { border-radius: 0.5rem; width:100%; padding:10px; resize: none; line-height: normal; height: 150px; }
+		
+		@media (max-width: 350px){
+			.popup_box_con2{
+				width:96% !important;
+				left:50% !important;
+				margin-left:-48% !important;
+			}
+		}
+		.popup_box2 {
+			display: none;
+			position: fixed;
+			width: 100%;
+			height: 100%;
+			left: 0;
+			top: 0;
+			z-index: 9999;
+			background: rgba(0, 0, 0, 0.5);		
+		}
 
+		.popup_box_con2 {
+			border-radius: 8px;
+			padding:24px;
+			position: relative;
+			background: #ffffff;
+			z-index: 99999;
+			height:450px;
+			margin-top:-225px;
+			margin-left:-175px;
+			width:350px;
+			left:50%;
+			top:50%;
+		}
     </style>
 
 

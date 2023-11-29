@@ -294,7 +294,7 @@
                 <td style="text-align: center;">
                     <?php /* 주석 : 상담진행상태 */ ?>
                     <a href="./eroumon_members_conslt_view.php?consltID=<?=$row['BPLC_CONSLT_NO'];?>&<?=$qstr?>">
-                        <span style="<?=( $_hide && ($row['MCR_ST']!=="CS06") )?"color:red;":"" ?>"><?=$row['Hangeul_CONSLT_STTUS']?></span>
+                        <span style="<?=( $_hide && ($row['MCR_ST']!=="CS06" && $row['MCR_ST']!=="CS04") )?"color:red;":"" ?>"><?=$row['Hangeul_CONSLT_STTUS'];?></span>
                     </a>
                 </td>
                 <td style="text-align: center;">
