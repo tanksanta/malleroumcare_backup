@@ -87,7 +87,7 @@ if ($search != '' && $sel_field != '') {
   $qstr .= '&amp;sel_field='.urlencode($sel_field);
   
 	if($sel_field == "all"){
-		$where[] = " (ef.penNm like '%{$search}%' or ef.penLtmNum like '%{$search}%' or E.entNm like '%{$search}%' or E.entId = M.mb_entId) ";
+		$where[] = " (ef.penNm like '%{$search}%' or ef.penLtmNum like '%{$search}%' or ef.entNm like '%{$search}%') ";
 		$sql_join .=" left outer join (
 						SELECT mb_entId FROM g5_member WHERE mb_id = '{$search}'
 					) M ON 1 = 1 ";
@@ -96,7 +96,7 @@ if ($search != '' && $sel_field != '') {
 						SELECT mb_entId FROM g5_member WHERE mb_id = '{$search}'
 					) M ON M.mb_entId = E.entId ";
 	}else{
-	  $where[] = " $sel_field like '%{$search}%' ";
+	  $where[] = " ef.$sel_field like '%{$search}%' ";
 	}
 }
 // select 배열 처리
