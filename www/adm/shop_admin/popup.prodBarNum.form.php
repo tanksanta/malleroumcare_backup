@@ -484,7 +484,7 @@ if($od["od_b_tel"]) {
             <?php for ($b = 0; $b< count($stoId_v); $b++) { ?>
               <li>
                 <?php if ($options[$k]["ct_qty"] >= 2) { ?>
-                <input type='checkbox' name='checks[]' id="<?=$stoId_v[$b]?>" class="check ck_<?php echo $options[$k]['ct_id']; ?>" data-ck="ck_<?php echo $options[$k]['ct_id']; ?>">
+                <input type='checkbox' name='checks[]' id="<?=$stoId_v[$b]?>" class="check ck_<?php echo $options[$k]['ct_id']; ?> chkbox" data-ck="ck_<?php echo $options[$k]['ct_id']; ?>">
                 <?php } ?>
                 <input type="text" maxlength="12" oninput="maxLengthCheck(this)" value="<?=$prodList[$b]["prodBarNum"]?>" class="notall frm_input frm_input_<?=$prodListCnt?> required prodBarNumItem_<?=$prodList[$prodListCnt]["penStaSeq"]?> <?=$stoId_v[$b]?>" placeholder="바코드를 입력하세요." data-frm-no="<?=$prodListCnt?>" data-delete="" maxlength="12" onfocus="this.select()" style="<?=($options[$k]["ct_qty"]<=1)?"width:100%;":""?>">
                 <img src="<?php echo G5_IMG_URL?>/bacod_add_img.png" class="barcode_add">
@@ -1027,6 +1027,29 @@ if($od["od_b_tel"]) {
     }
 
   $(function() {
+	//시프트(shift) 멀티 체크박스 선택 =======================================
+	var $chkboxes = $('.chkbox');
+    var lastChecked = null;
+
+    $chkboxes.click(function(e) {
+        if(!lastChecked) {
+            lastChecked = this;
+            return;
+        }
+
+        if(e.shiftKey) {
+            var start = $chkboxes.index(this);
+            var end = $chkboxes.index(lastChecked);
+
+            $chkboxes.slice(Math.min(start,end), Math.max(start,end)+ 1).prop('checked', lastChecked.checked);
+
+        }
+
+        lastChecked = this;
+    });
+	//시프트(shift) 멀티 체크박스 선택 =======================================
+
+
     $('.ct_delivery_company').each(function() {
       changeDeliveryCompany.call(this);
     });
