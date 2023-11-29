@@ -211,23 +211,17 @@
                     
                     // 알림톡 발송 : CS04 - 상담거부 시작 = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
                     //$alimtalk_contents = $RGTR."님, 요청하신 1:1 상담이 취소되었습니다.\n\n◼︎ 상담 취소일 : ".date("Y-m-d")."\n\n상담을 원하시는 경우 이로움ON에서 다시 상담을 요청해 주세요.";
-                    $alimtalk_contents = $RGTR."님, 1:1 상담이 취소되었습니다.\n\n[수급자 정보]\n성명: ".$MBR_NM." 님\n회원님과의 관계 : ".$Hangeul_RELATION_CD."\n상담 취소일 : ".date("Y-m-d")."\n\n상담을 원하시는 경우 이로움ON에서 다시 상담을 요청해 주세요.";
-                    $result2 = send_alim_talk2('CONSLT_CANCEL_'.$MBR_TELNO, $MBR_TELNO, 'ON_0007', $alimtalk_contents, array(
+                    $alimtalk_contents = $RGTR."님, 장기요양기관의 사정으로 매칭이 취소되었습니다.\n\n[수급자 정보]\n성명: ".$MBR_NM." 님\n회원님과의 관계 : ".$Hangeul_RELATION_CD."\n\n다른 기관과 상담 매칭 완료 시 안내드리겠습니다. 감사합니다.";
+                    $result2 = send_alim_talk2('CONSLT_CANCEL_'.$MBR_TELNO, $MBR_TELNO, 'ON_0007_1', $alimtalk_contents, array(
                         'button' => [
                             array(
-                                'name' => '◼︎ 요양정보 간편조회',
-                                'type' => 'WL',
-                                'url_mobile' => 'https://eroum.co.kr/main/recipter/sub',
-                                'url_pc' => 'https://eroum.co.kr/main/recipter/sub'
-                            ),
-                            array(
-                                'name' => '◼︎ 인정 등급 예상 테스트',
-                                'type' => 'WL',
-                                'url_mobile' => 'https://eroum.co.kr/main/cntnts/test',
-                                'url_pc' => 'https://eroum.co.kr/main/cntnts/test'
-                            )
+									'name' => '◼︎ 상담내역 바로가기',
+									'type' => 'WL',
+									'url_mobile' => 'https://eroum.co.kr/membership/conslt/appl/list',
+									'url_pc' => 'https://eroum.co.kr/membership/conslt/appl/list'
+								  )
                         ]
-                    ),'','상담 취소 안내','2');//내용은 템플릿과 동일 해야 함 
+                    ),'','매칭 취소 안내','2');//내용은 템플릿과 동일 해야 함 
                     // 알림톡 발송 : CS04 - 상담거부 종료 = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 
                     // E-Mail 발송 : CS04 - 상담거부 시작 = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
