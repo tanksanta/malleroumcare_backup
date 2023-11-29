@@ -1030,47 +1030,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 		</div>
 	
 		<div id="item_info" class="section_wrap" style="float:left;width:100%;padding:15px;height:350px; overflow-x:auto;">
-			판매계약
-			<table style="width: 100%; height: fit-content;border-collapse: collapse;">
-			<colgroup><col width='55%'><col width='15%'><col width='30%'></colgroup>
-			<tr>
-				<th>품목명(상품명)</th>
-				<th>수량</th>
-				<th>계약가능</th>
-			</tr>
-			<tr>
-				<td>지팡이<br>(NS)</td>
-				<td>1개</td>
-				<td>1개</td>
-			</tr>
-			<tr>
-				<td>지팡이<br>(NS)</td>
-				<td>2개</td>
-				<td><font style="color:red;font-weight:bold;">1개<br>계약한도초과</font></td>
-			</tr>
-			</table>
-			<br>
-			대여계약
-			<table>
-			<colgroup><col width='55%'><col width='15%'><col width='30%'></colgroup>
-			<tr>
-				<th>품목명(상품명)</th>
-				<th>수량</th>
-				<th>계약가능</th>
-			</tr>
-			<tr>
-				<td>욕창예방매트리스<br>AD-1300 MUTE FOAM</td>
-				<td>1개</td>
-				<td>1개</td>
-			</tr>
-			<tr>
-				<td>욕창예방매트리스<br>AD-1300 MUTE FOAM</td>
-				<td>1개</td>
-				<td><font style="color:red;font-weight:bold;">급여불가</font></td>
-			</tr>
-
-			</table>
-
+			
 		</div>
 		
 	</div>
@@ -1403,7 +1363,6 @@ function check_no_item() {
 
 // 품목 선택
 function select_item(obj, qty) {
-
   if(!qty) qty = 1;
   if(parseInt($("#rent_count").val())==5 && obj.gubun == '대여'){
 	alert("대여 상품은 총 수량이 5개까지만 가능합니다.");
@@ -2144,8 +2103,7 @@ $('#btn_pen').click(function() {
   $('.popup_box_bottom').show();
 });
 
-function recipent_check(){
-	
+function recipent_check(a){	
 	if($("#penId").val() == ""){//수급자 수동입력 시
 		$("#btn_recipient_info").css("display","none");
 		return false;
@@ -2160,37 +2118,39 @@ function recipent_check(){
 	  var $form = $('#form_simple_eform');
 	var formdata = $form.serialize();
 	  $.post('ajax.eform_recipient_info.php', formdata, 'json')
-	  .done(function(result) {
-		//버튼 상태 변경
-		if(result["alarm_count"]>0){
-			$("#warn_img").html("<img src='/img/warn1.png' style='width:15px;'>&nbsp;&nbsp;");
-			$("#btn_recipient_info").css("border-color","red");
+	  .done(function(result) {		
+		if(a == '1'){
+			//내용변경
+			$("#lastupdate_sub").html(result["lastupdate"]);//마지막 업데이트 날짜
+			$("#penExpiDtm_sub").html(result["penExpiDtm"]);//인정유효기간 날짜
+			$("#penAppDtm_sub").html(result["penAppDtm"]);//마지막 업데이트 날짜
+			$("#item_info").html(result["html"]);//상품 정보
+			$("#pen_name").text($("#penNm").val());
+			$('body').addClass('modal-open');
+			$('#popup_box44').show();
+			//alert(JSON.stringify(result["test"]));//추후 삭제 
 		}else{
-			$("#warn_img").html("");
-			$("#btn_recipient_info").css("border-color","#ccc");
+			//버튼 상태 변경
+			if(result["alarm_count"]>0){
+				$("#warn_img").html("<img src='/img/warn1.png' style='width:15px;'>&nbsp;&nbsp;");
+				$("#btn_recipient_info").css("border-color","red");
+			}else{
+				$("#warn_img").html("");
+				$("#btn_recipient_info").css("border-color","#ccc");
+			}
+			$("#btn_recipient_info").css("display","block");
 		}
-		//내용변경
-		$("#lastupdate_sub").html(result["lastupdate"]);//마지막 업데이트 날짜
-		$("#penExpiDtm_sub").html(result["penExpiDtm"]);//인정유효기간 날짜
-		$("#penAppDtm_sub").html(result["penAppDtm"]);//마지막 업데이트 날짜
-		$("#item_info").html(result["html"]);//상품 정보
-
-		//alert(JSON.stringify(result["test"]));//추후 삭제 
-		
-		$("#btn_recipient_info").css("display","block");
 	  })
 	  .fail(function($xhr) {
 		var data = $xhr.responseJSON;
-		alert(data && data.message);
+		//alert(data && data.message);
 	  });
 	}
 }
 //요양정보 확인
 $('#btn_recipient_info').click(function() {
   //수급자 요양정보,계약가능 상품 정보 조회
-	$("#pen_name").text($("#penNm").val());
-	$('body').addClass('modal-open');
-	$('#popup_box44').show();
+  	recipent_check('1');	
 });
 
 // 사업자 정보등록
@@ -2479,7 +2439,7 @@ $(document).on('click', '.it_qty button', function() {
   var this_qty;
   var $it_qty = $(this).closest('.it_qty').find('input[name="it_qty[]"]');
   var gubun = $(this).closest('.it_qty').find('input[name="gubun"]').val();
- 
+  
   switch(mode) {
     case '증가':
 	  if(gubun == "대여"){

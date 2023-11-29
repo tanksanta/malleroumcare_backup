@@ -31,16 +31,16 @@ $penAppDtm_sub = "";
 $update_date = ($pen['modifyDtm'] != "")? $pen['modifyDtm']:$pen['regDtm'];//최근조회일시 없을경우 등록일시로
 $lastupdate = substr($update_date,0,4).'-'.substr($update_date,4,2).'-'.substr($update_date,6,2); //마지막 업데이트일 
 $penExpiDtm = $pen['penExpiDtm'];//인정유효기간
+
 $penAppEdDtm = substr($pen['penAppEdDtm'],0,4).'-'.substr($pen['penAppEdDtm'],4,2).'-'.substr($pen['penAppEdDtm'],6,2);//적용기간 마지막날
-$penAppStDtm = date('Y-m-d',strtotime($penAppEdDtm."-1 year"));//적용기간 첫날
-$penAppStDtm = date('Y-m-d',strtotime($penAppStDtm."+1 day"));//적용기간 첫날
-if($penAppStDtm." 00:00:00" < date("Y-m-d H:i:s") && $penAppEdDtm." 23:59:59" > date("Y-m-d H:i:s")){//적용기간 정상 시
-	$penAppDtm = $penAppStDtm." ~ ".$penAppEdDtm;
-}elseif($penAppStDtm." 00:00:00" > date("Y-m-d H:i:s")){//마지막날이 1년 더 길 때
-	$penAppStDtm = date('Y-m-d',strtotime($penAppStDtm."-1 year"));
-	$penAppEdDtm = date('Y-m-d',strtotime($penAppEdDtm."-1 year"));
-	$penAppDtm = $penAppStDtm." ~ ".$penAppEdDtm;
+$penAppStDtm = date('Y-m-d',strtotime($penAppEdDtm." -1 year"));//적용기간 첫날
+$penAppStDtm = date('Y-m-d',strtotime($penAppStDtm." +1 day"));//적용기간 첫날
+
+while($penAppStDtm." 00:00:00" > date("Y-m-d H:i:s")){//마지막날이 1년 더 길 때
+	$penAppStDtm = date('Y-m-d',strtotime($penAppStDtm." -1 year"));
+	$penAppEdDtm = date('Y-m-d',strtotime($penAppEdDtm." -1 year"));	
 }
+$penAppDtm = $penAppStDtm." ~ ".$penAppEdDtm;
 if(date('Y-m-d',strtotime($lastupdate."+30 day")) < date("Y-m-d")){//마지막 업데이트일 30일 점검
 	$alarm_count++;
 	$lastupdate_sub = " <a href='my_recipient_view.php?id=".$_POST['penId']."' target='_blank'><font style='color:red;font-weight:bold;'>[업데이트 필요]</font></a>";
@@ -257,7 +257,7 @@ for ($idx = 0; $idx < count($key_list) ; $idx++ ){
 if(substr($_POST['penLtmNum'],0,2)=='LL'){
     $_POST['penLtmNum'] = substr($_POST['penLtmNum'], 1);
 }
-
+/*
 $arr_hist = [];//사용 내역 전체 
 $sql_hist = "select * from pen_purchase_hist where ent_id = '{$member['mb_entId']}' and PEN_LTM_NUM = 'L{$_POST['penLtmNum']}' and ORD_STATUS='판매' and CNCL_YN='정상'";
 if($item_nms != ""){
@@ -268,7 +268,7 @@ while ($hist_result = sql_fetch_array($res_hist)) {
     $arr_hist[] = $hist_result;
 
 }
-
+*/
 $arr_period = [];
 $sql_period = "
 (select PEN_NM, PROD_PAY_CODE, replace(ITEM_NM,' ','') as ITEM_NM, PROD_BAR_NUM, PROD_NM, ORD_DTM, PEN_EXPI_ST_DTM, PEN_EXPI_ED_DTM,CNCL_YN from pen_purchase_hist where ent_id = '{$member['mb_entId']}' and PEN_LTM_NUM = 'L{$_POST['penLtmNum']}' 
@@ -364,7 +364,7 @@ if(count($it_gubun["01"]) == 0){
 			}
 		}
 		if($sysnon == "1" && ($item_list2[$it_gubun["01"][$j]]["itemNm"] == "미끄럼방지용품_매트/방지액" || $item_list2[$it_gubun["01"][$j]]["itemNm"] == "미끄럼방지용품_양말")){
-			$html .= '	<tr><td style="color:red;font-weight:bold;">'.$item_list2[$it_gubun["01"][$j]]["itemNm"].'<br>('.$item_list2[$it_gubun["01"][$j]]["it_name"].')</td><td style="color:red;font-weight:bold;">'.$item_list2[$it_gubun["01"][$j]]["qty"].' 개</td><td style="color:red;font-weight:bold;">미등록 제품<br>계약이력 확인</td></tr>';
+			$html .= '	<tr><td><a href="my_recipient_view.php?id='.$_POST['penId'].'" target="_blank" style="color:red;font-weight:bold;">'.$item_list2[$it_gubun["01"][$j]]["itemNm"].'<br>('.$item_list2[$it_gubun["01"][$j]]["it_name"].')</a></td><td><a href="my_recipient_view.php?id='.$_POST['penId'].'" target="_blank" style="color:red;font-weight:bold;">'.$item_list2[$it_gubun["01"][$j]]["qty"].' 개</a></td><td><a href="my_recipient_view.php?id='.$_POST['penId'].'" target="_blank" style="color:red;font-weight:bold;">미등록 제품<br>계약이력 확인</a></td></tr>';
 			$alarm_count++;
 		}else{
 			$html .= '	<tr><td>'.$item_list2[$it_gubun["01"][$j]]["itemNm"].'<br>('.$item_list2[$it_gubun["01"][$j]]["it_name"].')</td><td>'.$item_list2[$it_gubun["01"][$j]]["qty"].' 개</td><td>'.$abled_count_01.'</td></tr>';
@@ -425,7 +425,7 @@ for($h = 0; $h<count($cnt_period);$h++){
 //$html .= $sql_period;
 $rows["alarm_count"] = $alarm_count;//알람 여부
 $rows["html"] = $html;//$html;
-//$rows["test"] = $sysnon;//$html;
+//$rows["test"] = $pen['penAppEdDtm'];//$html;
 
 header('Content-type: application/json');
 echo json_encode($rows);
