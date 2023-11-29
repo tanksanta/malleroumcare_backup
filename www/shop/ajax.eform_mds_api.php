@@ -50,7 +50,7 @@ header('Content-type: application/json');
 	    $log_txt = "\r\n";
 		$log_txt .= '(' . date("Y-m-d H:i:s") . ')' .$arrResponse["event"]["type"]. "\r\n";
 		if($arrResponse["event"]["type"] == "document_all_signed"){// 서명완료
-			if($dc_ids[0] == "rent"){//대여계약 급여제공기록 계약 시
+			if($dc_ids[0] == "RENT"){//대여계약 급여제공기록 계약 시
 				$sql = "update `eform_rent_hist` set dc_sign_datetime=now(),rh_status='3' WHERE rh_id='".$dc_ids[1]."'";
 				$log_txt .= "-- 대여계약 급여제공기록 계약서 ".$arrResponse["document"]["id"]." 서명 완료(".$arrResponse2["metadatas"][0]["value"].")\r\n";
 				sql_query($sql);
@@ -293,7 +293,7 @@ header('Content-type: application/json');
 				//}
 			}
 		}elseif($arrResponse["event"]["type"] == "document_rejected"){//서명거절 document_rejected
-			if($dc_ids[0] == "rent"){//대여계약 급여제공기록 계약 시
+			if($dc_ids[0] == "RENT"){//대여계약 급여제공기록 계약 시
 				$sql = "update `eform_rent_hist` set dc_sign_datetime=now(),rh_status='5' WHERE rh_id='".$dc_ids[1]."'";
 				$log_txt .= "-- 대여계약 급여제공기록 계약서 ".$arrResponse["document"]["id"]." 서명 거절";
 			}else{
@@ -981,11 +981,11 @@ fclose($log_file);
 	$type = "GET";
 	$data = '';
 	$arrResponse = get_modusign($API_Key64,$api_url,$type,$data);//메타데이터 확인
-	$dc_id =  strtoupper($arrResponse["metadatas"][0]["value"]);
+	$dc_id =  ($arrResponse2["metadatas"][0]["key"] == "dc_id")? strtoupper($arrResponse2["metadatas"][0]["value"]) : strtoupper($arrResponse2["metadatas"][1]["value"]);
 	$dc_ids = explode("_",$dc_id);
 	$url = "";
 	$rent = "";
-	if($dc_ids[0] == "rent"){//대여계약 급여제공기록 계약 시
+	if($dc_ids[0] == "RENT"){//대여계약 급여제공기록 계약 시
 		$sql = "SELECT dc_status FROM `eform_rent_hist` WHERE rh_id='".$dc_ids[1]."'";
 		$row=sql_fetch($sql);
 		if($row["rh_status"] == "3" || $row["hr_status"] == "5"){
