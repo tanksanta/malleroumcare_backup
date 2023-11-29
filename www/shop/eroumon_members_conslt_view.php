@@ -281,6 +281,11 @@
 
             }
         }
+		if($_MCR_STTUS_CD == 'CS04'){//상담 거절 시 list 페이지로 전환?>
+		<script>
+			location.href = "<?=G5_SHOP_URL . "/eroumon_members_conslt_list.php".(($qstr)?"?".$qstr:"")?>"
+		</script>
+		<?php }
     }
 
     // == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == ==
