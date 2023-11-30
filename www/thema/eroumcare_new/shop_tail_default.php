@@ -148,7 +148,7 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
                             </div>
                             <div class="phone">1533-5088</div>
                         </li>
-                        <li>운영시간 <div class="f_cs_data">[평일] 08:30~17:30 (점심시간 12시~13시)<br>[주말/공휴일] 휴무</div>
+                        <li>운영시간 <div class="f_cs_data">[평일] 08:30~17:30 (점심시간 12:20~13:20)<br>[주말/공휴일] 휴무</div>
                         </li>
                         <li>기타연락 <div class="f_cs_data">[이메일] <a href="mailto:cs@thkc.co.kr">cs@thkc.co.kr</a><br>[팩스]
                                 02-861-9084</div>

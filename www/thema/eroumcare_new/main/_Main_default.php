@@ -462,7 +462,7 @@
                         <div class="">
                             <ul class="cs_m_info">
                                 <li class="cs_infoTitle">운영시간</li>
-                                <li>[평일] 08:30~17:30 (점심시간 12시~13시) /<br> [주말/공휴일] 휴무</li>
+                                <li>[평일] 08:30~17:30 (점심시간 12:20~13:20) /<br> [주말/공휴일] 휴무</li>
                             </ul>
                             <ul class="cs_m_info">
                                 <li><span class="cs_infoTitle">이메일</span> <a href="mailto:cs@thkc.co.kr">cs@thkc.co.kr</a></li>
