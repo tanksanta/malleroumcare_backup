@@ -281,7 +281,7 @@
                 <div class="f_s14">
                     <ul class="cs_m_info">
                         <li class="cs_infoTitle">운영시간</li>
-                        <li>[평일] 08:30~17:30 <br class="thkc_land_br">(점심시간 12시~13시) /<br class="thkc_land_br"> [주말/공휴일]
+                        <li>[평일] 08:30~17:30 <br class="thkc_land_br">(점심시간 12:20~13:20) /<br class="thkc_land_br"> [주말/공휴일]
                             휴무</li>
                     </ul>
                     <ul class="cs_m_info">
