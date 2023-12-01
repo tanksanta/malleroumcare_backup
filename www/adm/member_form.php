@@ -167,6 +167,29 @@ if(!isset($mb['mb_partner_default_warehouse'])) {
     sql_query(" ALTER TABLE {$g5['member_table']} ADD `mb_partner_default_warehouse` varchar(255) NOT NULL DEFAULT '' AFTER `mb_partner_file3` ", false);
 }
 
+if( $eroumon_connect_db  && $mb["mb_giup_matching"] == "Y") {//이로움ON DB 연동 시, 매칭서비스 신청 시 적용
+	$_matchingINFO = [
+        "mb_id" => $mb['mb_id']
+        ,"mb_giup_bnum" => $mb['mb_giup_bnum']
+    ];
+
+    // 23.11.30 - 정한진 : 프로시저 CALL `PROC_EROUMCARE_BPLC`('모드','이로움ON 회원 데이터');
+    // 사업소의 매칭 담당자 정보는 사업소ID와 사업자번호가 이로움Care와 이로움ON이 동일해야 변경됨.
+    $sql = (" CALL `PROC_EROUMCARE_BPLC`('SELECT_matching','".json_encode($_matchingINFO, JSON_UNESCAPED_UNICODE)."'); ");
+
+    $sql_result = "";
+    $sql_result = sql_fetch( $sql , "" , $g5['eroumon_db'] ); mysqli_next_result($g5['eroumon_db']);
+	
+	if($sql_result["mb_matching_manager_nm"] != $mb['mb_matching_manager_nm'] || $sql_result["mb_matching_manager_tel"] != $mb['mb_matching_manager_tel'] || $sql_result["mb_matching_manager_mail"] != $mb['mb_matching_manager_mail']){//정보가 하나라도 다를 경우 
+		$sql = "update ".$g5['member_table']." set mb_matching_manager_nm='".$sql_result['mb_matching_manager_nm']."',mb_matching_manager_tel='".$sql_result['mb_matching_manager_tel']."',mb_matching_manager_mail='".$sql_result['mb_matching_manager_mail']."' where mb_id='".$mb['mb_id']."' and mb_giup_bnum='".$mb['mb_giup_bnum']."'";
+		sql_query($sql);// 이로움ON과 데이터 동기화
+		$mb['mb_matching_manager_nm'] = $sql_result["mb_matching_manager_nm"]; 
+		$mb['mb_matching_manager_tel'] = $sql_result["mb_matching_manager_tel"];
+		$mb['mb_matching_manager_mail'] = $sql_result["mb_matching_manager_mail"];
+	}
+	
+}
+
 if ($mb['mb_intercept_date']) $g5['title'] = "차단된 ";
 else $g5['title'] .= "";
 $g5['title'] .= '회원 '.$html_title;
