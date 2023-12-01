@@ -214,7 +214,7 @@ $rental_use_info_1 = (file_exists($_SERVER['DOCUMENT_ROOT']."/img/rental/rental_
 		}else if($(window).width() > 990){			
 			textFit(document.getElementsByClassName('box'), {minFontSize:13, maxFontSize: 20,alignHoriz: true, alignVert: true, multiLine: true});
 		}else{			
-			textFit(document.getElementsByClassName('box'), {minFontSize:12, maxFontSize:20,alignHoriz: true, alignVert: true, multiLine: true});
+			textFit(document.getElementsByClassName('box'), {minFontSize:11, maxFontSize:16,alignHoriz: true, alignVert: true, multiLine: true});
 		}
 
 		window.addEventListener("resize", function() {
@@ -228,7 +228,7 @@ $rental_use_info_1 = (file_exists($_SERVER['DOCUMENT_ROOT']."/img/rental/rental_
 			}else if($(window).width() > 990){			
 				textFit(document.getElementsByClassName('box'), {minFontSize:13, maxFontSize: 20,alignHoriz: true, alignVert: true, multiLine: true});
 			}else{			
-				textFit(document.getElementsByClassName('box'), {minFontSize:13, maxFontSize:20,alignHoriz: true, alignVert: true, multiLine: true});
+				textFit(document.getElementsByClassName('box'), {minFontSize:11, maxFontSize:16,alignHoriz: true, alignVert: true, multiLine: true});
 			}
 		})
         // 이미지 슬라이드
