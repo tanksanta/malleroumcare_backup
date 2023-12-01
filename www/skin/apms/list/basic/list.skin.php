@@ -372,12 +372,65 @@ while($wish_row = sql_fetch_array($wish_result)) {
 <script src="/js/textFit.js"></script>
 <script>
 $(document).ready(function(){
-	if(screen.width > 800){
-		textFit(document.getElementsByClassName('box'), {minFontSize:11, maxFontSize:17,alignHoriz: true, alignVert: true, multiLine: true});
-	}else{
-		textFit(document.getElementsByClassName('box'), {minFontSize:10, maxFontSize:14,alignHoriz: true, alignVert: true, multiLine: true});
-		$(".box").css({"height":"15%","top":"107.5%"});
-	}
+	if($(window).width() > 1397){
+			$(".box").css({"height":"13%","top":"105.5%"});
+			textFit(document.getElementsByClassName('box'), {minFontSize:9, maxFontSize:17,alignHoriz: true, alignVert: true, multiLine: true});		
+		}else if($(window).width() > 1198){
+			$(".box").css({"height":"13%","top":"106%"});
+			textFit(document.getElementsByClassName('box'), {minFontSize:7, maxFontSize:17,alignHoriz: true, alignVert: true, multiLine: true});				
+		}else if($(window).width() > 960){
+			$(".box").css({"height":"14%","top":"106%"});
+			textFit(document.getElementsByClassName('box'), {minFontSize:8, maxFontSize:17,alignHoriz: true, alignVert: true, multiLine: true});				
+		}else if($(window).width() > 800){
+			$(".box").css({"height":"8%","top":"103.5%"});
+			textFit(document.getElementsByClassName('box'), {minFontSize:12, maxFontSize:17,alignHoriz: true, alignVert: true, multiLine: true});		
+		}else if($(window).width() > 700){
+			$(".box").css({"height":"9%","top":"104%"});
+			textFit(document.getElementsByClassName('box'), {minFontSize:9, maxFontSize:17,alignHoriz: true, alignVert: true, multiLine: true});		
+		}else if($(window).width() > 600){
+			$(".box").css({"height":"12%","top":"106%"});
+			textFit(document.getElementsByClassName('box'), {minFontSize:9, maxFontSize:17,alignHoriz: true, alignVert: true, multiLine: true});		
+		}else if($(window).width() > 450){
+			$(".box").css({"height":"14%","top":"106.5%"});
+			textFit(document.getElementsByClassName('box'), {minFontSize:8, maxFontSize:17,alignHoriz: true, alignVert: true, multiLine: true});		
+		}else if($(window).width() > 350){
+			$(".box").css({"height":"15%","top":"107%"});
+			textFit(document.getElementsByClassName('box'), {minFontSize:7, maxFontSize:17,alignHoriz: true, alignVert: true, multiLine: true});
+		}else{
+			$(".box").css({"height":"16%","top":"108%"});
+			textFit(document.getElementsByClassName('box'), {minFontSize:6, maxFontSize:17,alignHoriz: true, alignVert: true, multiLine: true});
+		}	
+	window.addEventListener("resize", function() {
+		//alert($(window).width());
+		if($(window).width() > 1397){
+			$(".box").css({"height":"13%","top":"105.5%"});
+			textFit(document.getElementsByClassName('box'), {minFontSize:9, maxFontSize:17,alignHoriz: true, alignVert: true, multiLine: true});		
+		}else if($(window).width() > 1198){
+			$(".box").css({"height":"13%","top":"106%"});
+			textFit(document.getElementsByClassName('box'), {minFontSize:7, maxFontSize:17,alignHoriz: true, alignVert: true, multiLine: true});				
+		}else if($(window).width() > 960){
+			$(".box").css({"height":"14%","top":"106%"});
+			textFit(document.getElementsByClassName('box'), {minFontSize:8, maxFontSize:17,alignHoriz: true, alignVert: true, multiLine: true});				
+		}else if($(window).width() > 800){
+			$(".box").css({"height":"8%","top":"103.5%"});
+			textFit(document.getElementsByClassName('box'), {minFontSize:12, maxFontSize:17,alignHoriz: true, alignVert: true, multiLine: true});		
+		}else if($(window).width() > 700){
+			$(".box").css({"height":"9%","top":"104%"});
+			textFit(document.getElementsByClassName('box'), {minFontSize:9, maxFontSize:17,alignHoriz: true, alignVert: true, multiLine: true});		
+		}else if($(window).width() > 600){
+			$(".box").css({"height":"12%","top":"106%"});
+			textFit(document.getElementsByClassName('box'), {minFontSize:9, maxFontSize:17,alignHoriz: true, alignVert: true, multiLine: true});		
+		}else if($(window).width() > 450){
+			$(".box").css({"height":"14%","top":"106.5%"});
+			textFit(document.getElementsByClassName('box'), {minFontSize:8, maxFontSize:17,alignHoriz: true, alignVert: true, multiLine: true});		
+		}else if($(window).width() > 350){
+			$(".box").css({"height":"15%","top":"107%"});
+			textFit(document.getElementsByClassName('box'), {minFontSize:7, maxFontSize:17,alignHoriz: true, alignVert: true, multiLine: true});
+		}else{
+			$(".box").css({"height":"16%","top":"108%"});
+			textFit(document.getElementsByClassName('box'), {minFontSize:6, maxFontSize:17,alignHoriz: true, alignVert: true, multiLine: true});
+		}	
+	})
 });
 </script>
 <script type="text/javascript">
