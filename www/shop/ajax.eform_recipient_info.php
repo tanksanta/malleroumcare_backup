@@ -341,19 +341,20 @@ if(count($it_gubun["01"]) == 0){
 			$sale_count = $penToolRefCnt[$item_list2[$it_gubun["01"][$j]]["itemNm"].'01']-$cnt2-$item_period;
 
 			if($item_list2[$it_gubun["01"][$j]]["itemNm"] == "욕창예방매트리스" ){
-				$duplication = 0;
+				//$sale_count =  ($cnt_period["욕창예방매트리스00"] == 1)? 0 :$sale_count;//대여는 사용연한이 없어 적용 불필요				
+				$duplication1 = 0;
 				for($k = 0; $k<count($it_gubun["00"]);$k++){
-					$duplication = ($item_list2[$it_gubun["00"][$k]]["itemNm"] == "욕창예방매트리스")?"1":"";
+					$duplication1 = ($item_list2[$it_gubun["00"][$k]]["itemNm"] == "욕창예방매트리스")?"1":"0";
 				}
 
-				if($ct_count2['욕창예방매트리스00'] > 0){
+				if($ct_count2['욕창예방매트리스00'] > 0 || $sale_count==0){//대여 욕창예방매트리스 계약건이 있을 경우
 					$abled_count_01 = '<font style="color:red;font-weight:bold;">0 개<br>계약한도초과</font>';
 					$alarm_count++;
-				}elseif($duplication == 1 ){
-
-						$abled_count_01 = '<font style="color:red;font-weight:bold;">'.($sale_count).' 개<br>'.(($sale_count==0)?'계약한도초과':'판매&대여품목').'</font>';
-
+				}elseif($duplication1 == 1 ){//판매,대여 모두 선택 시
+					$abled_count_01 = '<font style="color:red;font-weight:bold;">'.($sale_count).' 개<br>판매&대여품목</font>';
 					$alarm_count++;
+				}else{
+					$abled_count_01 = ($sale_count).' 개';
 				}
 
 			}elseif(($sale_count-$item_list2[$it_gubun["01"][$j]]["qty"])<0){//수량초과
@@ -392,17 +393,20 @@ if(count($it_gubun["00"]) == 0){
 			$rent_count = (($penToolRefCnt[$item_list2[$it_gubun["00"][$k]]["itemNm"].'00']-$cnt2-$item_period))<0?0:($penToolRefCnt[$item_list2[$it_gubun["00"][$k]]["itemNm"].'00']-$cnt2-$item_period);
 			
 			if($item_list2[$it_gubun["00"][$k]]["itemNm"] == "욕창예방매트리스" ){
-				$duplication = 0;
+				$rent_count = ($cnt_period["욕창예방매트리스01"] == 1)? 0 :$rent_count;//판매는 사용 연한이 있어 적용이 필요
+				$duplication2 = 0;
 				for($j = 0; $j<count($it_gubun["01"]);$j++){
-					$duplication = ($item_list2[$it_gubun["01"][$j]]["itemNm"] == "욕창예방매트리스")?"1":"";
+					$duplication2 = ($item_list2[$it_gubun["01"][$j]]["itemNm"] == "욕창예방매트리스")?"1":"0";
 				}
 
-				if($ct_count2['욕창예방매트리스01'] > 0){
+				if($ct_count2['욕창예방매트리스01'] > 0 || $rent_count == 0){//핀메 욕창예방매트리스 계약건이 있을 경우
 					$abled_count_00 = '<font style="color:red;font-weight:bold;">0 개<br>계약한도초과</font>';
 					$alarm_count++;
-				}elseif($duplication == 1 ){
-					$abled_count_00 = '<font style="color:red;font-weight:bold;">'.($rent_count).' 개<br>'.(($rent_count == 0)?'계약한도초과':'판매&대여품목').'</font>';
+				}elseif($duplication2 == 1 ){//판매,대여 모두 선택 시
+					$abled_count_00 = '<font style="color:red;font-weight:bold;">'.($rent_count).' 개<br>판매&대여품목</font>';
 					$alarm_count++;
+				}else{
+					$abled_count_00 = ($rent_count).' 개';
 				}
 
 			}elseif(($rent_count-$item_list2[$it_gubun["00"][$k]]["qty"])<0){//수량초과
