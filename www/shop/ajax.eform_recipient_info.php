@@ -346,11 +346,13 @@ if(count($it_gubun["01"]) == 0){
 					$duplication = ($item_list2[$it_gubun["00"][$k]]["itemNm"] == "욕창예방매트리스")?"1":"";
 				}
 
-				if($ct_count2['욕창예방매트리스01'] > 0){//판매 욕창예방매트리스 계약건이 있을 경우
+				if($ct_count2['욕창예방매트리스00'] > 0){
 					$abled_count_01 = '<font style="color:red;font-weight:bold;">0 개<br>계약한도초과</font>';
 					$alarm_count++;
-				}elseif($duplication == 1 ){//대여 욕창예방매트리스 계약건이 있을 경우
-					$abled_count_01 = '<font style="color:red;font-weight:bold;">'.($sale_count).' 개<br>'.(($sale_count==0)?'계약한도초과':'판매&대여품목').'</font>';
+				}elseif($duplication == 1 ){
+
+						$abled_count_01 = '<font style="color:red;font-weight:bold;">'.($sale_count).' 개<br>'.(($sale_count==0)?'계약한도초과':'판매&대여품목').'</font>';
+
 					$alarm_count++;
 				}
 
@@ -395,10 +397,10 @@ if(count($it_gubun["00"]) == 0){
 					$duplication = ($item_list2[$it_gubun["01"][$j]]["itemNm"] == "욕창예방매트리스")?"1":"";
 				}
 
-				if($ct_count2['욕창예방매트리스00'] > 0){//대여 욕창예방매트리스 계약건이 있을 경우
+				if($ct_count2['욕창예방매트리스01'] > 0){
 					$abled_count_00 = '<font style="color:red;font-weight:bold;">0 개<br>계약한도초과</font>';
 					$alarm_count++;
-				}elseif($duplication == 1 ){//판매 욕창예방매트리스 계약건이 있을 경우
+				}elseif($duplication == 1 ){
 					$abled_count_00 = '<font style="color:red;font-weight:bold;">'.($rent_count).' 개<br>'.(($rent_count == 0)?'계약한도초과':'판매&대여품목').'</font>';
 					$alarm_count++;
 				}
