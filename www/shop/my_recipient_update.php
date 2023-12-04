@@ -483,7 +483,7 @@ input[type="number"]::-webkit-inner-spin-button {
             <input type="text" name="penProZip" value="<?=$data["penProZip"]?>" class="penZip form-control input-sm" size="6" maxlength="6" readonly>
           </label>
           <label>
-            <button type="button" class="btn btn-black btn-sm" onclick="zipPopupOpen(this);" style="margin-top:0px;">주소 검색</button>
+            <button type="button" class="btn btn-black btn-sm" onclick="zipPopupOpen(this);" style="margin-top:0px;">주소 검색</button>&nbsp;&nbsp;&nbsp;<input type="checkbox" id='btn-same' onclick="addr_same('')"> 주소 동일
           </label>
 
           <div class="addr-line" style="margin-bottom: 5px;">
@@ -602,7 +602,7 @@ input[type="number"]::-webkit-inner-spin-button {
             <input type="text" name="pro_zip<?="[$idx]"?>" value="<?=$pro['pro_zip']?>" class="penZip form-control input-sm" size="6" maxlength="6" readonly>
           </label>
           <label>
-            <button type="button" class="btn btn-black btn-sm" onclick="zipPopupOpen(this);" style="margin-top:0px;">주소 검색</button>
+            <button type="button" class="btn btn-black btn-sm" onclick="zipPopupOpen(this);" style="margin-top:0px;">주소 검색</button> &nbsp;&nbsp;&nbsp;<input type="checkbox" id='btn-same<?=$idx?>' onclick="addr_same('<?=$idx?>')"> 주소 동일
           </label>
 
           <div class="addr-line" style="margin-bottom: 5px;">
@@ -844,7 +844,7 @@ input[type="number"]::-webkit-inner-spin-button {
         <input type="text" name="pro_zip" class="penZip form-control input-sm" size="6" maxlength="6" readonly>
       </label>
       <label>
-        <button type="button" class="btn btn-black btn-sm" onclick="zipPopupOpen(this);" style="margin-top:0px;">주소 검색</button>
+        <button type="button" class="btn btn-black btn-sm" onclick="zipPopupOpen(this);" style="margin-top:0px;">주소 검색</button> &nbsp;&nbsp;&nbsp;<input type="checkbox" class="btn-same"> 주소 동일
       </label>
 
       <div class="addr-line" style="margin-bottom: 5px;">
@@ -1636,9 +1636,45 @@ $(function() {
     }
 
   });
-
+  //주소 동일 버튼 클릭
+  $(document).on('click', '.btn-same', function() {
+    var $panel = $(this).closest('.panel-body');
+	if($panel.find(".btn-same").is(':checked')){
+		$panel.find('input[name^="pro_zip"]').val('<?=$data["penZip"]?>');
+		$panel.find('input[name^="pro_addr1"]').val('<?=$data["penAddr"]?>');
+		$panel.find('input[name^="pro_addr2"]').val('<?=$data["penAddrDtl"]?>');
+	}else{
+		$panel.find('input[name^="pro_zip"]').val('');
+		$panel.find('input[name^="pro_addr1"]').val('');
+		$panel.find('input[name^="pro_addr2"]').val('');
+	}
+  });
 
 });
+  function addr_same(a){
+	var penZip = '<?=$data["penZip"]?>';
+	var penAddr = '<?=$data["penAddr"]?>';
+	var penAddrDtl = '<?=$data["penAddrDtl"]?>';
+	if(a != ''){//추가 보호자
+		if(!$("#btn-same"+a).is(':checked')){
+			penZip = '';
+			penAddr = '';
+			penAddrDtl = '';
+		}
+		$('input[name^="pro_zip['+a+']"]').val(penZip);
+		$('input[name^="pro_addr1['+a+']"]').val(penAddr);
+		$('input[name^="pro_addr2['+a+']"]').val(penAddrDtl);
+	}else{//기본 보호자
+		if(!$("#btn-same").is(':checked')){
+			penZip = '';
+			penAddr = '';
+			penAddrDtl = '';
+		}
+		$('input[name^="penProZip"]').val(penZip);
+		$('input[name^="penProAddr"]').val(penAddr);
+		$('input[name^="penProAddrDtl"]').val(penAddrDtl);
+	}
+  }
 </script>
 
 <?php include_once("./_tail.php"); ?>
