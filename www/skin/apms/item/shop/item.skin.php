@@ -96,6 +96,10 @@ if ($it['ca_id']) {
   $main_ca = $it['ca_id'];
   $it_list_url = "/shop/list.php?ca_id={$main_ca}";
 }
+
+$rental_use_info_1 = (file_exists($_SERVER['DOCUMENT_ROOT']."/img/rental/rental_use_info_1_".trim($it["it_thezone2"]).".jpg"))? "rental_use_info_1_".trim($it["it_thezone2"]).".jpg":"rental_use_info_1.jpg";//렌탈 이용안내 상 이미지 확인
+
+
 ?>
 
 
@@ -198,8 +202,35 @@ if ($it['ca_id']) {
         }
         ?>
       </div>-->
+      <script src="/js/textFit.js"></script>
       <script>
       $(function(){
+        if($(window).width() > 1398){			
+			textFit(document.getElementsByClassName('box'), {minFontSize:10, maxFontSize: 20,alignHoriz: true, alignVert: true, multiLine: true});
+		}else if($(window).width() > 1280){
+			textFit(document.getElementsByClassName('box'), {minFontSize:10, maxFontSize: 20,alignHoriz: true, alignVert: true, multiLine: true});
+		}else if($(window).width() > 1198){
+			textFit(document.getElementsByClassName('box'), {minFontSize:10, maxFontSize: 20,alignHoriz: true, alignVert: true, multiLine: true});
+		}else if($(window).width() > 990){			
+			textFit(document.getElementsByClassName('box'), {minFontSize:13, maxFontSize: 20,alignHoriz: true, alignVert: true, multiLine: true});
+		}else{			
+			textFit(document.getElementsByClassName('box'), {minFontSize:11, maxFontSize:16,alignHoriz: true, alignVert: true, multiLine: true});
+		}
+
+		window.addEventListener("resize", function() {
+			//alert($(window).width());
+			if($(window).width() > 1398){			
+				textFit(document.getElementsByClassName('box'), {minFontSize:10, maxFontSize: 20,alignHoriz: true, alignVert: true, multiLine: true});
+			}else if($(window).width() > 1280){
+				textFit(document.getElementsByClassName('box'), {minFontSize:10, maxFontSize: 20,alignHoriz: true, alignVert: true, multiLine: true});
+			}else if($(window).width() > 1198){
+				textFit(document.getElementsByClassName('box'), {minFontSize:10, maxFontSize: 20,alignHoriz: true, alignVert: true, multiLine: true});
+			}else if($(window).width() > 990){			
+				textFit(document.getElementsByClassName('box'), {minFontSize:13, maxFontSize: 20,alignHoriz: true, alignVert: true, multiLine: true});
+			}else{			
+				textFit(document.getElementsByClassName('box'), {minFontSize:11, maxFontSize:16,alignHoriz: true, alignVert: true, multiLine: true});
+			}
+		})
         // 이미지 슬라이드
         $('.item_image_slider').slick({
           dots: true,
@@ -1671,12 +1702,12 @@ if ($it['ca_id']) {
     <div class="tab-pane active" id="div1"> <!-- id="item-explan" -->
       <?php if($it['it_10_subj'] == "rental"){?>
 		<div class="item-explan">
-		<img src="/img/rental_use_info_1.jpg" width="100%" id="rental_use_info1">
+		<img src="/img/rental/<?=$rental_use_info_1?>" width="100%" id="rental_use_info1">
 		<div id="rental_use_info_btn"  class="rental_use_info_btn" onClick="rental_use_info();">
 			이용 방법 상세보기&nbsp;&nbsp;<i class="fa-solid fa-chevron-down"></i>
 		</div>
 		<div id="rental_use_info" style="display:none;">
-		<img src="/img/rental_use_info_2.jpg" width="100%">
+		<img src="/img/rental/rental_use_info_2.jpg" width="100%">
 		</div>
 		<div id="rental_use_info_btn2" class="rental_use_info_btn" style="display:none" onClick="rental_use_info();">
 			이용 방법 접기&nbsp;&nbsp;<i class="fa-solid fa-chevron-up"></i>
@@ -1871,19 +1902,6 @@ $(function() {
 });
 </script>
 
-<script src="/js/textFit.js"></script>
-<script>
-$(document).ready(function(){
-
-	if(screen.width > 800){
-		textFit(document.getElementsByClassName('box'), {minFontSize:14, maxFontSize: 20,alignHoriz: true, alignVert: true, multiLine: true,widthOnly: true});
-	}else{
-		textFit(document.getElementsByClassName('box'), {minFontSize:16, maxFontSize:20,alignHoriz: true, alignVert: true, multiLine: true});
-		$(".box").css({"top":"94%"});
-
-	}
-});
-</script>
 <?php
 // include_once('./itemlist.php'); // 분류목록
 ?>
