@@ -216,7 +216,7 @@ $(".thkc_agreeWrap .thkc_menu .thkc_dfc03").click(function () {
 // 모달 팝업창 (직원 등록)
 $(".thkc_popOverlay").hide();
 $(".thkc_btnWrap .btn_submit_02").click(function () {
-  $(".thkc_popUpWrap").css('display', 'flex').hide().fadeIn();
+  $("#member_add").css('display', 'flex').hide().fadeIn();
   $(".thkc_popOverlay").show();
   document.body.classList.add("stop-scroll");
 });
