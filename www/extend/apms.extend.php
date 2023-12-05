@@ -10,7 +10,7 @@ $xp = array();
 // APMS Version
 $yc5_ver = (defined('G5_USE_SHOP')) ? ' / 영카트 5.3.3.3.1(패치 YC5.4.2.2)' : '';
 define('APMS_VERSION', '아미나빌더 1.8.33 / 그누보드 5.3.3.3(패치 G5.4.2.2)'.$yc5_ver);
-define('APMS_SVER', '230919');
+define('APMS_SVER', '231205');
 define('APMS_GNUVER', '5.3');
 
 // USE YC5
