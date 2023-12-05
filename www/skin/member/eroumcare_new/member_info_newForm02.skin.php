@@ -363,11 +363,11 @@
             <script>
 			$('#drop_out_resn').keyup(function (e){
 				var content = $(this).val();
-				$('#counter').html("("+content.length+"/500)");    //글자수 실시간 카운팅    
-				if (content.length > 100){        
-					alert("최대 100자까지 입력 가능합니다.");        
-					$(this).val(content.substring(0, 101));
-					$('#counter').html("(100 / 최대 100자)");    
+				$('#counter').html(content.length+"/500");    //글자수 실시간 카운팅    
+				if (content.length > 500){        
+					alert("최대 500자까지 입력 가능합니다.");        
+					$(this).val(content.substring(0, 501));
+					$('#counter').html("500/500");    
 				}
 			});
                 // 담당자 추가
