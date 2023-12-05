@@ -38,6 +38,13 @@
 
 
 ?>
+<style type="text/css">
+	@media (max-width: 767px){
+		.f_s14 {
+			font-size: 12px;
+		}
+	}
+</style>
             <link rel="stylesheet" href="<?=G5_CSS_URL?>/new_css/thkc_join.css">
 
 
