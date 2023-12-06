@@ -420,6 +420,7 @@ $sql_counts = " SELECT
                       ELSE ct_price
                     END * ct_qty
                   ) AS ct_price,
+				  SUM(ct_qty) AS total_ct_qty,
                   SUM(ct_sendcost) AS ct_sendcost,
                   SUM(ct_discount) AS ct_discount
                   {$sql_common}
@@ -688,6 +689,14 @@ while( $order = sql_fetch_array($result) ) {
     case '완료': $ct_status_text="배송완료"; break;
   }
 
+if($search != "" && ($sel_field == 'od_all' || $sel_field == 'c.it_name') && ($ct_status_text == "상품준비" || $ct_status_text == "출고준비" || $ct_status_text == "출고완료")){//전체 또는 상품명 검색이 있을 시만		  
+	$total_ct_qty = $total_info[$order['ct_status']]["total_ct_qty"];
+}else{
+	$total_ct_qty = "";
+}
+
+$total_count_text = ($total_ct_qty == "")? "": " (수량 ".$total_ct_qty."개)";
+
   $ct_sub_status_text = '';
   if ($order['ct_is_ecount_excel_downloaded']) {
     $ct_sub_status_text .= "<br><span id='ecount_excel_done' class='excel_done' data-ct-id='{$order['ct_id']}' style='color: #77933c'>이카운트 : 엑셀받기 완료</span>";
@@ -774,7 +783,7 @@ while( $order = sql_fetch_array($result) ) {
 
     $total_result = $total_info[$order['ct_status']];
     $total_result['price'] = number_format( $total_result['ct_price'] + $total_result['ct_sendcost'] - $total_result['ct_discount']);
-    if($ct_status_info['name']=="재고소진"||$ct_status_info['name']=="보유재고등록"){ $status_info = "총 {$total_result['cnt']}건";}else{$status_info = "총 {$total_result['cnt']}건 / 합계: ₩ {$total_result['price']}원";}
+    if($ct_status_info['name']=="재고소진"||$ct_status_info['name']=="보유재고등록"){ $status_info = "총 {$total_result['cnt']}건";}else{$status_info = "총 {$total_result['cnt']}건{$total_count_text} / 합계: ₩ {$total_result['price']}원";}
 
     $ret['data'] .= "
       <tr class=\"step\">
