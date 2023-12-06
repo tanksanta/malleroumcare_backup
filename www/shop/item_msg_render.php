@@ -103,7 +103,7 @@ foreach($rec_arr as $wr_id) {
       <div class="it_explan">
         <?php echo apms_explan($it['it_explan']); ?>
       </div>
-      <button class="im_btn_more">상세정보 펼쳐보기 ▼</button>
+      <div class="im_btn_more">상세정보 펼쳐보기&nbsp;&nbsp;<i class="fa-solid fa-chevron-down"></i></div>
     </div>
     <?php } ?>
     <?php if($recs) { ?>
@@ -121,10 +121,10 @@ foreach($rec_arr as $wr_id) {
 <script>
 $(document).on('click', '.im_btn_more', function() {
   $(this).closest('.im_item').addClass('active');
-  $(this).text('상세정보 접기 ▲').removeClass('im_btn_more').addClass('im_btn_less');
+  $(this).html('상세정보 접기&nbsp;&nbsp;<i class="fa-solid fa-chevron-up"></i>').removeClass('im_btn_more').addClass('im_btn_less');
 });
 $(document).on('click', '.im_btn_less', function() {
   $(this).closest('.im_item').removeClass('active');
-  $(this).text('상세정보 펼쳐보기 ▼').removeClass('im_btn_less').addClass('im_btn_more');
+  $(this).html('상세정보 펼쳐보기&nbsp;&nbsp;<i class="fa-solid fa-chevron-down"></i>').removeClass('im_btn_less').addClass('im_btn_more');
 });
 </script>

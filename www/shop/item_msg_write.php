@@ -83,7 +83,7 @@ foreach($notice_arr as $wr_id) {
   $recs[] = $rec;
 }
 
-add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/item_msg.css?v=211125">');
+add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/item_msg.css?v='.APMS_SVER.'">');
 add_stylesheet('<link rel="stylesheet" href="'.G5_CSS_URL.'/jquery.flexdatalist.css">');
 add_javascript('<script src="'.G5_JS_URL.'/jquery.flexdatalist.js?v=220102"></script>');
 ?>
@@ -218,12 +218,12 @@ function agreement_confirm(a){
         </div>
         <div class="im_send_wr im_desc_wr" style="border: none;">
           <div class="im_send_button" style="<?php if($today_count <= 0) echo 'opacity: 50%;' ?>">
-            <button type="submit" id="btn_im_send_alim" class="btn_im_send" style="display: block;">
-              <img src="<?=THEMA_URL?>/assets/img/icon_kakao.png" alt="">
+            <button type="submit" id="btn_im_send_alim" class="btn_im_send2" style="display: block;">
+              <img src="<?=THEMA_URL?>/assets/img/icon_kakao.png" alt="">&nbsp;
               알림 메시지 전달
             </button>
             <button type="submit" id="btn_im_send_sms" class="btn_im_send" style="display: block;">
-              <img src="<?=THEMA_URL?>/assets/img/icon_email.png" width="40" height="40" alt="">
+              <img src="<?=THEMA_URL?>/assets/img/icon_email.png" width="40" height="40" alt="">&nbsp;
               문자 메시지 전달
             </button>
           </div>
@@ -439,11 +439,16 @@ function check_no_item() {
     $('.no_item_info').show();
     $('.im_list_hd').hide();
     $('.btn_im_send').removeClass('active');
+	$('.btn_im_send2').removeClass('active');
+	$('.btn_im_send2 img').css('filter','');
   } else {
     $('.no_item_info').hide();
     $('.im_list_hd').show();
-    if($('#ms_pen_nm').val() && $('#ms_pen_hp').val())
+    if($('#ms_pen_nm').val() && $('#ms_pen_hp').val()){
       $('.btn_im_send').addClass('active');
+	  $('.btn_im_send2').addClass('active');
+	  $('.btn_im_send2 img').css('filter','invert(100%)');
+	}
   }
 }
 
