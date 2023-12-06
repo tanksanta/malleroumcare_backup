@@ -38,6 +38,13 @@
 
 
 ?>
+<style type="text/css">
+	@media (max-width: 767px){
+		.f_s14 {
+			font-size: 12px;
+		}
+	}
+</style>
             <link rel="stylesheet" href="<?=G5_CSS_URL?>/new_css/thkc_join.css">
 
 
@@ -137,6 +144,9 @@
                                 <div class="error-txt error"></div>
                             </div>
                         </div>
+						<div class="thkc_btnWrap_03">
+                            <button class="on" id='btn_drop_out1' style="margin-top:15px;">회원탈퇴 신청</button>
+                        </div>
 
                     </div>
                     <!-- 회원정보 계정정보 end -->
@@ -174,7 +184,7 @@
                 </div>
 
                 <!-- 회원정보 직원계정 추가 팝업 -->
-                <div class="thkc_popUpWrap">
+                <div class="thkc_popUpWrap" id="member_add">
                     <div class="thkc_popWrap">
                         <div class="thkc_close">
                             <i class="fa-solid fa-xmark"></i>
@@ -262,10 +272,111 @@
 
                 </div>
             </section>
+			<!-- 회원정보 탈퇴 추가 모달 -->
+<div class="thkc_popUpWrap " id="drop_out">
+	<div class="thkc_popWrap">
+		<div class="thkc_close">
+			<i class="fa-solid fa-xmark"></i>
+		</div>
+		<div class="thkc_joinWrap">
+			<div class="joinTitle">
+				<div class="boxLeft">회원탈퇴 신청</div>
+			</div>
+			<div class="thkc_tableWrap thkc_bbs-more">
+				<div class="table-box table-box_02">
+					<div class="tit03 bbs-pd_01">아이디
+					</div>
+					<div class="thkc_cont bbs-pd_01">
+						<label for="id" class="thkc_blind">아이디</label>
+						<input s class="thkc_input" id="id" placeholder="test1234" value="<?=$member['mb_id']?>" type="text" disabled/>
+					</div>
+				</div>
+				<div class="table-box table-box_02">
+					<div class="tit03 bbs-pd_01">비밀번호
+					</div>
+					<div class="thkc_cont bbs-pd_01">
+						<label for="password" class="thkc_blind">비밀번호</label>
+						<input class="thkc_input" id="password" placeholder="비밀번호를 입력하세요" value="" type="password" />
+						<div class="error-txt error"></div>
+					</div>
+				</div>
+				<div class="table-box table-box_02">
+					<div class="tit03 bbs-pd_01">사업자<br>등록번호</div>
+					<div class="thkc_cont bbs-pd_01">
+						<div>
+							<label for="bnum" class="thkc_blind">사업자등록번호</label>
+							<input class="thkc_input" id="bnum" placeholder="사업자등록번호를 입력하세요." value="" type="text" />
+						</div>
+						<div class="error-txt error"></div>
+					</div>
+				</div>
+				<div class="table-box table-box_02">
+					<div class="tit03 bbs-pd_01">탈퇴사유</div>
+					<div class="thkc_cont bbs-pd_01">
+						<form action="">
+							<label for="thkc_textarea" class="thkc_blind">탈퇴사유</label>
+							<textarea class="thkc_textarea" name="drop_out_resn" id="drop_out_resn" cols="50" rows="7" maxlength="500" placeholder="탈퇴 사유를 적어주세요"></textarea>
+						</form><p class="f_s14 d-flex justify-content-end" id="counter">0/500</p>
+						<div class="error-txt error"></div>
+					</div>
+				</div>
+				<div class="table-box table-box_02" style="padding: 16px;">
+					<div class="f_s14">
+						<span class="f_color01">! 아래와 같은 상황엔 탈퇴가 불가합니다.</span>
+						<ul class="">
+							<li>- 진행 중인 주문, 계약 등이 있는 경우</li>
+							<li>- 상담완료가 되지 않은 상담이 있는 경우</li>
+							<li>- 미수금이 있는 경우</li>
+						</ul>
+					</div>
+				</div>
+				<div class="thkc_btnWrap_03">
+					<button class="cancel">취소</button>
+					<button class="on" id="btn_drop_out2">탈퇴 신청하기</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
 
+<!-- 회원정보 신청 완료 추가 모달 -->
+<div class="thkc_popUpWrap" style="width: 400px;" id="drop_out_complete">
+	<div class="thkc_popWrap">
+		<div class="thkc_close">
+		<i class="fa-solid fa-xmark"></i>
+		</div>
+
+		<div class="_thkc_joinWrap">
+			<div class="_thkc_tableWrap thkc_bbs-more">
+				<div class="table-box table-box_02" style="padding: 20px; ">
+					<p class="f_bold" style="font-size:20px">탈퇴 신청이 완료되었습니다.</p>
+					<p>&nbsp;</p>
+
+					<p>이후 이로움 관리자의 ‘승인’ 절차에 의해
+					탈퇴 처리가 진행될 예정입니다.</p>
+					<p>&nbsp;</p>
+					<p>영업일 기준 2~3일 정도 소요되며,</p>
+					<p>카카오톡으로 결과를 안내드립니다.</p>
+				</div>
+				<div class="thkc_btnWrap_03">
+					<button class="cancel on">확인</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
 
 
             <script>
+			$('#drop_out_resn').keyup(function (e){
+				var content = $(this).val();
+				$('#counter').html(content.length+"/500");    //글자수 실시간 카운팅    
+				if (content.length > 500){        
+					alert("최대 500자까지 입력 가능합니다.");        
+					$(this).val(content.substring(0, 501));
+					$('#counter').html("500/500");    
+				}
+			});
                 // 담당자 추가
                 function manager_add(){
                     <?php if($member["mb_type"] == "default" && $_SESSION["ss_manager_auth_order"] == ""){//사업소 계정일때만 노출?>
@@ -307,27 +418,27 @@
                 // 담당자 정보 변경
                 function manager_modify(_no){
                         
-                    $(".thkc_popUpWrap #mm_id").val( $(".manager_" + _no + " #mb_id").val() );
-                    $(".thkc_popUpWrap #mm_id").attr("disabled", true); 
+                    $("#member_add #mm_id").val( $(".manager_" + _no + " #mb_id").val() );
+                    $("#member_add #mm_id").attr("disabled", true); 
 
-                    $(".thkc_popUpWrap #mm_name").val( $(".manager_" + _no + " #mb_name").val() );
-                    $(".thkc_popUpWrap #mm_hp").val( $(".manager_" + _no + " #mm_tel").val() );
-                    $(".thkc_popUpWrap #mm_email").val( $(".manager_" + _no + " #mm_email").val() );
-                    $(".thkc_popUpWrap #mm_memo").val( $(".manager_" + _no + " #mm_memo").val() );
+                    $("#member_add #mm_name").val( $(".manager_" + _no + " #mb_name").val() );
+                    $("#member_add #mm_hp").val( $(".manager_" + _no + " #mm_tel").val() );
+                    $("#member_add #mm_email").val( $(".manager_" + _no + " #mm_email").val() );
+                    $("#member_add #mm_memo").val( $(".manager_" + _no + " #mm_memo").val() );
 					<?php if($member["mb_type"] == "default" && $_SESSION["ss_manager_auth_order"] == ""){//사업소 계정일때만 노출?>
 					if($(".manager_" + _no + " #mm_auth_order").val() == "0"){
-						$(".thkc_popUpWrap #manager_auth_order").prop('checked',false);
+						$("#member_add #manager_auth_order").prop('checked',false);
 					}else{
-						$(".thkc_popUpWrap #manager_auth_order").prop('checked',true);
+						$("#member_add #manager_auth_order").prop('checked',true);
 					}
 					<?php }?>
-                    $(".thkc_popUpWrap .boxLeft").text("직원정보 수정");
-                    $(".thkc_popUpWrap .boxRright").hide();
+                    $("#member_add .boxLeft").text("직원정보 수정");
+                    $("#member_add .boxRright").hide();
                     
-                    $('.thkc_popUpWrap .thkc_btnWrap_03 .on').text("변경하기"); 
-                    $(".thkc_popUpWrap .thkc_btnWrap_03 .on").attr("onclick", "confirm_modify('" + _no + "')");
+                    $('#member_add .thkc_btnWrap_03 .on').text("변경하기"); 
+                    $("#member_add .thkc_btnWrap_03 .on").attr("onclick", "confirm_modify('" + _no + "')");
                     
-                    $(".thkc_popUpWrap").css("display", "flex").hide().fadeIn();
+                    $("#member_add").css("display", "flex").hide().fadeIn();
                     $(".thkc_popOverlay").show();
                     
                     document.body.classList.add("stop-scroll");                    
@@ -344,15 +455,15 @@
                         url: '<?=G5_BBS_URL?>/ajax.member_manager.php', type: 'POST', dataType: 'json',
                         data: {
                             "w": "u",
-                            "mm_id": $(".thkc_popUpWrap #mm_id").val(),
-                            "mm_pw":  $(".thkc_popUpWrap #mm_password").val(),
-                            "mm_name":  $(".thkc_popUpWrap #mm_name").val(),
-                            "mm_tel":  $(".thkc_popUpWrap #mm_hp").val(),
-                            "mm_email":  $(".thkc_popUpWrap #mm_email").val(),
+                            "mm_id": $("#member_add #mm_id").val(),
+                            "mm_pw":  $("#member_add #mm_password").val(),
+                            "mm_name":  $("#member_add #mm_name").val(),
+                            "mm_tel":  $("#member_add #mm_hp").val(),
+                            "mm_email":  $("#member_add #mm_email").val(),
 							<?php if($member["mb_type"] == "default" && $_SESSION["ss_manager_auth_order"] == ""){//사업소 계정일때만 노출?>
 							"manager_auth_order":  manager_auth_order,
 							<?php }?>
-                            "mm_memo":  $(".thkc_popUpWrap #mm_memo").val()
+                            "mm_memo":  $("#member_add #mm_memo").val()
                         },
                         success: function(data) {
                             
@@ -415,21 +526,39 @@
 
                     return true;
                 }
+				//회원 탈퇴 신청 클릭 시
+				$("#btn_drop_out1").click(function () {
+                    //매칭된 상담조회, 구매 내역 조회 후 처리					
+					$("#drop_out").css("display", "flex").hide().fadeIn();
+                    $(".thkc_popOverlay").show();
+					$(".thkc_popUpWrap").attr("disabled", false);
 
+                });
+				//탈퇴 신청하기 클릭 시
+				$("#btn_drop_out2").click(function () {
+                    alert("서비스 준비 중입니다.");//임시적용 
+					$(".cancel").trigger("click");//임시적용
+					//사업자등록번호, 비밀번호, 탈퇴 사유 확인 후 처리					
+					//$("#drop_out").hide();
+					//$("#drop_out_complete").css("display", "flex").show();
+					//$(".thkc_popUpWrap").attr("disabled", false);
 
-                $(".thkc_btnWrap .btn_submit_02").click(function () {
-                    $(".thkc_popUpWrap .boxLeft").text("직원신규 등록");
-                    $(".thkc_popUpWrap input").val("");
+                });
+                
+				
+				$(".thkc_btnWrap .btn_submit_02").click(function () {
+                    $("#member_add .boxLeft").text("직원신규 등록");
+                    $("#member_add input").val("");
 
-                    $(".thkc_popUpWrap #mm_id").attr("disabled", false);
-                    $(".thkc_popUpWrap .boxRright").show();
+                    $("#member_add #mm_id").attr("disabled", false);
+                    $("#member_add .boxRright").show();
 
-                    $('.thkc_popUpWrap .thkc_btnWrap_03 .on').text("등록하기");                    
-                    $('.thkc_popUpWrap .thkc_btnWrap_03 .on').attr("onclick", "manager_add()");
+                    $('#member_add .thkc_btnWrap_03 .on').text("등록하기");                    
+                    $('#member_add .thkc_btnWrap_03 .on').attr("onclick", "manager_add()");
                 });
                 
 
-                $('.thkc_popUpWrap .thkc_joinWrap .thkc_tableWrap .thkc_btnWrap_03 .cancel').click(function () {
+                $('.thkc_popUpWrap .thkc_joinWrap .thkc_tableWrap .thkc_btnWrap_03 .cancel,.cancel').click(function () {
                     $(".thkc_popUpWrap").hide();
                     $(".thkc_popOverlay").hide();
                     document.body.classList.remove("stop-scroll");
