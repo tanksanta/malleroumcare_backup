@@ -167,6 +167,29 @@ if(!isset($mb['mb_partner_default_warehouse'])) {
     sql_query(" ALTER TABLE {$g5['member_table']} ADD `mb_partner_default_warehouse` varchar(255) NOT NULL DEFAULT '' AFTER `mb_partner_file3` ", false);
 }
 
+if( $eroumon_connect_db  && $mb["mb_giup_matching"] == "Y") {//이로움ON DB 연동 시, 매칭서비스 신청 시 적용
+	$_matchingINFO = [
+        "mb_id" => $mb['mb_id']
+        ,"mb_giup_bnum" => $mb['mb_giup_bnum']
+    ];
+
+    // 23.11.30 - 정한진 : 프로시저 CALL `PROC_EROUMCARE_BPLC`('모드','이로움ON 회원 데이터');
+    // 사업소의 매칭 담당자 정보는 사업소ID와 사업자번호가 이로움Care와 이로움ON이 동일해야 변경됨.
+    $sql = (" CALL `PROC_EROUMCARE_BPLC`('SELECT_matching','".json_encode($_matchingINFO, JSON_UNESCAPED_UNICODE)."'); ");
+
+    $sql_result = "";
+    $sql_result = sql_fetch( $sql , "" , $g5['eroumon_db'] ); mysqli_next_result($g5['eroumon_db']);
+	
+	if($sql_result["mb_matching_manager_nm"] != $mb['mb_matching_manager_nm'] || $sql_result["mb_matching_manager_tel"] != $mb['mb_matching_manager_tel'] || $sql_result["mb_matching_manager_mail"] != $mb['mb_matching_manager_mail']){//정보가 하나라도 다를 경우 
+		$sql = "update ".$g5['member_table']." set mb_matching_manager_nm='".$sql_result['mb_matching_manager_nm']."',mb_matching_manager_tel='".$sql_result['mb_matching_manager_tel']."',mb_matching_manager_mail='".$sql_result['mb_matching_manager_mail']."' where mb_id='".$mb['mb_id']."' and mb_giup_bnum='".$mb['mb_giup_bnum']."'";
+		sql_query($sql);// 이로움ON과 데이터 동기화
+		$mb['mb_matching_manager_nm'] = $sql_result["mb_matching_manager_nm"]; 
+		$mb['mb_matching_manager_tel'] = $sql_result["mb_matching_manager_tel"];
+		$mb['mb_matching_manager_mail'] = $sql_result["mb_matching_manager_mail"];
+	}
+	
+}
+
 if ($mb['mb_intercept_date']) $g5['title'] = "차단된 ";
 else $g5['title'] .= "";
 $g5['title'] .= '회원 '.$html_title;
@@ -537,16 +560,6 @@ label {
         </td>
     </tr>    
     <?php } ?>
-
-    <tr>
-        <th scope="row">장기요양 매칭상담 서비스</th>
-        <td colspan="3">
-            <input type="radio" name="mb_giup_matching" value="Y" id="mb_giup_matching_yes" <?php echo $mb_giup_matching_y; ?>>
-            <label for="mb_giup_matching_yes">신청</label>
-            <input type="radio" name="mb_giup_matching" value="N" id="mb_giup_matching_no" <?php echo $mb_giup_matching_n; ?>>
-            <label for="mb_giup_matching_no">미신청</label>
-        </td>
-    </tr>
 
     <tr>
         <th scope="row">딜러 여부</th>
@@ -928,6 +941,55 @@ this.form.mb_intercept_date.value=this.form.mb_intercept_date.defaultValue; }">
         </td>
     </tr> 
 
+    <?php 
+        // 23.11.22 : 서원 - 사업소(회원) 상세 페이지에서 매칭관련 담당자와 신청 여부 UI부분에 대한 표현 부분.
+        //                    해당 필드 부분은 수정시에만 화면에 나타나며, 최초 '회원추가'시에는 나타나지 않음.
+        //
+        //                    관리자에서 임의 사업소 추가 진행시.
+        //                    회원등록 -> 승인처리 -> 정보수정(매칭관련정보입력) 방식으로 임의 변경 할수 있음.
+        //                    단, 프론트단에서 정상적으로 처리된 로직이 아님으로 매칭관련 메뉴에서 나타나지 않음. ( 이유는 설문지 작성이 되지 않을 경우 리스트에 나타나지 않음. )
+        //
+        if ($w == 'u') { 
+    ?>
+    <tr>
+        <th colspan="4">
+            <div style="padding: 20px 20px;background-color: #f1f1f1;">
+                <h2 style="margin:0;padding:0;">장기요양 매칭 상담 담당자 정보</h2>
+            </div>
+        </th>
+    </tr>
+    <tr>
+        <th scope="row">매칭 담당자 성명</th>
+        <td colspan="3">
+            <label for="mb_matching_manager_nm" class="sound_only">매칭 담당자 성명</label>
+            <input type="text" name="mb_matching_manager_nm" value="<?php echo $mb['mb_matching_manager_nm'] ?: $mb['mb_matching_manager_nm']; ?>" id="mb_matching_manager_nm" class="frm_input" size="30">
+        </td>
+    </tr> 
+    <tr>
+        <th scope="row">매칭 담당자 휴대폰번호</th>
+        <td colspan="3">
+            <label for="mb_matching_manager_tel" class="sound_only">매칭 담당자 휴대폰번호</label>
+            <input type="text" name="mb_matching_manager_tel" value="<?php echo $mb['mb_matching_manager_tel'] ?: $mb['mb_matching_manager_tel']; ?>" id="mb_matching_manager_tel" class="frm_input" size="30">
+        </td>
+    </tr> 
+    <tr>
+        <th scope="row">매칭 담당자 이메일</th>
+        <td colspan="3">
+            <label for="mb_matching_manager_mail" class="sound_only">매칭 담당자 이메일</label>
+            <input type="text" name="mb_matching_manager_mail" value="<?php echo $mb['mb_matching_manager_mail'] ?: $mb['mb_matching_manager_mail']; ?>" id="mb_matching_manager_mail" class="frm_input" size="30">
+        </td>
+    </tr> 
+    <tr>
+        <th scope="row">장기요양 매칭상담 서비스</th>
+        <td colspan="3">
+            <input type="radio" name="mb_giup_matching" value="Y" id="mb_giup_matching_yes" <?php echo $mb_giup_matching_y; ?>>
+            <label for="mb_giup_matching_yes">신청</label>
+            <input type="radio" name="mb_giup_matching" value="N" id="mb_giup_matching_no" <?php echo $mb_giup_matching_n; ?>>
+            <label for="mb_giup_matching_no">미신청</label>
+        </td>
+    </tr>
+    <?php } ?>
+    
     <tr>
         <th colspan="4">
             <div style="padding: 20px 20px;background-color: #f1f1f1;">
