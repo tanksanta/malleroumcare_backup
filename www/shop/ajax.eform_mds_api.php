@@ -504,7 +504,7 @@ if($_REQUEST["signed"] == "ok"){?>
 	$pen_grade_1 = $pen_grade_2 = $pen_grade_3 = $pen_grade_4 = $row["penRecGraNm"];//수급자인정등급명
 	$pen_type_1 = $pen_type_2 = $pen_type_3 = $pen_type_4 = $pen_type_5 = $row["penTypeNm"];//수급자본인부담금율
 	$pen_birthday_1 =  $row["penBirth"];//수급자생일
-	$pen_Jumin_1 = $pen_Jumin_2 = str_replace(".","",$row["penBirth"]);//수급자생일
+	$pen_Jumin_1 = $pen_Jumin_2 = substr($row['penJumin'], 0, 6);//수급자주민번호앞자리
 	$pen_tel_1 = $row["penConNum"];//수급자전화번호
 	$pen_addr_1 = $pen_addr_2 = ($row["penAddr"] != "")?"(".$row["penZip"].")".$row["penAddr"].' '.$row["penAddrDtl"]:"";//수급자주소
 	$ent_name_1 = $ent_name_2 = $ent_name_3 = $ent_name_4 = $row["entNm"];//사업소이름
@@ -735,7 +735,7 @@ if($_REQUEST["signed"] == "ok"){?>
 					,{"dataLabel":"app_addr_1","value":"'.$app_addr_1.'"}
 					,{"dataLabel":"app_tel_1","value":"'.$app_tel_1.'"}
 					,{"dataLabel":"pen_name_6","value":"'.$pen_name_6.'"}
-					,{"dataLabel":"pen_Jumin_1","value":"'.$pen_Jumin_1.'-"}
+					,{"dataLabel":"pen_Jumin_1","value":"'.$pen_Jumin_1.' -"}
 					,{"dataLabel":"pen_grade_3","value":"'.$pen_grade_3.'"}
 					,{"dataLabel":"pen_ltmnum_4","value":"'.$pen_ltmnum_4.'"}
 					,{"dataLabel":"pen_addr_2","value":"'.$pen_addr_2.'"}
@@ -745,7 +745,7 @@ if($_REQUEST["signed"] == "ok"){?>
 					,{"dataLabel":"pen_name_7","value":"'.$pen_guardian_nm.'"}
 					,{"dataLabel":"app_name_3","value":"'.$app_name_3.'"}
 					,{"dataLabel":"pen_name_8","value":"'.$pen_name_8.'"}
-					,{"dataLabel":"pen_Jumin_2","value":"'.$pen_Jumin_2.'-"}
+					,{"dataLabel":"pen_Jumin_2","value":"'.$pen_Jumin_2.' -"}
 					,{"dataLabel":"pen_grade_4","value":"'.$pen_grade_4.'"}
 					,{"dataLabel":"pen_ltmnum_5","value":"'.$pen_ltmnum_5.'"}
 					,{"dataLabel":"ent_name_4","value":"'.$ent_name_4.'"}
