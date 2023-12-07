@@ -167,7 +167,7 @@ if(!isset($mb['mb_partner_default_warehouse'])) {
     sql_query(" ALTER TABLE {$g5['member_table']} ADD `mb_partner_default_warehouse` varchar(255) NOT NULL DEFAULT '' AFTER `mb_partner_file3` ", false);
 }
 
-if( $eroumon_connect_db  && $mb["mb_giup_matching"] == "Y") {//이로움ON DB 연동 시, 매칭서비스 신청 시 적용
+if( $eroumon_connect_db) {//이로움ON DB 연동 시, 매칭서비스 신청 시 적용
 	$_matchingINFO = [
         "mb_id" => $mb['mb_id']
         ,"mb_giup_bnum" => $mb['mb_giup_bnum']
@@ -180,12 +180,14 @@ if( $eroumon_connect_db  && $mb["mb_giup_matching"] == "Y") {//이로움ON DB �
     $sql_result = "";
     $sql_result = sql_fetch( $sql , "" , $g5['eroumon_db'] ); mysqli_next_result($g5['eroumon_db']);
 	
-	if($sql_result["mb_matching_manager_nm"] != $mb['mb_matching_manager_nm'] || $sql_result["mb_matching_manager_tel"] != $mb['mb_matching_manager_tel'] || $sql_result["mb_matching_manager_mail"] != $mb['mb_matching_manager_mail']){//정보가 하나라도 다를 경우 
-		$sql = "update ".$g5['member_table']." set mb_matching_manager_nm='".$sql_result['mb_matching_manager_nm']."',mb_matching_manager_tel='".$sql_result['mb_matching_manager_tel']."',mb_matching_manager_mail='".$sql_result['mb_matching_manager_mail']."' where mb_id='".$mb['mb_id']."' and mb_giup_bnum='".$mb['mb_giup_bnum']."'";
-		sql_query($sql);// 이로움ON과 데이터 동기화
-		$mb['mb_matching_manager_nm'] = $sql_result["mb_matching_manager_nm"]; 
-		$mb['mb_matching_manager_tel'] = $sql_result["mb_matching_manager_tel"];
-		$mb['mb_matching_manager_mail'] = $sql_result["mb_matching_manager_mail"];
+	if($sql_result["mb_matching_manager_nm"] != "" || $sql_result["mb_matching_manager_tel"] != "" || $sql_result["mb_matching_manager_mail"] != ""){//이로움ON에 매칭 정보가 있을 경우 매칭 신청 유무와 상관 없이 동기화 처리
+		if($sql_result["mb_matching_manager_nm"] != $mb['mb_matching_manager_nm'] || $sql_result["mb_matching_manager_tel"] != $mb['mb_matching_manager_tel'] || $sql_result["mb_matching_manager_mail"] != $mb['mb_matching_manager_mail']){//정보가 하나라도 다를 경우 
+			$sql = "update ".$g5['member_table']." set mb_matching_manager_nm='".$sql_result['mb_matching_manager_nm']."',mb_matching_manager_tel='".$sql_result['mb_matching_manager_tel']."',mb_matching_manager_mail='".$sql_result['mb_matching_manager_mail']."' where mb_id='".$mb['mb_id']."' and mb_giup_bnum='".$mb['mb_giup_bnum']."'";
+			sql_query($sql);// 이로움ON과 데이터 동기화
+			$mb['mb_matching_manager_nm'] = $sql_result["mb_matching_manager_nm"]; 
+			$mb['mb_matching_manager_tel'] = $sql_result["mb_matching_manager_tel"];
+			$mb['mb_matching_manager_mail'] = $sql_result["mb_matching_manager_mail"];
+		}
 	}
 	
 }
@@ -942,6 +944,10 @@ this.form.mb_intercept_date.value=this.form.mb_intercept_date.defaultValue; }">
     </tr> 
 
     <?php 
+	$res = api_post_call(EROUMCARE_API_ENT_ACCOUNT, array(
+      'usrId' => $mb['mb_id']
+    ));
+
         // 23.11.22 : 서원 - 사업소(회원) 상세 페이지에서 매칭관련 담당자와 신청 여부 UI부분에 대한 표현 부분.
         //                    해당 필드 부분은 수정시에만 화면에 나타나며, 최초 '회원추가'시에는 나타나지 않음.
         //
@@ -950,6 +956,7 @@ this.form.mb_intercept_date.value=this.form.mb_intercept_date.defaultValue; }">
         //                    단, 프론트단에서 정상적으로 처리된 로직이 아님으로 매칭관련 메뉴에서 나타나지 않음. ( 이유는 설문지 작성이 되지 않을 경우 리스트에 나타나지 않음. )
         //
         if ($w == 'u') { 
+			if($res['data']['entConfirmCd'] == "01"){//사업소 승인 시만 노출 
     ?>
     <tr>
         <th colspan="4">
@@ -988,7 +995,8 @@ this.form.mb_intercept_date.value=this.form.mb_intercept_date.defaultValue; }">
             <label for="mb_giup_matching_no">미신청</label>
         </td>
     </tr>
-    <?php } ?>
+    <?php	}
+		} ?>
     
     <tr>
         <th colspan="4">
@@ -1198,9 +1206,7 @@ this.form.mb_intercept_date.value=this.form.mb_intercept_date.defaultValue; }">
     <!-- <input type="submit" value="확인" class="btn_submit btn" accesskey='s'> -->
     <input type="button" onclick="fmember_submit()" id="btn_submit" value="확인" class="btn_submit btn" accesskey='s'>
     <?php
-    $res = api_post_call(EROUMCARE_API_ENT_ACCOUNT, array(
-      'usrId' => $mb['mb_id']
-    ));
+    
 
     if($res['data']['entConfirmCd'] == "02") {
       echo '<input type="button" value="승인" class="btn btn_02 accept" id="accept">';
