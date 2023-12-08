@@ -660,14 +660,16 @@ $row = sql_fetch($sql);
                       }
                     }
                   }else{//추가
-					$sql = "SELECT a.penId,a.penNm,HEX(a.dc_id) AS UUID,dc_sign_send_datetime FROM `eform_document` AS a INNER JOIN `eform_document_item` AS b ON a.dc_id = b.dc_id WHERE b.it_barcode='".$list[$i]['prodBarNum']."' AND a.dc_status='3'";
+					$sql = "SELECT a.penId,a.penNm,HEX(a.dc_id) AS UUID,dc_sign_send_datetime FROM `eform_document` AS a INNER JOIN `eform_document_item` AS b ON a.dc_id = b.dc_id WHERE b.it_barcode='".$list[$i]['prodBarNum']."' 
+					AND a.dc_status='3' and b.it_code='".$list[$i]['prodPayCode']."'";
 					$rows2 = sql_fetch($sql);
 					$list[$i]['penId'] = $rows2['penId'];
                     $list[$i]['penNm'] = $rows2['penNm'];
 				  }
                 }else{//추가
 					$rows2 = array();
-					$sql = "SELECT a.penId,a.penNm,HEX(a.dc_id) AS UUID,dc_sign_send_datetime FROM `eform_document` AS a INNER JOIN `eform_document_item` AS b ON a.dc_id = b.dc_id WHERE b.it_barcode='".$list[$i]['prodBarNum']."' AND a.dc_status='3' AND a.penId !='' 
+					$sql = "SELECT a.penId,a.penNm,HEX(a.dc_id) AS UUID,dc_sign_send_datetime FROM `eform_document` AS a INNER JOIN `eform_document_item` AS b ON a.dc_id = b.dc_id WHERE b.it_barcode='".$list[$i]['prodBarNum']."'
+					AND a.dc_status='3' AND a.penId !='' and b.it_code='".$list[$i]['prodPayCode']."' 
 					AND LEFT(a.dc_sign_datetime,10) = '".substr($date2,0,10)."' ORDER BY a.dc_sign_datetime DESC LIMIT 1";
 					$rows2 = sql_fetch($sql);
 					$list[$i]['penId'] = $rows2['penId'];
