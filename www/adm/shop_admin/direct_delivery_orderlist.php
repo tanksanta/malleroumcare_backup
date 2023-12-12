@@ -647,7 +647,7 @@ $warehouse_list = get_warehouses();
 		?>
 
 		<tr class="<?php echo $bg; ?>">
-			<td align="center"><input type="checkbox" name="od_id[]" id="<?=$order["ct_id"];?>" value="<?=$order["ct_id"];?>" data-value="<?=substr($order["ca_id"],0,2)?>" data-barcode='<?=($order['ct_barcode_insert']!=$order['ct_qty'])?0:1;?>' class="frm_input checkSelect chkbox"></td>
+			<td align="center"><input type="checkbox" name="od_id[]" id="<?=$order["ct_id"];?>" value="<?=$order["ct_id"];?>" data-value="<?=substr($order["ca_id"],0,2)?>" data-barcode='<?=($order['ct_barcode_insert']!=$order['ct_qty'])?0:1;?>' data-ct_qty='<?=$order['ct_qty']?>' class="frm_input checkSelect chkbox"></td>
 			<td align="center"><a href="samhwa_orderform.php?od_id=<?=$order["od_id"];?>&sub_menu=400405" target="_blank"><?=$order["od_id"];//주문번호 ?></a></td>
 			<td align="center">
 				<?=$order["it_name"].(($order["ct_option"] != $order["it_name"])?" [".$order["ct_option"]."]":"");//상품명 ?>
@@ -1030,9 +1030,27 @@ $(function() {
 
 });
 
+function number_format(num){
+    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g,',');
+}
+
 function checkbox_count(){
 	var checked = $(".checkSelect:checked").length;
-	$("#all_chk2").val(checked+"건 선택");
+	var total_ct_qty = 0;
+	var total_ct_qty_text = '';
+	var search_it_name = '<?=$search_it_name?>';
+	
+	if(search_it_name != ''){//상품명 검색 있을 때
+		$('.checkSelect').each(function () {
+			if($(this).is(":checked")==true){
+			//console.log 등 다양하게 활용 가능
+				total_ct_qty = total_ct_qty+$(this).data('ct_qty');
+			}
+		})
+	}
+	total_ct_qty_text = (total_ct_qty == 0)? "": " (총"+number_format(total_ct_qty)+"개)";
+
+	$("#all_chk2").val(checked+"건 선택"+total_ct_qty_text);
 	
 }
 function reload_submit(){
