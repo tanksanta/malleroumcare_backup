@@ -181,12 +181,16 @@ if( $eroumon_connect_db) {//이로움ON DB 연동 시, 매칭서비스 신청 �
     $sql_result = sql_fetch( $sql , "" , $g5['eroumon_db'] ); mysqli_next_result($g5['eroumon_db']);
 	
 	if($sql_result["mb_matching_manager_nm"] != "" || $sql_result["mb_matching_manager_tel"] != "" || $sql_result["mb_matching_manager_mail"] != ""){//이로움ON에 매칭 정보가 있을 경우 매칭 신청 유무와 상관 없이 동기화 처리
-		if($sql_result["mb_matching_manager_nm"] != $mb['mb_matching_manager_nm'] || $sql_result["mb_matching_manager_tel"] != $mb['mb_matching_manager_tel'] || $sql_result["mb_matching_manager_mail"] != $mb['mb_matching_manager_mail']){//정보가 하나라도 다를 경우 
-			$sql = "update ".$g5['member_table']." set mb_matching_manager_nm='".$sql_result['mb_matching_manager_nm']."',mb_matching_manager_tel='".$sql_result['mb_matching_manager_tel']."',mb_matching_manager_mail='".$sql_result['mb_matching_manager_mail']."' where mb_id='".$mb['mb_id']."' and mb_giup_bnum='".$mb['mb_giup_bnum']."'";
+		if($sql_result["mb_matching_manager_nm"] != $mb['mb_matching_manager_nm'] || $sql_result["mb_matching_manager_tel"] != $mb['mb_matching_manager_tel'] || $sql_result["mb_matching_manager_mail"] != $mb['mb_matching_manager_mail'] || $sql_result["mb_giup_matching"] != $mb['mb_giup_matching']){//정보가 하나라도 다를 경우 
+			$sql = "update ".$g5['member_table']." set mb_matching_manager_nm='".$sql_result['mb_matching_manager_nm']."',mb_matching_manager_tel='".$sql_result['mb_matching_manager_tel']."',mb_matching_manager_mail='".$sql_result['mb_matching_manager_mail']."',mb_giup_matching='".$sql_result['mb_giup_matching']."' where mb_id='".$mb['mb_id']."' and mb_giup_bnum='".$mb['mb_giup_bnum']."'";
 			sql_query($sql);// 이로움ON과 데이터 동기화
 			$mb['mb_matching_manager_nm'] = $sql_result["mb_matching_manager_nm"]; 
 			$mb['mb_matching_manager_tel'] = $sql_result["mb_matching_manager_tel"];
 			$mb['mb_matching_manager_mail'] = $sql_result["mb_matching_manager_mail"];
+			$mb['mb_giup_matching'] = $sql_result["mb_giup_matching"];
+			// 1:1매칭 서비스 동의 여부(해당 값이 Y일 경우 메뉴가 활성화됨.)
+			$mb_giup_matching_y        =  $mb['mb_giup_matching'] == 'Y'    ? 'checked="checked"' : '';
+			$mb_giup_matching_n         = $mb['mb_giup_matching'] != 'Y'    ? 'checked="checked"' : '';
 		}
 	}
 	
