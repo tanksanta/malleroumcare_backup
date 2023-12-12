@@ -22,6 +22,15 @@ if($header_skin)
   # 스킨경로  
   $SKIN_URL = G5_SKIN_URL.'/apms/order/'.$skin_name;
 
+//인증서 업로드 추가 영역
+$mobile_agent = "/(iPod|iPhone|Android|BlackBerry|SymbianOS|SCH-M\d+|Opera Mini|Windows CE|Nokia|SonyEricsson|webOS|PalmOS)/";
+
+if(preg_match($mobile_agent, $_SERVER['HTTP_USER_AGENT'])){
+	$mobile_yn = "Mobile";
+}else{
+	$mobile_yn = "Pc";
+}
+add_javascript('<script src="'.G5_JS_URL.'/jquery.fileDownload.js"></script>', 0);
 ?>
 
 <link rel="stylesheet" href="<?=$SKIN_URL?>/css/jquery-ui.min.css">
@@ -106,6 +115,41 @@ if($header_skin)
   }
   
 }
+
+#loading_excel {
+    display: none;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 9999;
+    background: rgba(0, 0, 0, 0.3);
+  }
+  #loading_excel .loading_modal {
+    position: absolute;
+    width: 400px;
+    padding: 30px 20px;
+    background: #fff;
+    text-align: center;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  #loading_excel .loading_modal p {
+    padding: 0;
+    font-size: 16px;
+  }
+  #loading_excel .loading_modal img {
+    display: block;
+    margin: 20px auto;
+  }
+  #loading_excel .loading_modal button {
+    padding: 10px 30px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
 </style>
 
 <!-- 210326 재고조회팝업 -->
@@ -204,12 +248,14 @@ $(function(){
 <section id="pro-order" class="wrap order-list">
   <div class="sub_section_tit">주문/배송 관리</div>
   <div class="r_btn_area">
-    <a href="javascript:void(0)" id="btn_hidden_order" class="btn eroumcare_btn2" title="숨김처리한 주문">숨김처리<?=($total_hidden_order)?" (".$total_hidden_order."건)":""?></a>
-  </div>
-  <div class="r_btn_area2">
-    <a href="./schedule/index.php" class="btn eroumcare_btn2" onclick="return showSchdule(this.href);"
+    <a href="javascript:void(0)" class="btn eroumcare_btn2" onclick="downloadExcel();" title="송장정보 다운로드">송장정보 다운로드</a>
+	<a href="./schedule/index.php" class="btn eroumcare_btn2" onclick="return showSchdule(this.href);"
             target="_blank" title="일정 보기">일정 보기</a>
+	<a href="javascript:void(0)" id="btn_hidden_order" class="btn eroumcare_btn2" title="숨김처리한 주문">숨김처리<?=($total_hidden_order)?" (".$total_hidden_order."건)":""?></a>
   </div>
+  <!--div class="r_btn_area2">
+    
+  </div-->
 
   <div id="hidden_order">
     <div class="hidden_order_title">숨김처리<?=($total_hidden_order)?" (".$total_hidden_order."건)":""?></div>
@@ -266,9 +312,9 @@ $(function(){
         
         <div class="date-box" style="width: 100%;" method="get">
         <div class="list-date">
-          <input type="text" name="s_date" value="<?=$_GET["s_date"]?>" id="date1" />
+          <input type="text" name="s_date" value="<?=$_GET["s_date"]?>" id="date1" autocomplete='off'/>
           ~
-          <input type="text" name="e_date" value="<?=$_GET["e_date"]?>" id="date2" />
+          <input type="text" name="e_date" value="<?=$_GET["e_date"]?>" id="date2" autocomplete='off'/>
         </div>
         <div class="list-tab">
           <a href="javascript:;" onclick="searchDateSetting('1week');">일주일</a>
@@ -697,6 +743,20 @@ $(function(){
   </ul>
 </div>
 
+<!-- 엑셀 다운로드 -->
+<div id="loading_excel">
+  <div class="loading_modal">
+    <p>엑셀파일 다운로드 중입니다.</p>
+    <p>잠시만 기다려주세요.</p>
+    <img src="/shop/img/loading.gif" alt="loading">
+    <button onclick="cancelExcelDownload();" class="btn_cancel_excel">취소</button>
+  </div>
+</div>
+<form method="post" id='download_excel'>
+	<input type="hidden" name="s_date" value="" id="date1_2" />
+    <input type="hidden" name="e_date" value="" id="date2_2" />
+</form>
+
 <?php if($setup_href) { ?>
   <p class="text-center">
     <a class="btn btn-color btn-sm win_memo" href="<?php echo $setup_href;?>">
@@ -805,4 +865,32 @@ $(function() {
   })
 
 });
+
+function downloadExcel() {//엑셀 다운로드
+	var href = './orderinquiry.excel.download.php';
+	var datas = $("#form_order_search").serialize()
+    //alert(JSON.stringify(datas));
+	var mobile_yn = '<?=$mobile_yn?>';
+	if(mobile_yn != "Pc"){
+		$("#date1_2").val($("#date1").val());
+		$("#date2_2").val($("#date2").val());
+		$("#download_excel").attr("action",href).submit();			
+	}else{	
+		$('#loading_excel').show();
+		EXCEL_DOWNLOADER = $.fileDownload(href, {
+		  httpMethod: "POST",
+		  data: datas
+		})
+		.always(function() {
+			$('#loading_excel').hide();
+		});
+	}
+}
+
+function cancelExcelDownload() {
+    if (EXCEL_DOWNLOADER != null) {
+      EXCEL_DOWNLOADER.abort();
+    }
+    $('#loading_excel').hide();
+}
 </script>
