@@ -26,7 +26,7 @@
   right: 20px;
 }
 
-.btn_im_send {
+.btn_im_send, .btn_im_send2 {
   display: inline-block;
   margin: 10px 0;
   padding: 20px;
@@ -41,10 +41,14 @@
 .btn_im_send.active {
   background: #8abf63;
 }
+.btn_im_send2.active {
+  background : #FEE500;
+  color : #181600;
+}
 .btn_im_send:hover, .btn_im_send:focus {
   color: #fff;
 }
-.im_send_wr .btn_im_send {
+.im_send_wr .btn_im_send, .im_send_wr .btn_im_send2 {
   padding: 10px;
 }
 
@@ -421,14 +425,18 @@
 .im_btn_more, .im_btn_less {
   position: absolute;
   display: block;
-  background: #fff;
-  border: 1px solid #ddd;
+  background: #181600;
+  border: 1px solid #181600;
   border-radius: 3px;
   text-align: center;
-  padding: 10px;
+  padding: 14px;
   bottom: 10px;
   left: 5px;
   width: calc(100% - 10px);
+  color: #fff;
+  /*font-weight: 500;
+  font-family: 'Noto Sans KR';
+  font-size: 16px;*/
 }
 
 .iv_pen_info {
@@ -571,7 +579,7 @@
 
 .im_switch:checked + label .im_switch_slider {
   left: -1px;
-  background: #8abf63;
+  background: #FF9015;
 }
 
 .im_switch + label .im_switch_slider span.on {
@@ -657,7 +665,7 @@
     background: white;
   }
 
-  .im_send_wr .btn_im_send {
+  .im_send_wr .btn_im_send, .im_send_wr .btn_im_send2 {
     margin: 0;
     width: 100%;
     /*padding: 20px 0 40px 0;*/
