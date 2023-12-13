@@ -13,13 +13,14 @@ $e_date = ($_POST["s_date"] == "" && $_POST["e_date"] == "")?date("Y-m")."-".dat
 		LEFT JOIN g5_shop_item as i ON c.it_id = i.it_id
 		where o.mb_id = '{$member['mb_id']}' AND od_del_yn = 'N' ";
 	
-	if($_POST["s_date"]){
+	if($s_date != ""){
 		$sql_search .= " AND od_time >= '{$s_date} 00:00:00' ";
 	}
 
-	if($_POST["e_date"]){
+	if($e_date != ""){
 		$sql_search .= " AND od_time <= '{$e_date} 23:59:59' ";
 	}
+
 	
 	$sql = " select o.*, i.it_model, i.it_name, 
 	c.ct_id, c.ct_status, c.ct_ex_date, c.ct_direct_delivery_date, c.ct_delivery_num, c.ct_delivery_company,c.ct_combine_ct_id, c.ct_option,c.ct_qty,
@@ -32,7 +33,7 @@ $e_date = ($_POST["s_date"] == "" && $_POST["e_date"] == "")?date("Y-m")."-".dat
 		  AND o.od_del_yn = 'N'
 		  {$sql_search}
 		  AND `od_hide_control` != '1' 
-		  AND c.ct_status IN ('준비', '출고준비','배송') 
+		  AND c.ct_status IN ('완료', '출고준비','배송') 
 		  ORDER BY o.od_id ASC,c.ct_delivery_company ASC,c.ct_delivery_num ASC";
 	$result = sql_query($sql);
 
@@ -44,50 +45,6 @@ $reader = PHPExcel_IOFactory::createReader('Excel2007');
 $excel = new PHPExcel();
 $sheet = $excel->getActiveSheet();
 
-/*
-//셀병합
-$excel->setActiveSheetIndex(0)->mergeCells('B1:I1');
-$excel->setActiveSheetIndex(0)->mergeCells('B2:I2');
-$excel->setActiveSheetIndex(0)->mergeCells('B3:H3');
-$excel->setActiveSheetIndex(0)->mergeCells('B4:C4');
-$excel->setActiveSheetIndex(0)->mergeCells('D4:E4');
-$excel->setActiveSheetIndex(0)->mergeCells('F4:G4');
-$excel->setActiveSheetIndex(0)->mergeCells('H4:I4');
-$excel->setActiveSheetIndex(0)->mergeCells('B5:C5');
-$excel->setActiveSheetIndex(0)->mergeCells('D5:E5');
-$excel->setActiveSheetIndex(0)->mergeCells('F5:G5');
-$excel->setActiveSheetIndex(0)->mergeCells('H5:I5');
-$excel->setActiveSheetIndex(0)->mergeCells('B6:E6');
-$excel->setActiveSheetIndex(0)->mergeCells('F6:I6');
-$excel->setActiveSheetIndex(0)->mergeCells('B7:E7');
-$excel->setActiveSheetIndex(0)->mergeCells('F7:I7');
-$excel->setActiveSheetIndex(0)->mergeCells('B8:I8');
-$excel->setActiveSheetIndex(0)->mergeCells('B9:B11');
-$excel->setActiveSheetIndex(0)->mergeCells('C9:C11');
-$excel->setActiveSheetIndex(0)->mergeCells('D9:D11');
-$excel->setActiveSheetIndex(0)->mergeCells('E9:E11');
-$excel->setActiveSheetIndex(0)->mergeCells('F9:F11');
-$excel->setActiveSheetIndex(0)->mergeCells('G9:I9');
-$excel->setActiveSheetIndex(0)->mergeCells('G10:G11');
-$excel->setActiveSheetIndex(0)->mergeCells('H10:H11');
-$excel->setActiveSheetIndex(0)->mergeCells('I10:I11');
-//대여품목 개수에 의해 숫자 변경 가능
-
-$item_count = count($it_id);
-$excel->setActiveSheetIndex(0)->mergeCells('B'.(12+$item_count).':C'.(12+$item_count));
-$excel->setActiveSheetIndex(0)->mergeCells('D'.(12+$item_count).':I'.(12+$item_count));
-$excel->setActiveSheetIndex(0)->mergeCells('B'.(13+$item_count).':B'.(15+$item_count));
-$excel->setActiveSheetIndex(0)->mergeCells('D'.(13+$item_count).':I'.(13+$item_count));
-$excel->setActiveSheetIndex(0)->mergeCells('C'.(14+$item_count).':C'.(15+$item_count));
-$excel->setActiveSheetIndex(0)->mergeCells('D'.(14+$item_count).':I'.(14+$item_count));
-$excel->setActiveSheetIndex(0)->mergeCells('D'.(15+$item_count).':I'.(15+$item_count));
-$excel->setActiveSheetIndex(0)->mergeCells('B'.(16+$item_count).':C'.(16+$item_count));
-$excel->setActiveSheetIndex(0)->mergeCells('D'.(16+$item_count).':F'.(16+$item_count));
-$excel->setActiveSheetIndex(0)->mergeCells('H'.(16+$item_count).':I'.(16+$item_count));
-$excel->setActiveSheetIndex(0)->mergeCells('B'.(17+$item_count).':I'.(17+$item_count));
-$excel->setActiveSheetIndex(0)->mergeCells('B'.(18+$item_count).':I'.(18+$item_count));
-$excel->setActiveSheetIndex(0)->mergeCells('B'.(19+$item_count).':I'.(19+$item_count));
-*/
 
 // 시트 네임
 $sheet->setTitle("송장정보(".$s_date."~".$e_date.")");
@@ -102,7 +59,7 @@ $i2 = "";
 
 for($i = 2;$row=sql_fetch_array($result); $i++){
 	switch($row["ct_status"]){//상태
-		case "준비": $ct_status = "상품준비";break;
+		case "완료": $ct_status = "배송완료";break;
 		case "출고준비": $ct_status = "출고준비";break;
 		case "배송": $ct_status = "출고완료";break;
 		//default : $ct_status = "상품준비";break;
@@ -150,16 +107,33 @@ for($i = 2;$row=sql_fetch_array($result); $i++){
 		$excel->setActiveSheetIndex(0)->setCellValue('K'.$i, $row["od_b_tel"]);//전화번호
 		$excel->setActiveSheetIndex(0)->setCellValue('L'.$i, $row["od_b_hp"]);//휴대폰번호
 		$i2 = $i;
-	}
-
-	
+	}	
 	$excel->getActiveSheet()->setCellValueExplicit('C'.$i , $ct_delivery_num , PHPExcel_Cell_DataType::TYPE_STRING);
 	$excel->setActiveSheetIndex(0)->setCellValue('D'.$i, $row["od_id"]);//주문번호
 	$excel->getActiveSheet()->setCellValueExplicit('D'.$i , $row["od_id"] , PHPExcel_Cell_DataType::TYPE_STRING);
 	$excel->setActiveSheetIndex(0)->setCellValue('E'.$i, $od_time);//주문일자
 	$excel->setActiveSheetIndex(0)->setCellValue('F'.$i, $row["it_name"]."(".$row["ct_option"].")");//상품명(옵션)
 	$excel->setActiveSheetIndex(0)->setCellValue('G'.$i, number_format($row["ct_qty"]));//수량
+
 	$ct_delivery_num2 = $ct_delivery_num;	
+}
+if($i2 < ($i-1)){//마지막에 동일 송장번호 있을 경우 적용
+	$excel->setActiveSheetIndex(0)->mergeCells('A'.$i2.':A'.($i-1));
+	$sheet->getStyle('A'.$i2.':A'.($i-1))->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+	$excel->setActiveSheetIndex(0)->mergeCells('B'.$i2.':B'.($i-1));
+	$sheet->getStyle('B'.$i2.':B'.($i-1))->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+	$excel->setActiveSheetIndex(0)->mergeCells('C'.$i2.':C'.($i-1));
+	$sheet->getStyle('C'.$i2.':C'.($i-1))->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+	$excel->setActiveSheetIndex(0)->mergeCells('H'.$i2.':H'.($i-1));
+	$sheet->getStyle('H'.$i2.':H'.($i-1))->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+	$excel->setActiveSheetIndex(0)->mergeCells('I'.$i2.':I'.($i-1));
+	$sheet->getStyle('I'.$i2.':I'.($i-1))->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+	$excel->setActiveSheetIndex(0)->mergeCells('J'.$i2.':J'.($i-1));
+	$sheet->getStyle('J'.$i2.':J'.($i-1))->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+	$excel->setActiveSheetIndex(0)->mergeCells('K'.$i2.':K'.($i-1));
+	$sheet->getStyle('K'.$i2.':K'.($i-1))->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+	$excel->setActiveSheetIndex(0)->mergeCells('L'.$i2.':L'.($i-1));
+	$sheet->getStyle('L'.$i2.':L'.($i-1))->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
 }
 
 //정렬
