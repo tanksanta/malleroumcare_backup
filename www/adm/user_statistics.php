@@ -392,6 +392,19 @@ else if ($type == 'recipient') {
     $results['recipient'] = $arr;
 
     // 종료 -->
+} 
+else if( $type == 'matchingservice' ) {
+
+    $list_head = ['사업소ID', '사업소명','사업소사업자번호','전체배정건수','상담신청접수','상담취소건수','상담진행중','상담완료','최근배정일시'];
+    
+    // 통계용 데이터 리스트 호출
+    // 프로시저 : CALL `PROC_EROUMCARE_CONSLT`('모드','회원사업자번호', '검색시작일', '검색종료일','페이지포인터시작','리스트수량','검색조건');
+    //            사업소 매칭 관련 통계 정보는 이로움Care와 이로움ON간의 사업소 정보가 모두 동일하게 들어가는 기준으로
+    //            이로움ON데이터의 사업소 리스트인 BPLC 테이블의 데이터만 가지고 통계를 추출하여 화면에 뿌려 준다.
+    $sql = (" CALL `PROC_EROUMCARE_CONSLT`('stats','NULL', '{$fr_date}', '{$to_date}','NULL','NULL','NULL'); ");
+    $sql_result = "";
+    $sql_result = sql_query( $sql , "" , $g5['eroumon_db'] ); mysqli_next_result($g5['eroumon_db']);
+    
 }
 
 
@@ -470,7 +483,11 @@ else if ($type == 'recipient') {
         }?>
 	<thead>
     <tr>
-        <?php if ($type == 'inquire_data') {
+        <?php if ($type == 'matchingservice') {
+			foreach($list_head as $name) {  ?>
+                <th scope="col"><?=$name?></th>
+            <?php }
+        } else if ($type == 'inquire_data') {
 			foreach($list_head as $name) {  ?>
                 <th scope="col"><?=$name?></th>
             <?php }
@@ -524,7 +541,9 @@ else if ($type == 'recipient') {
     </tr>
     </thead>
     <tbody id = "table_static">
-    <?php if ($type != 'inquire_data' ) { ?>
+    <?php if($type == 'matchingservice') { ?>
+
+    <?php } else if($type != 'inquire_data') { ?>
         <tr class="bg0">
             <td>누적</td>
             <?php if ($type == 'user') { ?>
@@ -686,7 +705,25 @@ else if ($type == 'recipient') {
 				<?php }?>
             </tr>
         <?php }  }
-    if ($type != 'login_user') {
+        if($type == 'matchingservice') { ?>
+                
+        <?php for($i=0; $row=sql_fetch_array($sql_result); $i++) { ?>
+            <tr class="bg0">
+                <td><?=$row['사업소ID'] ?></td>
+                <td><?=$row['사업소명'] ?></td>
+                <td><?=$row['사업소사업자번호'] ?></td>
+                <td><?=$row['전체배정건수'] ?></td>
+                <td><?=$row['상담신청접수'] ?></td>
+                <td><?=$row['상담취소'] ?></td>
+                <td><?=$row['상담진행중'] ?></td>
+                <td><?=$row['상담완료'] ?></td>
+                <td><?=$row['최근배정일시'] ?></td>
+            </tr>
+        <?php } ?>
+    
+        <?php
+        } else if ($type != 'login_user') {
+
         for ( $i = $startTime; $i <= $endTime; $i = $i + 86400 ) {
             $thisDate = date( 'Y-m-d', $i );
             $datas = [];
@@ -730,6 +767,7 @@ else if ($type == 'recipient') {
                     array_push($datas, $results[$key][$thisDate] ?: 0);
                 }
             } 
+
         if($type != 'inquire_data') {?>
         <tr class="bg0">
             <?php foreach($datas as $data) { ?>
@@ -738,7 +776,7 @@ else if ($type == 'recipient') {
         </tr>
     <?php }
         }
-    } else { ?>        
+    } else { ?>     
         <?php foreach($results['login_user'] as $data) { ?>
             <tr class="bg0">
             <td><?php echo $data['mb_id'] ?></td>

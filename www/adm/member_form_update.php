@@ -268,8 +268,11 @@ $sql_common = "  mb_name = '{$_POST['mb_name']}',
                  mb_temp = '{$mb_temp}',
                  send_transaction = '{$send_transaction}',
                  send_transaction_e = '{$send_transaction_e}',
-                 send_transaction_f = '{$send_transaction_f}'
-                  ";
+                 send_transaction_f = '{$send_transaction_f}',
+                 mb_matching_manager_mail = '{$_POST['mb_matching_manager_mail']}',
+                 mb_matching_manager_tel = '{$_POST['mb_matching_manager_tel']}',
+                 mb_matching_manager_nm = '{$_POST['mb_matching_manager_nm']}'
+                ";
 
 $sendData = array(
     'usrId' => $mb_id,
@@ -430,6 +433,24 @@ else if ($w == 'u')
                      {$sql_as_date}
 				where mb_id = '{$mb_id}' ";
     sql_query($sql);
+    
+    
+    // 23.11.22 : 서원 - 이로움ON과 사업소정보인 BPLC 테이블 정보중 매칭 담당자 정보를 연동 하기위한 Array 생성.
+    $_matchingINFO = [
+        "mb_giup_matching" => $_POST['mb_giup_matching']
+        ,"mb_matching_manager_nm" => $_POST['mb_matching_manager_nm']
+        ,"mb_matching_manager_tel" => $_POST['mb_matching_manager_tel']
+        ,"mb_matching_manager_mail" => $_POST['mb_matching_manager_mail']
+        ,"mb_id" => $mb_id
+        ,"mb_giup_bnum" => $mb_giup_bnum
+    ];
+
+    // 23.11.20 - 서원 : 프로시저 CALL `PROC_EROUMCARE_BPLC`('모드','이로움ON 회원 데이터');
+    //                    사업소의 매칭 담당자 정보는 사업소ID와 사업자번호가 이로움Care와 이로움ON이 동일해야 변경됨.
+    $sql = (" CALL `PROC_EROUMCARE_BPLC`('UPDATE_matching','".json_encode($_matchingINFO, JSON_UNESCAPED_UNICODE)."'); ");
+    $sql_result = "";
+    $sql_result = sql_fetch( $sql , "" , $g5['eroumon_db'] ); mysqli_next_result($g5['eroumon_db']);
+
 }
 else
     alert('제대로 된 값이 넘어오지 않았습니다.');
@@ -664,7 +685,11 @@ if( $w == '' || $w == 'u' ){
                     mb_giup_bname = '{$resInfo["entNm"]}',
                     sealFile = '".$sealFile_name."',
                     crnFile = '".$crnFile_name."',
-                    mb_datetime = '".G5_TIME_YMDHIS."'
+                    mb_datetime = '".G5_TIME_YMDHIS."',
+                    mb_matching_manager_mail = '{$resInfo["mb_matching_manager_mail"]}',
+                    mb_matching_manager_tel = '{$resInfo["mb_matching_manager_tel"]}',
+                    mb_matching_manager_nm = '{$resInfo["mb_matching_manager_nm"]}'
+
             ");
         } else {
             sql_query("

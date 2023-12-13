@@ -40,6 +40,7 @@ $query_string = $qstr ? $qstr : '';
     <li><a href="./user_statistics.php?type=login_user&<?php echo $query_string ?>">방문자집계(사업소별)</a></li>
     <li><a href="./user_statistics.php?type=recipient&<?php echo $query_string ?>">등록한 수급자</a></li>
     <li><a href="./user_statistics.php?type=inquire_data&page=all&<?php echo $query_string ?>">요양정보 조회 집계(전체사업소)</a></li>
+    <li><a href="./user_statistics.php?type=matchingservice&<?php echo $query_string ?>">매칭서비스</a></li>
 <!--
     <li><a href="./user_statistics.php?type=inquire_data&page=ent&<?php echo $query_string ?>">요양정보 조회 집계(사업소별)</a></li>
     <li><a href="./user_statistics.php?type=inquire_data&page=date&<?php echo $query_string ?>">요양정보 조회 집계(일자별)</a></li>
