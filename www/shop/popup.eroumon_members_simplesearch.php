@@ -58,20 +58,23 @@
 			$_url = "/bbs/member_confirm.php?url=member_info_newform.php&STEP=stop04";
 		}
     }
-
-	if( $_errCK ) {
-		echo("
-			<script>
-				alert('" . $_msg . "');
-				window.parent.document.location.href = '" . $_url . "';
-			</script>
-		");
-	}
-
+	$_consltID = $_POST['consltID'];
+	// == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == ==
+    // SQL 처리 부분 시작
+    // == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == ==
+    if( $eroumon_connect_db ) {
+	$sql = ("SELECT CTGRY_NM,CARE_CTGRY_CD FROM `MBR_CONSLT_GDS` WHERE CONSLT_NO='{$_consltID}';");
+        $sql_result2 = "";
+        $sql_result2 = sql_query( $sql , "" , $g5['eroumon_db'] ); mysqli_next_result($g5['eroumon_db']);
+		
+    }
+    // == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == ==
+    // SQL 처리 부분 종료
+    // == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == ==
 
     $_penNum = clean_xss_attributes( clean_xss_tags( get_search_string( $_POST['penNum'] ) ) );
     $_penNm = clean_xss_attributes( clean_xss_tags( get_search_string( $_POST['penNm'] ) ) );    
-    if( !$_penNum || !$_penNm ) { alert("수급자 정보를 확인할 수 없습니다."); }
+    if( !$_penNm ) { alert("수급자 정보를 확인할 수 없습니다."); }
 
 
 	/* SQL 처리 부분 시작 ====  ====  ====  ====  ====  ====  ====  ====  ====  ====  ====  ====  ====  ====  ====  ====  ====  ====  ==== */
@@ -88,6 +91,75 @@
 
 	/* SQL 처리 부분 종료 ====  ====  ====  ====  ====  ====  ====  ====  ====  ====  ====  ====  ====  ====  ====  ====  ====  ====  ==== */
 
+
+$img = array(//품목별 이미지 번호
+				'성인용보행기'=> 1
+				,'수동휠체어'=> 2
+				,'지팡이'=> 3
+				,'안전손잡이'=> 4
+				,'미끄럼방지매트'=> 5
+				,'미끄럼방지양말'=> 6
+				,'욕창예방매트리스'=> 7
+				,'욕창예방방석'=> 8
+				,'자세변환용구'=> 9
+				,'요실금팬티'=> 10
+				,'목욕의자'=> 11
+				,'간이변기'=> 12
+				,'이동변기'=> 13
+				,'경사로'=> 14
+				,'경사로(실외)'=> 15
+				,'전동침대'=> 16
+				,'수동침대'=> 17
+				,'이동욕조'=> 18
+				,'목욕리프트'=> 19
+				,'배회감지기'=> 20
+			);
+
+$img2 = array(//품목별 이미지 번호
+				'성인용보행기'=> 1
+				,'수동휠체어'=> 2
+				,'지팡이'=> 3
+				,'안전손잡이'=> 4
+				,'미끄럼방지용품_매트/방지액'=> 5
+				,'미끄럼방지용품_양말'=> 6
+				,'욕창예방매트리스'=> 7
+				,'욕창예방방석'=> 8
+				,'자세변환용구'=> 9
+				,'요실금팬티'=> 10
+				,'목욕의자'=> 11
+				,'간이변기'=> 12
+				,'이동변기'=> 13
+				,'경사로(실내용)'=> 14
+				,'경사로(실외용)'=> 15
+				,'전동침대'=> 16
+				,'수동침대'=> 17
+				,'이동욕조'=> 18
+				,'목욕리프트'=> 19
+				,'배회감지기'=> 20
+			);
+$pro_title = array(//품목명 변경
+				'성인용보행기'=>'성인용보행기'
+				,'수동휠체어'=>'수동휠체어'
+				,'지팡이'=>'지팡이'
+				,'안전손잡이'=>'안전손잡이'
+				,'미끄럼방지매트'=>'미끄럼방지용품_매트/방지액'
+				,'미끄럼방지양말'=>'미끄럼방지용품_양말'
+				,'욕창예방매트리스'=>'욕창예방매트리스'
+				,'욕창예방방석'=>'욕창예방방석'
+				,'자세변환용구'=>'자세변환용구'
+				,'요실금팬티'=>'요실금팬티'
+				,'목욕의자'=>'목욕의자'
+				,'간이변기'=>'간이변기'
+				,'이동변기'=>'이동변기'
+				,'경사로'=>'경사로(실내용)'
+				,'경사로(실외)'=>'경사로(실외용)'
+				,'전동침대'=>'전동침대'
+				,'수동침대'=>'수동침대'
+				,'이동욕조'=>'이동욕조'
+				,'목욕리프트'=>'목욕리프트'
+				,'배회감지기'=>'배회감지기'
+			);
+
 ?>
 
 <!DOCTYPE html>
@@ -103,26 +175,81 @@
         <script src="<?=G5_JS_URL ?>/jquery-1.11.3.min.js"></script>
         <script src="<?=G5_JS_URL ?>/jquery-ui.min.js"></script>
 	    <link rel="stylesheet" href="<?=G5_ADMIN_URL; ?>/css/popup.css?v=<?=APMS_SVER;?>">
+		<!-- bootstrap -->
+     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+	 <!-- font swesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     </head>
 
     <body>
 
         <!-- 고정 상단 -->
         <div id="popupHeaderTopWrap">
-            <div class="title">수급자 요양정보</div>
-            <div class="close"> <a href="javascript:void(0);" onclick="setClose();" > &times; </a> </div>
+            <div class="title">수급자 상담 정보 상세</div>
+            <div class="close" style="padding-right:0px;"> <a href="javascript:void(0);" onclick="setClose();" > &times; </a> </div>
         </div>
         
-        <div style="height:20px;"></div>
+        <div style="height:60px;"></div>
 
-	    <div class="head">
+		<div class="d-flex flex-column justify-content-center" style="width: 100%">
+			<div class="d-flex flex-column">     
+				<p class="fs-2 fw-bolder">복지용구상담</p>
+				<p class="fs-5 p-3" style="background-color: #eee;">상담받을 연락처  : <span class="fw-bolder"><?=$_POST['MBR_TELNO']?></span></p>           
+			</div>
+			<div class="d-flex flex-column ps-3">  
+				<p class="fs-6 fw-bolder mb-1">어르신 관심 품목 (<?=sql_num_rows($sql_result2)?>개)</p>
+				<p class="text-secondary" style="font-size:14px;">※ 요양정보(계약완료/구매예상)는 데이터 조회 시점에 따라 실제와 다를 수 있으니 참고용으로만 사용바랍니다</p>
+			</div>
+			<div>
+			<div class="d-flex flex-row gap-3 ml mb-3">
+<?php 
+	$arr_item = [];
+	for($i=1;$row = sql_fetch_array($sql_result2);$i++){
+		$arr_item[] = $pro_title[$row["CTGRY_NM"]];
+
+		if($i != 1 && $i%4 == 1){?>
+			</div>
+			</div>
+			<div id="" class="d2">
+			<div class="d-flex flex-row gap-3 ml mb-3 ">
+<?php	}	?>
+				<div class="card p-3" style="width: 23%;">
+				  <div style="height: 40px">
+						<font class="card-title fw-bold" style="font-size:14px;"><?=$pro_title[$row["CTGRY_NM"]]?></font>             
+				  </div>
+				  <div class="p-3 d-flex justify-content-center" style="height: 80px;"><img src="https://eroum.co.kr/html/page/index/assets/images/img-checkpoint<?=$img[$row["CTGRY_NM"]]?>.png" alt="card-group-image" style="height:100%;"></div>
+				  <div class="d-flex flex-column align-items-center">
+					<span class="d-flex gap-4" style="font-size:14px;width:100%;">계약완료 <span class="fw-bolder" style="width:25%;text-align:center;" id="e_count<?=$img[$row["CTGRY_NM"]]?>">-</span></span>
+					<span class="d-flex gap-4" style="font-size:14px;width:100%;">구매예상 <span class="fw-bolder" style="width:25%;text-align:center;" id="s_count<?=$img[$row["CTGRY_NM"]]?>">-</span></span>
+				  </div>
+				</div>
+<?php }?>
+				  </div>
+			  </div>
+<?php if($i > 5){?>			  
+			  <div class="d-flex justify-content-center py-3 ">
+				<button type="button" class="btn btn-outline-secondary" id="b1">더보기 <i class="fa-solid fa-angle-down"></i></button>
+				<button type="button" class="btn btn-outline-secondary" id="b2">숨기기 <i class="fa-solid fa-angle-up"></i></button>
+			  </div>
+<?php }?>         
+		</div>	
+
+		<div id="" style="width: 100%; padding: 15px 0px ; border: #ddd 2px solid; background-color: #f5f5f5; text-align: center; vertical-align: middle;border-radius: 0.3rem;font-size: 14px; font-weight:bold;color:#777;"> 
+			<input type="hidden" id="penNum" value="<?=$_penNum?>">
+			수급자 성명&nbsp;&nbsp;<input type="text" id="penNm" value="<?=$_penNm?>" style="background-color:#ddd;width:80px;" class="input-sm" readonly>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			요양인정번호&nbsp;&nbsp;<input type="text" id="penNum2" value="<?=($_penNum !="")?"있음":"";?>" placeholder="L을 제외한 숫자만 입력" <?=($_penNum !="")?"readonly":"oninput=\"this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');\"";?>  style="background-color:#ddd;width:170px;" maxlength="10" class="input-sm">
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<input type="button" value="조회하기" id="recipient_info" class="btn" style="padding:5px 15px;background-color:#333333;color:#fff;font-size: 14px;"> 
+		</div>
+		<div style="height:20px;"></div>
+	    <div class="head"><?php //==================요양정보 구간 ?>
 	    	
 			<input type="hidden" id="APDT_FR_DT">
 			<input type="hidden" id="APDT_TO_DT">
 
 	        <p class="head-title"><span class="panNm">이로움</span>님의 요양정보</span></p>
 	    
-	        <div class="rep_amount">
+	        <div class="rep_amount" style="padding:19px 0px 4px 0px;">
 	            <p style="color: #ee0000;">급여 잔액 : <span class = "rem_amount">1,600,000</span>원</p>
 	            <p>사용 금액 : <span class ="used_amount">0</span>원</p>
 	        </div>
@@ -238,11 +365,11 @@
 
         <!-- 고정 하단 -->
         <div id="popupFooterBtnWrap">
-            <a href="javascript:void(0);" class="btn btn_close" onclick="setClose();" > 닫 기 </a>
+            <a href="javascript:void(0);" class="btn_close" onclick="setClose();" > 확인 </a>
         </div>
 
 		<!-- 로딩 중 -->
-		<div id="loading">
+		<div id="loading" style="display:none;">
 			<div>
 				<img src="/img/loading_apple.gif" class="img-responsive">
 				<p>정보를 불러오고 있습니다.<br>잠시만 기다려주세요.</p>
@@ -275,6 +402,7 @@
 			.head { 
 				width: 100%;
 				padding-top:1%;
+				display:none;
 			}
 			
 			.head .rep_amount {
@@ -372,6 +500,10 @@
             .normal-row td {
                 padding: 0.8% 0%;
             }
+			
+			.d2,#b2{
+				display:none;
+			}
 
 			#loading {
 				background-color: rgba(0,0,0,0.7);
@@ -427,7 +559,7 @@
             }
 
             /* 고정 상단 */
-            #popupHeaderTopWrap { position: fixed; width: 100%;  height:30px; left: 0; top: 0; z-index: 10; background-color: #333; padding: 0 20px; }
+            #popupHeaderTopWrap { position: fixed; width: 100%;  height:50px; left: 0; top: 0; z-index: 10; background-color: #333; padding: 12px 20px; }
             #popupHeaderTopWrap:after { display: block; content: ''; clear: both; }
             #popupHeaderTopWrap > div { height: 100%; line-height: 22px; }
             #popupHeaderTopWrap > .title { float: left; font-weight: bold; color: #FFF; font-size: 16px; line-height: 28px; }
@@ -500,13 +632,32 @@
 				transform: translate(-50%, -50%);
 				background: white;
 			}
+			.input-sm {
+				padding: 5px 10px;
+				font-size: 14px;
+				line-height: 1.5;
+				border:0px;
+				font-weight:bold;
+				color:#777;
+			}
 		</style>
 
 	    <script>
 
-	        $(function () {
+	        $(function () {	
+                $('#b1').click(function() {//더보기 클릭                   
+					$('.d2').fadeIn('fast');
+					$('#b2').show();
+					$('#b1').hide();
+                });
 
-                $('#cert_popup_box').click(function() {
+				$('#b2').click(function() {//숨기기 클릭
+                    $('.d2').hide();
+					$('#b2').hide();
+					$('#b1').show();
+                });
+
+				$('#cert_popup_box').click(function() {
                     $('body').removeClass('modal-open');
                     $('#cert_popup_box').hide();
                 });
@@ -522,105 +673,123 @@
                 });
 
                 
+				$('#recipient_info').click(function() {
+<?php if( $_errCK ) {?>
+		alert('<?=$_ms?>');
+		window.parent.document.location.href = '<?=$_url?>';
+		return false;
+<?php }?>
 
-	        	const ID = "<?=$_penNum;?>";
-	        	const RN = "<?=$_penNm;?>";
-								
-				$(".panNm").text( RN );
-				
-				const RecipientInquiryDT = localStorage.getItem(ID+'_RecipientInquiryDT');
-				const RecipientInquiryID = localStorage.getItem(ID+'_RecipientInquiryID');
-				const currentDate = new Date();                
-                      //currentDate.setHours(currentDate.getHours() + 2);
-
-				// 동일 페이지 내에서 새로고침시 틸코 조회 제한.
-				if( (Number(RecipientInquiryDT) > currentDate.getTime()) && (RecipientInquiryID === ID) ) {
-
-					const ds_welToolTgtList = JSON.parse(localStorage.getItem(ID+'_ds_welToolTgtList'));
-					const ds_toolPayLmtList = JSON.parse(localStorage.getItem(ID+'_ds_toolPayLmtList'));
-					const recipientToolList = JSON.parse(localStorage.getItem(ID+'_recipientToolList'));
-					const ds_ctrHistTotalList = JSON.parse(localStorage.getItem(ID+'_ds_ctrHistTotalList'));
-/*
-					console.log( "== == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == " );
-					console.log( ds_welToolTgtList );
-					console.log( "== == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == " );
-					console.log( ds_toolPayLmtList );
-					console.log( "== == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == " );
-					console.log( recipientToolList );
-					console.log( "== == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == " );
-					console.log( ds_ctrHistTotalList );
-					console.log( "== == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == " );
-*/
-                    Set_Display( ds_welToolTgtList, ds_toolPayLmtList, recipientToolList, ds_ctrHistTotalList );
-
-				} else {
-
-		            // ajax 처리 시작
-		            $.ajax({
-		                url: '/shop/ajax.recipient.inquiry.php', type: 'POST', dataType: 'json', 
-		                data: { id : ID, rn : RN },
-		                success: function( result ) {
-
-		                    const ds_welToolTgtList = result.data.recipientContractDetail.Result.ds_welToolTgtList[0];
-		                    const ds_toolPayLmtList = result.data.recipientContractDetail.Result.ds_toolPayLmtList;
-		                    const recipientToolList = result.data.recipientToolList;
-		                    const ds_ctrHistTotalList = result.data.recipientContractDetail.Result.ds_ctrHistTotalList
-/*
-							console.log( "== == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == " );
-							console.log( ds_welToolTgtList );
-							console.log( "== == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == " );
-							console.log( ds_toolPayLmtList );
-							console.log( "== == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == " );
-							console.log( recipientToolList );
-							console.log( "== == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == " );
-							console.log( ds_ctrHistTotalList );
-							console.log( "== == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == " );
-*/
-		                    // 로컬 스토리지 저장.
-		                    localStorage.setItem(ID+'_ds_welToolTgtList', JSON.stringify(ds_welToolTgtList));
-		                    localStorage.setItem(ID+'_ds_toolPayLmtList', JSON.stringify(ds_toolPayLmtList));
-		                    localStorage.setItem(ID+'_recipientToolList', JSON.stringify(recipientToolList));
-		                    localStorage.setItem(ID+'_ds_ctrHistTotalList', JSON.stringify(ds_ctrHistTotalList));
-
-		                    const rDT = new Date();
-                                  rDT.setHours(rDT.getHours() + 1);
-
-		                    localStorage.setItem(ID+'_RecipientInquiryDT', rDT.getTime());
-		                    localStorage.setItem(ID+'_RecipientInquiryID', ID);
-							
-							Set_Display( ds_welToolTgtList, ds_toolPayLmtList, recipientToolList, ds_ctrHistTotalList );
-
-		                },
-		                error: function( error ) {
-
-                            if( error.responseJSON == undefined ) {
-                                alert( "수급자의 요양정보를 확인할 수 없습니다." );
-                                setClose();
-                                return;
-                            }
-
-                            let errorMessage = error.responseJSON.message;
-                            let errorCode = Number(error.responseJSON.data.err_code);
-                            
-                            //console.log( errorMessage );
-                            //console.log( errorCode );
-
-                            if( errorCode === 1 ) { alert("공인인증서가 등록되어어 있지 않습니다.\n<?=(!$_isMobile)?' 컴퓨터에서':'';?> 공인인증서를 재등록 해 주세요."); }
-                            else if( errorCode === 2 ) { pwd_insert(); }
-                            else if( errorCode === 3 ) { alert("등록된 인증서가 사용 기간이 만료 되었습니다.\n<?=(!$_isMobile)?' 컴퓨터에서':'';?> 공인인증서를 재등록 해 주세요."); }
-                            else if( errorCode === 4 ) { alert("수급자의 요양정보를 확인할 수 없습니다."); }
-                            else if( errorCode === 5 ) { ent_num_insert(); }
-
-							$("#loading").hide();
-
+					var ID = "<?=$_penNum;?>";//$("#penNum").val();
+					const RN = "<?=$_penNm;?>";//$("#penNm").val();
+					if(ID == ""){//요양인정번호 없을 경우
+						if($("#penNum2").val() != ""){
+							ID = $("#penNum2").val();
+						}else{
+							alert("요양인정번호를 입력해 주세요.");
+							$("#penNum2").focus();
 							return false;
+						}
+					}
+									
+					$(".panNm").text( RN );
+					
+					const RecipientInquiryDT = localStorage.getItem(ID+'_RecipientInquiryDT');
+					const RecipientInquiryID = localStorage.getItem(ID+'_RecipientInquiryID');
+					const currentDate = new Date();                
+						  //currentDate.setHours(currentDate.getHours() + 2);
 
-			            }
+					// 동일 페이지 내에서 새로고침시 틸코 조회 제한.
+					$("#loading").show();
+					if( (Number(RecipientInquiryDT) > currentDate.getTime()) && (RecipientInquiryID === ID) ) {
 
-		            });
-		            // ajax 처리 종료
+						const ds_welToolTgtList = JSON.parse(localStorage.getItem(ID+'_ds_welToolTgtList'));
+						const ds_toolPayLmtList = JSON.parse(localStorage.getItem(ID+'_ds_toolPayLmtList'));
+						const recipientToolList = JSON.parse(localStorage.getItem(ID+'_recipientToolList'));
+						const ds_ctrHistTotalList = JSON.parse(localStorage.getItem(ID+'_ds_ctrHistTotalList'));
+	/*
+						console.log( "== == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == " );
+						console.log( ds_welToolTgtList );
+						console.log( "== == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == " );
+						console.log( ds_toolPayLmtList );
+						console.log( "== == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == " );
+						console.log( recipientToolList );
+						console.log( "== == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == " );
+						console.log( ds_ctrHistTotalList );
+						console.log( "== == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == " );
+	*/
+						
+						Set_Display( ds_welToolTgtList, ds_toolPayLmtList, recipientToolList, ds_ctrHistTotalList );
 
-	        	}
+					} else {
+
+						// ajax 처리 시작
+						$.ajax({
+							url: '/shop/ajax.recipient.inquiry.php', type: 'POST', dataType: 'json', 
+							data: { id : ID, rn : RN },
+							success: function( result ) {
+
+								const ds_welToolTgtList = result.data.recipientContractDetail.Result.ds_welToolTgtList[0];
+								const ds_toolPayLmtList = result.data.recipientContractDetail.Result.ds_toolPayLmtList;
+								const recipientToolList = result.data.recipientToolList;
+								const ds_ctrHistTotalList = result.data.recipientContractDetail.Result.ds_ctrHistTotalList
+	/*
+								console.log( "== == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == " );
+								console.log( ds_welToolTgtList );
+								console.log( "== == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == " );
+								console.log( ds_toolPayLmtList );
+								console.log( "== == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == " );
+								console.log( recipientToolList );
+								console.log( "== == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == " );
+								console.log( ds_ctrHistTotalList );
+								console.log( "== == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == " );
+	*/
+								// 로컬 스토리지 저장.
+								localStorage.setItem(ID+'_ds_welToolTgtList', JSON.stringify(ds_welToolTgtList));
+								localStorage.setItem(ID+'_ds_toolPayLmtList', JSON.stringify(ds_toolPayLmtList));
+								localStorage.setItem(ID+'_recipientToolList', JSON.stringify(recipientToolList));
+								localStorage.setItem(ID+'_ds_ctrHistTotalList', JSON.stringify(ds_ctrHistTotalList));
+
+								const rDT = new Date();
+									  rDT.setHours(rDT.getHours() + 1);
+
+								localStorage.setItem(ID+'_RecipientInquiryDT', rDT.getTime());
+								localStorage.setItem(ID+'_RecipientInquiryID', ID);
+
+								Set_Display( ds_welToolTgtList, ds_toolPayLmtList, recipientToolList, ds_ctrHistTotalList );
+
+							},
+							error: function( error ) {
+
+								if( error.responseJSON == undefined ) {
+									alert( "수급자의 요양정보를 확인할 수 없습니다." );
+									setClose();
+									return;
+								}
+
+								let errorMessage = error.responseJSON.message;
+								let errorCode = Number(error.responseJSON.data.err_code);
+								
+								//console.log( errorMessage );
+								//console.log( errorCode );
+
+								if( errorCode === 1 ) { alert("공인인증서가 등록되어어 있지 않습니다.\n<?=(!$_isMobile)?' 컴퓨터에서':'';?> 공인인증서를 재등록 해 주세요."); }
+								else if( errorCode === 2 ) { pwd_insert(); }
+								else if( errorCode === 3 ) { alert("등록된 인증서가 사용 기간이 만료 되었습니다.\n<?=(!$_isMobile)?' 컴퓨터에서':'';?> 공인인증서를 재등록 해 주세요."); }
+								else if( errorCode === 4 ) { alert("수급자의 요양정보를 확인할 수 없습니다."); }
+								else if( errorCode === 5 ) { ent_num_insert(); }
+
+								$("#loading").hide();
+
+								return false;
+
+							}
+
+						});
+						// ajax 처리 종료
+
+					}
+				});
 
 	        });
 
@@ -662,7 +831,7 @@
 			const tmpItemList = <?=json_encode($prodPayCodeArray)?> ;
 
 			function Set_Display( ds_welToolTgtList, ds_toolPayLmtList, recipientToolList, ds_ctrHistTotalList ) {
-
+				$(".head").show();
 				// 수급자 정보 셋팅
 				pen_userSet_Info( ds_welToolTgtList );
 
@@ -871,13 +1040,23 @@
 
 
 			function pen_listSet_Item( TableList, ItemCnt ) {
+				var arr_item = <?=json_encode($arr_item);?>;
+				var arr_img = <?=json_encode($img2);?>;
+				var sale_yok = 0;
+				var rant_yok = 0;
 
+				var tr_bg = "";
 				var No = 0;
 				let flag = true;
 
+				Object.entries(TableList['rent']).forEach(([key, value]) => {
+					if( key.includes( "욕창예방매트리스" ) && (value['cnt']?value['cnt']:0)>0) {
+						rant_yok = 1;
+					}
+				});
 				$('#table_sale').empty();  
 				Object.entries(TableList['sale']).forEach(([key, value]) => {
-					
+					tr_bg = (arr_item.includes(key))? " style='background-color:#fff2f2'" : "";
 					let tNo = No;
 					let sale = "";
 					let cnt_Sale = "";
@@ -885,12 +1064,26 @@
 
 					if( value['use'] ) { 
 						sale = `<font color='blue'>급여가능</font>`;
-						cnt_Sale = (value['cnt']?value['cnt']:0) + `개`;
-						cnt_Stock = (value['cnt']?ItemCnt[key]-value['cnt']:ItemCnt[key]) + `개`;
+						if(key.includes( "욕창예방매트리스" ) && rant_yok == 1){//욕창예방매트리스 대여 있을 경우
+							cnt_Sale = `0개`;
+							cnt_Stock = `0개`;
+						}else{
+							if(key.includes( "욕창예방매트리스" ) && (value['cnt']?value['cnt']:0)>0){
+								sale_yok = 1;
+							}
+							cnt_Sale = (value['cnt']?value['cnt']:0) + `개`;
+							cnt_Stock = (value['cnt']?ItemCnt[key]-value['cnt']:ItemCnt[key]) + `개`;
+
+							$("#e_count"+arr_img[key]).text((value['cnt']?value['cnt']:0));
+							$("#s_count"+arr_img[key]).text((value['cnt']?ItemCnt[key]-value['cnt']:ItemCnt[key]));
+						}
 					} else { 
 						sale = `<font color='red'>급여불가</font>`;
 						cnt_Sale = `<div class='NotApplicable'>해당없음</div>`;
 						cnt_Stock = `<div class='NotApplicable'>해당없음</div>`;
+
+						$("#e_count"+arr_img[key]).html("<font color='red'>X</font>");
+						$("#s_count"+arr_img[key]).html("<font color='red'>X</font>");
 					}
 
 					if( key.includes( "미끄럼방지용품" ) ) {
@@ -904,7 +1097,7 @@
 					} else { tNo = ++No; }
 					
 					let row = `
-						<tr id="" class="normal-row">
+						<tr id="" class="normal-row"`+tr_bg+`>
 							<td colspan="1">` + tNo + `</td> <td colspan="4">` + key + `</td> <td colspan="2">` + sale + `</td> <td colspan="2">` + cnt_Sale + `</td> <td colspan="1">` + cnt_Stock + `</td>
 						</tr>
 					`;
@@ -917,25 +1110,35 @@
 				var No = 1;
 				$('#table_rental').empty();
 				Object.entries(TableList['rent']).forEach(([key, value]) => {
-
+					tr_bg = (arr_item.includes(key))? " style='background-color:#fff2f2'" : "";
 					let sale = "";
 					let cnt_Sale = "";
 					let cnt_Stock = "";
 
 					if( value['use'] ) { 
 						sale = `<font color='blue'>급여가능</font>`;
-						let _Sale = (value['cnt']?value['cnt']:0);
-						cnt_Sale = (_Sale>=1?1:0) + `개`;
-						let _Stock = (value['cnt']?ItemCnt[key]-value['cnt']:ItemCnt[key]);
-						cnt_Stock = (_Stock<0?"0":_Stock) + `개`;
+						if(key.includes( "욕창예방매트리스" ) && sale_yok == 1){//욕창예방매트리스 대여 있을 경우
+							cnt_Sale = `0개`;
+							cnt_Stock = `0개`;
+						}else{							
+							let _Sale = (value['cnt']?value['cnt']:0);
+							cnt_Sale = (_Sale>=1?1:0) + `개`;
+							let _Stock = (value['cnt']?ItemCnt[key]-value['cnt']:ItemCnt[key]);
+							cnt_Stock = (_Stock<0?"0":_Stock) + `개`;
+
+							$("#e_count"+arr_img[key]).text((_Sale>=1?1:0));
+							$("#s_count"+arr_img[key]).text((_Stock<0?"0":_Stock));
+						}
 					} else { 
 						sale = `<font color='red'>급여불가</font>`;
 						cnt_Sale = `<div class='NotApplicable'>해당없음</div>`;
 						cnt_Stock = `<div class='NotApplicable'>해당없음</div>`;
+						$("#e_count"+arr_img[key]).html("<font color='red'>X</font>");
+						$("#s_count"+arr_img[key]).html("<font color='red'>X</font>");
 					}
 
 		            let row = `
-		            	<tr id="" class="normal-row">
+		            	<tr id="" class="normal-row"`+tr_bg+`>
 							<td colspan="1">` + No + `</td> <td colspan="4">` + key + `</td> <td colspan="2">` + sale + `</td> <td colspan="2">` + cnt_Sale + `</td> <td colspan="1">` + cnt_Stock + `</td>
 						</tr>
 					`;

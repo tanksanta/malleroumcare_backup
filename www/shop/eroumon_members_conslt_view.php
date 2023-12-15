@@ -374,7 +374,7 @@
                     <td><?=(!$_hide)?$sql_result['REG_ID']:"-"?></td>
 
                     <th>상담유형</th>
-                    <td><?=(!$_hide || ($sql_result['MCR_ST']==="CS02") || ($sql_result['MCR_ST']==="CS08") )?$sql_result['Hangeul_PREV_PATH']:"-"?></td>
+                    <td><?=(!$_hide || ($sql_result['MCR_ST']==="CS02") || ($sql_result['MCR_ST']==="CS08") )?(($sql_result['Hangeul_PREV_PATH']=="요양정보상담")?"복지용구상담":$sql_result['Hangeul_PREV_PATH']):"-"?></td>
                 </tr><tr>
                     <th>성별</th>
                     <td><?=(!$_hide)?$sql_result['Hangeul_GENDER']:"-"?></td>
@@ -384,7 +384,7 @@
                         <?php if( (!$_hide) && ($sql_result['PREV_PATH'] === "test") ) { ?>
                         <a href="javascript:void(0);" id="TestResult" data-rno="<?=$sql_result['RECIPIENTS_NO']?>" class="link_btn">테스트 결과</a>
                         <?php } else if( (!$_hide) && ($sql_result['PREV_PATH'] === "simpleSearch") ) { ?>
-                        <a href="javascript:void(0);" id="simpleSearchResult" data-pennum="<?=$sql_result['RCPER_RCOGN_NO']?>" data-pennm="<?=$sql_result['MBR_NM']?>" class="link_btn">요양정보조회</a>
+                        <a href="javascript:void(0);" id="simpleSearchResult" data-pennum="<?=$sql_result['RCPER_RCOGN_NO']?>" data-pennm="<?=$sql_result['MBR_NM']?>" class="link_btn">관심복지용구</a>
                         <?php } else { echo("-"); } ?>
                     </td>
                 </tr><tr>
@@ -645,6 +645,8 @@
             var form = $('<form action="/shop/popup.eroumon_members_simplesearch.php" method="post"></form>');
             form.append('<input type="hidden" name="penNum" value="' + $(this).data('pennum') + '">'); // POST 데이터 추가
             form.append('<input type="hidden" name="penNm" value="' + $(this).data('pennm') + '">'); // POST 데이터 추가
+			form.append('<input type="hidden" name="consltID" value="<?=$_consltID?>">'); // POST 데이터 추가
+			form.append('<input type="hidden" name="MBR_TELNO" value="<?=$sql_result['MBR_TELNO']?>">'); // POST 데이터 추가
             iframeDocument.body.appendChild(form[0]);
             form[0].submit();
 
