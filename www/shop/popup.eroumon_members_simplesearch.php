@@ -58,7 +58,7 @@
 			$_url = "/bbs/member_confirm.php?url=member_info_newform.php&STEP=stop04";
 		}
     }
-	$_consltID = $_POST['consltID'];
+	$_consltID = $_POST['consltID'];//
 	// == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == ==
     // SQL 처리 부분 시작
     // == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == ==
@@ -93,71 +93,99 @@
 
 
 $img = array(//품목별 이미지 번호
-				'성인용보행기'=> 1
-				,'수동휠체어'=> 2
-				,'지팡이'=> 3
-				,'안전손잡이'=> 4
-				,'미끄럼방지매트'=> 5
-				,'미끄럼방지양말'=> 6
-				,'욕창예방매트리스'=> 7
-				,'욕창예방방석'=> 8
-				,'자세변환용구'=> 9
-				,'요실금팬티'=> 10
-				,'목욕의자'=> 11
-				,'간이변기'=> 12
-				,'이동변기'=> 13
-				,'경사로'=> 14
-				,'경사로(실외)'=> 15
-				,'전동침대'=> 16
-				,'수동침대'=> 17
-				,'이동욕조'=> 18
-				,'목욕리프트'=> 19
-				,'배회감지기'=> 20
+				'성인용보행기10'=> 1
+				,'수동휠체어20'=> 2
+				,'지팡이10'=> 3
+				,'안전손잡이10'=> 4
+				,'미끄럼방지매트10'=> 5
+				,'미끄럼방지양말10'=> 6
+				,'욕창예방매트리스10'=> 7
+				,'욕창예방방석10'=> 8
+				,'자세변환용구10'=> 9
+				,'요실금팬티10'=> 10
+				,'목욕의자10'=> 11
+				,'간이변기10'=> 12
+				,'이동변기10'=> 13
+				,'경사로10'=> 14
+				,'경사로20'=> 15
+				,'전동침대20'=> 16
+				,'수동침대20'=> 17
+				,'이동욕조20'=> 18
+				,'목욕리프트20'=> 19
+				,'배회감지기20'=> 20
+				,'욕창예방매트리스20'=> 7
 			);
 
 $img2 = array(//품목별 이미지 번호
-				'성인용보행기'=> 1
-				,'수동휠체어'=> 2
-				,'지팡이'=> 3
-				,'안전손잡이'=> 4
-				,'미끄럼방지용품_매트/방지액'=> 5
-				,'미끄럼방지용품_양말'=> 6
-				,'욕창예방매트리스'=> 7
-				,'욕창예방방석'=> 8
-				,'자세변환용구'=> 9
-				,'요실금팬티'=> 10
-				,'목욕의자'=> 11
-				,'간이변기'=> 12
-				,'이동변기'=> 13
-				,'경사로(실내용)'=> 14
-				,'경사로(실외용)'=> 15
-				,'전동침대'=> 16
-				,'수동침대'=> 17
-				,'이동욕조'=> 18
-				,'목욕리프트'=> 19
-				,'배회감지기'=> 20
+				'성인용보행기10'=> 1
+				,'수동휠체어20'=> 2
+				,'지팡이10'=> 3
+				,'안전손잡이10'=> 4
+				,'미끄럼방지용품_매트/방지액10'=> 5
+				,'미끄럼방지용품_양말10'=> 6
+				,'욕창예방매트리스10'=> 7
+				,'욕창예방방석10'=> 8
+				,'자세변환용구10'=> 9
+				,'요실금팬티10'=> 10
+				,'목욕의자10'=> 11
+				,'간이변기10'=> 12
+				,'이동변기10'=> 13
+				,'경사로(실내용)10'=> 14
+				,'경사로(실외용)20'=> 15
+				,'전동침대20'=> 16
+				,'수동침대20'=> 17
+				,'이동욕조20'=> 18
+				,'목욕리프트20'=> 19
+				,'배회감지기20'=> 20
+				,'욕창예방매트리스20'=> 21
 			);
+
+$img3 = array(//품목별 이미지 번호
+				'성인용보행기10'=> 1
+				,'수동휠체어20'=> 2
+				,'지팡이10'=> 3
+				,'안전손잡이10'=> 4
+				,'미끄럼방지매트10'=> 5
+				,'미끄럼방지양말10'=> 6
+				,'욕창예방매트리스10'=> 7
+				,'욕창예방방석10'=> 8
+				,'자세변환용구10'=> 9
+				,'요실금팬티10'=> 10
+				,'목욕의자10'=> 11
+				,'간이변기10'=> 12
+				,'이동변기10'=> 13
+				,'경사로10'=> 14
+				,'경사로20'=> 15
+				,'전동침대20'=> 16
+				,'수동침대20'=> 17
+				,'이동욕조20'=> 18
+				,'목욕리프트20'=> 19
+				,'배회감지기20'=> 20
+				,'욕창예방매트리스20'=> 21
+				);
+
 $pro_title = array(//품목명 변경
-				'성인용보행기'=>'성인용보행기'
-				,'수동휠체어'=>'수동휠체어'
-				,'지팡이'=>'지팡이'
-				,'안전손잡이'=>'안전손잡이'
-				,'미끄럼방지매트'=>'미끄럼방지용품_매트/방지액'
-				,'미끄럼방지양말'=>'미끄럼방지용품_양말'
-				,'욕창예방매트리스'=>'욕창예방매트리스'
-				,'욕창예방방석'=>'욕창예방방석'
-				,'자세변환용구'=>'자세변환용구'
-				,'요실금팬티'=>'요실금팬티'
-				,'목욕의자'=>'목욕의자'
-				,'간이변기'=>'간이변기'
-				,'이동변기'=>'이동변기'
-				,'경사로'=>'경사로(실내용)'
-				,'경사로(실외)'=>'경사로(실외용)'
-				,'전동침대'=>'전동침대'
-				,'수동침대'=>'수동침대'
-				,'이동욕조'=>'이동욕조'
-				,'목욕리프트'=>'목욕리프트'
-				,'배회감지기'=>'배회감지기'
+				'성인용보행기10'=>'성인용보행기'
+				,'수동휠체어20'=>'수동휠체어'
+				,'지팡이10'=>'지팡이'
+				,'안전손잡이10'=>'안전손잡이'
+				,'미끄럼방지매트10'=>'미끄럼방지용품_매트/방지액'
+				,'미끄럼방지양말10'=>'미끄럼방지용품_양말'
+				,'욕창예방매트리스10'=>'욕창예방매트리스(판매)'
+				,'욕창예방방석10'=>'욕창예방방석'
+				,'자세변환용구10'=>'자세변환용구'
+				,'요실금팬티10'=>'요실금팬티'
+				,'목욕의자10'=>'목욕의자'
+				,'간이변기10'=>'간이변기'
+				,'이동변기10'=>'이동변기'
+				,'경사로10'=>'경사로(실내용)'
+				,'경사로20'=>'경사로(실외용)'
+				,'전동침대20'=>'전동침대'
+				,'수동침대20'=>'수동침대'
+				,'이동욕조20'=>'이동욕조'
+				,'목욕리프트20'=>'목욕리프트'
+				,'배회감지기20'=>'배회감지기'
+				,'욕창예방매트리스20'=>'욕창예방매트리스(대여)'
 			);
 
 ?>
@@ -205,8 +233,9 @@ $pro_title = array(//품목명 변경
 <?php 
 	$arr_item = [];
 	for($i=1;$row = sql_fetch_array($sql_result2);$i++){
-		$arr_item[] = $pro_title[$row["CTGRY_NM"]];
-
+		$pro_titles = str_replace("(판매)","",$pro_title[$row["CTGRY_NM"].substr($row["CARE_CTGRY_CD"],0,2)]);
+		$pro_titles = str_replace("(대여)","",$pro_titles);
+		$arr_item[] = $pro_titles;
 		if($i != 1 && $i%4 == 1){?>
 			</div>
 			</div>
@@ -215,12 +244,12 @@ $pro_title = array(//품목명 변경
 <?php	}	?>
 				<div class="card p-3" style="width: 23%;">
 				  <div style="height: 40px">
-						<font class="card-title fw-bold" style="font-size:14px;"><?=$pro_title[$row["CTGRY_NM"]]?></font>             
+						<font class="card-title fw-bold" style="font-size:14px;"><?=$pro_title[$row["CTGRY_NM"].substr($row["CARE_CTGRY_CD"],0,2)]?></font>             
 				  </div>
-				  <div class="p-3 d-flex justify-content-center" style="height: 80px;"><img src="https://eroum.co.kr/html/page/index/assets/images/img-checkpoint<?=$img[$row["CTGRY_NM"]]?>.png" alt="card-group-image" style="height:100%;"></div>
+				  <div class="p-3 d-flex justify-content-center" style="height: 80px;"><img src="https://eroum.co.kr/html/page/index/assets/images/img-checkpoint<?=$img[$row["CTGRY_NM"].substr($row["CARE_CTGRY_CD"],0,2)]?>.png" alt="card-group-image" style="height:100%;"></div>
 				  <div class="d-flex flex-column align-items-center">
-					<span class="d-flex gap-4" style="font-size:14px;width:100%;">계약완료 <span class="fw-bolder" style="width:25%;text-align:center;" id="e_count<?=$img[$row["CTGRY_NM"]]?>">-</span></span>
-					<span class="d-flex gap-4" style="font-size:14px;width:100%;">구매예상 <span class="fw-bolder" style="width:25%;text-align:center;" id="s_count<?=$img[$row["CTGRY_NM"]]?>">-</span></span>
+					<span class="d-flex gap-4" style="font-size:14px;width:100%;">계약완료 <span class="fw-bolder" style="width:25%;text-align:center;" id="e_count<?=$img3[$row["CTGRY_NM"].substr($row["CARE_CTGRY_CD"],0,2)]?>">-</span></span>
+					<span class="d-flex gap-4" style="font-size:14px;width:100%;">구매예상 <span class="fw-bolder" style="width:25%;text-align:center;" id="s_count<?=$img3[$row["CTGRY_NM"].substr($row["CARE_CTGRY_CD"],0,2)]?>">-</span></span>
 				  </div>
 				</div>
 <?php }?>
@@ -1074,16 +1103,16 @@ $pro_title = array(//품목명 변경
 							cnt_Sale = (value['cnt']?value['cnt']:0) + `개`;
 							cnt_Stock = (value['cnt']?ItemCnt[key]-value['cnt']:ItemCnt[key]) + `개`;
 
-							$("#e_count"+arr_img[key]).text((value['cnt']?value['cnt']:0));
-							$("#s_count"+arr_img[key]).text((value['cnt']?ItemCnt[key]-value['cnt']:ItemCnt[key]));
+							$("#e_count"+arr_img[key+'10']).text((value['cnt']?value['cnt']:0));
+							$("#s_count"+arr_img[key+'10']).text((value['cnt']?ItemCnt[key]-value['cnt']:ItemCnt[key]));
 						}
 					} else { 
 						sale = `<font color='red'>급여불가</font>`;
 						cnt_Sale = `<div class='NotApplicable'>해당없음</div>`;
 						cnt_Stock = `<div class='NotApplicable'>해당없음</div>`;
 
-						$("#e_count"+arr_img[key]).html("<font color='red'>X</font>");
-						$("#s_count"+arr_img[key]).html("<font color='red'>X</font>");
+						$("#e_count"+arr_img[key+'10']).html("<font color='red'>X</font>");
+						$("#s_count"+arr_img[key+'10']).html("<font color='red'>X</font>");
 					}
 
 					if( key.includes( "미끄럼방지용품" ) ) {
@@ -1120,21 +1149,23 @@ $pro_title = array(//품목명 변경
 						if(key.includes( "욕창예방매트리스" ) && sale_yok == 1){//욕창예방매트리스 대여 있을 경우
 							cnt_Sale = `0개`;
 							cnt_Stock = `0개`;
+							$("#e_count"+arr_img[key+'20']).text("0");
+							$("#s_count"+arr_img[key+'20']).text("0");
 						}else{							
 							let _Sale = (value['cnt']?value['cnt']:0);
 							cnt_Sale = (_Sale>=1?1:0) + `개`;
 							let _Stock = (value['cnt']?ItemCnt[key]-value['cnt']:ItemCnt[key]);
 							cnt_Stock = (_Stock<0?"0":_Stock) + `개`;
 
-							$("#e_count"+arr_img[key]).text((_Sale>=1?1:0));
-							$("#s_count"+arr_img[key]).text((_Stock<0?"0":_Stock));
+							$("#e_count"+arr_img[key+'20']).text((_Sale>=1?1:0));
+							$("#s_count"+arr_img[key+'20']).text((_Stock<0?"0":_Stock));
 						}
 					} else { 
 						sale = `<font color='red'>급여불가</font>`;
 						cnt_Sale = `<div class='NotApplicable'>해당없음</div>`;
 						cnt_Stock = `<div class='NotApplicable'>해당없음</div>`;
-						$("#e_count"+arr_img[key]).html("<font color='red'>X</font>");
-						$("#s_count"+arr_img[key]).html("<font color='red'>X</font>");
+						$("#e_count"+arr_img[key+'20']).html("<font color='red'>X</font>");
+						$("#s_count"+arr_img[key+'20']).html("<font color='red'>X</font>");
 					}
 
 		            let row = `
