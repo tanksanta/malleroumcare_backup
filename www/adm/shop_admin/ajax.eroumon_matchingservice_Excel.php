@@ -100,7 +100,8 @@ if( $_POST['mode_set']  == "ExcelDown" ) {
                     ,mb_giup_bnum
                     ,mb_giup_bname
                     ,mb_matching_manager_nm                    
-                    ,mb_matching_manager_tel                    
+                    ,mb_matching_manager_tel 
+					,mb_matching_manager_mail
                     ,mb_referee_cd
                     ,mb_matching_dt
                     ,mb_matching_forms
@@ -117,6 +118,7 @@ if( $_POST['mode_set']  == "ExcelDown" ) {
             25,
             20,
             25,
+		    25,
             15,
             20,
             12,
@@ -132,6 +134,7 @@ if( $_POST['mode_set']  == "ExcelDown" ) {
         '사업업소명',
         '매칭 담당자 성명',
         '매칭 담당자 휴대폰번호',
+		'매칭 담당자 이메일',
         '사업소 추천코드',
         '상담신청일시',
         '문항1',
