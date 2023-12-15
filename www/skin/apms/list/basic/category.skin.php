@@ -177,7 +177,7 @@ $(function() {
     </li>
     <?php if (!$isBenefit) { ?>
     <li>
-      <div class="cate_head">유통여부</div>
+      <div class="cate_head">유통구분</div>
       <div class="cate_body">
         <a href="<?=$ca_url.$ca_sub_url.$sort_url?>&prodSupYn=<?=($prodRentalYn != "Y" ? ($prodSupYn == 'N' ? 'Y' : ($prodSupYn == 'all' ? 'Y' : 'all')): "Y").$q_url?>"
         class="<?php if(in_array($prodSupYn, array('Y'))) echo 'active'; ?>">유통품목</a>
