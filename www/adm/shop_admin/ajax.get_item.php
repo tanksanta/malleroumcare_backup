@@ -69,6 +69,7 @@ while ( $row = sql_fetch_array($result) ) {
     WHERE
       it_id = '{$row['it_id']}'
       and io_type = 0 -- 선택옵션
+	  and io_use = 1 -- 사용유무
     ORDER BY
       io_no ASC
   ";
