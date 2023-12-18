@@ -303,6 +303,7 @@
         $sql = (" CALL `PROC_EROUMCARE_CONSLT`('view','{$member['mb_giup_bnum']}','','','','','{$_consltID}'); ");
         $sql_result = "";
         $sql_result = sql_fetch( $sql , "" , $g5['eroumon_db'] ); mysqli_next_result($g5['eroumon_db']);
+		$CONSLT_NO = $sql_result['CONSLT_NO'];
 
     }
     // == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == ==
@@ -374,7 +375,7 @@
                     <td><?=(!$_hide)?$sql_result['REG_ID']:"-"?></td>
 
                     <th>상담유형</th>
-                    <td><?=(!$_hide || ($sql_result['MCR_ST']==="CS02") || ($sql_result['MCR_ST']==="CS08") )?(($sql_result['Hangeul_PREV_PATH']=="요양정보상담")?"복지용구상담":$sql_result['Hangeul_PREV_PATH']):"-"?></td>
+                    <td><?=(!$_hide || ($sql_result['MCR_ST']==="CS02") || ($sql_result['MCR_ST']==="CS08") )?$sql_result['Hangeul_PREV_PATH']:"-"?></td>
                 </tr><tr>
                     <th>성별</th>
                     <td><?=(!$_hide)?$sql_result['Hangeul_GENDER']:"-"?></td>
@@ -384,7 +385,9 @@
                         <?php if( (!$_hide) && ($sql_result['PREV_PATH'] === "test") ) { ?>
                         <a href="javascript:void(0);" id="TestResult" data-rno="<?=$sql_result['RECIPIENTS_NO']?>" class="link_btn">테스트 결과</a>
                         <?php } else if( (!$_hide) && ($sql_result['PREV_PATH'] === "simpleSearch") ) { ?>
-                        <a href="javascript:void(0);" id="simpleSearchResult" data-pennum="<?=$sql_result['RCPER_RCOGN_NO']?>" data-pennm="<?=$sql_result['MBR_NM']?>" class="link_btn">관심복지용구</a>
+                        <a href="javascript:void(0);" id="simpleSearchResult" data-pennum="<?=$sql_result['RCPER_RCOGN_NO']?>" data-pennm="<?=$sql_result['MBR_NM']?>" class="link_btn">요양정보조회</a>
+                        <?php }else if( (!$_hide) && ($sql_result['PREV_PATH'] === "equip_ctgry") ) { ?>
+                        <a href="javascript:void(0);" id="equip_ctgryResult" data-pennum="<?=$sql_result['RCPER_RCOGN_NO']?>" data-pennm="<?=$sql_result['MBR_NM']?>" class="link_btn">관심복지용구</a>
                         <?php } else { echo("-"); } ?>
                     </td>
                 </tr><tr>
@@ -645,7 +648,26 @@
             var form = $('<form action="/shop/popup.eroumon_members_simplesearch.php" method="post"></form>');
             form.append('<input type="hidden" name="penNum" value="' + $(this).data('pennum') + '">'); // POST 데이터 추가
             form.append('<input type="hidden" name="penNm" value="' + $(this).data('pennm') + '">'); // POST 데이터 추가
-			form.append('<input type="hidden" name="consltID" value="<?=$_consltID?>">'); // POST 데이터 추가
+            iframeDocument.body.appendChild(form[0]);
+            form[0].submit();
+
+            $(".Popup_simpleSearch iframe").load(function(){
+                $('body').addClass('modal-open');
+                $(".Popup_simpleSearch").show();
+            });
+            return;
+        });
+
+		$('#equip_ctgryResult').on('click', function (e) {
+            e.preventDefault();
+            $(".Popup_simpleSearch > div").html("");
+            $(".Popup_simpleSearch > div").append("<iframe></iframe>");
+
+            var iframeDocument = $('.Popup_simpleSearch iframe')[0].contentDocument;
+            var form = $('<form action="/shop/popup.eroumon_members_equip_ctgry.php" method="post"></form>');
+            form.append('<input type="hidden" name="penNum" value="' + $(this).data('pennum') + '">'); // POST 데이터 추가
+            form.append('<input type="hidden" name="penNm" value="' + $(this).data('pennm') + '">'); // POST 데이터 추가
+			form.append('<input type="hidden" name="consltID" value="<?=$CONSLT_NO?>">'); // POST 데이터 추가
 			form.append('<input type="hidden" name="MBR_TELNO" value="<?=$sql_result['MBR_TELNO']?>">'); // POST 데이터 추가
             iframeDocument.body.appendChild(form[0]);
             form[0].submit();
