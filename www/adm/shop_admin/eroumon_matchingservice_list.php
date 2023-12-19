@@ -79,6 +79,7 @@ if( $search ) {
           OR ( `mb_giup_bnum` LIKE '%" . $search . "%' ) 
           OR ( `mb_giup_bname` LIKE '%" . $search . "%' ) 
           OR ( `mb_matching_manager_tel` LIKE '%" . $search . "%' )
+		  OR ( mb_matching_manager_mail LIKE '%" . $search . "%' )
         )
       ";
   }
@@ -93,6 +94,8 @@ if( $search ) {
   }
   else if( $sel_field == "mb_matching_manager_tel" ) {
       $where[] = " ( `mb_matching_manager_tel` LIKE '%" . $search . "%' ) ";
+  }else if( $sel_field == "mb_matching_manager_mail" ) {
+      $where[] = " ( `mb_matching_manager_mail` LIKE '%" . $search . "%' ) ";
   }
 }
 
@@ -123,6 +126,7 @@ $sql = " SELECT mb_giup_matching
                 ,mb_giup_bnum
                 ,mb_giup_bname
                 ,mb_matching_manager_tel
+				,mb_matching_manager_mail
                 ,mb_matching_dt
                 ,mb_referee_cd
                 {$sql_common}
@@ -185,6 +189,7 @@ $qstr = ("select_date={$select_date}&amp;matchingY={$matchingY}&amp;matchingN={$
             <option value="mb_giup_bnum" <?=get_selected($sel_field, 'mb_giup_bnum'); ?>>사업자번호</option>
             <option value="mb_giup_bname" <?=get_selected($sel_field, 'mb_giup_bname'); ?>>사업소명</option>
             <option value="mb_matching_manager_tel" <?=get_selected($sel_field, 'mb_matching_manager_tel'); ?>>매칭 담당자 휴대폰번호</option>
+			<option value="mb_matching_manager_mail" <?=get_selected($sel_field, 'mb_matching_manager_mail'); ?>>매칭 담당자 이메일</option>
           </select>
           <input type="text" name="search" value="<?=$search; ?>" id="search" class="frm_input" autocomplete="off" style="width:200px;">          
           <input type="submit" value="검색" class="newbutton">
@@ -219,6 +224,7 @@ $qstr = ("select_date={$select_date}&amp;matchingY={$matchingY}&amp;matchingN={$
         <th scope="col">사업자번호</th>
         <th scope="col">사업소명</th>
         <th scope="col">매칭 담당자 휴대폰번호</th>
+		<th scope="col">매칭 담당자 이메일</th>
         <th scope="col">상담신청일시<br />(매칭 동의 일시)</th>
         <th scope="col" style="width:100px">사업소 추천코드</th>
     </tr>
@@ -236,6 +242,7 @@ $qstr = ("select_date={$select_date}&amp;matchingY={$matchingY}&amp;matchingN={$
             <td><a href="javascript:void(0);" class="btn_eroumon_form_result" data-id="<?=($row['mb_id'])?>" data-yn="<?=($row['mb_giup_matching'])?>" data-dt="<?=($row['mb_matching_dt'])?>"><?=($row['mb_giup_bnum'])?></a></td>
             <td><?=($row['mb_giup_bname'])?></td>
             <td><?=($row['mb_matching_manager_tel'])?></td>
+			<td><?=($row['mb_matching_manager_mail'])?></td>
             <td><?=($row['mb_matching_dt'])?></td>
             <td><?=($row['mb_referee_cd'])?></td>
         </tr>                
