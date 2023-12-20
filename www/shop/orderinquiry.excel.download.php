@@ -36,7 +36,7 @@ $e_date = ($_POST["s_date"] == "" && $_POST["e_date"] == "")?date("Y-m")."-".dat
 		  AND c.ct_status IN ('완료', '출고준비','배송') 
 		  ORDER BY o.od_id ASC,c.ct_delivery_company ASC,c.ct_delivery_num ASC";
 	$result = sql_query($sql);
-
+	$row_count = sql_num_rows($result);
 	
 
 //============================== 엑셀 영역 시작 =====================
@@ -117,7 +117,7 @@ for($i = 2;$row=sql_fetch_array($result); $i++){
 
 	$ct_delivery_num2 = $ct_delivery_num;	
 }
-if($i2 < ($i-1)){//마지막에 동일 송장번호 있을 경우 적용
+if($i2 < ($i-1) && $row_count > 0){//마지막에 동일 송장번호 있을 경우 적용
 	$excel->setActiveSheetIndex(0)->mergeCells('A'.$i2.':A'.($i-1));
 	$sheet->getStyle('A'.$i2.':A'.($i-1))->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
 	$excel->setActiveSheetIndex(0)->mergeCells('B'.$i2.':B'.($i-1));
