@@ -74,10 +74,15 @@ if($sheetData) {
 				$sql = " select * from {$g5['g5_shop_item_option_table']} where it_id = '".trim(addslashes($sheetData[$ii]['B']))."' and io_use = 1 and io_id='".str_replace('>',chr(30),preg_replace(G5_OPTION_ID_FILTER, '', trim(addslashes($sheetData[$ii]['C']))))."' ";
 				$io = sql_fetch($sql);
 				if($io["io_id"] == ""){
-					//$msg .= $sql;
 					$msg .= $ii."열 ".preg_replace(G5_OPTION_ID_FILTER, '', trim(addslashes($sheetData[$ii]['C'])))."의 상품옵션이 없습니다.\n";			
 				}
-			}
+			}else{//상품 옵션을 선택해야 하는 상품일 경우
+				$sql = " select count(it_id) as cnt from {$g5['g5_shop_item_option_table']} where it_id = '".trim(addslashes($sheetData[$ii]['B']))."'";
+				$io = sql_fetch($sql);
+				if($io["cnt"] > 0 ){
+					$msg .= $ii."열 ".trim(addslashes($sheetData[$ii]['B']))."의 옵션 정보를 입력해 주세요.\n";
+				}				
+			}			
 		}
 
 		//수량
