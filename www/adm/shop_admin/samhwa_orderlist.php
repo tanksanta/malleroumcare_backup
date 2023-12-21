@@ -695,6 +695,16 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
         top: 50%;
         transform: translate(-50%, -50%);
     }
+
+	.modal-popup > #popup_order_upload2 {
+        width: 500px;
+        max-width: 80%;
+        height: 225px;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+    }
     .modal-popup > div iframe {
         width:100%;
         height:100%;
@@ -738,10 +748,14 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
         font-size: 1.5em;
         cursor: pointer;
     }
-
+	
 </style>
 <div id="popup_order_add" class="modal-popup">
     <div>dd</div>
+</div>
+
+<div id="popup_order_upload" class="modal-popup">
+    <div  id="popup_order_upload2"></div>
 </div>
 
 <div id="popup_direct_delivery" class="modal-popup">
@@ -832,13 +846,27 @@ add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/popModal/popModal.min
 		});
 
         $(document).on("click", "#order_add", function (e) {
-            e.preventDefault();
+            e.preventDefault();	
+			$('#popup_order_upload').hide();
+            $('#hd').css('z-index', 10);
 
             $("#popup_order_add > div").html("<iframe src='./pop.order.add.php'></iframe>");
             $("#popup_order_add iframe").load(function(){
                 $("#popup_order_add").show();
                 $('#hd').css('z-index', 3);
                 $('#popup_order_add iframe').contents().find('.mb_id_flexdatalist').focus();
+            });
+
+        });
+
+		$(document).on("click", "#order_upload", function (e) {
+            e.preventDefault();
+			$('#popup_order_add').hide();
+            $('#hd').css('z-index', 10);
+            $("#popup_order_upload > div").html("<iframe src='./pop.order.upload.php'></iframe>");
+            $("#popup_order_upload iframe").load(function(){
+                $("#popup_order_upload").show();
+                $('#hd').css('z-index', 3);                
             });
 
         });
@@ -1639,7 +1667,8 @@ if( function_exists('pg_setting_check') ){
 ?>
 
 <div class="btn_fixed_top">
-    <a href="./samhwa_order_new.php" id="order_add" class="btn btn_01">주문서 추가</a>
+    <input type="button" value="주문서 일괄등록"  id="order_upload" class="btn " style="background: #3f51b5; color: #fff;">
+	<input type="button" value="주문서 추가" id="order_add" class="btn btn_01">
     <input type="button" value="주문내역 엑셀다운로드" onclick="orderListExcelDownload('excel')" class="btn btn_02">
     <?php if($is_admin == 'super'){?>
     <input type="button" value="이카운트 엑셀다운로드" onclick="orderListExcelDownload('ecount')" class="btn" style="background: #6e9254; color: #fff;">
