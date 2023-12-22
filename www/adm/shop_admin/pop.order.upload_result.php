@@ -61,7 +61,7 @@ if($sheetData) {
 			}
 		}
 		if($msg == ""){  
-			$sql = " select * from {$g5['g5_shop_item_table']} where it_id = '".trim(addslashes($sheetData[$ii]['B']))."' and it_use='1' and it_soldout='0' and prodSupYn='Y'";//상품판매,품절아님,유통 상품만 주문 가능
+			$sql = " select * from {$g5['g5_shop_item_table']} where it_id = '".trim(addslashes($sheetData[$ii]['B']))."' ";
 			$it = sql_fetch($sql);
 			if($it["it_name"] == ""){
 				$msg .= $ii."열 ".trim(addslashes($sheetData[$ii]['B']))."의 상품이 없습니다.\n";
@@ -71,7 +71,7 @@ if($sheetData) {
 		// 상품옵션정보
 		if($msg == ""){
 			if(trim(addslashes($sheetData[$ii]['C'])) != ""){
-				$sql = " select * from {$g5['g5_shop_item_option_table']} where it_id = '".trim(addslashes($sheetData[$ii]['B']))."' and io_use = 1 and io_sold_out='0' and io_id='".str_replace('>',chr(30),preg_replace(G5_OPTION_ID_FILTER, '', trim(addslashes($sheetData[$ii]['C']))))."' ";//상품사용, 품절아닌 옵션상품만 주문 가능
+				$sql = " select * from {$g5['g5_shop_item_option_table']} where it_id = '".trim(addslashes($sheetData[$ii]['B']))."' and io_use = 1 and io_id='".str_replace('>',chr(30),preg_replace(G5_OPTION_ID_FILTER, '', trim(addslashes($sheetData[$ii]['C']))))."' ";
 				$io = sql_fetch($sql);
 				if($io["io_id"] == ""){
 					$msg .= $ii."열 ".preg_replace(G5_OPTION_ID_FILTER, '', trim(addslashes($sheetData[$ii]['C'])))."의 상품옵션이 없습니다.\n";			
@@ -135,7 +135,7 @@ if($sheetData) {
 		$_POST['it_price'][] = trim(addslashes(str_replace(",","",$sheetData[$i2]['E'])));//상품가격
 		$memo[]	= trim(addslashes($sheetData[$i2]['F']));//요청 사항
 
-	if(($od_b_name != trim(addslashes($sheetData[$i2]['G'])) && $i2>2) || $i2 == $num_rows){//수령인 정보가 다를 때만 오더 생성
+	if(($od_b_name != trim(addslashes($sheetData[$i2]['G'])) && $od_b_tel != trim(addslashes($sheetData[$i2]['H'])) && $od_b_addr1 != trim(addslashes($sheetData[$i2]['I'])) && $i2>2) || $i2 == $num_rows){//배송정보가 다를 때만 오더 생성
 	
 		if($i2 != $num_rows){
 		//마지막 배열값 저장 =========================
