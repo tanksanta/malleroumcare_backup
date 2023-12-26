@@ -111,7 +111,7 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 					<option value="it_use_cnt"<?php echo ($qsort == 'it_use_cnt') ? ' selected' : '';?>>후기많은순</option>
 					<option value="pt_good"<?php echo ($qsort == 'pt_good') ? ' selected' : '';?>>추천많은순</option>
 					<option value="pt_comment"<?php echo ($qsort == 'pt_comment') ? ' selected' : '';?>>댓글많은순</option>
-					<option value="it_update_time"<?php echo ($qsort == 'it_update_time') ? ' selected' : '';?>>최근등록순</option>
+					<option value="it_time"<?php echo ($qsort == 'it_time') ? ' selected' : '';?>>최근등록순</option>
 				</select>
 			</div>
 		</div>

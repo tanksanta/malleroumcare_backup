@@ -159,7 +159,7 @@ $qsort  = strtolower($qsort);
 $qorder = strtolower($qorder);
 
 // 아래의 $qsort 필드만 정렬이 가능하게 하여 다른 필드로 하여금 유추해 볼수 없게함
-if (($qsort == "it_sum_qty" || $qsort == "it_price" || $qsort == "it_use_avg" || $qsort == "it_use_cnt" || $qsort == "it_update_time" || $qsort == "pt_good" || $qsort == "pt_comment") &&
+if (($qsort == "it_sum_qty" || $qsort == "it_price" || $qsort == "it_use_avg" || $qsort == "it_use_cnt" || $qsort == "it_time" || $qsort == "pt_good" || $qsort == "pt_comment") &&
     ($qorder == "asc" || $qorder == "desc")) {
     $order_by = ' order by ' . $qsort . ' ' . $qorder . ' , it_order, pt_num desc, it_id desc';
 } else {

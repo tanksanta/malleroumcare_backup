@@ -108,6 +108,9 @@ sql_query("UPDATE g5_shop_cart as c
         {$where}
 ");
 
+sql_query("UPDATE g5_shop_item AS it, (SELECT COUNT(it_id)AS cnt,it_id,it_name FROM g5_shop_cart WHERE ct_status = '완료' GROUP BY it_id ) AS sale
+SET it.it_sum_qty = sale.cnt WHERE it.it_id = sale.it_id"); //제품별 판매 수량 업데이트
+
 if(!$count) {
     json_response(200, $sub_day . '까지 배송완료 처리할 내용이 없습니다.');
 }
