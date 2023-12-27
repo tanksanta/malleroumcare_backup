@@ -6,29 +6,37 @@
   include_once(G5_LIB_PATH."/PHPExcel.php");
   function column_char($i) { return chr( 65 + $i ); }
 
-  $ct_ids = $od_id;
-  // 합포 상품들 검색
-  $combine_ct_items = [];
-  foreach($ct_ids as $ct_id) {
-      $it = sql_fetch("
-        SELECT cart.*
-        FROM g5_shop_cart as cart
-        WHERE cart.ct_id = '{$ct_id}'
-      ");
-      if ($it['ct_combine_ct_id']) {
-          array_push($combine_ct_items, $it['ct_combine_ct_id']);
-          $result = sql_query("
-              SELECT cart.* 
-              FROM g5_shop_cart as cart 
-              WHERE cart.ct_combine_ct_id = '{$it['ct_combine_ct_id']}'
-          ");
-          while($row = sql_fetch_array($result)) {
-              array_push($combine_ct_items, $row['ct_id']);
-          }
-      }
+  if(isset($od_id)){
+	  $ct_ids = $od_id;
+	  // 합포 상품들 검색
+	  $combine_ct_items = [];
+	  $i = 0 ;
+	  foreach($ct_ids as $ct_id) {
+		 $comma = ($i == 0)?"":",";
+		 $ct_ids2 .= $comma."'".$ct_id."'";
+		$i = 1;
+	  }
+
+		$sql = "SELECT cart.*
+			FROM g5_shop_cart as cart
+			WHERE cart.ct_id in ({$ct_ids2})";
+		$result = sql_query($sql);
+		while($it = sql_fetch_array($result)){
+		  if ($it['ct_combine_ct_id']) {
+			  array_push($combine_ct_items, $it['ct_combine_ct_id']);
+			  $result = sql_query("
+				  SELECT cart.* 
+				  FROM g5_shop_cart as cart 
+				  WHERE cart.ct_combine_ct_id = '{$it['ct_combine_ct_id']}'
+			  ");
+			  while($row = sql_fetch_array($result)) {
+				  array_push($combine_ct_items, $row['ct_id']);
+			  }
+		  }
+		}
+	  $ct_ids = array_merge($ct_ids, $combine_ct_items);
+	  $ct_ids = array_values(array_unique($ct_ids));
   }
-  $ct_ids = array_merge($ct_ids, $combine_ct_items);
-  $ct_ids = array_values(array_unique($ct_ids));
 
   if ($_POST['ref'] == 'orderform') {
     $ct_ids = [];
@@ -409,7 +417,7 @@
     $it["it_name_qty"] = $it_name . "*" . $it["ct_qty"] . "개";
 
     $addr="";
-    if($od_b_zip1){$addr= "(".$od_b_zip1.$od_b_zip2.")";}
+    if($od["od_b_zip1"]){$addr= "(".$od["od_b_zip1"].$od["od_b_zip2"].")";}
     $it['addr'] = $addr.$od["od_b_addr1"].' '.$od["od_b_addr2"].' '.$od["od_b_addr3"];
 
     $ct_delivery_company = $it['ct_delivery_company'];
