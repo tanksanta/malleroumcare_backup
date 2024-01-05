@@ -12,7 +12,7 @@ if (!$sort) {
 }
 
 // 상품 리스트에서 다른 필드로 정렬을 하려면 아래의 배열 코드에서 해당 필드를 추가하세요.
-if( isset($sort) && ! in_array($sort, array('custom', 'it_sum_qty', 'it_price', 'it_use_avg', 'it_use_cnt', 'it_update_time', 'pt_comment', 'it_type1', 'it_type2', 'it_type3', 'it_type4', 'it_type5')) ){
+if( isset($sort) && ! in_array($sort, array('custom', 'it_sum_qty', 'it_price', 'it_use_avg', 'it_use_cnt', 'it_time', 'pt_comment', 'it_type1', 'it_type2', 'it_type3', 'it_type4', 'it_type5')) ){
     $sort='';
 }
 

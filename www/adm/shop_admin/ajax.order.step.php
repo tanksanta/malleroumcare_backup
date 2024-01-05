@@ -133,7 +133,9 @@ if( $_POST['od_id'] && $_POST['step'] ) {
         `ct_move_date`= NOW()
       WHERE `ct_id` = '" . $_OrderID[$i] . "'
     ";
-
+	if($_POST['step'] == "완료"){// 제품별 판매 수량 업데이트
+		sql_query("UPDATE g5_shop_item AS it, (SELECT COUNT(it_id)AS cnt,it_id FROM g5_shop_cart WHERE ct_status = '완료' and it_id in (select it_id from g5_shop_cart where ct_id = '".$_OrderID[$i]."')  GROUP BY it_id ) AS sale SET it.it_sum_qty = sale.cnt WHERE it.it_id = sale.it_id");
+	}
 
     // 재고관리 변경
     if( in_array($_POST['step'], ['배송', '완료']) ) {

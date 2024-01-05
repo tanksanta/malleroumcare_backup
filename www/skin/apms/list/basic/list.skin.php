@@ -133,14 +133,23 @@ $wish_result = sql_query("SELECT it_id from {$g5['g5_shop_wish_table']} where mb
 while($wish_row = sql_fetch_array($wish_result)) {
   $wishlist[$wish_row['it_id']] = true;
 }
+switch($sort){
+	case "custom": $sort_text = "추천순"; break;
+	case "it_price": $sort_text = ($sortodr=="desc")?"높은가격순":"낮은가격순"; break;
+	case "it_sum_qty": $sort_text = "판매많은순"; break;
+	case "it_use_avg": $sort_text = "평점높은순"; break;
+	case "it_use_cnt": $sort_text = "후기많은순"; break;
+	case "it_time": $sort_text = "최근등록순"; break;
+	default: $sort_text = "추천순"; break;
+}
 ?>
 <style type="text/css">
 	.textFitted {line-height:13px;}
 </style>
 <div id="sort-wrapper">
-  <div class="dropdown">
+  <div class="dropdown" style="width:180px;">
     <a id="sortLabel" data-target="#" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-block">
-      상품정렬
+      상품정렬 (<?=$sort_text?>)
       <span class="caret"></span>
     </a>
     <ul class="dropdown-menu" role="menu" aria-labelledby="sortLabel">
@@ -150,7 +159,7 @@ while($wish_row = sql_fetch_array($wish_result)) {
       <li><a <?php echo ($sort == 'it_sum_qty') ? 'class="on" ' : '';?>href="<?php echo $list_sort_href; ?>it_sum_qty&amp;sortodr=desc">판매많은순</a></li>
       <li><a <?php echo ($sort == 'it_use_avg') ? 'class="on" ' : '';?>href="<?php echo $list_sort_href; ?>it_use_avg&amp;sortodr=desc">평점높은순</a></li>
       <li><a <?php echo ($sort == 'it_use_cnt') ? 'class="on" ' : '';?>href="<?php echo $list_sort_href; ?>it_use_cnt&amp;sortodr=desc">후기많은순</a></li>
-      <li><a <?php echo ($sort == 'it_update_time') ? 'class="on" ' : '';?>href="<?php echo $list_sort_href; ?>it_update_time&amp;sortodr=desc">최근등록순</a></li>
+      <li><a <?php echo ($sort == 'it_time') ? 'class="on" ' : '';?>href="<?php echo $list_sort_href; ?>it_time&amp;sortodr=desc">최근등록순</a></li>
     </ul>
   </div>
 </div>
