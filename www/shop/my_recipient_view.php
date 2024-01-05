@@ -573,6 +573,7 @@ $(function() {
 				if(ct_history_list.length != 0){ // 계약이력 삽입
 				  let penPurchaseHist = <?=json_encode($recent_result)?>;
 				  //if(penPurchaseHist == null){
+					$.ajaxSetup({async:false});
 					$.post('./ajax.my.recipient.hist.php', {
 					  data: ct_history_list,
 					  status: true
