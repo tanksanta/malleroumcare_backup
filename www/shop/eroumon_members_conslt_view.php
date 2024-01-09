@@ -211,7 +211,8 @@
                     
                     // 알림톡 발송 : CS04 - 상담거부 시작 = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
                     //$alimtalk_contents = $RGTR."님, 요청하신 1:1 상담이 취소되었습니다.\n\n◼︎ 상담 취소일 : ".date("Y-m-d")."\n\n상담을 원하시는 경우 이로움ON에서 다시 상담을 요청해 주세요.";
-                    $alimtalk_contents = $RGTR."님, 장기요양기관의 사정으로 매칭이 취소되었습니다.\n\n[수급자 정보]\n성명: ".$MBR_NM." 님\n회원님과의 관계 : ".$Hangeul_RELATION_CD."\n\n다른 기관과 상담 매칭 완료 시 안내드리겠습니다. 감사합니다.";
+                    /*
+					$alimtalk_contents = $RGTR."님, 장기요양기관의 사정으로 매칭이 취소되었습니다.\n\n[수급자 정보]\n성명: ".$MBR_NM." 님\n회원님과의 관계 : ".$Hangeul_RELATION_CD."\n\n다른 기관과 상담 매칭 완료 시 안내드리겠습니다. 감사합니다.";
                     $result2 = send_alim_talk2('CONSLT_CANCEL_'.$MBR_TELNO, $MBR_TELNO, 'ON_0007_1', $alimtalk_contents, array(
                         'button' => [
                             array(
@@ -222,6 +223,18 @@
 								  )
                         ]
                     ),'','매칭 취소 안내','2');//내용은 템플릿과 동일 해야 함 
+					*/
+					$alimtalk_contents = "[1:1 상담 거부]\n\n".$member['mb_name']." 사업소님, 1:1 상담을 거부하였습니다.\n\n상담 거부일 : ".date("Y-m-d")."\n\n아래 버튼을 누르면 수급자 상담관리 페이지로 바로 이동됩니다.";
+                    $result2 = send_alim_talk2('CONSLT_CANCEL_'.$member['mb_hp'], $member['mb_hp'], 'Care_0007', $alimtalk_contents, array(
+                        'button' => [
+                            array(
+									'name' => '상담관리 바로가기',
+									'type' => 'WL',
+									'url_mobile' => 'https://eroumcare.com/shop/eroumon_members_conslt_list.php',
+									'url_pc' => 'https://eroumcare.com/shop/eroumon_members_conslt_list.php'
+								  )
+                        ]
+                    ),'','','');//내용은 템플릿과 동일 해야 함  
                     // 알림톡 발송 : CS04 - 상담거부 종료 = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 
                     // E-Mail 발송 : CS04 - 상담거부 시작 = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
