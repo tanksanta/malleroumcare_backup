@@ -44,6 +44,18 @@ if($_POST["mode"] == "reject"){//탈퇴 거부
                     ),'');//내용은 템플릿과 동일 해야 함 
                     // 알림톡 발송 : 탈퇴 거부 종료 = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 
+		//메일 발송 시작 ==========================================================
+		$content = "[탈퇴 요청 거부 안내]<br><br>
+		탈퇴 요청이 거부되었습니다.<br><br>
+		탈퇴 요청 시 1:1매칭이 되지 않도록 설정되었기 때문에<br>
+		진행 여부를 확인하여 관리자 > 멤버스 관리에서 등록정보를 수정해 주세요.<br><br>
+		◼︎ 사업소 : ".$member2["mb_id"]."<br>◼︎ 사업자번호 : ".$member2["mb_giup_bnum"]."<br><br>
+		▷ 이로움 ON 관리자 바로가기<br> 
+		<a href='https://eroum.co.kr/_mng/consult/recipter/list' target='_blank'>https://eroum.co.kr/_mng/consult/recipter/list</a>";
+		$to_mail = "thkc_cx@thkc.co.kr";//thkc_cx@thkc.co.kr
+		mailer('이로움', 'no-reply@eroumcare.com', $to_mail, "[탈퇴 요청 거부 안내]", $content, 1);
+		//메일 발송 끝 ============================================================ 
+
 }else{//탈퇴 승인
 	$i = 0 ;
 	foreach($_POST['mb_id'] as $mb_id) {
