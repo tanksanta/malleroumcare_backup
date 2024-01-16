@@ -754,10 +754,19 @@ label {
     <tr>
         <th scope="row"><label for="mb_leave_date">탈퇴일자</label></th>
         <td>
+		<?php 
+		$timestamp = strtotime("-".$config['cf_leave_day']." days");
+		$after_date = date("Ymd", $timestamp);
+		if ($mb['mb_leave_date'] && $mb['mb_leave_date'] < $after_date && $config['cf_leave_day']>0) {?>
+			<?=$mb['mb_leave_date']?> <font color="red">(탈퇴일자가 <?=$config['cf_leave_day']?>일 경과로 수정하 실 수 없습니다.)</font>
+			<input type="hidden" name="mb_leave_date" value="<?php echo $mb['mb_leave_date'] ?>" id="mb_leave_date">			
+		<?php }else{?>
             <input type="text" name="mb_leave_date" value="<?php echo $mb['mb_leave_date'] ?>" id="mb_leave_date" class="frm_input" maxlength="8">
             <input type="checkbox" value="<?php echo date("Ymd"); ?>" id="mb_leave_date_set_today" onclick="if (this.form.mb_leave_date.value==this.form.mb_leave_date.defaultValue) {
 this.form.mb_leave_date.value=this.value; } else { this.form.mb_leave_date.value=this.form.mb_leave_date.defaultValue; }">
             <label for="mb_leave_date_set_today">탈퇴일을 오늘로 지정</label>
+		<?php }?>
+			<input type="hidden" name="mb_leave_date2" value="<?php echo $mb['mb_leave_date'] ?>" id="mb_leave_date2">
         </td>
         <th scope="row">접근차단일자</th>
         <td>

@@ -50,6 +50,30 @@ if($config['cf_leave_day'] > 0) {
         // 회원자료 삭제
         member_delete($row['mb_id']);
     }
+
+	$sql = " select mb_entId from {$g5['member_table']}
+                where (TO_DAYS('".G5_TIME_YMDHIS."') - TO_DAYS(mb_leave_date)) > 1825
+                  and mb_memo regexp '^[0-9]{8}.*삭제함' ";
+    $result = sql_query($sql);
+    while ($row=sql_fetch_array($result))
+    {        
+		// 계약상품,계약서 삭제 5년 후
+		sql_query(" delete from eform_document_item where dc_id in (select dc_id from eform_document where entID = '{$row['mb_entId']}') ");
+		sql_query(" delete from eform_document where entID = '{$row['mb_entId']}' ");
+    }
+
+	$sql = " select mb_id from {$g5['member_table']}
+                where (TO_DAYS('".G5_TIME_YMDHIS."') - TO_DAYS(mb_leave_date)) > 365
+                  and mb_memo regexp '^[0-9]{8}.*삭제함' ";
+    $result = sql_query($sql);
+    while ($row=sql_fetch_array($result))
+    {        
+		// 제안 삭제 1년 후
+		sql_query(" delete from recipient_item_msg_item where ms_id in (select ms_id from recipient_item_msg where mb_id = '{$row['mb_id']}') ");
+		sql_query(" delete from recipient_item_msg where mb_id = '{$row['mb_id']}' ");
+
+		// 수급자 상담 삭제?
+    }
 }
 
 // 내글반응삭제 - 60일

@@ -3,6 +3,7 @@ $sub_menu = "200100";
 include_once("./_common.php");
 include_once(G5_LIB_PATH."/register.lib.php");
 include_once(G5_LIB_PATH.'/thumbnail.lib.php');
+include_once(G5_LIB_PATH.'/mailer.lib.php');
 if ($w == 'u')
 check_demo();
 
@@ -434,7 +435,6 @@ else if ($w == 'u')
 				where mb_id = '{$mb_id}' ";
     sql_query($sql);
     
-    
     // 23.11.22 : 서원 - 이로움ON과 사업소정보인 BPLC 테이블 정보중 매칭 담당자 정보를 연동 하기위한 Array 생성.
     $_matchingINFO = [
         "mb_giup_matching" => $_POST['mb_giup_matching']
@@ -450,7 +450,23 @@ else if ($w == 'u')
     $sql = (" CALL `PROC_EROUMCARE_BPLC`('UPDATE_matching','".json_encode($_matchingINFO, JSON_UNESCAPED_UNICODE)."'); ");
     $sql_result = "";
     $sql_result = sql_fetch( $sql , "" , $g5['eroumon_db'] ); mysqli_next_result($g5['eroumon_db']);
-
+	if($_POST['mb_leave_date'] != ""){//이로움온 탈퇴일,탈퇴 승인자 등록
+		$sql = ("UPDATE BPLC SET LEAVE_CONFIRM_DATE='".$_POST['mb_leave_date']."',LEAVE_CONFIRM_NM='".$member['mb_name']."',LEAVE_REJECT_DATE='',LEAVE_REJECT_RESN='',USE_YN = 'N',RCMDTN_YN = 'N',mb_giup_matching = 'N' WHERE BPLC_ID='{$mb_id}' AND BRNO='{$mb_giup_bnum}';");
+        $sql_result2 = "";
+        $sql_result2 = sql_query( $sql , "" , $g5['eroumon_db'] ); mysqli_next_result($g5['eroumon_db']);		
+    }
+	if($_POST['mb_leave_date'] == "" && $_POST['mb_leave_date2'] != ""){//탈퇴 회원 복원
+		//메일 발송 시작 ==========================================================
+		$content = "[탈퇴 계정 복구 안내]<br><br>
+		탈퇴 계정이 복구되었습니다.<br>
+		1:1 매칭 상담 진행 여부를 확인하여 관리자 > 멤버스 관리에서 등록정보를 수정해 주세요.<br><br>
+		◼︎ 사업소 : ".$mb_id."<br>◼︎ 사업자번호 : ".$mb_giup_bnum."<br><br>
+		▷ 이로움 ON 관리자 바로가기<br> 
+		<a href='https://eroum.co.kr/_mng/consult/recipter/list' target='_blank'>https://eroum.co.kr/_mng/consult/recipter/list</a>";
+		$to_mail = "thkc_cx@thkc.co.kr";//thkc_cx@thkc.co.kr
+		mailer('이로움', 'no-reply@eroumcare.com', $to_mail, "[탈퇴 계정 복구 안내]", $content, 1);
+		//메일 발송 끝 ============================================================ 
+	}
 }
 else
     alert('제대로 된 값이 넘어오지 않았습니다.');

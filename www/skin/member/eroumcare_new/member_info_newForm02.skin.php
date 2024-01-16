@@ -145,7 +145,7 @@
                             </div>
                         </div>
 						<div class="thkc_btnWrap_03">
-                            <button class="on" id='btn_drop_out1' style="margin-top:15px;">회원탈퇴 신청</button>
+                            <button class="on" id='btn_leave1' style="margin-top:15px;">회원탈퇴 신청</button>
                         </div>
 
                     </div>
@@ -273,7 +273,7 @@
                 </div>
             </section>
 			<!-- 회원정보 탈퇴 추가 모달 -->
-<div class="thkc_popUpWrap " id="drop_out">
+<div class="thkc_popUpWrap " id="leave">
 	<div class="thkc_popWrap">
 		<div class="thkc_close">
 			<i class="fa-solid fa-xmark"></i>
@@ -296,7 +296,7 @@
 					</div>
 					<div class="thkc_cont bbs-pd_01">
 						<label for="password" class="thkc_blind">비밀번호</label>
-						<input class="thkc_input" id="password" placeholder="비밀번호를 입력하세요" value="" type="password" />
+						<input class="thkc_input" id="mb_password2" name="mb_password2" placeholder="비밀번호를 입력하세요" value="" type="password" />
 						<div class="error-txt error"></div>
 					</div>
 				</div>
@@ -305,7 +305,7 @@
 					<div class="thkc_cont bbs-pd_01">
 						<div>
 							<label for="bnum" class="thkc_blind">사업자등록번호</label>
-							<input class="thkc_input" id="bnum" placeholder="사업자등록번호를 입력하세요." value="" type="text" />
+							<input class="thkc_input" id="bnum" name="bnum" placeholder="사업자등록번호를 입력하세요." value="" type="text" />
 						</div>
 						<div class="error-txt error"></div>
 					</div>
@@ -315,8 +315,8 @@
 					<div class="thkc_cont bbs-pd_01">
 						<form action="">
 							<label for="thkc_textarea" class="thkc_blind">탈퇴사유</label>
-							<textarea class="thkc_textarea" name="drop_out_resn" id="drop_out_resn" cols="50" rows="7" maxlength="500" placeholder="탈퇴 사유를 적어주세요"></textarea>
-						</form><p class="f_s14 d-flex justify-content-end" id="counter">0/500</p>
+							<textarea class="thkc_textarea" name="leave_resn" id="leave_resn" cols="50" rows="7" maxlength="500" placeholder="탈퇴 사유를 적어주세요" style="padding:10px;resize: none;"></textarea>
+						</form><p class="f_s14 d-flex justify-content-end" id="counter" style="text-align:right;">0/500</p>
 						<div class="error-txt error"></div>
 					</div>
 				</div>
@@ -332,7 +332,7 @@
 				</div>
 				<div class="thkc_btnWrap_03">
 					<button class="cancel">취소</button>
-					<button class="on" id="btn_drop_out2">탈퇴 신청하기</button>
+					<button class="on" id="btn_leave2">탈퇴 신청하기</button>
 				</div>
 			</div>
 		</div>
@@ -340,9 +340,9 @@
 </div>
 
 <!-- 회원정보 신청 완료 추가 모달 -->
-<div class="thkc_popUpWrap" style="width: 400px;" id="drop_out_complete">
+<div class="thkc_popUpWrap" style="width: 400px;" id="leave_request_complete">
 	<div class="thkc_popWrap">
-		<div class="thkc_close">
+		<div class="thkc_close logout2">
 		<i class="fa-solid fa-xmark"></i>
 		</div>
 
@@ -355,20 +355,19 @@
 					<p>이후 이로움 관리자의 ‘승인’ 절차에 의해
 					탈퇴 처리가 진행될 예정입니다.</p>
 					<p>&nbsp;</p>
-					<p>영업일 기준 2~3일 정도 소요되며,</p>
+					<p>영업일 기준 7일 정도 소요되며,</p>
 					<p>카카오톡으로 결과를 안내드립니다.</p>
 				</div>
 				<div class="thkc_btnWrap_03">
-					<button class="cancel on">확인</button>
+					<button class="cancel on logout2">확인</button>
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
 
-
             <script>
-			$('#drop_out_resn').keyup(function (e){
+			$('#leave_resn').keyup(function (e){
 				var content = $(this).val();
 				$('#counter').html(content.length+"/500");    //글자수 실시간 카운팅    
 				if (content.length > 500){        
@@ -527,23 +526,78 @@
                     return true;
                 }
 				//회원 탈퇴 신청 클릭 시
-				$("#btn_drop_out1").click(function () {
-                    //매칭된 상담조회, 구매 내역 조회 후 처리					
-					$("#drop_out").css("display", "flex").hide().fadeIn();
-                    $(".thkc_popOverlay").show();
-					$(".thkc_popUpWrap").attr("disabled", false);
-
+				$("#btn_leave1").click(function () {
+                    $.ajax({
+                        url: '<?=G5_BBS_URL?>/ajax.member_leave.php', type: 'POST', dataType: 'json',
+                        data: { 
+                            "mode": "check"                        
+                        },
+                        success: function(data) {
+                            if( data.YN === "Y" ) {//매칭된 상담조회, 구매 내역 조회 후 처리
+                                $("#leave").css("display", "flex").hide().fadeIn();
+								$(".thkc_popOverlay").show();
+								$(".thkc_popUpWrap").attr("disabled", false);
+                            } else {
+                                alert(data.msg);
+                            }
+                        },
+                        error: function(e) {}
+                    });
                 });
 				//탈퇴 신청하기 클릭 시
-				$("#btn_drop_out2").click(function () {
-                    alert("서비스 준비 중입니다.");//임시적용 
-					$(".cancel").trigger("click");//임시적용
-					//사업자등록번호, 비밀번호, 탈퇴 사유 확인 후 처리					
-					//$("#drop_out").hide();
-					//$("#drop_out_complete").css("display", "flex").show();
-					//$(".thkc_popUpWrap").attr("disabled", false);
+				$("#btn_leave2").click(function () {
+                    var leave_ok = "ok";
+					if($("#mb_password2").val() == ""){
+						alert("비밀번호를 입력해 주세요.");
+						$("#mb_password2").focus();
+						return false;
+					}
+					if($("#bnum").val() == ""){
+						alert("사업자등록번호를 입력해 주세요.");
+						$("#bnum").focus();
+						return false;
+					}
+					if($("#leave_resn").val() == ""){
+						alert("탈퇴 사유를 입력해 주세요.");
+						$("#leave_resn").focus();
+						return false;
+					}
 
+					if(leave_ok == "ok"){					
+						$.ajax({
+							url: '<?=G5_BBS_URL?>/ajax.member_leave.php', type: 'POST', dataType: 'json',
+							data: { 
+								"mode": "request",
+								"leave_resn":$("#leave_resn").val(),
+								"mb_password2":$("#mb_password2").val(),
+								"bnum":$("#bnum").val(),
+							},
+							success: function(data) {
+								if( data.YN === "Y" ) {//탈퇴 신청 처리 완료. 로그아웃 처리
+									//탈퇴신청 완료 팝업 오픈
+									$("#leave").hide();
+									$("#leave_request_complete").css("display", "flex").show();
+									$(".thkc_popUpWrap").attr("disabled", false);
+								} else {
+									alert(data.msg);
+									if(data.YN === "N"){//비밀번호 오류 시
+										$("#mb_password2").val("");
+										$("#mb_password2").focus();
+									}else{//사업자등록번호 오류 시
+										$("#bnum").val("");
+										$("#bnum").focus();
+									}
+								}
+							},
+							error: function(e) {}
+						});
+					}
                 });
+
+				//탈퇴 신청완료 확인,닫기 클릭 시 로그아웃 처리
+				$(".logout2").click(function () {
+					location.href="/bbs/logout.php";
+				});
                 
 				
 				$(".thkc_btnWrap .btn_submit_02").click(function () {

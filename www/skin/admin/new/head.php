@@ -14,7 +14,18 @@ function print_menu2($key, $no) {
 
     $str .= "<ul class=\"gnb_2dul\">";
     for($i=1; $i<count($menu[$key]); $i++) {
-
+		if($menu[$key][$i][1] == "회원탈퇴 관리"){
+			$sql = "SELECT COUNT(*) AS cnt FROM `g5_member_leave` WHERE mb_leave_date2 !='' and mb_leave_date3 = ''";
+			$cnt = sql_fetch($sql);
+			if($cnt['cnt'] > 0){
+				$red_dot="<span style='float:right;background-color:#b81e01;color:#fff;border-radius: 20px;height:20px;width:20px;text-align:center;padding-top:4px;margin-top:-2px;font-weight:bold;'>".$cnt['cnt']."</span>";
+			}else{
+				$red_dot="";
+			}
+		}else{
+			$red_dot="";
+		}
+		
 		if(!$menu[$key][$i][1])
 			continue;
 
@@ -33,7 +44,7 @@ function print_menu2($key, $no) {
 		$gnb_item_qa = $menu[$key][$i][1] == '상품문의' ? 'gnb_2da_itemqa' : '';
 		$gnb_item_use = $menu[$key][$i][1] == '사용후기' ? 'gnb_2da_itemuse' : '';
 		$gnb_item_use = $menu[$key][$i][1] == '1:1문의설정' ? 'gnb_2da_qa' : '';
-        $str .= '<li class="gnb_2dli"><a href="'.$menu[$key][$i][2].'" class="gnb_2da '.$gnb_grp_style.' '.$gnb_grp_div.$gnb_on.' '.$gnb_item_qa.$gnb_item_use.'">'.$menu[$key][$i][1].'</a></li>';
+        $str .= '<li class="gnb_2dli"><a href="'.$menu[$key][$i][2].'" class="gnb_2da '.$gnb_grp_style.' '.$gnb_grp_div.$gnb_on.' '.$gnb_item_qa.$gnb_item_use.'">'.$menu[$key][$i][1].$red_dot.'</a></li>';
 
         $auth_menu[$menu[$key][$i][0]] = $menu[$key][$i][1];
     }
@@ -159,7 +170,6 @@ function imageview(id, w, h)
           }
           continue;
         }
-
 				$href1 = $href2 = '';
 				if ($menu['menu'.$key][0][2]) {
 					//$board_class = $menu['menu'.$key][0][1] == '게시판관리' ? 'gnb_1da_board' : '';
@@ -174,7 +184,14 @@ function imageview(id, w, h)
 				if (isset($sub_menu) && (substr($sub_menu, 0, 3) == substr($menu['menu'.$key][0][0], 0, 3)))
 					$current_class = " gnb_1dli_air";
 				$gnb_str .= '<li class="gnb_1dli'.$current_class.'">'.PHP_EOL;
-				$gnb_str .=  $href1 . $menu['menu'.$key][0][1] . $href2;
+				$sql = "SELECT COUNT(*) AS cnt FROM `g5_member_leave` WHERE mb_leave_date2 !='' and mb_leave_date3 = ''";
+				$cnt = sql_fetch($sql);
+				if($cnt['cnt'] > 0 && $menu['menu'.$key][0][1] == "회원관리"){
+					$red_dot="<span class='board_cnt'>".$cnt['cnt']."</span>";
+				}else{
+					$red_dot="";
+				}
+				$gnb_str .=  $href1 . $menu['menu'.$key][0][1] .$red_dot. $href2;
 				$gnb_str .=  print_menu1('menu'.$key, 1);
 				$gnb_str .=  "</li>";
 			}
