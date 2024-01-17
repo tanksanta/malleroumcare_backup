@@ -456,6 +456,12 @@ else if ($w == 'u')
         $sql_result2 = sql_query( $sql , "" , $g5['eroumon_db'] ); mysqli_next_result($g5['eroumon_db']);		
     }
 	if($_POST['mb_leave_date'] == "" && $_POST['mb_leave_date2'] != ""){//탈퇴 회원 복원
+		
+		$sql = ("UPDATE BPLC SET LEAVE_CONFIRM_DATE='',LEAVE_REQUEST_DATE='',LEAVE_RESN='',LEAVE_CONFIRM_NM='',LEAVE_REJECT_DATE='',LEAVE_REJECT_RESN='' WHERE BPLC_ID='{$mb_id}' AND BRNO='{$mb_giup_bnum}';");
+        $sql_result2 = "";
+        $sql_result2 = sql_query( $sql , "" , $g5['eroumon_db'] ); mysqli_next_result($g5['eroumon_db']);		
+
+		
 		//메일 발송 시작 ==========================================================
 		$content = "[탈퇴 계정 복구 안내]<br><br>
 		탈퇴 계정이 복구되었습니다.<br>
