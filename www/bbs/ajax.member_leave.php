@@ -119,10 +119,10 @@ if($_POST["mode"] == "check"){//탈퇴 신청 시 정보 조회
 	<a href='https://eroumcare.com/adm/' target='_blank'>https://eroumcare.com/adm/</a>";
 	$to_mail = "thkc202205000007@thkc.co.kr";
 	if(strpos($_SERVER['HTTP_HOST'],".eroumcare")){//dev,test 서버 시 발송
-		mailer(mailer($config['cf_admin_email_name'], $config['cf_admin_email'], "cdcj9090@thkc.co.kr", "[탈퇴 신청 접수 안내]", $content, 1);
-		mailer(mailer($config['cf_admin_email_name'], $config['cf_admin_email'], "dglee@thkc.co.kr", "[탈퇴 신청 접수 안내]", $content, 1);
+		mailer($config['cf_admin_email_name'], $config['cf_admin_email'], "cdcj9090@thkc.co.kr", "[탈퇴 신청 접수 안내]", $content, 1);
+		mailer($config['cf_admin_email_name'], $config['cf_admin_email'], "dglee@thkc.co.kr", "[탈퇴 신청 접수 안내]", $content, 1);
 	}else{//상용서버 발송
-		mailer(mailer($config['cf_admin_email_name'], $config['cf_admin_email'], $to_mail, "[탈퇴 신청 접수 안내]", $content, 1);		
+		mailer($config['cf_admin_email_name'], $config['cf_admin_email'], $to_mail, "[탈퇴 신청 접수 안내]", $content, 1);		
 	}
 	//메일 발송 끝 ============================================================ 
 
