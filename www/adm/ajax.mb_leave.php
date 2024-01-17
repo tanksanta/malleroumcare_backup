@@ -1,5 +1,6 @@
 <?php
 include_once('./_common.php');
+include_once(G5_LIB_PATH.'/mailer.lib.php');
 $sub_menu = '200110';
 
 $auth_check = auth_check($auth[$sub_menu], 'w', true);
@@ -53,7 +54,12 @@ if($_POST["mode"] == "reject"){//탈퇴 거부
 		▷ 이로움 ON 관리자 바로가기<br> 
 		<a href='https://eroum.co.kr/_mng/consult/recipter/list' target='_blank'>https://eroum.co.kr/_mng/consult/recipter/list</a>";
 		$to_mail = "thkc_cx@thkc.co.kr";//thkc_cx@thkc.co.kr
-		mailer('이로움', 'no-reply@eroumcare.com', $to_mail, "[탈퇴 요청 거부 안내]", $content, 1);
+		if(strpos($_SERVER['HTTP_HOST'],".eroumcare")){//dev,test 서버 시 발송
+			mailer($config['cf_admin_email_name'], $config['cf_admin_email'], "cdcj9090@thkc.co.kr", "[탈퇴 요청 거부 안내]", $content, 1);//테스트용
+			mailer($config['cf_admin_email_name'], $config['cf_admin_email'], "dglee@thkc.co.kr", "[탈퇴 요청 거부 안내]", $content, 1);//테스트용
+		}else{//상용 서버 발송
+			mailer($config['cf_admin_email_name'], $config['cf_admin_email'], $to_mail, "[탈퇴 요청 거부 안내]", $content, 1);			
+		}
 		//메일 발송 끝 ============================================================ 
 
 }else{//탈퇴 승인
@@ -73,6 +79,7 @@ if($_POST["mode"] == "reject"){//탈퇴 거부
 
 	$sql2 = "UPDATE g5_member_leave 
 	SET mb_leave_confirm='".$member['mb_id']."'
+	,mb_leave_confirm_date='".date("Ymd")."'
 	WHERE ml_no in (".$ml_no2.")";//탈퇴관리 테이블 등록
 	$result = sql_query($sql2);
 

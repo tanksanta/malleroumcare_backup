@@ -15,7 +15,7 @@ function print_menu2($key, $no) {
     $str .= "<ul class=\"gnb_2dul\">";
     for($i=1; $i<count($menu[$key]); $i++) {
 		if($menu[$key][$i][1] == "회원탈퇴 관리"){
-			$sql = "SELECT COUNT(*) AS cnt FROM `g5_member_leave` WHERE mb_leave_date2 !='' and mb_leave_date3 = ''";
+			$sql = "SELECT COUNT(*) AS cnt FROM `g5_member_leave` WHERE mb_leave_date2 !='' AND (mb_leave_date3 = '' OR mb_leave_date3 IS NULL) and (mb_leave_confirm_date ='' OR mb_leave_confirm_date IS NULL)";
 			$cnt = sql_fetch($sql);
 			if($cnt['cnt'] > 0){
 				$red_dot="<span style='float:right;background-color:#b81e01;color:#fff;border-radius: 20px;height:20px;width:20px;text-align:center;padding-top:4px;margin-top:-2px;font-weight:bold;'>".$cnt['cnt']."</span>";
@@ -184,7 +184,7 @@ function imageview(id, w, h)
 				if (isset($sub_menu) && (substr($sub_menu, 0, 3) == substr($menu['menu'.$key][0][0], 0, 3)))
 					$current_class = " gnb_1dli_air";
 				$gnb_str .= '<li class="gnb_1dli'.$current_class.'">'.PHP_EOL;
-				$sql = "SELECT COUNT(*) AS cnt FROM `g5_member_leave` WHERE mb_leave_date2 !='' and mb_leave_date3 = ''";
+				$sql = "SELECT COUNT(*) AS cnt FROM `g5_member_leave` WHERE mb_leave_date2 !='' AND (mb_leave_date3 = '' OR mb_leave_date3 IS NULL) and (mb_leave_confirm_date ='' OR mb_leave_confirm_date IS NULL)";
 				$cnt = sql_fetch($sql);
 				if($cnt['cnt'] > 0 && $menu['menu'.$key][0][1] == "회원관리"){
 					$red_dot="<span class='board_cnt'>".$cnt['cnt']."</span>";

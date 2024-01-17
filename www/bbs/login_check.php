@@ -93,7 +93,7 @@ if($check_member['mb_type'] === 'manager') {
       }
 
 	  // 탈퇴 신청한 아이디인가? 탈퇴 거절 시에는 로그인 가능함
-		if ($mb['mb_leave_date'] == "" && $mb_leave['mb_leave_date2']!="" && $mb_leave['mb_leave_date3'] == "") {
+		if ($mb['mb_leave_date'] == "" && $mb_leave['mb_leave_date2']!="" && $mb_leave['mb_leave_confirm_date'] =="" && $mb_leave['mb_leave_date3'] == "") {//탈퇴신청이 되었으나 승인일이과 거부일이 없을 때 로그인 반려
 			alert('해당 계정은 관리자의 승인 절차에 의해 탈퇴 처리가 진행될 예정입니다.(영업일 기준 7일 소요)');
 		}
       // 탈퇴한 아이디인가?
@@ -214,7 +214,7 @@ if ($mb['mb_intercept_date'] && $mb['mb_intercept_date'] <= date("Ymd", G5_SERVE
 }
 
 // 탈퇴 신청한 아이디인가? 탈퇴 거절 시에는 로그인 가능함
-if ($mb['mb_leave_date'] == "" && $mb_leave['mb_leave_date2']!="" && $mb_leave['mb_leave_date3'] == "") {
+if ($mb['mb_leave_date'] == "" && $mb_leave['mb_leave_date2']!="" && $mb_leave['mb_leave_confirm_date'] =="" && $mb_leave['mb_leave_date3'] == "") {//탈퇴신청이 되었으나 승인일이과 거부일이 없을 때 로그인 반려
     alert('해당 계정은 관리자의 승인 절차에 의해 탈퇴 처리가 진행될 예정입니다.(영업일 기준 7일 소요)');
 }
 

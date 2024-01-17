@@ -464,7 +464,12 @@ else if ($w == 'u')
 		▷ 이로움 ON 관리자 바로가기<br> 
 		<a href='https://eroum.co.kr/_mng/consult/recipter/list' target='_blank'>https://eroum.co.kr/_mng/consult/recipter/list</a>";
 		$to_mail = "thkc_cx@thkc.co.kr";//thkc_cx@thkc.co.kr
-		mailer('이로움', 'no-reply@eroumcare.com', $to_mail, "[탈퇴 계정 복구 안내]", $content, 1);
+		if(strpos($_SERVER['HTTP_HOST'],".eroumcare")){//dev,test 서버 시 발송
+			mailer($config['cf_admin_email_name'], $config['cf_admin_email'], "cdcj9090@thkc.co.kr", "[탈퇴 계정 복구 안내]", $content, 1);
+			mailer($config['cf_admin_email_name'], $config['cf_admin_email'], "dglee@thkc.co.kr", "[탈퇴 계정 복구 안내]", $content, 1);
+		}else{//상용 서버 발송
+			mailer($config['cf_admin_email_name'], $config['cf_admin_email'], $to_mail, "[탈퇴 계정 복구 안내]", $content, 1);			
+		}
 		//메일 발송 끝 ============================================================ 
 	}
 }

@@ -7,14 +7,16 @@ $query = "SHOW tables LIKE 'g5_member_leave'";//탈퇴신청 관리 테이블 �
 $wzres = sql_num_rows( sql_query($query) );
 if($wzres < 1) {
 	sql_query("CREATE TABLE `g5_member_leave` (
-  `ml_no` int(11) NOT NULL COMMENT '탈퇴 신청번호',
+  `ml_no` int(11) NOT NULL AUTO_INCREMENT COMMENT '탈퇴 신청번호',
   `mb_id` varchar(30) NOT NULL COMMENT '탈퇴 신청인',
+  `mb_leave_confirm_date` varchar(20) NOT NULL COMMENT '탈퇴 승인일',
   `mb_leave_date2` varchar(20) NOT NULL COMMENT '탈퇴 신청일',
   `mb_leave_resn` text DEFAULT NULL COMMENT '탈퇴 사유',
   `mb_leave_date3` varchar(20) DEFAULT NULL COMMENT '탈퇴 거부일',
   `mb_leave_reject_resn` text DEFAULT NULL COMMENT '탈퇴 거부 사유',
   `mb_leave_confirm` varchar(50) DEFAULT NULL COMMENT '탈퇴 승인자',
-  KEY `mb_id` (`mb_id`,`mb_leave_date2`,`mb_leave_date3`)
+  KEY `mb_id` (`mb_id`,`mb_leave_date2`,`mb_leave_date3`),
+  KEY `ml_no` (`ml_no`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8");
 }
  	
@@ -116,7 +118,12 @@ if($_POST["mode"] == "check"){//탈퇴 신청 시 정보 조회
 	▷ 이로움 Care 관리자 바로가기<br>
 	<a href='https://eroumcare.com/adm/' target='_blank'>https://eroumcare.com/adm/</a>";
 	$to_mail = "thkc202205000007@thkc.co.kr";
-	mailer('이로움', 'no-reply@eroumcare.com', $to_mail, "[탈퇴 신청 접수 안내]", $content, 1);
+	if(strpos($_SERVER['HTTP_HOST'],".eroumcare")){//dev,test 서버 시 발송
+		mailer(mailer($config['cf_admin_email_name'], $config['cf_admin_email'], "cdcj9090@thkc.co.kr", "[탈퇴 신청 접수 안내]", $content, 1);
+		mailer(mailer($config['cf_admin_email_name'], $config['cf_admin_email'], "dglee@thkc.co.kr", "[탈퇴 신청 접수 안내]", $content, 1);
+	}else{//상용서버 발송
+		mailer(mailer($config['cf_admin_email_name'], $config['cf_admin_email'], $to_mail, "[탈퇴 신청 접수 안내]", $content, 1);		
+	}
 	//메일 발송 끝 ============================================================ 
 
 	$data["msg"] = "";

@@ -8,14 +8,16 @@ $query = "SHOW tables LIKE 'g5_member_leave'";//탈퇴신청 관리 테이블 �
 $wzres = sql_num_rows( sql_query($query) );
 if($wzres < 1) {
 	sql_query("CREATE TABLE `g5_member_leave` (
-  `ml_no` int(11) NOT NULL COMMENT '탈퇴 신청번호',
+  `ml_no` int(11) NOT NULL AUTO_INCREMENT COMMENT '탈퇴 신청번호',
   `mb_id` varchar(30) NOT NULL COMMENT '탈퇴 신청인',
+  `mb_leave_confirm_date` varchar(20) NOT NULL COMMENT '탈퇴 승인일',
   `mb_leave_date2` varchar(20) NOT NULL COMMENT '탈퇴 신청일',
   `mb_leave_resn` text DEFAULT NULL COMMENT '탈퇴 사유',
   `mb_leave_date3` varchar(20) DEFAULT NULL COMMENT '탈퇴 거부일',
   `mb_leave_reject_resn` text DEFAULT NULL COMMENT '탈퇴 거부 사유',
   `mb_leave_confirm` varchar(50) DEFAULT NULL COMMENT '탈퇴 승인자',
-  KEY `mb_id` (`mb_id`,`mb_leave_date2`,`mb_leave_date3`)
+  KEY `mb_id` (`mb_id`,`mb_leave_date2`,`mb_leave_date3`),
+  KEY `ml_no` (`ml_no`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8");
 }
 
@@ -48,13 +50,13 @@ $page_rows = isset($_GET['page_rows']) ? get_search_string($_GET['page_rows']) :
 
 $qstr = '';
 if($sel_stat !="" && $sel_stat != "all"){
-	if($sel_stat == 'mb_leave_date'){//승인완료
-		$where[] = " m3.mb_leave_date!='' ";
+	if($sel_stat == 'mb_leave_confirm_date'){//승인완료
+		$where[] = " m.mb_leave_confirm_date!='' ";
 
 	}elseif($sel_stat == 'mb_leave_date2'){//대기
-		$where[] = "m3.mb_leave_date='' and m.mb_leave_date2!='' and m.mb_leave_date3='' ";
+		$where[] = "m.mb_leave_confirm_date='' and m.mb_leave_date2!='' and m.mb_leave_date3='' ";
 	}else{//거부
-		$where[] = "m3.mb_leave_date='' and m.mb_leave_date3!='' ";
+		$where[] = "m.mb_leave_confirm_date='' and m.mb_leave_date3!='' ";
 	}
 	$qstr .= 'sel_stat='.$sel_stat;
 }else{//전체
@@ -66,7 +68,7 @@ if($sel_stat !="" && $sel_stat != "all"){
 
 if($fr_date != "" || $to_date != ""){//날짜 검색 조건이 있을 경우
 	if($sel_stat != 'all'){//승인대기,승인완료,거부
-		$where_st = ($sel_stat == 'mb_leave_date')?"m3.".$sel_stat :"m.".$sel_stat ;
+		$where_st = ($sel_stat == 'mb_leave_confirm_date')?"m3.".$sel_stat :"m.".$sel_stat ;
 		if($to_date == ""){//시작 날짜만 있을 경우 >=
 			$where[] = " $where_st >= '".str_replace("-",'',$fr_date)."' ";
 		}elseif($fr_date == ""){//종료 날짜만 있을 경우 <=
@@ -76,11 +78,11 @@ if($fr_date != "" || $to_date != ""){//날짜 검색 조건이 있을 경우
 		}
 	}else{
 		if($to_date == ""){//시작 날짜만 있을 경우 >=
-			$where[] = " (m3.mb_leave_date >= '".str_replace("-",'',$fr_date)."' or m.mb_leave_date2 >= '".str_replace("-",'',$fr_date)."'  or m.mb_leave_date3 >= '".str_replace("-",'',$fr_date)."') ";
+			$where[] = " (m.mb_leave_confirm_date >= '".str_replace("-",'',$fr_date)."' or m.mb_leave_date2 >= '".str_replace("-",'',$fr_date)."'  or m.mb_leave_date3 >= '".str_replace("-",'',$fr_date)."') ";
 		}elseif($fr_date == ""){//종료 날짜만 있을 경우 <=
-			$where[] = " (m3.mb_leave_date <= '".str_replace("-",'',$to_date)."' or m.mb_leave_date2 <= '".str_replace("-",'',$to_date)."' or m.mb_leave_date3 <= '".str_replace("-",'',$to_date)."') ";
+			$where[] = " (m.mb_leave_confirm_date <= '".str_replace("-",'',$to_date)."' or m.mb_leave_date2 <= '".str_replace("-",'',$to_date)."' or m.mb_leave_date3 <= '".str_replace("-",'',$to_date)."') ";
 		}else{// 둘다 있을 경우 between
-			$where[] = " (m3.mb_leave_date between '".str_replace("-",'',$fr_date)."' and '".str_replace("-",'',$to_date)."' or m.mb_leave_date2  between '".str_replace("-",'',$fr_date)."' and '".str_replace("-",'',$to_date)."' or m.mb_leave_date3  between '".str_replace("-",'',$fr_date)."' and '".str_replace("-",'',$to_date)."') "; 
+			$where[] = " (m.mb_leave_confirm_date between '".str_replace("-",'',$fr_date)."' and '".str_replace("-",'',$to_date)."' or m.mb_leave_date2  between '".str_replace("-",'',$fr_date)."' and '".str_replace("-",'',$to_date)."' or m.mb_leave_date3  between '".str_replace("-",'',$fr_date)."' and '".str_replace("-",'',$to_date)."') "; 
 		}
 	}
 		
@@ -93,8 +95,8 @@ if($fr_date != "" || $to_date != ""){//날짜 검색 조건이 있을 경우
 $sql_order = ' ORDER BY ';
 $index_order = '';
 $index_order = 'DESC';
-$sql_order .= 'm.mb_leave_date2 ' . $index_order;
-$sql_order .= ',m3.mb_leave_date ' . $index_order;
+$sql_order .= 'm.ml_no ' . $index_order;
+
 
 //
 
@@ -118,6 +120,7 @@ if ($search != '' && $sel_field != '') {
 }
 
 // select 배열 처리
+$select[] = "CASE WHEN m.mb_id = m3.mb_id THEN m.mb_leave_confirm_date ELSE '' END AS mb_leave_confirm_date";
 $select[] = "CASE WHEN m.mb_id = m3.mb_id THEN m.mb_leave_date2 ELSE '' END AS mb_leave_date2";
 $select[] = "CASE WHEN m.mb_id = m3.mb_id THEN m.mb_leave_date3 ELSE '' END AS mb_leave_date3";
 $select[] = "CASE WHEN m.mb_id = m3.mb_id THEN m.mb_leave_resn ELSE '' END AS mb_leave_resn";
@@ -186,7 +189,7 @@ function cutStr($string, $num = 35) {
 		    <select name="sel_stat" id="sel_stat">
             <option value="all" <?php echo get_selected($sel_stat, 'all'); ?>>전체</option>
             <option value="mb_leave_date2" <?php echo get_selected($sel_stat, 'mb_leave_date2'); ?>>대기</option>
-            <option value="mb_leave_date" <?php echo get_selected($sel_stat, 'mb_leave_date'); ?>>승인 완료</option>
+            <option value="mb_leave_confirm_date" <?php echo get_selected($sel_stat, 'mb_leave_confirm_date'); ?>>승인 완료</option>
 			<option value="mb_leave_date3" <?php echo get_selected($sel_stat, 'mb_leave_date3'); ?>>거부 완료</option>
           </select>
           </div>
@@ -271,8 +274,8 @@ function cutStr($string, $num = 35) {
 
     ?>
     <tr class="<?php echo $bg; ?>">
-        <td align="center"><input type="checkbox" name="mb_id[]" value="<?=$row["mb_id"]."|".$row["ml_no"]?>" <?=($row["mb_leave_date"] == "" && $row["mb_leave_date3"] == "")?"":" disabled";?>></td>
-        <td align="center"><?=($row["mb_leave_date"] != "")?"승인완료":(($row["mb_leave_date3"] != "")?"거부완료":"대기");?></td>
+        <td align="center"><input type="checkbox" name="mb_id[]" value="<?=$row["mb_id"]."|".$row["ml_no"]?>" <?=($row["mb_leave_confirm_date"] == "" && $row["mb_leave_date3"] == "")?"":" disabled";?>></td>
+        <td align="center"><?=($row["mb_leave_confirm_date"] != "")?"승인완료":(($row["mb_leave_date3"] != "")?"거부완료":"대기");?></td>
 		<td align="center"><a href="/adm/member_form.php?w=u&mb_id=<?=$row["mb_id"]?>" target="_blank"><?=$row["mb_id"]?></a></td>
 		<td align="center"><?=$row["mb_name"]?></td>
 		<td align="center"><?=$row["mb_nick"]?></td>
@@ -281,9 +284,9 @@ function cutStr($string, $num = 35) {
    		<td align="center"><?=$row["mb_hp"]?></td>
 		<td align="left"><?=($row["mb_leave_resn"] == "")?"":cutStr($row["mb_leave_resn"]);?></td>
 		<td align="center"><?=($row["mb_leave_date2"])?substr($row["mb_leave_date2"],0,4)."-".substr($row["mb_leave_date2"],4,2)."-".substr($row["mb_leave_date2"],6,2):"-";?></td>
-		<td align="center"><?=($row["mb_leave_date"] != "")?substr($row["mb_leave_date"],0,4)."-".substr($row["mb_leave_date"],4,2)."-".substr($row["mb_leave_date"],6,2) : (($row["mb_leave_date3"] != "")?substr($row["mb_leave_date3"],0,4)."-".substr($row["mb_leave_date3"],4,2)."-".substr($row["mb_leave_date3"],6,2):"-");?></td>
-		<td align="center"><?=($row["mb_leave_confirm_name"] == "")?"-":$row["mb_leave_confirm_name"];?><?=($row["mb_leave_date3"] != "" && $row["mb_leave_date"] == "")?"&nbsp;&nbsp;&nbsp;<a href=\"javascript:resn_view('".$row["mb_leave_reject_resn"]."','거부 사유');\" style='color:#0099ff;text-decoration:underline !important;'>거부사유</a>":"";?></td>
-		<td align="center"><?=($row["mb_leave_date"]!="" || $row["mb_leave_date3"]!="")?"":"<a href=\"javascript:go_view('".$row['mb_id']."',".$row['ml_no']."');\" class=\"btn btn_01\" style=\"border-radius: 3px;\">탈퇴거부</a>";?></td>
+		<td align="center"><?=($row["mb_leave_confirm_date"] != "")?substr($row["mb_leave_confirm_date"],0,4)."-".substr($row["mb_leave_confirm_date"],4,2)."-".substr($row["mb_leave_confirm_date"],6,2) : (($row["mb_leave_date3"] != "")?substr($row["mb_leave_date3"],0,4)."-".substr($row["mb_leave_date3"],4,2)."-".substr($row["mb_leave_date3"],6,2):"-");?></td>
+		<td align="center"><?=($row["mb_leave_confirm_name"] == "")?"-":$row["mb_leave_confirm_name"];?><?=($row["mb_leave_date3"] != "" && $row["mb_leave_confirm_date"] == "")?"&nbsp;&nbsp;&nbsp;<a href=\"javascript:resn_view('".$row["mb_leave_reject_resn"]."','거부 사유');\" style='color:#0099ff;text-decoration:underline !important;'>거부사유</a>":"";?></td>
+		<td align="center"><?=($row["mb_leave_confirm_date"]!="" || $row["mb_leave_date3"]!="")?"":"<a href=\"javascript:go_view('".$row['mb_id']."','".$row['ml_no']."');\" class=\"btn btn_01\" style=\"border-radius: 3px;\">탈퇴거부</a>";?></td>
 
     </tr>
     <?php
