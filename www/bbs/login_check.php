@@ -71,6 +71,8 @@ if($check_member['mb_type'] === 'manager') {
     
     //계정정보 불러오기
     $mb = get_member($mb_id);
+	$sql = "select * from g5_member_leave where mb_id='{$mb_id}' order by mb_leave_date2 DESC limit 0,1";
+	$mb_leave = sql_fetch($sql);
 
     //쇼핑몰에 등록이 되어 있지 않으면, 메세지출력
     if (!check_password($mb_password, $mb['mb_password'])) {
@@ -89,6 +91,11 @@ if($check_member['mb_type'] === 'manager') {
         // alert('관리자 승인이 대기중입니다.',G5_BBS_URL."/register_result.php");
         alert('회원님의 아이디는 접근이 금지되어 있습니다.\n처리일 : '.$date, G5_BBS_URL."/member_intercept.php");
       }
+
+	  // 탈퇴 신청한 아이디인가? 탈퇴 거절 시에는 로그인 가능함
+		if ($mb['mb_leave_date'] == "" && $mb_leave['mb_leave_date2']!="" && $mb_leave['mb_leave_confirm_date'] =="" && $mb_leave['mb_leave_date3'] == "") {//탈퇴신청이 되었으나 승인일이과 거부일이 없을 때 로그인 반려
+			alert('해당 계정은 관리자의 승인 절차에 의해 탈퇴 처리가 진행될 예정입니다.(영업일 기준 7일 소요)');
+		}
       // 탈퇴한 아이디인가?
       if ($mb['mb_leave_date'] && $mb['mb_leave_date'] <= date("Ymd", G5_SERVER_TIME)) {
         $date = preg_replace("/([0-9]{4})([0-9]{2})([0-9]{2})/", "\\1년 \\2월 \\3일", $mb['mb_leave_date']);
@@ -172,6 +179,8 @@ if(isset($_POST['apms_social']) && $_POST['apms_social']) {
     alert('회원아이디나 비밀번호가 공백이면 안됩니다.');
 
   $mb = get_member($mb_id);
+  $sql = "select * from g5_member_leave where mb_id='{$mb_id}' order by mb_leave_date2 DESC limit 0,1";
+  $mb_leave = sql_fetch($sql);
 }
 
 //소셜 로그인추가 체크
@@ -202,6 +211,11 @@ if ($mb['mb_intercept_date'] && $mb['mb_intercept_date'] <= date("Ymd", G5_SERVE
   $date = preg_replace("/([0-9]{4})([0-9]{2})([0-9]{2})/", "\\1년 \\2월 \\3일", $mb['mb_intercept_date']);
   // alert('회원님의 아이디는 접근이 금지되어 있습니다.\n처리일 : '.$date);
   alert('회원님의 아이디는 접근이 금지되어 있습니다.\n처리일 : '.$date, G5_BBS_URL."/member_intercept.php");
+}
+
+// 탈퇴 신청한 아이디인가? 탈퇴 거절 시에는 로그인 가능함
+if ($mb['mb_leave_date'] == "" && $mb_leave['mb_leave_date2']!="" && $mb_leave['mb_leave_confirm_date'] =="" && $mb_leave['mb_leave_date3'] == "") {//탈퇴신청이 되었으나 승인일이과 거부일이 없을 때 로그인 반려
+    alert('해당 계정은 관리자의 승인 절차에 의해 탈퇴 처리가 진행될 예정입니다.(영업일 기준 7일 소요)');
 }
 
 // 탈퇴한 아이디인가?
