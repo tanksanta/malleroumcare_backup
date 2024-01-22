@@ -535,7 +535,7 @@ $warehouse_list = get_warehouses();
 		} 
 		elseif($click_status == "출고준비"){
 			echo ('
-				&nbsp;&nbsp;<font style="font-weight:bold;color:#000000;">출고완료일 설정</font>&nbsp;<input type="text" id="ct_ex_date" class="date" name="ct_ex_date" value="'.date("Y-m-d").'" size="70" maxlength="10" autocomplete="off" style="height:33px;border:1px solid #b5b5b5;padding-left:10px;width:100px;">
+				&nbsp;&nbsp;<font style="font-weight:bold;color:#000000;">출고완료일 설정</font>&nbsp;<input type="text" id="ct_ex_date" class="date" name="ct_ex_date" value="'.date("Y-m-d").'" size="70" maxlength="10" autocomplete="off" style="height:33px;border:1px solid #b5b5b5;padding-left:10px;width:100px;" readonly>
 				<input type="button" value="선택 출고완료로 변경 ▶" id="" name="" class="newbutton2" onClick="return change_step_go(\'배송\')"/>				
 				<input type="button" value="◀ 선택 상품준비로 되돌리기" id="" name="" class="newbutton2" onClick="return change_step_go(\'준비\')"/>
 				<input type="button" value="선택 바코드 정보 입력" id="" name="" class="newbutton2" style="background-color:#000;color:#fff;" onClick="barcode_insert(\'\');"/>
@@ -544,7 +544,7 @@ $warehouse_list = get_warehouses();
 		elseif($click_status == "배송"){//출고완료
 			echo ('
 				<input type="button" value="◀ 선택 출고준비로 되돌리기" id="" name="" class="newbutton2" onClick="return change_step_go(\'출고준비\')"/>
-				&nbsp;&nbsp;<font style="font-weight:bold;color:#000000;">선택 출고완료일 변경</font>&nbsp;<input type="text" id="ct_ex_date2" class="date" name="ct_ex_date2" value="" size="70" maxlength="10" autocomplete="off" style="height:33px;border:1px solid #b5b5b5;padding-left:10px;width:100px;" placeholder="YYYY-MM-DD">&nbsp;<input type="button" class="newbutton2" value="변경" onClick="change_date2();">
+				&nbsp;&nbsp;<font style="font-weight:bold;color:#000000;">선택 출고완료일 변경</font>&nbsp;<input type="text" id="ct_ex_date2" class="date" name="ct_ex_date2" value="" size="70" maxlength="10" autocomplete="off" style="height:33px;border:1px solid #b5b5b5;padding-left:10px;width:100px;" placeholder="YYYY-MM-DD" readonly>&nbsp;<input type="button" class="newbutton2" value="변경" onClick="change_date2();">
 			');
 		}
 

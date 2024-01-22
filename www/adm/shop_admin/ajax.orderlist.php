@@ -786,11 +786,11 @@ $total_count_text = ($total_ct_qty == "")? "": " (수량 ".$total_ct_qty."개)";
     if($ct_status_info['name']=="재고소진"||$ct_status_info['name']=="보유재고등록"){ $status_info = "총 {$total_result['cnt']}건";}else{$status_info = "총 {$total_result['cnt']}건{$total_count_text} / 합계: ₩ {$total_result['price']}원";}
 
 	if($ct_status_info['name'] == "출고준비"){
-		$show_chulgo_date = '&nbsp;&nbsp;<font style="font-weight:bold;color:#000000;">출고완료일 설정</font>&nbsp;<input type="text" id="ct_ex_date" class="date" name="ct_ex_date" value="'.date("Y-m-d").'" size="70" maxlength="10" autocomplete="off" style="height:30px;margin-top:3px;border:1px solid #b5b5b5;">&nbsp;&nbsp;&nbsp;';
+		$show_chulgo_date = '&nbsp;&nbsp;<font style="font-weight:bold;color:#000000;">출고완료일 설정</font>&nbsp;<input type="text" id="ct_ex_date" class="date" name="ct_ex_date" value="'.date("Y-m-d").'" size="70" maxlength="10" autocomplete="off" style="height:30px;margin-top:3px;border:1px solid #b5b5b5;" readonly>&nbsp;&nbsp;&nbsp;';
 		$show_chulgo_date2 = "";
 	}elseif($ct_status_info['name'] == "출고완료"){
 		$show_chulgo_date = "";
-		$show_chulgo_date2 = '&nbsp;&nbsp;<font style="font-weight:bold;color:#000000;">선택 출고완료일 변경</font>&nbsp;<input type="text" id="ct_ex_date2" class="date" name="ct_ex_date2" value="" size="70" maxlength="10" autocomplete="off" style="height:30px;margin-top:3px;border:1px solid #b5b5b5;" placeholder="YYYY-MM-DD"><span class="btn large" ><button id="change_date2" style="background:#dddddd;">변경</button></span>';
+		$show_chulgo_date2 = '&nbsp;&nbsp;<font style="font-weight:bold;color:#000000;">선택 출고완료일 변경</font>&nbsp;<input type="text" id="ct_ex_date2" class="date" name="ct_ex_date2" value="" size="70" maxlength="10" autocomplete="off" style="height:30px;margin-top:3px;border:1px solid #b5b5b5;" placeholder="YYYY-MM-DD" readonly><span class="btn large" ><button id="change_date2" style="background:#dddddd;">변경</button></span>';
 	}else{
 		$show_chulgo_date = "";
 		$show_chulgo_date2 = "";
