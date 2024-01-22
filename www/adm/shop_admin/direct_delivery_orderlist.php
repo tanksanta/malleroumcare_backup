@@ -535,7 +535,8 @@ $warehouse_list = get_warehouses();
 		} 
 		elseif($click_status == "출고준비"){
 			echo ('
-				<input type="button" value="선택 출고완료로 변경 ▶" id="" name="" class="newbutton2" onClick="return change_step_go(\'배송\')"/>
+				&nbsp;&nbsp;<font style="font-weight:bold;color:#000000;">출고완료일 설정</font>&nbsp;<input type="text" id="ct_ex_date" class="date" name="ct_ex_date" value="'.date("Y-m-d").'" size="70" maxlength="10" autocomplete="off" style="height:33px;border:1px solid #b5b5b5;padding-left:10px;width:100px;">
+				<input type="button" value="선택 출고완료로 변경 ▶" id="" name="" class="newbutton2" onClick="return change_step_go(\'배송\')"/>				
 				<input type="button" value="◀ 선택 상품준비로 되돌리기" id="" name="" class="newbutton2" onClick="return change_step_go(\'준비\')"/>
 				<input type="button" value="선택 바코드 정보 입력" id="" name="" class="newbutton2" style="background-color:#000;color:#fff;" onClick="barcode_insert(\'\');"/>
 			');
@@ -543,6 +544,7 @@ $warehouse_list = get_warehouses();
 		elseif($click_status == "배송"){//출고완료
 			echo ('
 				<input type="button" value="◀ 선택 출고준비로 되돌리기" id="" name="" class="newbutton2" onClick="return change_step_go(\'출고준비\')"/>
+				&nbsp;&nbsp;<font style="font-weight:bold;color:#000000;">선택 출고완료일 변경</font>&nbsp;<input type="text" id="ct_ex_date2" class="date" name="ct_ex_date2" value="" size="70" maxlength="10" autocomplete="off" style="height:33px;border:1px solid #b5b5b5;padding-left:10px;width:100px;" placeholder="YYYY-MM-DD">&nbsp;<input type="button" class="newbutton2" value="변경" onClick="change_date2();">
 			');
 		}
 
@@ -775,7 +777,53 @@ $warehouse_list = get_warehouses();
 </div>
 
 <script>
+function change_date2(){
+		if($("#ct_ex_date2").val() == ""){
+			alert("변경할 날짜를 선택해 주세요.");
+			$("#ct_ex_date2").focus();
+			return false;
+		}
+		
+		var ct_id = [];
+		var item = $("input[name='od_id[]']:checked");
 
+		for (var i = 0; i < item.length; i++) {
+			ct_id.push($(item[i]).val());
+		}
+
+		if (!ct_id.length) {
+			alert('출고완료일을 변경할 주문 정보를 선택해 주세요.');
+			return false;
+		}
+
+		var yoil_num =  new Date($("#ct_ex_date2").val()).getDay()
+		var yoil="";
+		switch(yoil_num){
+			case 0: yoil = "일";break;
+			case 1: yoil = "월";break;
+			case 2: yoil = "화";break;
+			case 3: yoil = "수";break;
+			case 4: yoil = "목";break;
+			case 5: yoil = "금";break;
+			case 6: yoil = "토";break;
+			default:yoil = "일";
+		}
+		var date_ko = $("#ct_ex_date2").val().split('-');
+		if(confirm("선택한 주문건("+ct_id.length+"건)의 출고완료일을 변경 하시겠습니다까?\n변경날짜 : "+date_ko[0]+"년 "+date_ko[1]+"월 "+date_ko[2]+"일("+yoil+")")){
+			$.post('./ajax.ct_ex_date_change.php', {
+				ct_id: ct_id,
+				ct_ex_date: $("#ct_ex_date2").val()
+			}, 'json')
+			.done(function() {
+				alert('출고완료일 변경이 완료되었습니다.');
+				location.reload();
+				})
+			.fail(function($xhr) {
+				var data = $xhr.responseJSON;
+				alert(data && data.message);
+			});
+		}
+	}
 $(function() {
 	// 위탁 선택적용
 	$('#ct_direct_delivery_partner_all').click(function() {
@@ -953,7 +1001,7 @@ $(function() {
 
 	var EXCEL_DOWNLOADER = null;//엑셀 다운로더
 
-	$("#fr_date, #to_date").datepicker({
+	$("#fr_date, #to_date,#ct_ex_date,#ct_ex_date2").datepicker({
         changeMonth: true,
         changeYear: true,
         dateFormat: "yy-mm-dd",
@@ -1131,7 +1179,8 @@ function change_step2(od_id, step, api,od_id2) {
 			data: {
 				'step': step,
 				'od_id[]': od_id,
-				'api': api
+				'api': api,
+				'ct_ex_date':$("#ct_ex_date").val()
 			},
 		}).done(function (data) {
 			console.log(data);

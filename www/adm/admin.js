@@ -197,7 +197,7 @@ $.fn.serializeObject = function() {
     return result
 }
 
-function change_step(od_id, step, api) {
+function change_step(od_id, step, api,ct_ex_date) {
     console.log(od_id);
     console.log(step);
     console.log(api);
@@ -207,7 +207,8 @@ function change_step(od_id, step, api) {
         data: {
             'step': step,
             'od_id[]': od_id,
-            'api': api
+            'api': api,
+			'ct_ex_date':ct_ex_date
         },
     }).done(function (data) {
         console.log(data);
