@@ -260,14 +260,14 @@
 
 
                             <!-- 장바구니 시작 -->
-                            <?php if(get_boxcart_datas_count() > 0) { ?>
+                            <?php //if(get_boxcart_datas_count() > 0) { ?>
                             <div class="mem_shipWrap f_s14">
                                 <a href="<?=G5_SHOP_URL;?>/cart.php">
                                     <p><?=($_SESSION['recipient']['penId']=="")?"사업소":$_SESSION['recipient']['penNm']."님";?> 장바구니</p>
                                     <p><span class="mInfo"><?=get_boxcart_datas_count(); ?></span><span class="mUnit">건</span></p>
                                 </a>
                             </div>
-                            <?php } ?>
+                            <?php //} ?>
                             <!-- 장바구니 종료 -->
 
 
