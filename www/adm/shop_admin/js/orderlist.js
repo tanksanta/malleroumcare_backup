@@ -221,8 +221,9 @@ $(function () {
       alert('선택해주세요.');
       return;
     }
+	var ct_ex_date = $('#ct_ex_date').val(); 
 
-    change_step(od_id['od_id[]'], next_step_val, 'true');
+    change_step(od_id['od_id[]'], next_step_val, 'true',ct_ex_date);
   });
 
   $(document).on('click', '#change_prev_step', function () {
@@ -261,6 +262,53 @@ $(function () {
       'width=850, height=800, resizable = no, scrollbars = yes'
     );
   });
+	
+//출고완료일 변경
+  $(document).on('click', '#change_date2', function () {
+		if($("#ct_ex_date2").val() == ""){
+			alert("변경할 날짜를 선택해 주세요.");
+			$("#ct_ex_date2").focus();
+			return false;
+		}
+		
+				
+		var ct_id = $(get_selected(this)).serializeObject();
+		if (ct_id['od_id[]'] === undefined) {
+		  alert('출고완료일을 변경할 주문 정보를 선택해 주세요.');
+		  return;
+		}
+
+
+
+		var yoil_num =  new Date($("#ct_ex_date2").val()).getDay()
+		var yoil="";
+		switch(yoil_num){
+			case 0: yoil = "일";break;
+			case 1: yoil = "월";break;
+			case 2: yoil = "화";break;
+			case 3: yoil = "수";break;
+			case 4: yoil = "목";break;
+			case 5: yoil = "금";break;
+			case 6: yoil = "토";break;
+			default:yoil = "일";
+		}
+		var date_ko = $("#ct_ex_date2").val().split('-');
+		var count = (Array.isArray(ct_id['od_id[]']))?ct_id['od_id[]'].length:"1";
+		if(confirm("선택한 주문건("+count+"건)의 출고완료일을 변경 하시겠습니다까?\n변경날짜 : "+date_ko[0]+"년 "+date_ko[1]+"월 "+date_ko[2]+"일("+yoil+")")){
+			$.post('./ajax.ct_ex_date_change.php', {
+				"ct_id[]": ct_id['od_id[]'],
+				ct_ex_date: $("#ct_ex_date2").val()
+			}, 'json')
+			.done(function() {
+				alert('출고완료일 변경이 완료되었습니다.');
+				location.reload();
+				})
+			.fail(function($xhr) {
+				var data = $xhr.responseJSON;
+				alert(data && data.message);
+			});
+		}
+	});
 
   // 상품 매칭 취소
   $(document).on('click', '#list_matching_cancel', function () {

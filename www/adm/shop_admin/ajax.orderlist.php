@@ -785,13 +785,24 @@ $total_count_text = ($total_ct_qty == "")? "": " (수량 ".$total_ct_qty."개)";
     $total_result['price'] = number_format( $total_result['ct_price'] + $total_result['ct_sendcost'] - $total_result['ct_discount']);
     if($ct_status_info['name']=="재고소진"||$ct_status_info['name']=="보유재고등록"){ $status_info = "총 {$total_result['cnt']}건";}else{$status_info = "총 {$total_result['cnt']}건{$total_count_text} / 합계: ₩ {$total_result['price']}원";}
 
+	if($ct_status_info['name'] == "출고준비"){
+		$show_chulgo_date = '&nbsp;&nbsp;<font style="font-weight:bold;color:#000000;">출고완료일 설정</font>&nbsp;<input type="text" id="ct_ex_date" class="date" name="ct_ex_date" value="'.date("Y-m-d").'" size="70" maxlength="10" autocomplete="off" style="height:30px;margin-top:3px;border:1px solid #b5b5b5;" readonly>&nbsp;&nbsp;&nbsp;';
+		$show_chulgo_date2 = "";
+	}elseif($ct_status_info['name'] == "출고완료"){
+		$show_chulgo_date = "";
+		$show_chulgo_date2 = '&nbsp;&nbsp;<font style="font-weight:bold;color:#000000;">선택 출고완료일 변경</font>&nbsp;<input type="text" id="ct_ex_date2" class="date" name="ct_ex_date2" value="" size="70" maxlength="10" autocomplete="off" style="height:30px;margin-top:3px;border:1px solid #b5b5b5;" placeholder="YYYY-MM-DD" readonly><span class="btn large" ><button id="change_date2" style="background:#dddddd;">변경</button></span>';
+	}else{
+		$show_chulgo_date = "";
+		$show_chulgo_date2 = "";
+	}
+
     $ret['data'] .= "
       <tr class=\"step\">
         <td colspan=\"8\" class=\"ltr-bg-step-{$ct_status_info['step']}\">
           {$show_ct_status}
         </td>
         <td colspan=\"6\" class=\"ltr-bg-step-{$ct_status_info['step']}\" style=\"text-align:right;\">
-          {$status_info} 
+          {$status_info}
         </td>
       </tr>
       <tr class=\"btns\">
@@ -807,10 +818,12 @@ $total_count_text = ($total_ct_qty == "")? "": " (수량 ".$total_ct_qty."개)";
               </ul>
             </li>
             <li class=\"order-catalog-step-btns\">
-              {$show_next_status}
+              {$show_chulgo_date}
+			  {$show_next_status}
               {$show_prev_status}
               <!-- <span class=\"btn large\"><button id=\"list_order_prints\">선택 작업지시서 출력</button></span> -->
               <span class=\"btn large\"><button id=\"change_to_invalid_step\" >주문무효</button></span>
+			  {$show_chulgo_date2}
             </li>
           </ul>
         </td>
@@ -979,7 +992,19 @@ $total_count_text = ($total_ct_qty == "")? "": " (수량 ".$total_ct_qty."개)";
 
   $ret['last_step'] = $now_step;
 }
-
+$ret['data'] .= '
+		<script>
+			$("#ct_ex_date,#ct_ex_date2").datepicker({
+				changeMonth: true,
+				changeYear: true,
+				dateFormat: "yy-mm-dd",
+				showButtonPanel: true,
+				yearRange: "c-99:c+99",
+				maxDate: "+0d"
+			});
+			
+		</script>
+';
 $json = json_encode(utf8ize($ret));
 header('Content-Type: application/json');
 echo $json;

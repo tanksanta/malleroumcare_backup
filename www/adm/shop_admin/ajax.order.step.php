@@ -107,7 +107,9 @@ if( $_POST['od_id'] && $_POST['step'] ) {
     $content = $result['it_name'];
     if( $result['it_name'] !== $result['ct_option'] ){ $content = $content."(".$result['ct_option'].")"; }
     $content = $content."-".$ct_status_text." 변경";
-
+	if($ct_status_text == "출고완료"){
+		$content .= " [출고완료일:".str_replace("-",".",$_POST['ct_ex_date'])."]";
+	}
     //로그 INSERT
     $sql[$i]= "
       INSERT INTO
@@ -123,7 +125,7 @@ if( $_POST['od_id'] && $_POST['step'] ) {
     // 단계상태에 따른 sql 수정
     $add_sql = '';
     if( in_array($_POST['step'], ['출고준비']) ) { $add_sql .= ", `ct_rdy_date` = NOW()"; }
-    if( in_array($_POST['step'], ['배송']) ) { $add_sql .= ", `ct_ex_date` = CURDATE()"; }
+    if( in_array($_POST['step'], ['배송']) ) { $add_sql .= ($_POST['ct_ex_date'])? ", `ct_ex_date` = '".$_POST['ct_ex_date']."'":", `ct_ex_date` = CURDATE()"; }
 
      //상태 UPDATE
     $sql_ct[$i] = "
