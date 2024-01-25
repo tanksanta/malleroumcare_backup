@@ -34,12 +34,12 @@ WHERE
 ";
 */
 $sql = "select count(*) as cnt from eform_document ed left join eform_document_item edi on ed.dc_id = edi.dc_id  
-        where ed.penId = '{$id}' and edi.gubun = '01' and SUBSTRING_INDEX(it_date, '-', -3) > now();";
+        where ed.penId = '{$id}' and ed.entId='{$member['mb_entId']}' and ed.dc_status in ('3','2') and edi.gubun = '01' and SUBSTRING_INDEX(it_date, '-', -3) > now();";
 
 $count = sql_fetch($sql);
 
 if ($count['cnt']) {
-  json_response(500, '대여중인 품목이 있는 수급자는 삭제가 불가능합니다');
+  json_response(500, '대여중인 품목이 있는 수급자는 삭제가 불가능합니다. 계약서 내역을 확인하시기 바랍니다.');
 }
 
 $data["penExpiDtm"] = explode(" ~ ", $data["penExpiDtm"]);
