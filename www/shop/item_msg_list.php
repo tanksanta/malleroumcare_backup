@@ -81,7 +81,7 @@ for($i = 0; $row = sql_fetch_array($msg_result); $i++) {
 
 if(!$list && !($searchtype && $search) && $page <= 1) {
   // 목록이 비었다면 바로 작성페이지로 이동
-  goto_url('item_msg_write.php');
+  //goto_url('item_msg_write.php');
 }
 
 add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/item_msg.css">', 0);
@@ -127,7 +127,7 @@ add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/item_msg.c
           <tbody>
             <?php
             if(!$list) {
-              echo '<tr><td colspan="4" class="empty_table">검색 결과가 없습니다</td></tr>';
+              echo '<tr><td colspan="5" class="empty_table">검색 결과가 없습니다</td></tr>';
             }
             ?>
             <?php foreach($list as $row) { ?>
