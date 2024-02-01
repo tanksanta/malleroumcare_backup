@@ -384,8 +384,8 @@
                     <th>수급자와의 관계</th>
                     <td><?=(!$_hide)?$sql_result['Hangeul_RELATION_CD']:"-"?></td>
                 </tr><tr>
-                    <th>ON회원아이디</th>
-                    <td><?=(!$_hide)?$sql_result['REG_ID']:"-"?></td>
+                    <th>ON회원코드</th>
+                    <td><?=(!$_hide)?$sql_result['REG_UNIQUE_ID']:"-"?></td>
 
                     <th>상담유형</th>
                     <td><?=(!$_hide || ($sql_result['MCR_ST']==="CS02") || ($sql_result['MCR_ST']==="CS08") )?$sql_result['Hangeul_PREV_PATH']:"-"?></td>
