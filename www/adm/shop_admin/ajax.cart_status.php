@@ -82,6 +82,9 @@ if($_POST['ct_id'] && $_POST['step']) {
     }
     $it_name = $content;
     $content = $content."-".$ct_status_text." 변경";
+    if($ct_status_text == "출고완료"){
+		$content .= " [출고완료일:".date("Y.m.d")."]";
+	}
     //로그 insert
     $sql[$i] = "INSERT INTO g5_shop_order_admin_log SET
       od_id = '{$od_id}',

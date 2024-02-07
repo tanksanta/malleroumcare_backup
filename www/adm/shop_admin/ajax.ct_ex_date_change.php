@@ -1,9 +1,9 @@
 <?php
 include_once('./_common.php');
 
-$auth_check = auth_check($auth[$sub_menu], 'w', true);
-if($auth_check)
-    json_response(400, $auth_check);
+//$auth_check = auth_check($auth[$sub_menu], 'w', true);
+//if($auth_check)
+    //json_response(400, $auth_check);
 
 if($_POST['ct_id'] && $_POST['ct_ex_date']) {
     //if(is_array($_POST['ct_id'])) {
