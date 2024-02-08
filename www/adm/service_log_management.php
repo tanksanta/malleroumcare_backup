@@ -546,6 +546,7 @@ $(function() {
       e.preventDefault();
       var today = new Date(); // 오늘
       today.setDate(today.getMonth()-1);
+      today.setDate(0); // 지난달 마지막일
       $('#to_date').val(formatDate(today));
       today.setDate(1); // 지난달 1일
       $('#fr_date').val(formatDate(today));
