@@ -57,12 +57,10 @@
                     <div class="simpleTabe c_down">
                         <table>
                             <tr>
-                                <td class="br br_c" onclick="window.open('<?=G5_DATA_URL;?>/file/THKC(eroumcare)_카달로그.pdf');"><p class="simTitle">카달로그<br><span class="f_bold700">다운로드</span></p></td>
-                                <td class="bb br_c" onclick="window.open('https://docs.google.com/forms/d/1BNbSuDpP3-3rEJIP5s2fD_bfB2IWRJFBLHP2NmkgDcU/viewform?edit_requested=true');"><p class="simTitle">카달로그<br><span class="f_bold700">신청하기</span></p></td>
-                            </tr>
+                                <td colspan="2" class="" onclick="window.open('<?=G5_DATA_URL;?>/file/THKC(eroumcare)_사업자등록증.pdf');"><p class="simTitle">사업자등록증<span class="f_bold700"><br>신청하기    </span></p></td>                            </tr>
                             <tr>
-                                <td class="bt br_c" onclick="window.open('<?=G5_DATA_URL;?>/file/THKC(eroumcare)_통장사본.jpg');"><p class="simTitle">통장사본<br><span class="f_bold700">다운로드</span></p></td>
-                                <td class="bl br_c" onclick="window.open('<?=G5_DATA_URL;?>/file/THKC(eroumcare)_사업자등록증.pdf');"><p class="simTitle">사업자등록증<br><span class="f_bold700">신청하기</span></p></td>
+                                <td class="bt br br_c" onclick="window.open('<?=G5_DATA_URL;?>/file/THKC(eroumcare)_카달로그.pdf');"><p class="simTitle">카달로그<br><span class="f_bold700">다운로드</span></p    ></td>
+                                <td class="bt br_c" onclick="window.open('<?=G5_DATA_URL;?>/file/THKC(eroumcare)_통장사본.jpg');"><p class="simTitle">통장사본<br><span class="f_bold700">다운로드</span></p></    td>
                             </tr>
                         </table>
                     </div>
