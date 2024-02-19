@@ -203,9 +203,15 @@ for($i = 0; $row = sql_fetch_array($result); $i++) {
     $q .= 'penExpiStDtm=' . urlencode($penExpiDtm[0]) . '&penExpiEdDtm=' . urlencode($penExpiDtm[1]) . '&';
     $q .= 'page=' . urlencode("eform") . '&uuid=' . urlencode($row['uuid']);
 
-    echo '<br><a href="/shop/my_recipient_write.php?'.$q.'" class="btn_grey" target="_blank">미등록 수급자 신규추가</a>';
+    //echo '<br><a href="/shop/my_recipient_write.php?'.$q.'" class="btn_grey" target="_blank">미등록 수급자 신규추가</a>';
+	//수급자 조회 관련 추가, 개발완료 시 삭제 필요====================================================================
+		echo '<br><a href="javascript:alert(\'수급자 조회조건 개선으로 간편조회 및 일부 서비스가 일시 중단되었습니다.\n서비스 재개는 추후 공지를 통해 안내드리겠습니다.\');false;" class="btn_grey">미등록 수급자 신규추가</a>';
+	//=======================================================================================================
   } else {
-    echo '<a href="'.G5_SHOP_URL.'/my_recipient_view.php?id='.$row['penId'].'" target="_blank">'."{$row["penNm"]}({$row["penLtmNum"]} / {$row["penRecGraNm"]} / {$row["penTypeNm"]})".'</a>';
+    //echo '<a href="'.G5_SHOP_URL.'/my_recipient_view.php?id='.$row['penId'].'" target="_blank">'."{$row["penNm"]}({$row["penLtmNum"]} / {$row["penRecGraNm"]} / {$row["penTypeNm"]})".'</a>';
+	//수급자 조회 관련 추가, 개발완료 시 삭제 필요====================================================================
+	echo '<a href="javascript:alert(\'수급자 조회조건 개선으로 간편조회 및 일부 서비스가 일시 중단되었습니다.\n서비스 재개는 추후 공지를 통해 안내드리겠습니다.\');false;">'."{$row["penNm"]}({$row["penLtmNum"]} / {$row["penRecGraNm"]} / {$row["penTypeNm"]})".'</a>';
+	//=======================================================================================================
   }
   ?>
 </td>
