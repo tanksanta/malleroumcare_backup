@@ -694,7 +694,12 @@ $row = sql_fetch($sql);
                   <span class="pro-num"  data-stock="<?=$stock_insert?>" data-name="<?=$name?>" data-stoId="<?=$list[$i]['stoId']?>"><b <?=$style_prodSupYn?>><?=$list[$i]['prodBarNum']?></b></span>
                 </div>
                 <div class="info-m">
-                  <span class="name"><a href="<?=G5_SHOP_URL?>/my_recipient_update.php?id=<?=$list[$i]['penId']?>"><?=$list[$i]['penNm']?></a></span>
+                  <span class="name">
+				  <!--a href="<?=G5_SHOP_URL?>/my_recipient_update.php?id=<?=$list[$i]['penId']?>"><?=$list[$i]['penNm']?></a-->
+				 <?php //수급자 조회 관련 추가, 개발완료 시 삭제 필요====================================================================
+				echo '<a href="javascript:alert(\'수급자 조회조건 개선으로 간편조회 및 일부 서비스가 일시 중단되었습니다.\n서비스 재개는 추후 공지를 통해 안내드리겠습니다.\');false;">'.$list[$i]['penNm'].'</a>';
+					//======================================================================================================= ?>
+				  </span>
                   <span class="date"><?=$date2?></span>
                 </div>
               </div>

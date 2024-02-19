@@ -390,13 +390,7 @@ function agreement_confirm(a){
 
 <script>
 $(function(){
-//수급자 조회 관련 추가, 개발완료 시 삭제 필요====================================================================
-	$('#pen_type_0').on('click', function() {
-		alert("수급자 조회조건 개선으로 간편조회 및 일부 서비스가 일시 중단되었습니다.\n서비스 재개는 추후 공지를 통해 안내드리겠습니다.");
-		$('#pen_type_1').attr('checked', true);
-	});
-//=======================================================================================================
- 
+
   $('#show_expected_warehousing_date').on('change', function() {
     var ms_url = $('#im_preview iframe').attr('data-ms-url');
     var url = 'item_msg.php?preview=1&url=' + ms_url;
