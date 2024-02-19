@@ -654,7 +654,11 @@
 
         $('#simpleSearchResult').on('click', function (e) {
             e.preventDefault();
-            $(".Popup_simpleSearch > div").html("");
+//수급자 조회 관련 추가, 개발완료 시 삭제 필요====================================================================
+		alert("수급자 조회조건 개선으로 간편조회 및 일부 서비스가 일시 중단되었습니다.\n서비스 재개는 추후 공지를 통해 안내드리겠습니다.");
+		return false;
+//=======================================================================================================
+			$(".Popup_simpleSearch > div").html("");
             $(".Popup_simpleSearch > div").append("<iframe></iframe>");
 
             var iframeDocument = $('.Popup_simpleSearch iframe')[0].contentDocument;

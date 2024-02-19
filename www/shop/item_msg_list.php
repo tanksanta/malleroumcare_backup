@@ -148,7 +148,10 @@ add_stylesheet('<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/item_msg.c
                 ?>
               </td>
               <td style="width: 100px; text-align: center;">
-                <a href="simple_eform.php?ms_id=<?=$row['ms_id']?>" class="btn_basic">계약서 작성</a>
+<?php //수급자 조회 관련 추가, 개발완료 시 삭제 필요====================================================================?>               
+				<!--a href="simple_eform.php?ms_id=<?=$row['ms_id']?>" class="btn_basic">계약서 작성</a-->
+				<a href="javascript:alert('수급자 조회조건 개선으로 간편조회 및 일부 서비스가 일시 중단되었습니다.\n서비스 재개는 추후 공지를 통해 안내드리겠습니다.');" class="btn_basic">계약서 작성</a>
+<?php //=======================================================================================================?>
               </td>
               <td>
                 <?php
