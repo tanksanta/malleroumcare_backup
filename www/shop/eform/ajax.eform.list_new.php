@@ -203,9 +203,15 @@ for($i = 0; $row = sql_fetch_array($result); $i++) {
     $q .= 'penExpiStDtm=' . urlencode($penExpiDtm[0]) . '&penExpiEdDtm=' . urlencode($penExpiDtm[1]) . '&';
     $q .= 'page=' . urlencode("eform") . '&uuid=' . urlencode($row['uuid']);
 
-    echo '<br><a href="/shop/my_recipient_write.php?'.$q.'" class="btn_grey" target="_blank">미등록 수급자 신규추가</a>';
+    //echo '<br><a href="/shop/my_recipient_write.php?'.$q.'" class="btn_grey" target="_blank">미등록 수급자 신규추가</a>';
+	//수급자 조회 관련 추가, 개발완료 시 삭제 필요====================================================================
+		echo '<br><a href="javascript:alert(\'수급자 조회조건 개선으로 간편조회 및 일부 서비스가 일시 중단되었습니다.\n서비스 재개는 추후 공지를 통해 안내드리겠습니다.\');false;" class="btn_grey">미등록 수급자 신규추가</a>';
+	//=======================================================================================================
   } else {
-    echo '<a href="'.G5_SHOP_URL.'/my_recipient_view.php?id='.$row['penId'].'" target="_blank">'."{$row["penNm"]}({$row["penLtmNum"]} / {$row["penRecGraNm"]} / {$row["penTypeNm"]})".'</a>';
+    //echo '<a href="'.G5_SHOP_URL.'/my_recipient_view.php?id='.$row['penId'].'" target="_blank">'."{$row["penNm"]}({$row["penLtmNum"]} / {$row["penRecGraNm"]} / {$row["penTypeNm"]})".'</a>';
+	//수급자 조회 관련 추가, 개발완료 시 삭제 필요====================================================================
+	echo '<a href="javascript:alert(\'수급자 조회조건 개선으로 간편조회 및 일부 서비스가 일시 중단되었습니다.\n서비스 재개는 추후 공지를 통해 안내드리겠습니다.\');false;">'."{$row["penNm"]}({$row["penLtmNum"]} / {$row["penRecGraNm"]} / {$row["penTypeNm"]})".'</a>';
+	//=======================================================================================================
   }
   ?>
 </td>
@@ -217,7 +223,10 @@ for($i = 0; $row = sql_fetch_array($result); $i++) {
     // - 전부 바코드 입력이 되어있는 경우는 상품 주문하기 출력 X
     $it_count = sql_fetch(" select count(*) as cnt from eform_document_item where dc_id = unhex('{$row['uuid']}') and it_barcode = '' ");
     if($it_count['cnt'] > 0)
-      echo '<br><a href="javascript:it_filter(\''.$row["uuid"].'\');" class="btn_grey">상품 주문하기</a>';
+      //echo '<br><a href="javascript:it_filter(\''.$row["uuid"].'\');" class="btn_grey">상품 주문하기</a>';
+	//수급자 조회 관련 추가, 개발완료 시 삭제 필요====================================================================
+		echo '<br><a href="javascript:alert(\'수급자 조회조건 개선으로 간편조회 및 일부 서비스가 일시 중단되었습니다.\n서비스 재개는 추후 공지를 통해 안내드리겠습니다.\');false;" class="btn_grey">상품 주문하기</a>';
+	//=======================================================================================================
   }
   ?>
 </td>
@@ -304,7 +313,10 @@ for($i = 0; $row = sql_fetch_array($result); $i++) {
 <td class="text_c">
   <?php
   if(($row['dc_type']!='1')&&$row['dc_status'] == '11'){//계약서생성
-		echo '<a href="' . G5_SHOP_URL . '/simple_eform_new.php?dc_id=' . $row["uuid"] . '" class="btn_basic">계약서수정</a>';
+		//echo '<a href="' . G5_SHOP_URL . '/simple_eform_new.php?dc_id=' . $row["uuid"] . '" class="btn_basic">계약서수정</a>';
+		//수급자 조회 관련 추가, 개발완료 시 삭제 필요====================================================================
+		echo '<a href="javascript:alert(\'수급자 조회조건 개선으로 간편조회 및 일부 서비스가 일시 중단되었습니다.\n서비스 재개는 추후 공지를 통해 안내드리겠습니다.\');false;" class="btn_basic">계약서수정</a>';
+		//=======================================================================================================
 		echo '<br>';
 		echo '<a href="javascript:void(0);" class="btn_basic btn_del_eform" data-id="' . $row["uuid"] . '" >생성취소</a>';
 	}elseif(($row['dc_type']!='1')&&$row['dc_status'] == '4'){//서명요청
