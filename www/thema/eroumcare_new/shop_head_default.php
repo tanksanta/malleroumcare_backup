@@ -114,7 +114,7 @@
                 <div class="menuWrap">
 
                     <!-- 상단로고 -->
-                    <h1 class="logo"><a href="<?=G5_URL;?>"><img src="<?=G5_IMG_URL;?>/new_common/thkc_logo_gnb.svg" alt="로고"></a></h1>
+                    <h1 class="logo"><a href="<?=G5_URL;?>"><img src="<?=G5_IMG_URL;?>/new_common/thkc_logo_gnb.svg" alt=""></a></h1>
                     <div class="menuWrap02<?=(($member['mb_type']=="partner" )?(" main_menu_partner"):(""))?>">
 						<div class="swiper mySwiper_menu">
                         <!-- 상단 대 메뉴 -->
