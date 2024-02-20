@@ -54,10 +54,10 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
         <div id="bannerRight">
             <!-- 카달로그 배너 -->
             <div class="banner_catalogWrap">
-                <div class="c_apply" onclick="window.open('https://docs.google.com/forms/d/1BNbSuDpP3-3rEJIP5s2fD_bfB2IWRJFBLHP2NmkgDcU/viewform?edit_requested=true');">
+                <!--div class="c_apply" onclick="window.open('https://docs.google.com/forms/d/1BNbSuDpP3-3rEJIP5s2fD_bfB2IWRJFBLHP2NmkgDcU/viewform?edit_requested=true');">
                     <img src="<?=G5_IMG_URL;?>/new_main_eroum/thkc_ico_catalog_app.svg" alt="">
                     <span>카달로그<br><b>신청하기</b></span>
-                </div>
+                </div-->
                 <div class="c_downloade" onclick="window.open('<?=G5_DATA_URL;?>/file/THKC(eroumcare)_카달로그.pdf');">
                     <img src="<?=G5_IMG_URL;?>/new_main_eroum/thkc_ico_catalog_down.svg" alt="">
                     <span>카달로그<br><b>다운로드</b></span>
