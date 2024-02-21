@@ -390,7 +390,14 @@ function formcheck(f) {
     var min_qty = parseInt(<?php echo $it['it_buy_min_qty']; ?>);
     var max_qty = parseInt(<?php echo $it['it_buy_max_qty']; ?>);
     var $el_type = $("input[name^=io_type]");
-
+	
+	for(var i = 0; i < $('.it_option').length; i++) {//상품옵션 선택 체크
+        if (!$($('.it_option')[i]).val()) {
+            alert('선택 옵션을 선택해 주세요');
+            return false;
+        }
+    }
+	
     $("input[name^=ct_qty]").each(function(index) {
         val = $(this).val();
 
