@@ -561,11 +561,7 @@ $rental_use_info_1 = (file_exists($_SERVER['DOCUMENT_ROOT']."/img/rental/rental_
     $(function() {
       
 	  $('.samhwa-item-info-opener').click(function() {
-      <?php if($it['it_10_subj'] != "rental"){?>
-		$('.samhwa-item-info').show();
-	  <?php }else{?>
-		location.href='<?=$it["it_10"]?>'
-	  <?php }?>
+      		$('.samhwa-item-info').show();
       });
       $('.item-info-arrowbtn').click(function() {
         $('.samhwa-item-info').hide();
@@ -578,7 +574,7 @@ $rental_use_info_1 = (file_exists($_SERVER['DOCUMENT_ROOT']."/img/rental/rental_
       <ul class="item-buy-btn">
         <?php if($it['it_10_subj'] == "rental"){?>
 			<li style="width:100%">
-				<input type="button" value="렌탈주문" style="width:100%;height: 65px;font-size: 25px;font-weight: 500;background-color: #ef7c00;color: #fff !important;border: none !important;border-radius: 0px !important;cursor: pointer;outline: none;">
+				<input type="button" value="렌탈주문" onclick="rental_link('mobile')" style="width:100%;height: 65px;font-size: 25px;font-weight: 500;background-color: #ef7c00;color: #fff !important;border: none !important;border-radius: 0px !important;cursor: pointer;outline: none;">
 			</li>
 		<?php }else{?>
 		<li class="buy"><input type="submit" onclick="document.pressed=this.value;" value="상품주문" class="btn btn-color btn-block <?php echo $it['prodSupYn'] === 'N' ? 'disabled' : ''; ?>"></li>
@@ -1182,7 +1178,7 @@ $rental_use_info_1 = (file_exists($_SERVER['DOCUMENT_ROOT']."/img/rental/rental_
           <ul class="item-buy-btn">
        <?php if($it['it_10_subj'] == "rental"){?>
 			<li style="width:100%">
-				<input type="button" onclick="rental_link()" value="렌탈주문" style="width:100%;height: 65px;font-size: 25px;font-weight: 500;background-color: #ef7c00;color: #fff !important;border: none !important;border-radius: 0px !important;cursor: pointer;outline: none;">
+				<input type="button" onclick="rental_link('pc')" value="렌탈주문" style="width:100%;height: 65px;font-size: 25px;font-weight: 500;background-color: #ef7c00;color: #fff !important;border: none !important;border-radius: 0px !important;cursor: pointer;outline: none;">
 			</li>
 		<?php }else{?>
 			<li class="buy"><input type="submit" onclick="document.pressed=this.value;" value="상품주문" class="btn btn-<?php echo $btn2;?> btn-block <?php echo $it['prodSupYn'] === 'N' ? 'disabled' : ''; ?>"></li>
@@ -1235,8 +1231,36 @@ $rental_use_info_1 = (file_exists($_SERVER['DOCUMENT_ROOT']."/img/rental/rental_
           $("select.it_supply").addClass("form-control input-sm");
         });
 		
-		function rental_link(){
-			window.open('about:blank').location.href='<?=$it["it_10"]?>';
+		function rental_link(a){
+			var qty_show = false;
+			if(a == "mobile"){
+				if($('.samhwa-item-info').is(':visible')){
+					qty_show = true;
+				}
+			}else{
+				qty_show = true;
+			}
+			
+			if(qty_show !== false){
+				var rental_url = '';
+				switch($("#ct_qty_0").val()){
+					case '1': rental_url = '<?=$it["it_10"]?>';break;
+					case '2': rental_url = '<?=$it["it_9"]?>';break;
+					case '3': rental_url = '<?=$it["it_8"]?>';break;
+					case '4': rental_url = '<?=$it["it_7"]?>';break;
+					case '5': rental_url = '<?=$it["it_6"]?>';break;
+					case '6': rental_url = '<?=$it["it_5"]?>';break;
+					case '7': rental_url = '<?=$it["it_4"]?>';break;
+					case '8': rental_url = '<?=$it["it_3"]?>';break;
+					case '9': rental_url = '<?=$it["it_2"]?>';break;
+					case '10': rental_url = '<?=$it["it_1"]?>';break;
+					default: rental_url = '<?=$it["it_10"]?>';break;
+				}
+				rental_url = (rental_url == "" )?'<?=$it["it_10"]?>':rental_url;
+
+				window.open('about:blank').location.href=rental_url;
+			}
+			
 		}
 
         // 재입고SMS 알림
