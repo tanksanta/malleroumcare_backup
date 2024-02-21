@@ -220,6 +220,8 @@
                     $(".thkc_popUpWrap .boxLeft").text("배송지 신규 등록");
                     $('.thkc_popUpWrap .thkc_btnWrap_03 .on').text("등록하기"); 
                     $(".thkc_popUpWrap .thkc_btnWrap_03 .on").attr("onclick", "addr_more_add()");
+					$(".thkc_popUpWrap").css("display", "flex").hide().fadeIn();
+                    $(".thkc_popOverlay").show();
                 });
 
                 
