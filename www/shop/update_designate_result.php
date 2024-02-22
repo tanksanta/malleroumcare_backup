@@ -85,7 +85,7 @@
     if($res["errorYN"] == "Y"){
        alert($res["message"]);
     } else {
-        alert('완료되었습니다.');
+        alert('완료되었습니다.',$_SERVER['HTTP_REFERER']);
     }
 
 

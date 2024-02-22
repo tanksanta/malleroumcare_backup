@@ -407,7 +407,7 @@ expired_rental_item_clean($_GET['prodId']);
             switch ($list[$i]['stateCd']) {
               case '01':
                 $state="대여가능";
-                $state_menu_all = $state_menu3.$state_menu8;
+                $state_menu_all = $state_menu8;
                 $rental_btn = '<a class="rental_btn1" href="javascript:;" onclick="open_rent_popup(this)">대여</a>';
                 $rental_btn2 = '<a class="rental_btn1" href="javascript:;" onclick="open_rent_popup(this)">대여하기</a>';
                 //$rental_btn='<a class="state-btn1" href="javascript:;"onclick="popup_control(\''.$list[$i]['prodColor'].'\',\''.$list[$i]['prodSize'].'\',\''.$list[$i]['prodOption'].'\',\''.$list[$i]['prodBarNum'].'\')">대여</a>'; //대여 버튼
