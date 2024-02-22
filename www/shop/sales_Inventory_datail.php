@@ -679,7 +679,7 @@ $row = sql_fetch($sql);
                 if($list[$i]['penId']) {
                   //echo '<a href="'.G5_SHOP_URL.'/my_recipient_update.php?id='.$list[$i]['penId'].'">'.$list[$i]['penNm'].'</a>';
 				  //수급자 조회 관련 추가, 개발완료 시 삭제 필요====================================================================
-					echo '<a href="javascript:alert(\'수급자 조회조건 개선으로 간편조회 및 일부 서비스가 일시 중단되었습니다.\n서비스 재개는 추후 공지를 통해 안내드리겠습니다.\');false;">'.$list[$i]['penNm'].'</a>';
+					echo '<a href="javascript:swal(\'사용 제한\',\'수급자 조회조건 개선으로 간편조회 및\n일부 서비스가 일시 중단되었습니다.\n서비스 재개는 추후 공지를 통해 안내드리겠습니다.\',\'error\');false;">'.$list[$i]['penNm'].'</a>';
 					//======================================================================================================= 
                 } else {
                   // 직접 판매완료처리한 상품인지 조회
@@ -700,7 +700,7 @@ $row = sql_fetch($sql);
                   <span class="name">
 				  <!--a href="<?=G5_SHOP_URL?>/my_recipient_update.php?id=<?=$list[$i]['penId']?>"><?=$list[$i]['penNm']?></a-->
 				 <?php //수급자 조회 관련 추가, 개발완료 시 삭제 필요====================================================================
-				echo '<a href="javascript:alert(\'수급자 조회조건 개선으로 간편조회 및 일부 서비스가 일시 중단되었습니다.\n서비스 재개는 추후 공지를 통해 안내드리겠습니다.\');false;">'.$list[$i]['penNm'].'</a>';
+				echo '<a href="javascript:swal(\'사용 제한\',\'수급자 조회조건 개선으로 간편조회 및\n일부 서비스가 일시 중단되었습니다.\n서비스 재개는 추후 공지를 통해 안내드리겠습니다.\',\'error\')false;">'.$list[$i]['penNm'].'</a>';
 					//======================================================================================================= ?>
 				  </span>
                   <span class="date"><?=$date2?></span>
@@ -893,9 +893,9 @@ function make_option_value(prodColor, prodSize, prodOptions) {
 
 function popup_control(prodColor, prodSize, prodOptions, barcode_r) {
   //수급자 조회 관련 추가, 개발완료 시 삭제 필요====================================================================
-		alert("수급자 조회조건 개선으로 간편조회 및 일부 서비스가 일시 중단되었습니다.\n서비스 재개는 추후 공지를 통해 안내드리겠습니다.");
+		swal('사용 제한','수급자 조회조건 개선으로 간편조회 및\n일부 서비스가 일시 중단되었습니다.\n서비스 재개는 추후 공지를 통해 안내드리겠습니다.','error')
 		false;
-//=======================================================================================================
+
   /* 개발완료 시 복구 필요
   is_multi_submit = false;
   $('#order_recipientBox').show();
@@ -906,6 +906,7 @@ function popup_control(prodColor, prodSize, prodOptions, barcode_r) {
   document.getElementById('io_value_r').value = option_value.io_value;
   document.getElementById('barcode_r').value = barcode_r;
   */
+  //=======================================================================================================
 }
 
 function selected_recipient(penId) {

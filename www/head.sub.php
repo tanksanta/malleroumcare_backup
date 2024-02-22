@@ -115,7 +115,8 @@ if ( defined('THEMA_URL') ) {
 	echo '<link rel="stylesheet" href="'.THEMA_URL.'/assets/css/samhwa.css?ver='.APMS_SVER.'">'.PHP_EOL;
 }
 ?>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
+<link rel="stylesheet"href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css" />
 <link rel="stylesheet" href="<?php echo G5_CSS_URL ?>/flex.css?ver=<?=APMS_SVER;?>">
 <!--[if lte IE 8]>
 <script src="<?php echo G5_JS_URL ?>/html5.js"></script>

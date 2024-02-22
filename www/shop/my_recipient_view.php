@@ -202,6 +202,12 @@ if($member["cert_data_ref"] != ""){
 	}
 }
 //인증서 업로드 추가 영역 끝
+ //수급자 조회 관련 추가, 개발완료 시 삭제 필요====================================================================?>
+<script>
+	swal("사용 주의","현재 수급자 조회조건 개선 작업으로 수급자 정보를\n업데이트할 수 없습니다.\n등록된 수급자의 정보가 정확하지 않을 수 있음을\n유의해 주시기 바랍니다.","warning");
+	//history.back();
+</script>
+<?php //=======================================================================================================
 ?>
 <link rel="stylesheet" href="<?=G5_CSS_URL?>/my_recipient.css?v=210829">
 <div class="recipient_view_wrap">
@@ -267,8 +273,16 @@ if($member["cert_data_ref"] != ""){
     <div style="height: 100%; width: 20%; float: right; position: absolute; top:15px; right:5px; z-index: 100;">
         <ul>
             <a href="./my_recipient_update.php?id=<?=$pen['penId']?>" class="btn_so_edit">기본정보 수정</a>
-
-            <button type="button" class="btn_so_sch" id="btn_so_sch">요양정보 </br>업데이트</button>
+<!--  //수급자 조회 관련 추가, 개발완료 시 삭제 필요====================================================================  -->
+            <!--button type="button" class="btn_so_sch" id="btn_so_sch" >요양정보 </br>업데이트</button-->
+			<button type="button" class="btn_so_sch" onClick="return error_btn()">요양정보 </br>업데이트</button>
+	  <script>
+		function error_btn(){
+			swal("사용 제한","수급자 조회조건 개선으로 간편조회 및\n일부 서비스가 일시 중단되었습니다.\n서비스 재개는 추후 공지를 통해 안내드리겠습니다.","error");
+			return false;
+		}
+	  </script>
+<!--=========================================================================================================== -->
         </ul>
     </div>
 
@@ -364,7 +378,7 @@ if($member["cert_data_ref"] != ""){
 				data : params, 
 				dataType: 'json',// Json 형식의 데이터이다.
 				success : function(res){ // 비동기통신의 성공일경우 success콜백으로 들어옵니다. 'res'는 응답받은 데이터이다.
-					$(".btn_so_sch").trigger("click");
+					$("#btn_so_sch").trigger("click");
 				  },
 				error : function(XMLHttpRequest, textStatus, errorThrown){ // 비동기 통신이 실패할경우 error 콜백으로 들어옵니다.
 					alert(XMLHttpRequest['responseJSON']['message']);
@@ -383,7 +397,7 @@ $(function() {
     $('body').removeClass('modal-open');
     $('#item_popup_box').hide();
   });
-  $('.btn_so_sch').click(function(e) {
+  $('#btn_so_sch').click(function(e) {
     //var url = 'pop.recipient_info.php?id=<?=$pen['penId']?>&penNm=<?=$pen['penNm']?>&penLtmNum=<?=$pen['penLtmNum']?>';
     //var url = 'pop_recipient.php';
     //$('#item_popup_box iframe').attr('src', url);
@@ -1025,8 +1039,12 @@ table.ui-datepicker-calendar { display:none; }
       ?>
     </div>
     <div class="cart_btn_wrap r_btn_wrap">
-      <a class="c_btn" href="<?=G5_SHOP_URL.'/connect_recipient.php?pen_id='.$pen['penId'].'&redirect='.urlencode('/shop/list.php?ca_id=10')?>">장바구니 상품 추가하기</a>
-      <a class="c_btn primary" href="<?=G5_SHOP_URL.'/connect_recipient.php?pen_id='.$pen['penId'].'&redirect='.urlencode('/shop/cart.php')?>"><?=$pen['penNm']?>님 장바구니 바로가기</a>
+<!--  //수급자 조회 관련 추가, 개발완료 시 삭제 필요====================================================================  -->
+	  <!--a class="c_btn" href="<?=G5_SHOP_URL.'/connect_recipient.php?pen_id='.$pen['penId'].'&redirect='.urlencode('/shop/list.php?ca_id=10')?>">장바구니 상품 추가하기</a-->
+	  <a class="c_btn" href="javascript:;" onClick="return error_btn()">장바구니 상품 추가하기</a>
+	  <!--a class="c_btn primary" href="<?=G5_SHOP_URL.'/connect_recipient.php?pen_id='.$pen['penId'].'&redirect='.urlencode('/shop/cart.php')?>"><?=$pen['penNm']?>님 장바구니 바로가기</a-->
+      <a class="c_btn primary" href="javascript:;" onClick="return error_btn()"><?=$pen['penNm']?>님 장바구니 바로가기</a>
+<!--=========================================================================================================== -->
     </div>
   </div>
 
@@ -1104,7 +1122,10 @@ if($start_date != ""){
   </div>
   <div class="section_wrap grey">
     <div class="sub_section_wrap" style="text-align: center">
-      <a href="<?=G5_SHOP_URL."/my_recipient_rec_form.php?id={$pen['penId']}"?>" class="b_btn">신규등록</a>
+<!--  //수급자 조회 관련 추가, 개발완료 시 삭제 필요====================================================================  -->      
+	  <!--a href="<?=G5_SHOP_URL."/my_recipient_rec_form.php?id={$pen['penId']}"?>" class="b_btn">신규등록</a-->
+	  <a href="javascript:;"  onClick="return error_btn()" class="b_btn">신규등록</a>
+<!--=========================================================================================================== -->
     </div>
     <?php foreach($recs as $rec) { ?>
     <div class="memo_row">
@@ -1113,7 +1134,7 @@ if($start_date != ""){
         <div class="memo_content"><?=nl2br($rec['total_review'])?></div>
       </div>
       <div class="memo_btn_wrap">
-        <?php if($rec['type'] == 'simple') { ?>
+		<?php if($rec['type'] == 'simple') { ?>
         <button class="btn_print_rec c_btn primary" data-type="simple" data-id="<?=$rec['recId']?>">인쇄</button>
         <a href="<?=G5_SHOP_URL."/my_recipient_rec_form.php?id={$pen['penId']}&rs_id={$rec['recId']}"?>" class="c_btn" data-id="<?=$rec['recId']?>">수정</a>
         <button class="btn_delete_rec c_btn" data-type="simple" data-id="<?=$rec['recId']?>">삭제</button>

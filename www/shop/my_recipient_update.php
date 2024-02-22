@@ -77,6 +77,12 @@ if($member["cert_data_ref"] != ""){
 	}
 }
 //인증서 업로드 추가 영역 끝
+ //수급자 조회 관련 추가, 개발완료 시 삭제 필요====================================================================?>
+<script>
+	swal("사용 주의","현재 수급자 조회조건 개선 작업으로 수급자 정보를\n업데이트할 수 없습니다.\n등록된 수급자의 정보가 정확하지 않을 수 있음을\n유의해 주시기 바랍니다.","warning");
+	//history.back();
+</script>
+<?php //=======================================================================================================
 ?>
 
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
@@ -236,8 +242,16 @@ input[type="number"]::-webkit-inner-spin-button {
               <span style="float: left; width: 10px; height: 30px; line-height: 30px; margin-right: 5px;">L</span>
 
               <input type="number" maxlength="10" oninput="maxLengthCheck(this)" id="penLtmNum" name="penLtmNum" class="form-control input-sm" style="width: calc(100% - 15px);" value="<?=str_replace("L", "", $data["penLtmNum"])?>">
-
-              <button type="button" id="btn_pen_update" class="btn btn-color btn-sm" style="margin-left: 15px;">요양정보 업데이트</button>
+<!--  //수급자 조회 관련 추가, 개발완료 시 삭제 필요====================================================================  -->
+              <!--button type="button" id="btn_pen_update" class="btn btn-color btn-sm" style="margin-left: 15px;">요양정보 업데이트</button-->
+			  <button type="button" class="btn btn-color btn-sm" style="margin-left: 15px;" onClick="return error_btn()">요양정보 업데이트</button>
+	  <script>
+		function error_btn(){
+			swal("사용 제한","수급자 조회조건 개선으로 간편조회 및\n일부 서비스가 일시 중단되었습니다.\n서비스 재개는 추후 공지를 통해 안내드리겠습니다.","error");
+			return false;
+		}
+	  </script>
+<!--=========================================================================================================== -->
             </div>
           </div>
 
