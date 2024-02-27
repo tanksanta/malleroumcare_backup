@@ -56,6 +56,9 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
                         <option value selected>Family Site</option>
                         <option value="http://www.thkc.co.kr/">회사 홈페이지</option>
                         <option value="https://eroum.co.kr/">이로움ON</a></option>
+						<option value="https://eroum.co.kr/market/">이로움ON 마켓</a></option>
+						<option value="https://www.seniortalktalk.com/">시니어톡톡</a></option>
+						<option value="https://pro.seniortalktalk.com/">시니어톡톡PRO</a></option>
                     </select>
                     <ul class="f_sns"><!--snsn 버튼-->
                         <li class="btn_sns"><a href="https://pf.kakao.com/_tewXxj" target="_blank"><img src="<?=G5_IMG_URL;?>/new_common/thkc_btn_sns_talk.svg" alt=""></a></li>
