@@ -407,9 +407,9 @@ expired_rental_item_clean($_GET['prodId']);
             switch ($list[$i]['stateCd']) {
               case '01':
                 $state="대여가능";
-                $state_menu_all = $state_menu3.$state_menu8;
-                $rental_btn = '<a class="state-btn1" href="javascript:;" onclick="open_rent_popup(this)">대여</a>';
-                $rental_btn2 = '<a class="state-btn1" href="javascript:;" onclick="open_rent_popup(this)">대여하기</a>';
+                $state_menu_all = $state_menu8;
+                $rental_btn = '<a class="rental_btn1" href="javascript:;" onclick="open_rent_popup(this)">대여</a>';
+                $rental_btn2 = '<a class="rental_btn1" href="javascript:;" onclick="open_rent_popup(this)">대여하기</a>';
                 //$rental_btn='<a class="state-btn1" href="javascript:;"onclick="popup_control(\''.$list[$i]['prodColor'].'\',\''.$list[$i]['prodSize'].'\',\''.$list[$i]['prodOption'].'\',\''.$list[$i]['prodBarNum'].'\')">대여</a>'; //대여 버튼
                 //$rental_btn2='<a class="state-btn1" href="javascript:;"onclick="popup_control(\''.$list[$i]['prodColor'].'\',\''.$list[$i]['prodSize'].'\',\''.$list[$i]['prodOption'].'\',\''.$list[$i]['prodBarNum'].'\')">대여하기</a>'; //대여 버튼
                 break;
@@ -452,7 +452,8 @@ expired_rental_item_clean($_GET['prodId']);
             $sql_new="select count(*) as count from `g5_rental_log` where `stoId` =  '".$list[$i]['stoId']."' and `rental_log_division` = '2';";
             $row_new = sql_fetch($sql_new);
             $nimg_flag = $row_new['count'];
-            if(!$nimg_flag){ $nimg='<img style="padding-left:5px;" src="'.G5_IMG_URL.'/iconnew.png" alt="">'; }
+            //if(!$nimg_flag){ $nimg='<img style="padding-left:5px;" src="'.G5_IMG_URL.'/iconnew.png" alt="">'; }
+			if($nimg_flag==0){ $nimg='<img style="width:30px;" src="'.G5_IMG_URL.'/icon_new.svg" alt="" >'; }
             ?>
             <li class="list cb <?=$bg?>">
               <!--pc용-->
@@ -529,13 +530,13 @@ expired_rental_item_clean($_GET['prodId']);
               </span>
 
               <span class="none m_off">
-                <div class="state-btn2" onclick="open_list(this);">
-                  <b><img src="<?=G5_IMG_URL?>/icon_11.png" alt=""></b>
+                <div class="state-btn2" style="margin:0 3px;" onclick="open_list(this);">
+                  <b><img src="<?=G5_IMG_URL?>/bnt_rental_setting.svg" alt=""></b>
                   <ul class="modalDialog">
                     <?=$state_menu_all; ?>
                   </ul>
                 </div>
-                <a class="state-btn3" href="javascript:;" onclick="open_log(this,'<?=$list[$i]['stoId']?>','log_<?=$list[$i]['stoId']?>','1','page_<?=$list[$i]['stoId']?>','1','<?=$list[$i]['prodBarNum']?>')"><img src="<?=G5_IMG_URL?>/icon_12.png" alt=""></a>
+                <a class="state-btn3" href="javascript:;" onclick="open_log(this,'<?=$list[$i]['stoId']?>','log_<?=$list[$i]['stoId']?>','1','page_<?=$list[$i]['stoId']?>','1','<?=$list[$i]['prodBarNum']?>')"><img src="<?=G5_IMG_URL?>/bnt_rental_list.svg" alt=""></a>
               </span>
 
               <!--mobile용-->
@@ -556,13 +557,13 @@ expired_rental_item_clean($_GET['prodId']);
                   </span>
                   <span class="none">
                     <?=$rental_btn2?>
-                    <div class="state-btn2" onclick="open_list(this);">
-                      <b><img src="<?=G5_IMG_URL?>/icon_11.png" alt=""></b>
+                    <div class="state-btn2" style="margin:0 3px;" onclick="open_list(this);">
+                      <b><img src="<?=G5_IMG_URL?>/bnt_rental_setting.svg" alt=""></b>
                       <ul class="modalDialog">
                         <?=$state_menu_all; ?>
                       </ul>
                     </div>
-                    <a class="state-btn3" href="javascript:;"  onclick="open_log(this,'<?=$list[$i]['stoId']?>','log_<?=$list[$i]['stoId']?>','1','page_<?=$list[$i]['stoId']?>','1','<?=$list[$i]['prodBarNum']?>')" ><img src="<?=G5_IMG_URL?>/icon_12.png" alt=""></a>
+                    <a class="state-btn3" href="javascript:;"  onclick="open_log(this,'<?=$list[$i]['stoId']?>','log_<?=$list[$i]['stoId']?>','1','page_<?=$list[$i]['stoId']?>','1','<?=$list[$i]['prodBarNum']?>')" ><img src="<?=G5_IMG_URL?>/bnt_rental_list.svg" alt=""></a>
                   </span>
                 </div>
               </div>
@@ -971,8 +972,8 @@ expired_rental_item_clean($_GET['prodId']);
               <span class="date m_off"><?=$date2?></span>
 
               <span class="none m_off" onclick="open_log(this,'<?=$list[$i]['stoId']?>','log_<?=$list[$i]['stoId']?>','1','page_<?=$list[$i]['stoId']?>','1','<?=$list[$i]['prodBarNum']?>')">
-                <a href="javascript:;" class="state-btn1" onclick="retal_state_change2('<?=$list[$i]['stoId'] ?>','01','변경되었습니다.')" >대여가능</a>
-                <a class="state-btn3" href="javascript:;"><img src="<?=G5_IMG_URL?>/icon_12.png" alt=""></a>
+                <a href="javascript:;" class="rental_btn1" onclick="retal_state_change2('<?=$list[$i]['stoId'] ?>','01','변경되었습니다.')" >대여가능</a>
+                <a class="state-btn3" href="javascript:;"><img src="<?=G5_IMG_URL?>/bnt_rental_list.svg" style="margin-left:3px;" alt=""></a>
               </span>
 
               <!--mobile용-->
@@ -980,8 +981,8 @@ expired_rental_item_clean($_GET['prodId']);
                 <div class="info-m">
                   <span class="product"><?=$name;?></span>
                   <span class="pro-num <?=$prodBarNumCntBtn_2;?>" data-stock="<?=$stock_insert?>" data-name="<?=$name?>" data-stoId="<?=$list[$i]['stoId']?>"><b <?=$style_prodSupYn?>><?=$list[$i]['prodBarNum']?></b></span>
-                  <a href="javascript:;" style="margin-right:7px;" class="state-btn1" onclick="retal_state_change2('<?=$list[$i]['stoId'] ?>','01','변경되었습니다.')" >대여가능</a>
-                  <a class="state-btn3" onclick="open_log(this,'<?=$list[$i]['stoId']?>','log_<?=$list[$i]['stoId']?>','1','page_<?=$list[$i]['stoId']?>','1','<?=$list[$i]['prodBarNum']?>')"  href="javascript:; "><img src="<?=G5_IMG_URL?>/icon_12.png" alt=""></a>
+                  <a href="javascript:;" style="margin-right:3px;" class="rental_btn1" onclick="retal_state_change2('<?=$list[$i]['stoId'] ?>','01','변경되었습니다.')" >대여가능</a>
+                  <a class="state-btn3" onclick="open_log(this,'<?=$list[$i]['stoId']?>','log_<?=$list[$i]['stoId']?>','1','page_<?=$list[$i]['stoId']?>','1','<?=$list[$i]['prodBarNum']?>')"  href="javascript:; "><img src="<?=G5_IMG_URL?>/bnt_rental_list.svg" alt="" style="max-width:34px !important;"></a>
                 </div>
                 <div class="info-m">
                   <span class="none">
@@ -1085,6 +1086,9 @@ expired_rental_item_clean($_GET['prodId']);
 @media (max-width : 750px) {
   .listPopupBoxWrap iframe { width: 100%; height: 100%; left: 0; margin-left: 0; }
 }
+.rental_btn1 { background:#FF9016; padding:5px; color:#ffffff !important; font-size:14px; border-radius:5px;}
+.rental_btn1:hover {opacity : 0.5;}
+
 </style>
 <script>
 var is_multi_submit = false;
