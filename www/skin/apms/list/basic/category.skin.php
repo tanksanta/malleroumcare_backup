@@ -22,7 +22,7 @@ $sql = "SELECT * FROM g5_shop_category where ( length(ca_id) = 4 and ca_id like 
     . "%' ) and ca_use='1' ORDER BY ca_order, ca_id ASC";
 $res3 = sql_query($sql);
 
-$new_count = sql_fetch("select count(*) as cnt from g5_shop_item where it_10_subj = 'new'");//신규고시 상품 카운트, 0일 경우 신규고시 버튼 hidden 처리
+$new_count = sql_fetch("select count(*) as cnt from g5_shop_item where it_10_subj = 'new' and ca_id like '".$ca_id."%'");//신규고시 상품 카운트, 0일 경우 신규고시 버튼 hidden 처리
 
 $ca_sub_name_table = [];
 $categories = [];
@@ -191,7 +191,7 @@ $(function() {
 		<a href="<?=$ca_url.$ca_sub_url.$sort_url?>&prodRentalYn=<?=(($prodRentalYn == 'N' || $prodRentalYn == '') ? 'Y' : 'N').$q_url.$it_type_url?>"
         class="<?php if(in_array($prodRentalYn, array('Y'))) echo 'active'; ?>">렌탈품목</a>
 		<?php }?>
-		<?php if($ca_id == "10" && $new_count["cnt"]>0){?>
+		<?php if(($ca_id == "10" || $ca_id == "20") && $new_count["cnt"]>0){?>
 		<a href="<?=$ca_url.$ca_sub_url.$sort_url?>&prodNewYn=<?=(($prodNewYn == 'N' || $prodNewYn == '') ? 'Y' : 'N').$q_url.$it_type_url?>"
         class="<?php if(in_array($prodNewYn, array('Y'))) echo 'active'; ?>">신규고시</a>
 		<?php }?>
@@ -240,7 +240,7 @@ $(function() {
                 <a href="<?=$ca_url.$ca_sub_url.$sort_url?><?=($prodRentalYn == 'Y' ? '&prodRentalYn=N' : '').$q_url.$it_type_url?>">렌탈품목 <i class="fa fa-times" aria-hidden="true"></i></a>
             <?php } ?>
 	<?php }?>
-	<?php if($ca_id == "10"){?>
+	<?php if($ca_id == "10" || $ca_id == "20"){?>
 			<?php if(in_array($prodNewYn, array('Y'))) { ?>
                 <a href="<?=$ca_url.$ca_sub_url.$sort_url?><?=($prodRentalYn == 'Y' ? '&prodNewYn=N' : '').$q_url.$it_type_url?>">신규고시 <i class="fa fa-times" aria-hidden="true"></i></a>
             <?php } ?>
