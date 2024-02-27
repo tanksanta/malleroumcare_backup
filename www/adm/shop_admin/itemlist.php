@@ -100,10 +100,13 @@ if($it_type_where) {
 }
 
 if($_GET["searchProdSupYN"] != ""){
-	if($_GET["searchProdSupYN"] != "YN"){
-		$sql_search .= " AND prodSupYn = '{$_GET["searchProdSupYN"]}' ";
-	}else{
+	if($_GET["searchProdSupYN"] == "YN"){
 		$sql_search .= " AND it_10_subj = 'rental' ";
+	}elseif($_GET["searchProdSupYN"] == "NEW"){
+		$sql_search .= " AND it_10_subj = 'new' ";
+	}else{
+		$sql_search .= " AND prodSupYn = '{$_GET["searchProdSupYN"]}' ";
+		
 	}
 }
 
@@ -265,6 +268,7 @@ $flist = apms_form(1,0);
     <option value="Y" <?=($_GET["searchProdSupYN"] == "Y") ? "selected" : ""?>>유통</option>
     <option value="N" <?=($_GET["searchProdSupYN"] == "N") ? "selected" : ""?>>비유통</option>
 	<option value="YN" <?=($_GET["searchProdSupYN"] == "YN") ? "selected" : ""?>>렌탈</option>
+	<option value="NEW" <?=($_GET["searchProdSupYN"] == "NEW") ? "selected" : ""?>>신규고시</option>
   </select>
 
   <script>

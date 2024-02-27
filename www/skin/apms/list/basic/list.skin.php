@@ -225,6 +225,9 @@ switch($sort){
         <?php if($list[$i]["prodSupYn"] == "N") { ?>
         <p class="sup">비유통 상품</p>
         <?php } ?>
+		<?php if($list[$i]["it_10_subj"] == "new") { ?>
+        <p class="sup" style="left: 15px;background-color: #0033ff;">신규고시</p>
+        <?php } ?>
         <div class="img_wrap">
           <p class="img">
             <?php if($img["src"]){ ?>

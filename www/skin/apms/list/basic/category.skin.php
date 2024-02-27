@@ -22,6 +22,8 @@ $sql = "SELECT * FROM g5_shop_category where ( length(ca_id) = 4 and ca_id like 
     . "%' ) and ca_use='1' ORDER BY ca_order, ca_id ASC";
 $res3 = sql_query($sql);
 
+$new_count = sql_fetch("select count(*) as cnt from g5_shop_item where it_10_subj = 'new'");//신규고시 상품 카운트, 0일 경우 신규고시 버튼 hidden 처리
+
 $ca_sub_name_table = [];
 $categories = [];
 $sub_categories = [];
@@ -82,6 +84,7 @@ if($sortodr) $sort_url .= "&sortodr=$sortodr";
 $sup_url = "";
 if($prodSupYn) $sup_url .= "&prodSupYn=$prodSupYn";
 if($prodRentalYn) $sup_url .= "&prodRentalYn=$prodRentalYn";
+if($prodNewYn) $sup_url .= "&prodNewYn=$prodNewYn";
 $q_url = "";
 if($q) $q_url .= "&q=$q";
 
@@ -134,6 +137,7 @@ $(function() {
           <?php if($sortodr) echo "<input type='hidden' name='sortodr' value='$sortodr'>"; ?> 
           <?php if($prodSupYn) echo "<input type='hidden' name='prodSupYn' value='$prodSupYn'>"; ?> 
 		  <?php if($prodRentalYn) echo "<input type='hidden' name='prodRentalYn' value='$prodRentalYn'>"; ?> 
+		  <?php if($prodNewYn) echo "<input type='hidden' name='prodNewYn' value='$prodNewYn'>"; ?> 
           <input type="text" name="q" value="<?=($q ? $q : '')?>" class="input_search" maxlength="30">
           <input type="submit" class="input_submit" value="검색">
         </form>
@@ -152,7 +156,7 @@ $(function() {
           }
         ?>
         <div class="cate">
-          <a href="<?php echo $ca_url.(in_array(substr($cate['ca_id'], 2), $ca_sub) ? '' : '&ca_sub%5B%5D='.substr($cate['ca_id'], 2)).$sort_url.$sup_url ;?>"
+          <a href="<?php echo $ca_url.(in_array(substr($cate['ca_id'], 2), $ca_sub) ? '' : '&ca_sub%5B%5D='.substr($cate['ca_id'], 2)).$sort_url.$sup_url.$it_type_url ;?>"
             class="<?php if(in_array(substr($cate['ca_id'], 2), $ca_sub) || $ca_sub_name) echo 'active'; ?>">
             <?php
             if($ca_sub_name)
@@ -164,7 +168,7 @@ $(function() {
           <?php if($sub_categories[$cate['ca_id']]) { ?>
           <div class="cate_sub">
             <?php foreach($sub_categories[$cate['ca_id']] as $sub) { ?>
-            <a href="<?php echo $ca_url.(in_array(substr($sub['ca_id'], 2), $ca_sub) ? '&ca_sub%5B%5D='.substr($sub['ca_id'], 2, 2) : '&ca_sub%5B%5D='.substr($sub['ca_id'], 2)).$sort_url.$sup_url ;?>"
+            <a href="<?php echo $ca_url.(in_array(substr($sub['ca_id'], 2), $ca_sub) ? '&ca_sub%5B%5D='.substr($sub['ca_id'], 2, 2) : '&ca_sub%5B%5D='.substr($sub['ca_id'], 2)).$sort_url.$sup_url.$it_type_url ;?>"
               class="<?php if(in_array(substr($sub['ca_id'], 2), $ca_sub)) echo 'active'; ?>">
               <?php echo $sub['ca_name']; ?>
             </a>
@@ -179,13 +183,17 @@ $(function() {
     <li>
       <div class="cate_head">유통구분</div>
       <div class="cate_body">
-        <a href="<?=$ca_url.$ca_sub_url.$sort_url?>&prodSupYn=<?=($prodRentalYn != "Y" ? ($prodSupYn == 'N' ? 'Y' : ($prodSupYn == 'all' ? 'Y' : 'all')): "Y").$q_url?>"
+        <a href="<?=$ca_url.$ca_sub_url.$sort_url?>&prodSupYn=<?=(($prodRentalYn != "Y" && $prodNewYn != "Y") ? ($prodSupYn == 'N' ? 'Y' : ($prodSupYn == 'all' ? 'Y' : 'all')): "Y").$q_url.$it_type_url?>"
         class="<?php if(in_array($prodSupYn, array('Y'))) echo 'active'; ?>">유통품목</a>
-        <a href="<?=$ca_url.$ca_sub_url.$sort_url?>&prodSupYn=<?=($prodRentalYn != "Y" ? ($prodSupYn == 'Y' ? 'N' : ($prodSupYn == 'all' ? 'N' : 'all')): "N").$q_url?>"
+        <a href="<?=$ca_url.$ca_sub_url.$sort_url?>&prodSupYn=<?=(($prodRentalYn != "Y" && $prodNewYn != "Y") ? ($prodSupYn == 'Y' ? 'N' : ($prodSupYn == 'all' ? 'N' : 'all')): "N").$q_url.$it_type_url?>"
         class="<?php if(in_array($prodSupYn, array('N'))) echo 'active'; ?>">비유통품목</a>
-		<?php if(substr($cate['ca_id'], 2) == "20"){?>
-		<a href="<?=$ca_url.$ca_sub_url.$sort_url?>&prodRentalYn=<?=(($prodRentalYn == 'N' || $prodRentalYn == '') ? 'Y' : 'N').$q_url?>"
+		<?php if($ca_id == "20"){?>
+		<a href="<?=$ca_url.$ca_sub_url.$sort_url?>&prodRentalYn=<?=(($prodRentalYn == 'N' || $prodRentalYn == '') ? 'Y' : 'N').$q_url.$it_type_url?>"
         class="<?php if(in_array($prodRentalYn, array('Y'))) echo 'active'; ?>">렌탈품목</a>
+		<?php }?>
+		<?php if($ca_id == "10" && $new_count["cnt"]>0){?>
+		<a href="<?=$ca_url.$ca_sub_url.$sort_url?>&prodNewYn=<?=(($prodNewYn == 'N' || $prodNewYn == '') ? 'Y' : 'N').$q_url.$it_type_url?>"
+        class="<?php if(in_array($prodNewYn, array('Y'))) echo 'active'; ?>">신규고시</a>
 		<?php }?>
       </div>
     </li>
