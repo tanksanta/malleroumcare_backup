@@ -218,7 +218,7 @@ $(function() {
     </li>-->
   </ul>
 </div>
-<?php if($q || $ca_sub || $prodSupYn || $prodRentalYn) { ?>
+<?php if($q || $ca_sub || $prodSupYn || $prodRentalYn|| $prodNewYn) { ?>
 <div class="cate_selected">
   <div class="selected_head">
     <a href="<?=G5_SHOP_URL.'/list.php?ca_id='.$ca_id?>">전체해제</a>
@@ -229,19 +229,24 @@ $(function() {
     <?php } ?>
         <?php if (!$isBenefit) { ?>
             <?php if(in_array($prodSupYn, array('Y'))) { ?>
-                <a href="<?=$ca_url.$ca_sub_url.$sort_url?><?=($prodSupYn == 'Y' ? '&prodSupYn=all' : '').$q_url?>">유통품목 <i class="fa fa-times" aria-hidden="true"></i></a>
+                <a href="<?=$ca_url.$ca_sub_url.$sort_url?><?=($prodSupYn == 'Y' ? '&prodSupYn=all' : '').$q_url.$it_type_url?>">유통품목 <i class="fa fa-times" aria-hidden="true"></i></a>
             <?php } ?>
             <?php if(in_array($prodSupYn, array('N'))) { ?>
-                <a href="<?=$ca_url.$ca_sub_url.$sort_url?><?=($prodSupYn == 'N' ? '&prodSupYn=all' : '').$q_url?>">비유통품목 <i class="fa fa-times" aria-hidden="true"></i></a>
+                <a href="<?=$ca_url.$ca_sub_url.$sort_url?><?=($prodSupYn == 'N' ? '&prodSupYn=all' : '').$q_url.$it_type_url?>">비유통품목 <i class="fa fa-times" aria-hidden="true"></i></a>
             <?php } ?>
         <?php } ?>
-	<?php if(substr($cate['ca_id'], 2) == "20"){?>
+	<?php if($ca_id == "20"){?>
 			<?php if(in_array($prodRentalYn, array('Y'))) { ?>
-                <a href="<?=$ca_url.$ca_sub_url.$sort_url?><?=($prodRentalYn == 'Y' ? '&prodRentalYn=N' : '').$q_url?>">렌탈품목 <i class="fa fa-times" aria-hidden="true"></i></a>
+                <a href="<?=$ca_url.$ca_sub_url.$sort_url?><?=($prodRentalYn == 'Y' ? '&prodRentalYn=N' : '').$q_url.$it_type_url?>">렌탈품목 <i class="fa fa-times" aria-hidden="true"></i></a>
+            <?php } ?>
+	<?php }?>
+	<?php if($ca_id == "10"){?>
+			<?php if(in_array($prodNewYn, array('Y'))) { ?>
+                <a href="<?=$ca_url.$ca_sub_url.$sort_url?><?=($prodRentalYn == 'Y' ? '&prodNewYn=N' : '').$q_url.$it_type_url?>">신규고시 <i class="fa fa-times" aria-hidden="true"></i></a>
             <?php } ?>
 	<?php }?>
     <?php foreach($ca_sub as $sub) { ?>
-    <a href="<?=$ca_url.make_ca_sub_url(array_diff($ca_sub, [$sub])).$sort_url.$sup_url.$q_url?>"><?=$ca_sub_name_table[$sub]?> <i class="fa fa-times" aria-hidden="true"></i></a>
+    <a href="<?=$ca_url.make_ca_sub_url(array_diff($ca_sub, [$sub])).$sort_url.$sup_url.$q_url.$it_type_url?>"><?=$ca_sub_name_table[$sub]?> <i class="fa fa-times" aria-hidden="true"></i></a>
     <?php } ?>
     <?php foreach($it_type as $type) { ?>
     <a href="<?=$ca_url.$ca_sub_url.$sort_url.$sup_url.$q_url.make_it_type_url(array_diff($it_type, [$type]))?>"><?=$default['de_it_type'.$type.'_name']?> <i class="fa fa-times" aria-hidden="true"></i></a>
