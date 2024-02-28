@@ -22,7 +22,7 @@ $sql = "SELECT * FROM g5_shop_category where ( length(ca_id) = 4 and ca_id like 
     . "%' ) and ca_use='1' ORDER BY ca_order, ca_id ASC";
 $res3 = sql_query($sql);
 
-$new_count = sql_fetch("select count(*) as cnt from g5_shop_item where it_10_subj = 'new' and ca_id like '".$ca_id."%'");//신규고시 상품 카운트, 0일 경우 신규고시 버튼 hidden 처리
+$new_count = sql_fetch("select count(*) as cnt from g5_shop_item where it_10_subj = 'new' and ca_id like '".$ca_id."%' and it_use='1'");//신규고시 상품 카운트,판매가능 상품만 , 0일 경우 신규고시 버튼 hidden 처리
 
 $ca_sub_name_table = [];
 $categories = [];
