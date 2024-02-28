@@ -157,6 +157,9 @@ include_once($skin_path.'/search.skin.form.php');
         <?php if($list[$i]["prodSupYn"] == "N") { ?>
           <p class="sup">비유통 상품</p>
         <?php } ?>
+		<?php if($list[$i]["it_10_subj"] == "new") { ?>
+        <p class="sup" style="left: 15px;background-color: #4568E3; width:70px;">신규고시</p>
+        <?php } ?>
         <div class="img_wrap">
           <p class="img">
             <?php if($img["src"]){ ?>
