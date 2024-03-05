@@ -378,7 +378,7 @@ if($member["cert_data_ref"] != ""){
 				data : params, 
 				dataType: 'json',// Json 형식의 데이터이다.
 				success : function(res){ // 비동기통신의 성공일경우 success콜백으로 들어옵니다. 'res'는 응답받은 데이터이다.
-					$("#btn_so_sch").trigger("click");
+					$("#btn_so_sch2").trigger("click");
 				  },
 				error : function(XMLHttpRequest, textStatus, errorThrown){ // 비동기 통신이 실패할경우 error 콜백으로 들어옵니다.
 					alert(XMLHttpRequest['responseJSON']['message']);
@@ -682,8 +682,8 @@ $(function() {
               var errMSG = typeof(jqXhr['responseJSON']) == "undefined"? "수급자 정보를 정확하게 확인 후, 조회하시기 바랍니다.":jqXhr['responseJSON']['message'];
               //alert(errMSG);
               //인증서 업로드 추가 영역 
-				if(errMSG == "수급자명 / 장기요양인정번호 확인 후, 조회하시기 바랍니다." ){
-					alert("수급자 정보를 정확하게 확인 후, 조회하시기 바랍니다.");
+				if(errMSG == "수급자 정보를 정확하게 확인 후, 조회하시기 바랍니다." ){
+					alert(errMSG);
 					$.post('./ajax.inquiry_log.php', {
 					  data: { ent_id : "<?=$member['mb_id']?>",ent_nm : "<?=$member['mb_name']?>",pen_id : str_id.replace('L',''),pen_nm : str_rn,resultMsg : "fail",occur_page : "my_recipient_view.php",err_msg:errMSG }
 					}, 'json')
@@ -884,7 +884,7 @@ $(function() {
   height: 100%;
   left: 0;
   top: 0;
-  z-index:9999;
+  z-index:99999;
   background: rgba(0, 0, 0, 0.5);
 }
 #cert_popup_box iframe {
