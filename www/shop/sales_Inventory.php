@@ -331,7 +331,7 @@ if(preg_match($mobile_agent, $_SERVER['HTTP_USER_AGENT'])){
                                             <?=$quantity?>개 남음
                                         </span><!--주문재고수량-->
                                         <span class="order">판매완료 <?=$orderQuantity?>개</span><!--판매완료 개수-->
-                                        <span class="price"><?=number_format($it_cust_price);?>원</span><!--급여가-->
+                                        <span class="price"><?=number_format($row["it_cust_price"]);?>원</span><!--급여가-->
                                     </div>
                                 </div>
                             </div>
@@ -345,7 +345,7 @@ if(preg_match($mobile_agent, $_SERVER['HTTP_USER_AGENT'])){
                             <?php } ?>
                         </span><!--주문재고수량-->
                         <span class="order m_off"><?=$orderQuantity?>개</span><!--판매완료 개수-->
-                        <span class="price m_off"><?=number_format($it_cust_price);?>원</span><!--급여가-->
+                        <span class="price m_off"><?=number_format($row["it_cust_price"]);?>원</span><!--급여가-->
                     </li>
                     </a>
                     <?php //추가 
