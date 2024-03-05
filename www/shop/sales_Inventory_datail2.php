@@ -1199,10 +1199,10 @@ function make_option_value(prodColor, prodSize, prodOptions) {
 
 function popup_control(prodColor, prodSize, prodOptions, barcode_r) {
   //수급자 조회 관련 추가, 개발완료 시 삭제 필요====================================================================
-		swal("사용 제한","수급자 조회조건 개선으로 간편조회 및\n일부 서비스가 일시 중단되었습니다.\n서비스 재개는 추후 공지를 통해 안내드리겠습니다.","error");
-		false;
+		//swal("사용 제한","수급자 조회조건 개선으로 간편조회 및\n일부 서비스가 일시 중단되었습니다.\n서비스 재개는 추후 공지를 통해 안내드리겠습니다.","error");
+		//false;
 
-  /* 개발완료 시 복구 필요
+  
   is_multi_submit = false;
   $('#order_recipientBox').show();
 
@@ -1211,7 +1211,7 @@ function popup_control(prodColor, prodSize, prodOptions, barcode_r) {
   document.getElementById('io_id_r').value = option_value.io_id;
   document.getElementById('io_value_r').value = option_value.io_value;
   document.getElementById('barcode_r').value = barcode_r;
-  */
+  
   //=======================================================================================================
 }
 

@@ -204,7 +204,7 @@ if($member["cert_data_ref"] != ""){
 //인증서 업로드 추가 영역 끝
  //수급자 조회 관련 추가, 개발완료 시 삭제 필요====================================================================?>
 <script>
-	swal("사용 주의","현재 수급자 조회조건 개선 작업으로 수급자 정보를\n업데이트할 수 없습니다.\n등록된 수급자의 정보가 정확하지 않을 수 있음을\n유의해 주시기 바랍니다.","warning");
+	//swal("사용 주의","현재 수급자 조회조건 개선 작업으로 수급자 정보를\n업데이트할 수 없습니다.\n등록된 수급자의 정보가 정확하지 않을 수 있음을\n유의해 주시기 바랍니다.","warning");
 	//history.back();
 </script>
 <?php //=======================================================================================================
@@ -274,12 +274,12 @@ if($member["cert_data_ref"] != ""){
         <ul>
             <a href="./my_recipient_update.php?id=<?=$pen['penId']?>" class="btn_so_edit">기본정보 수정</a>
 <!--  //수급자 조회 관련 추가, 개발완료 시 삭제 필요====================================================================  -->
-            <!--button type="button" class="btn_so_sch" id="btn_so_sch" >요양정보 </br>업데이트</button-->
-			<button type="button" class="btn_so_sch" onClick="return error_btn()">요양정보 </br>업데이트</button>
+            <button type="button" class="btn_so_sch" id="btn_so_sch" >요양정보 </br>업데이트</button>
+			<!--button type="button" class="btn_so_sch" onClick="return error_btn()"  id="btn_so_sch">요양정보 </br>업데이트</button-->
 	  <script>
 		function error_btn(){
-			swal("사용 제한","수급자 조회조건 개선으로 간편조회 및\n일부 서비스가 일시 중단되었습니다.\n서비스 재개는 추후 공지를 통해 안내드리겠습니다.","error");
-			return false;
+			//swal("사용 제한","수급자 조회조건 개선으로 간편조회 및\n일부 서비스가 일시 중단되었습니다.\n서비스 재개는 추후 공지를 통해 안내드리겠습니다.","error");
+			//return false;
 		}
 	  </script>
 <!--=========================================================================================================== -->
@@ -289,7 +289,7 @@ if($member["cert_data_ref"] != ""){
 
 <?php //TODO : 수급자 팝업창 만들기 ?>
 <!-- =========================================================== -->
-      <!-- 품목찾기 팝업 -->
+	  <!-- 품목찾기 팝업 -->
 <div id="item_popup_box">
   <div class="popup_box_close">
     <i class="fa fa-times"></i>
@@ -391,6 +391,22 @@ if($member["cert_data_ref"] != ""){
 <script>
 
 $(function() {
+	$.datepicker.setDefaults({
+					dateFormat : 'yy-mm-dd',
+					prevText: '이전달',
+					nextText: '다음달',
+					monthNames: ['01','02','03','04','05','06','07','08','09','10','11','12'],
+					monthNamesShort: ['01','02','03','04','05','06','07','08','09','10','11','12'],
+					dayNames: ["일", "월", "화", "수", "목", "금", "토"],
+					dayNamesShort: ["일", "월", "화", "수", "목", "금", "토"],
+					dayNamesMin: ["일", "월", "화", "수", "목", "금", "토"],
+					showMonthAfterYear: true,
+					changeMonth: true,
+					changeYear: true
+				  });
+				$('#penExpiStDtm').datepicker({ changeMonth: true, changeYear: true, dateFormat: 'yy-mm-dd',maxDate:0  });
+
+
   let ct_history_list = [];
   // 품목찾기 팝업
   $('#item_popup_box').click(function() {
@@ -402,10 +418,14 @@ $(function() {
     //var url = 'pop_recipient.php';
     //$('#item_popup_box iframe').attr('src', url);
     //$('body').addClass('modal-open');
-    //$('#item_popup_box').hide();
+    //$('#item_popup_box').hide();	
 
-
-	<?php 
+	//기본정보 입력 레이어 팝업 보이기 추가
+	$('body').addClass('modal-open');
+	$('#popup_box2').show();
+  });
+  $('#btn_so_sch2').click(function(e) {
+	  <?php 
 		if($member["cert_reg_sts"] != "Y") {//등록 안되어 있음
 			if($mobile_yn == 'Pc') {
 	?>
@@ -427,18 +447,32 @@ $(function() {
 		}
 	?>
 
-
-
       var pen_info = <?=json_encode($pen);?>;
       console.log("pen_info : ", pen_info);
 
-      var str_rn = "<?=$pen['penNm'] ?>"; //$("input[name='penNm']")[0].value;
+      var str_rn = $("#penNm2").val(); //$("input[name='penNm']")[0].value;
       var str_id = "<?=$pen['penLtmNum'] ?>";  //$("input[name='penLtmNum']")[0].value;
-      var btn_update = document.getElementById('btn_so_sch');
+	  var str_birth = "<?=str_replace('.','',$pen['penBirth'])?>"
+	  var str_cd = $("#penRecGraCd").val();
+	  var str_stdtm = $("#penExpiStDtm").val();
+	  if(str_rn == ""){
+		alert("수급자명을 입력해 주세요.");
+		$("#penNm").focus();
+		return false;
+	  }
+	  if(str_cd == ""){
+		alert("인정등급을 선택해 주세요.");
+		return false;
+	  }
+	  if(str_stdtm == ""){
+		alert("인정유효기간(시작일자)을 선택해 주세요.");
+		return false;
+	  }
+      var btn_update = document.getElementById('btn_so_sch2');
       btn_update.disabled = true;
       $.ajax('ajax.recipient.inquiry.php', {
           type: 'POST',  // http method
-          data: { id : str_id.replace('L',''),rn : str_rn },  // data to submit
+          data: { id : str_id.replace('L',''),rn : str_rn, birth : str_birth,cd : str_cd, stdtm : str_stdtm },  // data to submit
           success: function (data, status, xhr) {
               if(data['message'] == 'undefined'){
                 alert("다시 조회해주시기 바랍니다.");
@@ -939,7 +973,7 @@ $(function() {
 	left:50%;
 	top:50%;
 }
-table.ui-datepicker-calendar { display:none; }
+
 #loading_excel {
     display: none;
     width: 100%;
@@ -1040,10 +1074,10 @@ table.ui-datepicker-calendar { display:none; }
     </div>
     <div class="cart_btn_wrap r_btn_wrap">
 <!--  //수급자 조회 관련 추가, 개발완료 시 삭제 필요====================================================================  -->
-	  <!--a class="c_btn" href="<?=G5_SHOP_URL.'/connect_recipient.php?pen_id='.$pen['penId'].'&redirect='.urlencode('/shop/list.php?ca_id=10')?>">장바구니 상품 추가하기</a-->
-	  <a class="c_btn" href="javascript:;" onClick="return error_btn()">장바구니 상품 추가하기</a>
-	  <!--a class="c_btn primary" href="<?=G5_SHOP_URL.'/connect_recipient.php?pen_id='.$pen['penId'].'&redirect='.urlencode('/shop/cart.php')?>"><?=$pen['penNm']?>님 장바구니 바로가기</a-->
-      <a class="c_btn primary" href="javascript:;" onClick="return error_btn()"><?=$pen['penNm']?>님 장바구니 바로가기</a>
+	  <a class="c_btn" href="<?=G5_SHOP_URL.'/connect_recipient.php?pen_id='.$pen['penId'].'&redirect='.urlencode('/shop/list.php?ca_id=10')?>">장바구니 상품 추가하기</a>
+	  <!--a class="c_btn" href="javascript:;" onClick="return error_btn()">장바구니 상품 추가하기</a-->
+	  <a class="c_btn primary" href="<?=G5_SHOP_URL.'/connect_recipient.php?pen_id='.$pen['penId'].'&redirect='.urlencode('/shop/cart.php')?>"><?=$pen['penNm']?>님 장바구니 바로가기</a>
+      <!--a class="c_btn primary" href="javascript:;" onClick="return error_btn()"><?=$pen['penNm']?>님 장바구니 바로가기</a-->
 <!--=========================================================================================================== -->
     </div>
   </div>
@@ -1123,8 +1157,8 @@ if($start_date != ""){
   <div class="section_wrap grey">
     <div class="sub_section_wrap" style="text-align: center">
 <!--  //수급자 조회 관련 추가, 개발완료 시 삭제 필요====================================================================  -->      
-	  <!--a href="<?=G5_SHOP_URL."/my_recipient_rec_form.php?id={$pen['penId']}"?>" class="b_btn">신규등록</a-->
-	  <a href="javascript:;"  onClick="return error_btn()" class="b_btn">신규등록</a>
+	  <a href="<?=G5_SHOP_URL."/my_recipient_rec_form.php?id={$pen['penId']}"?>" class="b_btn">신규등록</a>
+	  <!--a href="javascript:;"  onClick="return error_btn()" class="b_btn">신규등록</a-->
 <!--=========================================================================================================== -->
     </div>
     <?php foreach($recs as $rec) { ?>
@@ -1151,7 +1185,7 @@ if($start_date != ""){
   <div id="popup_box3" class="popup_box2">
     <div id="" class="popup_box_con">
 		<div style="top:0px;width:100%;">		
-		<span style="float:right;cursor:pointer;margin-top:-15px;" onClick="rent_efrom_close();" title="돌아가기" >X</span>
+		<span style="float:right;cursor:pointer;margin-top:-15px;" onClick="rent_efrom_close();" title="돌아가기" ><i class="fa fa-times"></i></span>
 		</div>
 		<div class="form-group" style="text-align:center;border-bottom:1px solid #333333;height:25px;">
 			<span class="" style="text-align:center;font-weight:bold;font-size:16px;">대여계약 급여제공기록 생성</span>
@@ -1197,14 +1231,14 @@ if($start_date != ""){
 	</div>	
 </div>
 
-  <div id="popup_box4" class="popup_box2">
+<div id="popup_box4" class="popup_box2">
     <div id="" class="popup_box_con2" >
 		<form method="post" id='download_excel2'>
 			<input type="hidden" name="mode" value="m">
 			<input type="hidden" name="rh_id" id="rh_id" value="">
 		</form>
 		<div style="top:0px;width:100%;">		
-		<span style="float:right;cursor:pointer;margin-top:-15px;" onClick="rent_efrom_close();" title="돌아가기" >X</span>
+		<span style="float:right;cursor:pointer;margin-top:-15px;" onClick="rent_efrom_close();" title="돌아가기" ><i class="fa fa-times"></i></span>
 		</div>
 		<div class="form-group" style="text-align:center;border-bottom:1px solid #333333;height:40px;">
 			<span class="" style="text-align:center;font-weight:bold;font-size:18px;">대여계약 급여제공기록 관리</span>
@@ -1216,6 +1250,59 @@ if($start_date != ""){
 		<div style="margin-top:10px;text-align:left;border-top:1px solid #333333;height:40px;padding-top:10px;" class="pop_tail">
 			생성된 급여제공기록 정보는 계약 종료 날짜 기준 다음달 1일에 자동 삭제됩니다.(단, 전자서명은 제외)<br>
 			<font color="red">※ 계약기간(종료일)이 계약생성일보다 이전인 경우 계약생성일 기준으로 다음달 1일에 삭제됩니다.</font>
+        </div>
+
+	</div>	
+</div>
+
+<div id="popup_box2" class="popup_box2" >
+    <div id="" class="popup_box_con2" style="height: 410px;margin-top: -205px; width: 350px; margin-left: -175px; padding:30px;">
+		<form method="post">
+			<input type="hidden" name="mode" value="m">
+			<input type="hidden" name="rh_id" id="rh_id" value="">
+		</form>
+		<div style="top:0px;width:100%;">		
+		<span style="float:right;cursor:pointer;margin-top:-15px;" onClick="rent_efrom_close();" title="돌아가기" ><i class="fa fa-times"></i></span>
+		</div>
+		<div class="form-group" style="text-align:left;height:60px;">
+			<span style="text-align:left;font-weight:bold;font-size:18px;">요양정보</span><br>
+			<span style="text-align:left;font-size:13px;">변경사항이 있을 경우 수정 후 업데이트해 주세요.</span>
+        </div>
+
+		<div class="form-group" style="text-align:left;height:30px;">
+			<div class="" style="text-align:left;font-size:14px; width:130px;float:left;">요양인정번호</div>
+			<div class="" style="text-align:left;font-size:14px;"><?=$pen['penLtmNum']?></div>
+        </div>
+		
+		<div class="form-group" style="text-align:left;height:30px;">
+			<span class="" style="text-align:left;font-size:14px; width:130px;float:left;">생년월일</span>
+			<div class="" style="text-align:left;font-size:14px;"><?=$pen['penBirth']?></div>
+        </div>
+		<div class="form-group" style="text-align:left;height:30px;">
+			<div class="" style="text-align:left;font-size:14px; width:130px;float:left;">수급자명</div>
+			<div class="" style="text-align:left;font-size:14px;"><input type="text" id="penNm2" value="<?=$pen['penNm']?>" style="width:155px;border:1px solid;" class="input-sm"></div>
+        </div>
+		<div class="form-group" style="text-align:left;height:30px;">
+			<span class="" style="text-align:left;font-size:14px; width:130px;float:left;">인정등급</span>
+			<div class="" style="text-align:left;font-size:14px;"><select name="penRecGraCd" id="penRecGraCd" class="input-sm" style="width: 155px;border:1px solid;">
+					<option value="" >선택</option>
+					<option value="01" <?=($pen['penRecGraCd'] == "01")? "selected":"";?>>1등급</option>
+					<option value="02" <?=($pen['penRecGraCd'] == "02")? "selected":"";?>>2등급</option>
+					<option value="03" <?=($pen['penRecGraCd'] == "03")? "selected":"";?>>3등급</option>
+					<option value="04" <?=($pen['penRecGraCd'] == "04")? "selected":"";?>>4등급</option>
+					<option value="05" <?=($pen['penRecGraCd'] == "05")? "selected":"";?>>5등급</option>
+					<option value="06" <?=($pen['penRecGraCd'] == "06")? "selected":"";?>>6등급</option>
+				  </select></div>
+        </div>
+		<div class="form-group" style="text-align:left;height:30px;">
+			<span class="" style="text-align:left;font-size:14px; width:130px;float:left;line-height:17px;">인정유효기간<br><font size="2">(시작일자)</font></span>
+			<div class="" style="text-align:left;font-size:14px;"><input type="text" id="penExpiStDtm" name="penExpiStDtm" value="<?=substr($pen['penExpiStDtm'],0,4)."-".substr($pen['penExpiStDtm'],4,2)."-".substr($pen['penExpiStDtm'],6,2)?>" style="width:155px;border:1px solid;" class="input-sm" readonly></div>
+        </div>
+
+	
+		<div style="margin-top:20px;text-align:center;height:40px;padding-top:10px;" class="pop_tail">
+			<input type="button" value="취소" onClick="rent_efrom_close();" style="width:49%;padding: 10px 15px;vertical-align: top;background-color: white;border: 1px solid #ee8102;color: #ee8102 !important;border-radius: 3px;">
+			<input type="button" value="업데이트" id="btn_so_sch2" style="width:49%;padding: 10px 15px;vertical-align: top;background-color: #ee8102;border: 1px solid #ee8102; color: #fff; !important;border-radius: 3px;">
         </div>
 
 	</div>	
@@ -1348,6 +1435,7 @@ function rent_efrom_hist_open(){//대여계약 급여제공기록 생성 팝업
 }
 
 function rent_efrom_close(){
+	$('#popup_box2').hide();
 	$('#popup_box3').hide();
 	$('#popup_box4').hide();
 	$('body').removeClass('modal-open');
@@ -1577,5 +1665,5 @@ $(function() {
   });
 });
 </script>
-
+<?php @include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');?>
 <?php include_once("./_tail.php"); ?>

@@ -79,7 +79,7 @@ if($member["cert_data_ref"] != ""){
 //인증서 업로드 추가 영역 끝
  //수급자 조회 관련 추가, 개발완료 시 삭제 필요====================================================================?>
 <script>
-	swal("사용 주의","현재 수급자 조회조건 개선 작업으로 수급자 정보를\n업데이트할 수 없습니다.\n등록된 수급자의 정보가 정확하지 않을 수 있음을\n유의해 주시기 바랍니다.","warning");
+	//swal("사용 주의","현재 수급자 조회조건 개선 작업으로 수급자 정보를\n업데이트할 수 없습니다.\n등록된 수급자의 정보가 정확하지 않을 수 있음을\n유의해 주시기 바랍니다.","warning");
 	//history.back();
 </script>
 <?php //=======================================================================================================
@@ -238,34 +238,63 @@ input[type="number"]::-webkit-inner-spin-button {
             <label class="col-sm-2 control-label">
               <b>장기요양인정번호</b>
             </label>
-            <div class="col-sm-4"  style="display: flex">
+            <div class="col-sm-3"  style="display: flex">
               <span style="float: left; width: 10px; height: 30px; line-height: 30px; margin-right: 5px;">L</span>
 
-              <input type="number" maxlength="10" oninput="maxLengthCheck(this)" id="penLtmNum" name="penLtmNum" class="form-control input-sm" style="width: calc(100% - 15px);" value="<?=str_replace("L", "", $data["penLtmNum"])?>">
+              <input type="number" maxlength="10" oninput="maxLengthCheck(this)" id="penLtmNum" name="penLtmNum" class="form-control input-sm" value="<?=str_replace("L", "", $data["penLtmNum"])?>">
+
+            </div>
+          </div>          
+		  <div class="form-group has-feedback">
+            <label class="col-sm-2 control-label">
+              <b>생년월일</b>
+            </label>
+            <div class="col-sm-3">
+
+              <input readonly type="text" maxlength="8" oninput="maxLengthCheck(this)" id="penBirth" name="penBirth" min="0" dateonly3  class="form-control input-sm" value="<?=get_text(str_replace('.', '', $data['penBirth']))?>" style="background:#ffffff;" autocomplete="off">
+              <input type="hidden" maxlength="6" oninput="maxLengthCheck(this)" id="penJumin1" name="penJumin1" min="0"  class="form-control input-sm" value="<?=get_text(substr(str_replace('.', '', $data['penBirth']),2))?>">
+              <input type="hidden" id="BDay" name="BDay" value="<?=get_text($data['penBirth']) ?: ''?>">
+
+            </div>
+          </div>
+		  <div class="form-group has-feedback">
+            <label class="col-sm-2 control-label">
+              <b>유효기간</b>
+            </label>
+            <div class="col-sm-4">
+
+              <input readonly type="text" name="penExpiStDtm" class="form-control input-sm" dateonly2 style="display: inline-block;width:47%;background:#ffffff;" value="<?=$data["penExpiDtm"][0]?>" autocomplete="off"> ~
+              <input readonly type="text" name="penExpiEdDtm" class="form-control input-sm" dateonly style="display: inline-block;width:48%;" value="<?=$data["penExpiDtm"][1]?>" autocomplete="off">
+
+            </div>
+          </div>
+		  <div class="form-group has-feedback">
+            <label class="col-sm-2 control-label">
+              <b>인정등급</b>
+            </label>
+            <div class="col-sm-4" style="display: flex">
+			  <select name="penRecGraCd" id="penRecGraCd" class="form-control input-sm" style="width: calc(100% - 15px);">
+					<option value="" >선택</option>
+					<option value="1등급" <?=($data['penRecGraCd'] == "01")? "selected":"";?>>1등급</option>
+					<option value="2등급" <?=($data['penRecGraCd'] == "02")? "selected":"";?>>2등급</option>
+					<option value="3등급" <?=($data['penRecGraCd'] == "03")? "selected":"";?>>3등급</option>
+					<option value="4등급" <?=($data['penRecGraCd'] == "04")? "selected":"";?>>4등급</option>
+					<option value="5등급" <?=($data['penRecGraCd'] == "05")? "selected":"";?>>5등급</option>
+					<option value="6등급" <?=($data['penRecGraCd'] == "06")? "selected":"";?>>6등급</option>
+				  </select>
+              <!--input readonly type="text" name="penRecGraCd" value="<?=$data["penRecGraNm"]?>" class="form-control input-sm"-->
 <!--  //수급자 조회 관련 추가, 개발완료 시 삭제 필요====================================================================  -->
-              <!--button type="button" id="btn_pen_update" class="btn btn-color btn-sm" style="margin-left: 15px;">요양정보 업데이트</button-->
-			  <button type="button" class="btn btn-color btn-sm" style="margin-left: 15px;" onClick="return error_btn()">요양정보 업데이트</button>
+              <button type="button" id="btn_pen_update" class="btn btn-color btn-sm" style="margin-left: 15px;">요양정보 업데이트</button>
+			  <!--button type="button" class="btn btn-color btn-sm" style="margin-left: 15px;" onClick="return error_btn()">요양정보 업데이트</button-->
 	  <script>
 		function error_btn(){
-			swal("사용 제한","수급자 조회조건 개선으로 간편조회 및\n일부 서비스가 일시 중단되었습니다.\n서비스 재개는 추후 공지를 통해 안내드리겠습니다.","error");
-			return false;
+			//swal("사용 제한","수급자 조회조건 개선으로 간편조회 및\n일부 서비스가 일시 중단되었습니다.\n서비스 재개는 추후 공지를 통해 안내드리겠습니다.","error");
+			//return false;
 		}
 	  </script>
 <!--=========================================================================================================== -->
             </div>
           </div>
-
-          <div class="form-group has-feedback">
-            <label class="col-sm-2 control-label">
-              <b>인정등급</b>
-            </label>
-            <div class="col-sm-3">
-
-              <input readonly type="text" name="penRecGraCd" value="<?=$data["penRecGraNm"]?>" class="form-control input-sm">
-
-            </div>
-          </div>
-
           <div class="form-group has-feedback">
             <label class="col-sm-2 control-label">
               <b>대상자구분</b>
@@ -289,18 +318,6 @@ input[type="number"]::-webkit-inner-spin-button {
 
           <div class="form-group has-feedback">
             <label class="col-sm-2 control-label">
-              <b>유효기간</b>
-            </label>
-            <div class="col-sm-4">
-
-              <input readonly type="text" name="penExpiStDtm" class="form-control input-sm" dateonly2 style="display: inline-block;width:47%;" value="<?=$data["penExpiDtm"][0]?>"> ~
-              <input readonly type="text" name="penExpiEdDtm" class="form-control input-sm" dateonly style="display: inline-block;width:48%;" value="<?=$data["penExpiDtm"][1]?>">
-
-            </div>
-          </div>
-
-          <div class="form-group has-feedback">
-            <label class="col-sm-2 control-label">
               <b>적용기간</b>
             </label>
             <div class="col-sm-4">
@@ -310,18 +327,7 @@ input[type="number"]::-webkit-inner-spin-button {
             </div>
           </div>
 
-          <div class="form-group has-feedback">
-            <label class="col-sm-2 control-label">
-              <b>생년월일</b>
-            </label>
-            <div class="col-sm-3">
-
-              <input readonly type="number" maxlength="8" oninput="maxLengthCheck(this)" id="penBirth" name="penBirth" min="0"  class="form-control input-sm" value="<?=get_text(str_replace('.', '', $data['penBirth']))?>">
-              <input type="hidden" maxlength="6" oninput="maxLengthCheck(this)" id="penJumin1" name="penJumin1" min="0"  class="form-control input-sm" value="<?=get_text(substr(str_replace('.', '', $data['penBirth']),2))?>">
-              <input type="hidden" id="BDay" name="BDay" value="<?=get_text($data['penBirth']) ?: ''?>">
-
-            </div>
-          </div>
+          
       </div>
       <!-- ==================================================================== -->
 
@@ -1101,13 +1107,16 @@ $(function() {
     showMonthAfterYear: true,
     changeMonth: true,
     changeYear: true,
-    yearRange : "c-150:c+10"
+    yearRange : "c-90:c+10"
   });
 
   $("input:text[dateonly]").datepicker({});
 
   $("input:text[dateonly2]").datepicker({
     maxDate : "<?=date("Y-m-d")?>"
+  });
+  $("input:text[dateonly3]").datepicker({
+    dateFormat: 'yymmdd',maxDate: '-60y'
   });
   $("#zipAddrPopupWrap").css("opacity", 1);
   $("#zipAddrPopupWrap").hide();
@@ -1256,7 +1265,7 @@ $(function() {
     } else { //감경
       penTypeCd = pentype.substr(3, 1) == '6'? '02' : '01';
     }
-	var recgrd = $(".register-form input[name='penRecGraCd']").val().replace(/[^0-9]/g, '') == '' ? '0' : $(".register-form input[name='penRecGraCd']").val().replace(/[^0-9]/g, '');
+	var recgrd = $(".register-form select[name='penRecGraCd']").val().replace(/[^0-9]/g, '') == '' ? '0' : $(".register-form select[name='penRecGraCd']").val().replace(/[^0-9]/g, '');
     var penRecGraCd = '0'+recgrd;
     var sendData = {
       penId : "<?=$data["penId"]?>",
@@ -1483,12 +1492,46 @@ $(function() {
 
       var str_rn = $("input[name='penNm']")[0].value;
       var str_id = $("input[name='penLtmNum']")[0].value;
+	  var str_cd = $(".register-form select[name='penRecGraCd']").val();
+	  var str_birth = $("input[name='penBirth']")[0].value;
+	  var str_stdtm = $("input[name='penExpiStDtm']")[0].value;
       var btn_update = document.getElementById('btn_pen_update');
       btn_update.disabled = true;
+	  if (str_rn.length < 2) {
+            alert("수급자명을 정확히 입력하세요.");
+			btn_update.disabled = false;
+            return false;
+        }
+        if (str_id.length < 10) {
+            alert("수급자 요양인정번호를 정확히 입력하세요.");
+			btn_update.disabled = false;
+            return false;
+        }
+        if (/^[0-9]*$/.test(str_id) == false) {
+            alert("장기요양인정번호는 숫자만 입력하세요.");
+			btn_update.disabled = false;
+            return false;
+        }
+
+		if(str_birth == ""){
+			alert("수급자 생년월일을 선택해 주세요.");
+			btn_update.disabled = false;
+            return false;
+		}
+		if(str_cd == ""){
+			alert("수급자 인정등급을 선택해 주세요.");
+			btn_update.disabled = false;
+            return false;
+		}
+		if(str_stdtm == ""){
+			alert("수급자 인정유효기간 시작일자를 선택해 주세요.");
+			btn_update.disabled = false;
+            return false;
+		}
 
       $.ajax('ajax.recipient.inquiry.php', {
           type: 'POST',  // http method
-          data: { id : str_id,rn : str_rn },  // data to submit
+          data: { id : str_id,rn : str_rn, birth : str_birth,cd : str_cd, stdtm : str_stdtm },  // data to submit
           success: function (data, status, xhr) {
 			  alert(data['message']);
 
@@ -1516,7 +1559,7 @@ $(function() {
 			  rep_info['SBA_CD'] == '일반' ? '15%': rep_info['SBA_CD'] == '기초' ? '0%': rep_info['SBA_CD'] == '의료급여' ? '6%':
 			  (rep_info['SBA_CD'].split('(')[1].substr(0, rep_info['SBA_CD'].split('(')[1].length-1));
 			  rep_info['REDUCE_NM'] = (rep_info['REDUCE_NM'] == null)?rep_info['SBA_CD']:rep_info['REDUCE_NM'];
-              $("input[name='penRecGraCd']")[0].value = rep_info['LTC_RCGT_GRADE_CD']+"등급";
+              $("select[name='penRecGraCd']").value = rep_info['LTC_RCGT_GRADE_CD']+"등급";
               $("input[name='penTypeCd']")[0].value = rep_info['REDUCE_NM'];
               $("input[name='SbaCd']")[0].value = rep_info['SBA_CD'];
               $("input[name='penPayRate']")[0].value = penPayRate;

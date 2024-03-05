@@ -234,6 +234,9 @@ if($member["cert_data_ref"] != ""){
     <link rel="stylesheet" href="<?php echo G5_ADMIN_URL; ?>/css/popup.css?v=<?php echo time(); ?>">
     <script src="<?php echo G5_JS_URL ?>/jquery-1.11.3.min.js"></script>
     <script src="<?php echo G5_JS_URL ?>/common.js"></script>
+	<!-- font swesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
 </head>
 <style>
 .admin_popup {
@@ -245,6 +248,18 @@ if($member["cert_data_ref"] != ""){
     content: ' ';width:100%; background: #A6A6A6;
     height:3px;margin: auto; display:inline-block;
     margin-top: 0.5%; margin-bottom: 0.5%;
+}
+
+.input-sm {
+    height: 30px;
+    padding: 5px 10px;
+    font-size: 12px;
+    line-height: 1.5;
+    border-radius: 3px;
+}
+
+.form-group {
+	padding: 5px 10px;
 }
 .head {
     width: 100%;  padding-top: 4%;    
@@ -403,6 +418,42 @@ if($member["cert_data_ref"] != ""){
 		  position: relative;
 		  top: -25px;
 		}
+.popup_box2 {
+	display: none;
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	left: 0;
+	top: 0;
+	z-index: 9999;
+	background: rgba(0, 0, 0, 0.5);		
+}
+
+.popup_box_con {
+	padding:20px;
+	position: relative;
+	background: #ffffff;
+	z-index: 99999;
+	height:620px;
+	margin-top:-310px;
+	margin-left:-200px;
+	width:400px;
+	left:50%;
+	top:50%;
+}
+
+.popup_box_con2 {
+	padding:20px;
+	position: relative;
+	background: #ffffff;
+	z-index: 99999;
+	height:620px;
+	margin-top:-310px;
+	margin-left:-350px;
+	width:700px;
+	left:50%;
+	top:50%;
+}
 </style>
 <!--로딩 중 -->
 	<div id="loading2">
@@ -558,6 +609,60 @@ if($member["cert_data_ref"] != ""){
 
     </div>
 </div>
+<div id="popup_box2" class="popup_box2" >
+    <div id="" class="popup_box_con2" style="height: 360px;margin-top: -180px; width: 350px; margin-left: -175px; padding:30px;">
+		<form method="post">
+			<input type="hidden" name="mode" value="m">
+			<input type="hidden" name="rh_id" id="rh_id" value="">
+		</form>
+		<div style="top:0px;width:100%;">		
+		<span style="float:right;cursor:pointer;margin-top:-15px;" onClick="rent_efrom_close();" title="돌아가기" ><i class="fa fa-times"></i></span>
+		</div>
+		<div class="form-group" style="text-align:left;height:60px;">
+			<span style="text-align:left;font-weight:bold;font-size:18px;">요양정보</span><br>
+			<span style="text-align:left;font-size:13px;">변경사항이 있을 경우 수정 후 업데이트해 주세요.</span>
+        </div>
+		<div class="form-group" style="text-align:left;height:30px;">
+			<div class="" style="text-align:left;font-size:14px; width:130px;float:left;">수급자명</div>
+			<div class="" style="text-align:left;font-size:14px;"><?=$_GET['penNm']?></div>
+        </div>
+		<div class="form-group" style="text-align:left;height:30px;">
+			<div class="" style="text-align:left;font-size:14px; width:130px;float:left;">요양인정번호</div>
+			<div class="" style="text-align:left;font-size:14px;"><?=$_GET['penLtmNum']?></div>
+        </div>
+		
+		<div class="form-group" style="text-align:left;height:30px;">
+			<span class="" style="text-align:left;font-size:14px; width:130px;float:left;">생년월일</span>
+			<div class="" style="text-align:left;font-size:14px;" id="penBirth2"></div>
+			<input type="hidden" id="penBirth" name="penBirth">
+        </div>
+		
+		<div class="form-group" style="text-align:left;height:30px;">
+			<span class="" style="text-align:left;font-size:14px; width:130px;float:left;">인정등급</span>
+			<div class="" style="text-align:left;font-size:14px;"><select name="penRecGraCd" id="penRecGraCd" class="input-sm" style="width: 155px;border:1px solid;">
+					<option value="" >선택</option>
+					<option value="1등급" >1등급</option>
+					<option value="2등급" >2등급</option>
+					<option value="3등급" >3등급</option>
+					<option value="4등급" >4등급</option>
+					<option value="5등급" >5등급</option>
+					<option value="6등급" >6등급</option>
+				  </select></div>
+        </div>
+		<div class="form-group" style="text-align:left;height:30px;">
+			<span class="" style="text-align:left;font-size:14px; width:130px;float:left;line-height:17px;">인정유효기간<br><font size="2">(시작일자)</font></span>
+			<div class="" style="text-align:left;font-size:14px;"><input type="text" id="penExpiStDtm" name="penExpiStDtm" value="" style="width:155px;border:1px solid;" class="input-sm" readonly></div>
+        </div>
+
+	
+		<div style="margin-top:20px;text-align:center;height:40px;padding-top:10px;" class="pop_tail">
+			<input type="button" value="취소" onClick="rent_efrom_close();" style="width:49%;padding: 10px 15px;vertical-align: top;background-color: white;border: 1px solid #ee8102;color: #ee8102 !important;border-radius: 3px;">
+			<input type="button" value="업데이트" id="pen_info_update2" style="width:49%;padding: 10px 15px;vertical-align: top;background-color: #ee8102;border: 1px solid #ee8102; color: #fff; !important;border-radius: 3px;">
+        </div>
+
+	</div>	
+</div>
+
 <!-- 인증서 업로드 추가 영역 -->
 <div id="cert_ent_num_popup_box">
   <iframe name="cert_ent_num_iframe" src="" scrolling="no" frameborder="0" allowTransparency="false"></iframe>
@@ -600,7 +705,7 @@ if($member["cert_data_ref"] != ""){
 		  $('#cert_ent_num_popup_box').hide();
 		});
 	});
-
+	
 	function loading_onoff2(a){
 		if(a == "on" ){
 			$('body').css('overflow-y', 'hidden');
@@ -662,7 +767,26 @@ if($member["cert_data_ref"] != ""){
 <!-- 인증서 업로드 추가 영역 끝-->
 </body>
 <script>
+function rent_efrom_close(){
+	$('#popup_box2').hide();
+	$('body').removeClass('modal-open');
+}
     $(function () {
+		$.datepicker.setDefaults({
+					dateFormat : 'yy-mm-dd',
+					prevText: '이전달',
+					nextText: '다음달',
+					monthNames: ['01','02','03','04','05','06','07','08','09','10','11','12'],
+					monthNamesShort: ['01','02','03','04','05','06','07','08','09','10','11','12'],
+					dayNames: ["일", "월", "화", "수", "목", "금", "토"],
+					dayNamesShort: ["일", "월", "화", "수", "목", "금", "토"],
+					dayNamesMin: ["일", "월", "화", "수", "목", "금", "토"],
+					showMonthAfterYear: true,
+					changeMonth: true,
+					changeYear: true
+				  });
+		$('#penExpiStDtm').datepicker({ changeMonth: true, changeYear: true, dateFormat: 'yy-mm-dd',maxDate:0  });
+
         $('#table_contract_subtitle').hide();
         $('#table_contract_main').hide();		
 
@@ -711,7 +835,12 @@ if($member["cert_data_ref"] != ""){
 
                     let rep_list_api = data['data']['recipientContractDetail']['Result'];                
                     let rep_info_api = rep_list_api['ds_welToolTgtList'][0];
-                    if(rep_info_api['REDUCE_NM'] == '감경'){ //REDUCE_NM가 대상자 구분, 감경은 SBA_CD를 이용하여 본인부담율을 가져오기
+                    $("#penBirth").val(rep_info_api["BDAY"]);
+					$("#penBirth2").text(rep_info_api["BDAY"]);
+					$("#penRecGraCd").val(rep_info_api["LTC_RCGT_GRADE_CD2"]);
+					$("#penExpiStDtm").val(rep_info_api["RCGT_EDA_DT2"]);
+						
+					if(rep_info_api['REDUCE_NM'] == '감경'){ //REDUCE_NM가 대상자 구분, 감경은 SBA_CD를 이용하여 본인부담율을 가져오기
                         let penPayRate_api = rep_info_api['SBA_CD'].replace('(', ' ').replace(')', '');
                     } else {
                         let penPayRate_api = rep_info_api['REDUCE_NM'] == '일반' ? '일반 15%': rep_info_api['REDUCE_NM'] == '기초' ? '기초 0%'
@@ -1534,9 +1663,15 @@ if($member["cert_data_ref"] != ""){
         }
         
 		//요양정보업데이트 이벤트
-		$(document).on("click", "#pen_info_update", function (){
-			loading_onoff2('on');
+		$(document).on("click", "#pen_info_update", function(){
+			//기본정보 입력 레이어 팝업 보이기 추가
+			$('body').addClass('modal-open');
+			$('#popup_box2').show();
+		});
 
+		$(document).on("click", "#pen_info_update2", function(){
+			loading_onoff2('on');
+			rent_efrom_close()
 			var head_title = `<span class = "rep_common"><?php echo "홍길동(L1234567890)";?></span><span>님의 요양정보</span>`;
             $(".head-title").html('');
 			$(".head-title").append(head_title);
@@ -1548,10 +1683,10 @@ if($member["cert_data_ref"] != ""){
       
             
             var add_contract_list = [];
-            $.ajax('ajax.recipient.inquiry.php', {
+			$.ajax('ajax.recipient.inquiry.php', {
                 type: 'POST',  // http method
 				async:false,
-                data: { id : penLtmNum_parent,rn : penNm_parent },  // data to submit
+                data: { id : penLtmNum_parent,rn : penNm_parent,birth : $("#penBirth").val(),cd : $("#penRecGraCd").val(), stdtm : $("#penExpiStDtm").val() },  // data to submit
                 success: function (data, status, xhr) {
 					let rep_list_api = data['data']['recipientContractDetail']['Result'];                
                     let rep_info_api = rep_list_api['ds_welToolTgtList'][0];
@@ -2321,4 +2456,5 @@ if($member["cert_data_ref"] != ""){
     }
 
 </script>
+<?php @include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');?>
 </html>

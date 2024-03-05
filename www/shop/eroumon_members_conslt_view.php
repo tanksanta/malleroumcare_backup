@@ -654,11 +654,9 @@
 
         $('#simpleSearchResult').on('click', function (e) {
             e.preventDefault();
-//수급자 조회 관련 추가, 개발완료 시 삭제 필요====================================================================
-		swal("사용 제한","수급자 조회조건 개선으로 간편조회 및\n일부 서비스가 일시 중단되었습니다.\n서비스 재개는 추후 공지를 통해 안내드리겠습니다.","error");
-		return false;
-//=======================================================================================================
-			$(".Popup_simpleSearch > div").html("");
+			alert("더 이상 제공하지 않는 서비스입니다.");
+			return false;
+/*			$(".Popup_simpleSearch > div").html("");
             $(".Popup_simpleSearch > div").append("<iframe></iframe>");
 
             var iframeDocument = $('.Popup_simpleSearch iframe')[0].contentDocument;
@@ -673,6 +671,7 @@
                 $(".Popup_simpleSearch").show();
             });
             return;
+*/
         });
 
 		$('#equip_ctgryResult').on('click', function (e) {
@@ -686,6 +685,7 @@
             form.append('<input type="hidden" name="penNm" value="' + $(this).data('pennm') + '">'); // POST 데이터 추가
 			form.append('<input type="hidden" name="consltID" value="<?=$CONSLT_NO?>">'); // POST 데이터 추가
 			form.append('<input type="hidden" name="MBR_TELNO" value="<?=$sql_result['MBR_TELNO']?>">'); // POST 데이터 추가
+			form.append('<input type="hidden" name="BRDT" value="<?=$sql_result['BRDT']?>">'); // POST 데이터 추가
             iframeDocument.body.appendChild(form[0]);
             form[0].submit();
 

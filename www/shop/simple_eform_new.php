@@ -289,8 +289,8 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 			  </label>
 			  <label>
 			  <?php //수급자 조회 관련 추가, 개발완료 시 삭제 필요====================================================================?>
-				<!--button type="button" id="btn_pen" class="btn btn-black btn-sm" style="margin-top:0px;height:34px" onClick="$('#pen_type_1').trigger('click');">&nbsp;&nbsp;목록에서 검색&nbsp;&nbsp;</button-->
-				<button type="button" id="btn_pen" class="btn btn-black btn-sm" style="margin-top:0px;height:34px">&nbsp;&nbsp;목록에서 검색&nbsp;&nbsp;</button>
+				<button type="button" id="btn_pen" class="btn btn-black btn-sm" style="margin-top:0px;height:34px" onClick="$('#pen_type_1').trigger('click');">&nbsp;&nbsp;목록에서 검색&nbsp;&nbsp;</button>
+				<!--button type="button" id="btn_pen" class="btn btn-black btn-sm" style="margin-top:0px;height:34px">&nbsp;&nbsp;목록에서 검색&nbsp;&nbsp;</button-->
 			  <?php //=======================================================================================================?>
 			  </label>
 			</div>	
@@ -1071,7 +1071,7 @@ function sendBarcode(text){
 <script>
 $(function(){
 //수급자 조회 관련 추가, 개발완료 시 삭제 필요====================================================================
-		$('#pen_type_0').trigger('click');
+		//$('#pen_type_0').trigger('click');
 //=======================================================================================================
   open_chatroom();
 <?php if(!$dc){?>
@@ -2102,17 +2102,17 @@ function dc_view(){
 // 수급자 목록
 $('#btn_pen').click(function() {
  //수급자 조회 관련 추가, 개발완료 시 삭제 필요====================================================================
-		swal("사용 제한","수급자 조회조건 개선으로 간편조회 및\n일부 서비스가 일시 중단되었습니다.\n서비스 재개는 추후 공지를 통해 안내드리겠습니다.","error");
-		$('#pen_type_0').trigger('click');
+		//swal("사용 제한","수급자 조회조건 개선으로 간편조회 및\n일부 서비스가 일시 중단되었습니다.\n서비스 재개는 추후 공지를 통해 안내드리겠습니다.","error");
+		//$('#pen_type_0').trigger('click');
 //=======================================================================================================
-  /* 개발완료 시 복구 필요
+  
   var url = 'pop_recipient.php';
   $('#left_text').show();
   $('#popup_box iframe').attr('src', url);
   $('body').addClass('modal-open');
   $('#popup_box').show();
   $('.popup_box_bottom').show();
-  */
+  
 });
 
 function recipent_check(a){	
