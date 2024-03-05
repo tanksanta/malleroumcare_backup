@@ -800,7 +800,7 @@ $pro_title = array(//품목명 변경
 						// ajax 처리 시작
 						$.ajax({
 							url: '/shop/ajax.recipient.inquiry.php', type: 'POST', dataType: 'json', 
-							data: { id : ID, rn : RN, , birth : BRDT,cd : RECGRACD, stdtm : EXPISTDTM },// 요양정보 조회 시 생년월일,인정등급,인정유효기간(시작일자) 추가 되어야함
+							data: { id : ID, rn : RN, birth : BRDT,cd : RECGRACD, stdtm : EXPISTDTM },// 요양정보 조회 시 생년월일,인정등급,인정유효기간(시작일자) 추가 되어야함
 							success: function( result ) {
 
 								const ds_welToolTgtList = result.data.recipientContractDetail.Result.ds_welToolTgtList[0];
