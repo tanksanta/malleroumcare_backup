@@ -679,11 +679,11 @@ $(function() {
               btn_update.disabled = false;
           },
           error: function (jqXhr, textStatus, errorMessage) {
-              var errMSG = typeof(jqXhr['responseJSON']) == "undefined"? "수급자명 / 장기요양인정번호 확인 후, 조회하시기 바랍니다.":jqXhr['responseJSON']['message'];
+              var errMSG = typeof(jqXhr['responseJSON']) == "undefined"? "수급자 정보를 정확하게 확인 후, 조회하시기 바랍니다.":jqXhr['responseJSON']['message'];
               //alert(errMSG);
               //인증서 업로드 추가 영역 
 				if(errMSG == "수급자명 / 장기요양인정번호 확인 후, 조회하시기 바랍니다." ){
-					alert(errMSG);
+					alert("수급자 정보를 정확하게 확인 후, 조회하시기 바랍니다.");
 					$.post('./ajax.inquiry_log.php', {
 					  data: { ent_id : "<?=$member['mb_id']?>",ent_nm : "<?=$member['mb_name']?>",pen_id : str_id.replace('L',''),pen_nm : str_rn,resultMsg : "fail",occur_page : "my_recipient_view.php",err_msg:errMSG }
 					}, 'json')

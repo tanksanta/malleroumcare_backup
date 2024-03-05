@@ -1258,11 +1258,11 @@ function rent_efrom_close(){
 					*/
                 },
                 error: function (jqXhr, textStatus, errorMessage) {
-                    var errMSG = (typeof(jqXhr['responseJSON']) == "undefined")? "수급자명 / 장기요양인정번호 확인 후, 조회하시기 바랍니다.":jqXhr['responseJSON']['message'];
+                    var errMSG = (typeof(jqXhr['responseJSON']) == "undefined")? "수급자 정보를 정확하게 확인 후, 조회하시기 바랍니다.":jqXhr['responseJSON']['message'];
       
                     //인증서 업로드 추가 영역 
 				if(errMSG == "수급자명 / 장기요양인정번호 확인 후, 조회하시기 바랍니다." ){
-					alert(errMSG);
+					alert("수급자 정보를 정확하게 확인 후, 조회하시기 바랍니다.");
 				}else if(jqXhr['responseJSON']["data"]['err_code'] == "3"){
 					alert("등록된 인증서가 사용 기간이 만료 되었습니다.<?=($mobile_yn == 'Mobile')?' 컴퓨터에서':'';?> 공인인증서를 재등록 해 주세요.");
 					<?php if($mobile_yn == 'Pc'){?>tilko_call('1');<?php }?>
