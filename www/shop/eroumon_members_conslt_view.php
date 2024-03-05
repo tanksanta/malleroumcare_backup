@@ -200,12 +200,7 @@
 				$Hangeul_RELATION_CD = $sql_result['Hangeul_RELATION_CD'];//수급자와의 관계
 				$Hangeul_PREV_PATH = $sql_result['Hangeul_PREV_PATH'];//상담유형
 
-                // 프로시저 : CALL `PROC_EROUMCARE_CONSLT_UPDATE`('모드', 상담신청NO, 상담배정NO, '변결될상태값', '완료또는 거부시 사유또는 내용', '배정 당시 사업소아이디');
-                //            해당 프로시저에 대한 로직을 API로 변경 해야 할 이슈가 있음(23.11.09).
-                $sql = (" CALL `PROC_EROUMCARE_CONSLT_UPDATE`('BPLC', {$_MC_cON}, {$_MCR_cON}, '{$_MCR_STTUS_CD}', '{$_MCR_TEXT}', '{$_MCR_ID}'); ");
-                $sql_result = "";
-                $sql_result = sql_fetch( $sql , "" , $g5['eroumon_db'] ); mysqli_next_result($g5['eroumon_db']);
-                
+                   
                 // 상테값 체크 : 상담거부
                 if( $_MCR_STTUS_CD == 'CS04' ) {
                     
@@ -292,6 +287,12 @@
 
                 }
 
+		// 프로시저 : CALL `PROC_EROUMCARE_CONSLT_UPDATE`('모드', 상담신청NO, 상담배정NO, '변결될상태값', '완료또는 거부시 사유또는 내용', '배정 당시 사업소아이디');
+                //            해당 프로시저에 대한 로직을 API로 변경 해야 할 이슈가 있음(23.11.09).
+                $sql = (" CALL `PROC_EROUMCARE_CONSLT_UPDATE`('BPLC', {$_MC_cON}, {$_MCR_cON}, '{$_MCR_STTUS_CD}', '{$_MCR_TEXT}', '{$_MCR_ID}'); ");
+                $sql_result = "";
+                $sql_result = sql_fetch( $sql , "" , $g5['eroumon_db'] ); mysqli_next_result($g5['eroumon_db']);
+             
             }
         }
 		if($_MCR_STTUS_CD == 'CS04'){//상담 거절 시 list 페이지로 전환?>
@@ -654,11 +655,9 @@
 
         $('#simpleSearchResult').on('click', function (e) {
             e.preventDefault();
-//수급자 조회 관련 추가, 개발완료 시 삭제 필요====================================================================
-		swal("사용 제한","수급자 조회조건 개선으로 간편조회 및\n일부 서비스가 일시 중단되었습니다.\n서비스 재개는 추후 공지를 통해 안내드리겠습니다.","error");
-		return false;
-//=======================================================================================================
-			$(".Popup_simpleSearch > div").html("");
+			alert("더 이상 제공하지 않는 서비스입니다.");
+			return false;
+/*			$(".Popup_simpleSearch > div").html("");
             $(".Popup_simpleSearch > div").append("<iframe></iframe>");
 
             var iframeDocument = $('.Popup_simpleSearch iframe')[0].contentDocument;
@@ -673,6 +672,7 @@
                 $(".Popup_simpleSearch").show();
             });
             return;
+*/
         });
 
 		$('#equip_ctgryResult').on('click', function (e) {
@@ -686,6 +686,7 @@
             form.append('<input type="hidden" name="penNm" value="' + $(this).data('pennm') + '">'); // POST 데이터 추가
 			form.append('<input type="hidden" name="consltID" value="<?=$CONSLT_NO?>">'); // POST 데이터 추가
 			form.append('<input type="hidden" name="MBR_TELNO" value="<?=$sql_result['MBR_TELNO']?>">'); // POST 데이터 추가
+			form.append('<input type="hidden" name="BRDT" value="<?=$sql_result['BRDT']?>">'); // POST 데이터 추가
             iframeDocument.body.appendChild(form[0]);
             form[0].submit();
 

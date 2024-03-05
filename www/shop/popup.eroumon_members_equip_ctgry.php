@@ -73,7 +73,8 @@
     // == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == ==
 
     $_penNum = clean_xss_attributes( clean_xss_tags( get_search_string( $_POST['penNum'] ) ) );
-    $_penNm = clean_xss_attributes( clean_xss_tags( get_search_string( $_POST['penNm'] ) ) );    
+    $_penNm = clean_xss_attributes( clean_xss_tags( get_search_string( $_POST['penNm'] ) ) );   
+	$BRDT = clean_xss_attributes( clean_xss_tags( get_search_string( $_POST['BRDT'] ) ) );
     if( !$_penNm ) { alert("수급자 정보를 확인할 수 없습니다."); }
 
 
@@ -265,12 +266,24 @@ $pro_title = array(//품목명 변경
 <?php }?>         
 		</div>	
 
-		<div id="" style="width: 100%; padding: 15px 0px ; border: #ddd 2px solid; background-color: #f5f5f5; text-align: center; vertical-align: middle;border-radius: 0.3rem;font-size: 14px; font-weight:bold;color:#777;"> 
+		<div id="" style="width: 100%; padding: 15px 32px ; border: #ddd 2px solid; background-color: #f5f5f5; text-align: left; vertical-align: middle;border-radius: 0.3rem;font-size: 14px; font-weight:bold;color:#777;"> 
 			<input type="hidden" id="penNum" value="<?=$_penNum?>">
-			수급자 성명&nbsp;&nbsp;<input type="text" id="penNm" value="<?=$_penNm?>" style="background-color:#ddd;width:80px;" class="input-sm" readonly>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			수급자 성명&nbsp;&nbsp;<input type="text" id="penNm" value="<?=$_penNm?>" style="background-color:#ddd;width:80px;" class="input-sm" readonly>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			생년월일&nbsp;&nbsp;<input type="text" id="BRDT" value="<?=$BRDT;?>" readonly  style="background-color:#ddd;width:172px;" maxlength="10" class="input-sm">
+			<br><br>			
 			요양인정번호&nbsp;&nbsp;<input type="text" id="penNum2" value="<?=($_penNum !="")?"있음":"";?>" placeholder="L을 제외한 숫자만 입력" <?=($_penNum !="")?"readonly":"oninput=\"this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');\"";?>  style="background-color:#ddd;width:170px;" maxlength="10" class="input-sm">
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			<input type="button" value="조회하기" id="recipient_info" class="btn" style="padding:5px 15px;background-color:#333333;color:#fff;font-size: 14px;"> 
+			인정등급&nbsp;&nbsp;<select name="penRecGraCd" id="penRecGraCd" class="input-sm" style="width: 80px;background-color:#ddd;">
+					<option value="" >선택</option>
+					<option value="01">1등급</option>
+					<option value="02">2등급</option>
+					<option value="03">3등급</option>
+					<option value="04">4등급</option>
+					<option value="05">5등급</option>
+					<option value="06">6등급</option>
+				  </select><br><br>
+			인정유효기간(시작일자) <input type="text" id="penExpiStDtm" name="penExpiStDtm"  style="background-color:#ddd;width:278px;" class="input-sm" readonly>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<input type="button" value="조회하기" id="recipient_info" placeholder="날짜를 선택해 주세요." class="btn" style="padding:5px 15px;background-color:#333333;color:#fff;font-size: 14px;"> 
 		</div>
 		<div style="height:20px;"></div>
 	    <div class="head"><?php //==================요양정보 구간 ?>
@@ -676,6 +689,21 @@ $pro_title = array(//품목명 변경
 	    <script>
 
 	        $(function () {	
+				$.datepicker.setDefaults({
+					dateFormat : 'yy-mm-dd',
+					prevText: '이전달',
+					nextText: '다음달',
+					monthNames: ['01','02','03','04','05','06','07','08','09','10','11','12'],
+					monthNamesShort: ['01','02','03','04','05','06','07','08','09','10','11','12'],
+					dayNames: ["일", "월", "화", "수", "목", "금", "토"],
+					dayNamesShort: ["일", "월", "화", "수", "목", "금", "토"],
+					dayNamesMin: ["일", "월", "화", "수", "목", "금", "토"],
+					showMonthAfterYear: true,
+					changeMonth: true,
+					changeYear: true
+				  });
+				$('#penExpiStDtm').datepicker({ changeMonth: true, changeYear: true, dateFormat: 'yy-mm-dd',maxDate:0  });
+
                 $('#b1').click(function() {//더보기 클릭                   
 					$('.d2').fadeIn('fast');
 					$('#b2').show();
@@ -706,8 +734,8 @@ $pro_title = array(//품목명 변경
                 
 				$('#recipient_info').click(function() {
 //수급자 조회 관련 추가, 개발완료 시 삭제 필요====================================================================
-		swal("사용 제한","수급자 조회조건 개선으로 간편조회 및\n일부 서비스가 일시 중단되었습니다.\n서비스 재개는 추후 공지를 통해 안내드리겠습니다.","error");
-		return false;
+		//swal("사용 제한","수급자 조회조건 개선으로 간편조회 및\n일부 서비스가 일시 중단되었습니다.\n서비스 재개는 추후 공지를 통해 안내드리겠습니다.","error");
+		//return false;
 //=======================================================================================================
 <?php if( $_errCK ) {?>
 		alert('<?=$_ms?>');
@@ -715,8 +743,11 @@ $pro_title = array(//품목명 변경
 		return false;
 <?php }?>
 
-					var ID = "<?=$_penNum;?>";//$("#penNum").val();
-					const RN = "<?=$_penNm;?>";//$("#penNm").val();
+					var ID = "<?=$_penNum;?>";//$("#penNum").val(); 요양인정번호
+					const RN = "<?=$_penNm;?>";//$("#penNm").val(); 수급자명
+					var EXPISTDTM = $('#penExpiStDtm').val();//인정유효기간(시작일)
+					var BRDT = $('#BRDT').val();//생년월일
+					var RECGRACD = $('#penRecGraCd').val(); //인정등급
 					if(ID == ""){//요양인정번호 없을 경우
 						if($("#penNum2").val() != ""){
 							ID = $("#penNum2").val();
@@ -725,6 +756,14 @@ $pro_title = array(//품목명 변경
 							$("#penNum2").focus();
 							return false;
 						}
+					}
+					if(RECGRACD == ""){
+						alert("인정등급을 선택해 주세요.");
+						return false;
+					}
+					if(EXPISTDTM == ""){
+						alert("인정유효기간(시작일)을 선택해 주세요.");
+						return false;
 					}
 									
 					$(".panNm").text( RN );
@@ -761,7 +800,7 @@ $pro_title = array(//품목명 변경
 						// ajax 처리 시작
 						$.ajax({
 							url: '/shop/ajax.recipient.inquiry.php', type: 'POST', dataType: 'json', 
-							data: { id : ID, rn : RN },
+							data: { id : ID, rn : RN, birth : BRDT,cd : RECGRACD, stdtm : EXPISTDTM },// 요양정보 조회 시 생년월일,인정등급,인정유효기간(시작일자) 추가 되어야함
 							success: function( result ) {
 
 								const ds_welToolTgtList = result.data.recipientContractDetail.Result.ds_welToolTgtList[0];
@@ -1210,7 +1249,7 @@ $pro_title = array(//품목명 변경
                     data : { mode : 'pwd' ,Pwd : pwd }, 
                     dataType: 'json',// Json 형식의 데이터이다.
                     success : function( res ) { // 비동기통신의 성공일경우 success콜백으로 들어옵니다. 'res'는 응답받은 데이터이다.
-                        location.reload();
+                        $("#recipient_info").trigger("click");
                     },
                     error : function( error ) { // 비동기 통신이 실패할경우 error 콜백으로 들어옵니다.
                         alert( error['responseJSON']['message'] );
@@ -1231,5 +1270,5 @@ $pro_title = array(//품목명 변경
 	    </script>
 
     </body>
-
+<?php @include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');?>
 </html>

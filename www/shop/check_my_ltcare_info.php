@@ -142,7 +142,10 @@ if($member["cert_data_ref"] != ""){
 	}
 }
 //인증서 업로드 추가 영역 끝
- //수급자 조회 관련 추가, 개발완료 시 삭제 필요====================================================================?>
+include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
+
+ //수급자 조회 관련 추가, 개발완료 시 삭제 필요====================================================================
+ /*
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
 <link rel="stylesheet"href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css" />
 <script>
@@ -158,7 +161,7 @@ if($member["cert_data_ref"] != ""){
 	//	history.back();
 	 
 </script>
-<?php //=======================================================================================================
+ //=======================================================================================================*/
 ?>
 
 <style>
@@ -232,7 +235,7 @@ input[type="number"]::-webkit-inner-spin-button {
 	 .ltcare_wrap .ltcare_search .search_input p span{font-size:16px;width:120px;}
 	 .ltcare_wrap .ltcare_search .search_input .penName{    width: calc(100% - 150px);}
 	 .ltcare_wrap .ltcare_search .search_input .penNum{    width: calc(100% - 170px);}
-	 .ltcare_wrap .ltcare_search button{top:0;width:100%;height:40px;}
+	 .ltcare_wrap .ltcare_search button{top:0px;width:100%;height:40px;}
 }
 
 /* 품목찾기 팝업 */
@@ -360,10 +363,37 @@ input[type="number"]::-webkit-inner-spin-button {
         			<span class = "head">L</span>
         			<input type="number" name="penNm" class = "penNum" id="penNum"   value="">
         		</label>
+        	</p><br>
+        	<p>
+        		<label>
+        			<span>생년월일</span>
+        			<input type="text" name="penBirth" class = "penName" id="penBirth"   value="" readonly placeholder="1950-01-01" autocomplete="off">
+        		</label>
+        	</p><br>        	
+        	<p>
+        		<label>
+        			<span>인정등급</span>
+        			<select name="penRecGraCd" id="penRecGraCd" class="penName">
+					<option value="" >선택</option>
+					<option value="01">1등급</option>
+					<option value="02">2등급</option>
+					<option value="03">3등급</option>
+					<option value="04">4등급</option>
+					<option value="05">5등급</option>
+					<option value="06">6등급</option>
+				  </select>
+        		</label>
+        	</p><br>
+			<p>
+        		<label>
+        			<span style="margin-top:-10px;">인정유효기간<span style="font-size:15px;margin:-18px 0px 0px 0px;">(시작일자)</span></span>
+        			<input type="text" name="penExpiStDtm" class = "penName" id="penExpiStDtm"   value="" readonly placeholder="0000-00-00" autocomplete="off">
+        		</label>
         	</p>
+			
         	</div>
 
-          <button type="submit" id="btn_submit">
+          <button type="submit" id="btn_submit" style="margin-top:-15px;">
             조회요청
           </button>
     </form>
@@ -435,6 +465,12 @@ input[type="number"]::-webkit-inner-spin-button {
 <iframe name="tilko" id="tilko" src="" scrolling="no" frameborder="0" allowTransparency="false" height="0" width="0"></iframe>
 <script type="text/javascript">
 	$( document ).ready(function() {
+
+		//캘린더
+		$('#penBirth').datepicker({ changeMonth: true, changeYear: true, dateFormat: 'yymmdd',yearRange : "c-150:c" });
+		$('#penExpiStDtm').datepicker({ changeMonth: true, changeYear: true, dateFormat: 'yy-mm-dd',maxDate:0  });
+   
+
 		<?php if($member["cert_reg_sts"] != "Y"){//등록 안되어 있음
 			if($mobile_yn == 'Pc'){?>
 		//공인인증서 등록 안내 및 등록 버튼 팝업 알림으로 교체 될 영역	
@@ -562,20 +598,36 @@ input[type="number"]::-webkit-inner-spin-button {
         var num = 'L'+$("#penNum").val();
         if (name.length < 2) {
             alert("수급자명을 정확히 입력하세요.");
-			btn_submit.disabled = false;//인증서 업로드 추가
+			btn_submit.disabled = false;
             return false;
         }
         if (num.length < 10) {
-            alert("수급자 번호를 정확히 입력하세요.");
-			btn_submit.disabled = false;//인증서 업로드 추가
+            alert("수급자 요양인정번호를 정확히 입력하세요.");
+			btn_submit.disabled = false;
             return false;
         }
         num = num.substring(1);
         if (/^[0-9]*$/.test(num) == false) {
-            alert("수급자 번호는 숫자만 입력하세요.");
-			btn_submit.disabled = false;//인증서 업로드 추가
+            alert("수급자 요양인정번호는 숫자만 입력하세요.");
+			btn_submit.disabled = false;
             return false;
         }
+
+		if($("#penBirth").val() == ""){
+			alert("수급자 생년월일을 선택해 주세요.");
+			btn_submit.disabled = false;
+            return false;
+		}
+		if($("#penRecGraCd").val() == ""){
+			alert("수급자 인정등급을 선택해 주세요.");
+			btn_submit.disabled = false;
+            return false;
+		}
+		if($("#penExpiStDtm").val() == ""){
+			alert("수급자 인정유효기간 시작일자를 선택해 주세요.");
+			btn_submit.disabled = false;
+            return false;
+		}
 
         var penNm = '';
         var penNm_list = [];
@@ -610,7 +662,7 @@ input[type="number"]::-webkit-inner-spin-button {
           $.ajax('ajax.recipient.inquiry.php', {
             type: 'POST',  // http method
 			async:false,
-            data: { id : num,rn : name },  // data to submit
+            data: { id : num,rn : name,birth:$("#penBirth").val(),cd:$("#penRecGraCd").val(),stdtm:$("#penExpiStDtm").val() },  // data to submit
             success: function (data, status, xhr) {
                 let rep_list = data['data']['recipientContractDetail']['Result'];                
                 let rep_info = rep_list['ds_welToolTgtList'][0];
@@ -689,10 +741,10 @@ input[type="number"]::-webkit-inner-spin-button {
                 btn_submit.disabled = false;
             },
             error: function (jqXhr, textStatus, errorMessage) {
-                var errMSG = typeof(jqXhr['responseJSON']) == "undefined"? "수급자명 / 장기요양인정번호 확인 후, 조회하시기 바랍니다.":jqXhr['responseJSON']['message'];
+                var errMSG = typeof(jqXhr['responseJSON']) == "undefined"? "수급자 정보를 정확하게 확인 후, 조회하시기 바랍니다.":jqXhr['responseJSON']['message'];
                 //alert(errMSG);
                 //인증서 업로드 추가 영역 
-				if(errMSG == "수급자명 / 장기요양인정번호 확인 후, 조회하시기 바랍니다." ){
+				if(errMSG == "수급자 정보를 정확하게 확인 후, 조회하시기 바랍니다." ){
 					alert(errMSG);
 					$.ajaxSetup({async:false});
 					$.post('./ajax.inquiry_log.php', {

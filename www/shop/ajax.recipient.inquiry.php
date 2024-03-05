@@ -165,12 +165,23 @@ $rn = $_POST['rn'];
 //$rn = $_POST['rn'];
 //$id = '권숙자';
 //$rn = '2007175271';
+$birth = str_replace(" ","",$_POST['birth']);
+$birth = str_replace("-","",$birth);
+$birth = str_replace(".","",$birth);
+$cd = str_replace("0","",$_POST['cd']); 
+$cd = str_replace("등급","",$cd); 
+$stdtm = str_replace(" ","",$_POST['stdtm']);
+$stdtm = str_replace(".","",$stdtm);
+$stdtm = str_replace("-","",$stdtm);
 $str = ".$sid .$rn : 입력값이 잘못 되었습니다 ";
 //return json_response(400, $str);
 
 $BusinessNumber = ($member["mb_level"]>8 || $member["mb_ent_num"] == "")?"32623000271":str_replace("-","",$member["mb_ent_num"]);//$data['BN'];
 $RecipientName= $rn; //'이간난'//$data['rn']
 $RecipientId= $id; //'1612104758';//$data['id'];
+$Bday= $birth; //생년월일;
+$LtcRcgtGradeCd= $cd; //인정등급
+$RcgtEdaFrDt= $stdtm; //인정유효기간(시작일)
 
 //$apiHost   = "https://api.tilko.net";
 $apiHost   = "http://211.110.140.26";
@@ -229,6 +240,9 @@ $log_txt = "\r\n";
 $log_txt .= '(' . date("Y-m-d H:i:s") . ')'."\r\n";
 $log_txt .= "--  사업소: ".$member["mb_name"]."({$member['mb_id']})\r\n";
 $log_txt .= "--  수급자: ".$id."/".$rn."\r\n";
+$log_txt .= "--  birth: ".$birth."\r\n";
+$log_txt .= "--  cd: ".$cd."\r\n";
+$log_txt .= "--  stdtm: ".$stdtm."\r\n";
 
 // RSA Public Key 조회
 //$rsaPublicKey   = getPublicKey($apiKey);
@@ -300,6 +314,9 @@ $bodies_recipientContractDetail     = array(
     "BusinessNumber" => aesEncrypt($aesKey, $aesIv, $BusinessNumber),
     "Name" => aesEncrypt($aesKey, $aesIv, $RecipientName),
     "IdentityNumber" => aesEncrypt($aesKey, $aesIv, $RecipientId),
+	"Bday" => aesEncrypt($aesKey, $aesIv, $Bday),
+	"LtcRcgtGradeCd" => $LtcRcgtGradeCd,
+	"RcgtEdaFrDt" => $RcgtEdaFrDt,
 );
 $bodies_recipientToolList = array(
     "CertFile" => aesEncrypt($aesKey, $aesIv, $PubKey),

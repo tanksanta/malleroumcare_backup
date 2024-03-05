@@ -30,7 +30,7 @@ if(!$is_member){
 
  //수급자 조회 관련 추가, 개발완료 시 삭제 필요====================================================================?>
 <script>
-	swal("사용 주의","현재 수급자 조회조건 개선 작업으로 수급자 정보를\n업데이트할 수 없습니다.\n등록된 수급자의 정보가 정확하지 않을 수 있음을\n유의해 주시기 바랍니다.","warning");
+	//swal("사용 주의","현재 수급자 조회조건 개선 작업으로 수급자 정보를\n업데이트할 수 없습니다.\n등록된 수급자의 정보가 정확하지 않을 수 있음을\n유의해 주시기 바랍니다.","warning");
 	//history.back();
 </script>
 <?php //=======================================================================================================
@@ -771,13 +771,13 @@ function form_check(act) {
     <div class="r_btn_area pc">
       <a href="javascript::" class="btn eroumcare_btn2" id="recipient_excel_download" title="수급자 엑셀 다운로드">수급자 엑셀 다운로드</a>
 <!--  //수급자 조회 관련 추가, 개발완료 시 삭제 필요====================================================================  -->
-	  <!--a href="./my_recipient_write.php" class="btn eroumcare_btn2" title="수급자 등록">수급자 등록</a-->
-	  <!--a href="./recipientexcel.php" onclick="return excelform(this.href);" target="_blank" class="btn eroumcare_btn2" title="수급자일괄등록">수급자일괄등록</a-->
-	  <a href="javascript:error_btn();" class="btn eroumcare_btn2" title="수급자 등록">수급자 등록</a>
-      <a href="javascript:error_btn();" class="btn eroumcare_btn2" title="수급자일괄등록">수급자일괄등록</a>
+	  <a href="./my_recipient_write.php" class="btn eroumcare_btn2" title="수급자 등록">수급자 등록</a>
+	  <a href="./recipientexcel.php" onclick="return excelform(this.href);" target="_blank" class="btn eroumcare_btn2" title="수급자일괄등록">수급자일괄등록</a>
+	  <!--a href="javascript:error_btn();" class="btn eroumcare_btn2" title="수급자 등록">수급자 등록</a-->
+      <!--a href="javascript:error_btn();" class="btn eroumcare_btn2" title="수급자일괄등록">수급자일괄등록</a-->
 	  <script>
 		function error_btn(){
-			swal("사용 제한","수급자 조회조건 개선으로 간편조회 및\n일부 서비스가 일시 중단되었습니다.\n서비스 재개는 추후 공지를 통해 안내드리겠습니다.","error");
+			//swal("사용 제한","수급자 조회조건 개선으로 간편조회 및\n일부 서비스가 일시 중단되었습니다.\n서비스 재개는 추후 공지를 통해 안내드리겠습니다.","error");
 		}
 	  </script>
 <!--=========================================================================================================== -->
@@ -803,8 +803,8 @@ function form_check(act) {
     </div>
     <div class="r_btn_area mobile">
 <!--  //수급자 조회 관련 추가, 개발완료 시 삭제 필요====================================================================  -->
-	  <!--a href="./my_recipient_write.php" class="btn eroumcare_btn2" title="수급자 등록">수급자 등록</a-->
-	  <a href="javascript:;" onClick="error_btn()" class="btn eroumcare_btn2" title="수급자 등록">수급자 등록</a>
+	  <a href="./my_recipient_write.php" class="btn eroumcare_btn2" title="수급자 등록">수급자 등록</a>
+	  <!--a href="javascript:;" onClick="error_btn()" class="btn eroumcare_btn2" title="수급자 등록">수급자 등록</a-->
 <!--=========================================================================================================== -->
     </div>
   </form>
@@ -927,8 +927,8 @@ function form_check(act) {
             <br/>
             <?php if ($data["penLtmNum"]) { ?>
 <!--  //수급자 조회 관련 추가, 개발완료 시 삭제 필요====================================================================  -->
-			<!--a href="<?=G5_SHOP_URL.'/connect_recipient.php?pen_id='.$data['penId'].'&redirect='.urlencode('/shop/list.php?ca_id=10')?>" class="btn eroumcare_btn2 small" title="추가하기">추가하기</a--> 
-			<a href="javascript:;" onClick="error_btn()" class="btn eroumcare_btn2 small" title="추가하기">추가하기</a> 
+			<a href="<?=G5_SHOP_URL.'/connect_recipient.php?pen_id='.$data['penId'].'&redirect='.urlencode('/shop/list.php?ca_id=10')?>" class="btn eroumcare_btn2 small" title="추가하기">추가하기</a> 
+			<!--a href="javascript:;" onClick="error_btn()" class="btn eroumcare_btn2 small" title="추가하기">추가하기</a--> 
 <!--=========================================================================================================== -->
             <?php } ?>
           </td>
@@ -936,12 +936,12 @@ function form_check(act) {
 <!--  //수급자 조회 관련 추가, 개발완료 시 삭제 필요====================================================================  -->
 			<?php if ($data['recYn'] === 'N') { ?>
               미작성<br/>
-              <!--a href="<?php echo G5_SHOP_URL; ?>/my_recipient_rec_form.php?id=<?php echo $data['penId']; ?>" class="btn eroumcare_btn2 small" title="작성하기">작성하기</a-->
-			  <a href="javascript:;" onClick="error_btn()" class="btn eroumcare_btn2 small" title="작성하기">작성하기</a>
+              <a href="<?php echo G5_SHOP_URL; ?>/my_recipient_rec_form.php?id=<?php echo $data['penId']; ?>" class="btn eroumcare_btn2 small" title="작성하기">작성하기</a>
+			  <!--a href="javascript:;" onClick="error_btn()" class="btn eroumcare_btn2 small" title="작성하기">작성하기</a-->
             <?php } else { ?>
               작성완료<br/>
-              <!--a href="<?php echo G5_SHOP_URL; ?>/my_recipient_rec_form.php?id=<?php echo $data['penId']; ?>" class="btn eroumcare_btn2 small" title="작성하기">추가작성</a-->
-			  <a href="javascript:;" onClick="error_btn()" class="btn eroumcare_btn2 small" title="작성하기">추가작성</a>
+              <a href="<?php echo G5_SHOP_URL; ?>/my_recipient_rec_form.php?id=<?php echo $data['penId']; ?>" class="btn eroumcare_btn2 small" title="작성하기">추가작성</a>
+			  <!--a href="javascript:;" onClick="error_btn()" class="btn eroumcare_btn2 small" title="작성하기">추가작성</a-->
             <?php } ?>
 <!--=========================================================================================================== -->
           </td>
@@ -1000,18 +1000,18 @@ function form_check(act) {
           </a>
  <!--  //수급자 조회 관련 추가, 개발완료 시 삭제 필요====================================================================  -->
 		  <?php if ($data['recYn'] === 'N') { ?>
-            <!--a href="<?php echo G5_SHOP_URL; ?>/my_recipient_rec_form.php?id=<?php echo $data['penId']; ?>" class="btn eroumcare_btn2" style="margin-top:10px;" title="작성하기">욕구사정기록지 신규작성</a-->
-			<a href="javascript:;" onClick="error_btn()" class="btn eroumcare_btn2" style="margin-top:10px;" title="작성하기">욕구사정기록지 신규작성</a>
+            <a href="<?php echo G5_SHOP_URL; ?>/my_recipient_rec_form.php?id=<?php echo $data['penId']; ?>" class="btn eroumcare_btn2" style="margin-top:10px;" title="작성하기">욕구사정기록지 신규작성</a>
+			<!--a href="javascript:;" onClick="error_btn()" class="btn eroumcare_btn2" style="margin-top:10px;" title="작성하기">욕구사정기록지 신규작성</a-->
           <?php } else { ?>
-            <!--a href="<?php echo G5_SHOP_URL; ?>/my_recipient_rec_form.php?id=<?php echo $data['penId']; ?>" class="btn eroumcare_btn2" style="margin-top:10px;" title="작성하기">욕구사정기록지 추가작성</a-->
-			<a href="javascript:;" onClick="error_btn()" class="btn eroumcare_btn2" style="margin-top:10px;" title="작성하기">욕구사정기록지 추가작성</a>
+            <a href="<?php echo G5_SHOP_URL; ?>/my_recipient_rec_form.php?id=<?php echo $data['penId']; ?>" class="btn eroumcare_btn2" style="margin-top:10px;" title="작성하기">욕구사정기록지 추가작성</a>
+			<!--a href="javascript:;" onClick="error_btn()" class="btn eroumcare_btn2" style="margin-top:10px;" title="작성하기">욕구사정기록지 추가작성</a-->
           <?php } ?>
 <!--=========================================================================================================== -->
         </div>
         <?php if ($data["penLtmNum"]) { ?>
 <!--  //수급자 조회 관련 추가, 개발완료 시 삭제 필요====================================================================  -->
-		<!--a href="<?php echo G5_SHOP_URL; ?>/connect_recipient.php?pen_id=<?php echo $data['penId']; ?>&redirect=<?=urlencode('/shop/cart.php')?>" class="li_box_right_btn" title="추가하기"-->
-		<a href="javascript:;" onClick="error_btn()" class="li_box_right_btn" title="추가하기">
+		<a href="<?php echo G5_SHOP_URL; ?>/connect_recipient.php?pen_id=<?php echo $data['penId']; ?>&redirect=<?=urlencode('/shop/cart.php')?>" class="li_box_right_btn" title="추가하기">
+		<!--a href="javascript:;" onClick="error_btn()" class="li_box_right_btn" title="추가하기"-->
           장바구니
           <br/>
           <b><?php echo $data['carts'] . '개'; ?></b>
