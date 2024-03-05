@@ -200,12 +200,7 @@
 				$Hangeul_RELATION_CD = $sql_result['Hangeul_RELATION_CD'];//수급자와의 관계
 				$Hangeul_PREV_PATH = $sql_result['Hangeul_PREV_PATH'];//상담유형
 
-                // 프로시저 : CALL `PROC_EROUMCARE_CONSLT_UPDATE`('모드', 상담신청NO, 상담배정NO, '변결될상태값', '완료또는 거부시 사유또는 내용', '배정 당시 사업소아이디');
-                //            해당 프로시저에 대한 로직을 API로 변경 해야 할 이슈가 있음(23.11.09).
-                $sql = (" CALL `PROC_EROUMCARE_CONSLT_UPDATE`('BPLC', {$_MC_cON}, {$_MCR_cON}, '{$_MCR_STTUS_CD}', '{$_MCR_TEXT}', '{$_MCR_ID}'); ");
-                $sql_result = "";
-                $sql_result = sql_fetch( $sql , "" , $g5['eroumon_db'] ); mysqli_next_result($g5['eroumon_db']);
-                
+                   
                 // 상테값 체크 : 상담거부
                 if( $_MCR_STTUS_CD == 'CS04' ) {
                     
@@ -292,6 +287,12 @@
 
                 }
 
+		// 프로시저 : CALL `PROC_EROUMCARE_CONSLT_UPDATE`('모드', 상담신청NO, 상담배정NO, '변결될상태값', '완료또는 거부시 사유또는 내용', '배정 당시 사업소아이디');
+                //            해당 프로시저에 대한 로직을 API로 변경 해야 할 이슈가 있음(23.11.09).
+                $sql = (" CALL `PROC_EROUMCARE_CONSLT_UPDATE`('BPLC', {$_MC_cON}, {$_MCR_cON}, '{$_MCR_STTUS_CD}', '{$_MCR_TEXT}', '{$_MCR_ID}'); ");
+                $sql_result = "";
+                $sql_result = sql_fetch( $sql , "" , $g5['eroumon_db'] ); mysqli_next_result($g5['eroumon_db']);
+             
             }
         }
 		if($_MCR_STTUS_CD == 'CS04'){//상담 거절 시 list 페이지로 전환?>
