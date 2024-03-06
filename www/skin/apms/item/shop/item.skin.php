@@ -576,7 +576,7 @@ $rental_use_info_1 = (file_exists($_SERVER['DOCUMENT_ROOT']."/img/rental/rental_
 			<li style="width:100%">
 				<input type="button" value="렌탈주문" onclick="rental_link('mobile')" style="width:100%;height: 65px;font-size: 25px;font-weight: 500;background-color: #ef7c00;color: #fff !important;border: none !important;border-radius: 0px !important;cursor: pointer;outline: none;">
 			</li>
-		<?php }else{?>
+		<?php }elseif($_SESSION["ss_mb_viewType"]!="1"){?>
 		<li class="buy"><input type="submit" onclick="document.pressed=this.value;" value="상품주문" class="btn btn-color btn-block <?php echo $it['prodSupYn'] === 'N' ? 'disabled' : ''; ?>"></li>
         <li class="cart">
           <div class="cart-ok">
@@ -588,6 +588,10 @@ $rental_use_info_1 = (file_exists($_SERVER['DOCUMENT_ROOT']."/img/rental/rental_
           </div>
           <input type="submit" onclick="document.pressed=this.value;" value="장바구니" class="btn btn-color btn-block">
         </li>
+		<?php }else{?>
+			<li style="width:100%">
+				<input type="button" value="상품주문" onclick="alert('<?=$_SESSION["ss_manager_name"]."(".$_SESSION["ss_manager_id"].")";?>님은 주문 권한이 없습니다.')" style="width:100%;height: 65px;font-size: 25px;font-weight: 500;background-color: #ef7c00;color: #fff !important;border: none !important;border-radius: 0px !important;cursor: pointer;outline: none;">
+			</li>
 		<?php }?>
       </ul>
     </div>
@@ -1180,7 +1184,7 @@ $rental_use_info_1 = (file_exists($_SERVER['DOCUMENT_ROOT']."/img/rental/rental_
 			<li style="width:100%">
 				<input type="button" onclick="rental_link('pc')" value="렌탈주문" style="width:100%;height: 65px;font-size: 25px;font-weight: 500;background-color: #ef7c00;color: #fff !important;border: none !important;border-radius: 0px !important;cursor: pointer;outline: none;">
 			</li>
-		<?php }else{?>
+		<?php }elseif($_SESSION["ss_mb_viewType"]!="1"){?>
 			<li class="buy"><input type="submit" onclick="document.pressed=this.value;" value="상품주문" class="btn btn-<?php echo $btn2;?> btn-block <?php echo $it['prodSupYn'] === 'N' ? 'disabled' : ''; ?>"></li>
             <li class="cart">
               <div class="cart-ok">
@@ -1193,7 +1197,11 @@ $rental_use_info_1 = (file_exists($_SERVER['DOCUMENT_ROOT']."/img/rental/rental_
               </div>
               <input type="submit" onclick="document.pressed=this.value;" value="장바구니" class="btn btn-<?php echo $btn1;?> btn-block">
             </li>
-		<?php }?>
+		<?php }else{?>
+			<li style="width:100%">
+				<input type="button" onclick="alert('<?=$_SESSION["ss_manager_name"]."(".$_SESSION["ss_manager_id"].")";?>님은 주문 권한이 없습니다.')" value="상품주문" style="width:100%;height: 65px;font-size: 25px;font-weight: 500;background-color: #ef7c00;color: #fff !important;border: none !important;border-radius: 0px !important;cursor: pointer;outline: none;">
+			</li>
+		  <?php }?>
           </ul>
         </div>
         <?php if ( $it['it_10'] != "1") { ?> <!-- 여분필드 10에 네이버페이 노출 1로 할 경우 노출안됨 -->

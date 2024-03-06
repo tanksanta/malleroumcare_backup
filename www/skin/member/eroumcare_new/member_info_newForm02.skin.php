@@ -33,6 +33,16 @@
 		sql_query("ALTER TABLE `g5_member`
 		ADD `manager_auth_order` tinyint(2) NULL DEFAULT '0' COMMENT '직원주문권한' AFTER mb_manager", true);
 	}
+	/* // == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == */
+    /* // 파일명 :  \www\skin\member\eroumcare_new\member_info_newForm02.skin.php */
+    /* // 파일 설명 : 신규파일 - 회원정보 변경 > 직원계정관리 파일 */
+    /* // == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == */
+	$query = "SHOW COLUMNS FROM g5_member WHERE `Field` = 'mb_viewType';";//직원 판매가 모드 없을 시 추가
+	$wzres = sql_fetch( $query );
+	if(!$wzres['Field']) {
+		sql_query("ALTER TABLE `g5_member`
+		ADD `mb_viewType` tinyint(2) NULL DEFAULT '0' COMMENT '직원 판매가 모드 0:노출,1:비노출 ' AFTER manager_auth_order", true);
+	}
 
     $mm_result = sql_query(" SELECT * FROM g5_member WHERE mb_type = 'manager' AND mb_manager = '{$member['mb_id']}'");
 

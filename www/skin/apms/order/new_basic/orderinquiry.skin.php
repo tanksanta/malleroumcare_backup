@@ -522,9 +522,11 @@ $(function(){
       <div class="order_info">
         <span>
           <i class="pc">주문번호 :</i>
-          <a href="<?php echo $row['od_href']; ?>"><?php echo $row["od_id"]; ?></a>
+          <a href="<?php echo ($_SESSION["ss_mb_viewType"]!="1")?$row['od_href']:"javascript:alert('".$_SESSION["ss_manager_name"]."(".$_SESSION["ss_manager_id"].")님은 주문/배송 상세를 확인할 수 없습니다.');"; ?>"><?php echo $row["od_id"]; ?></a>
         </span>
-        <span><?php echo display_price($row["od_total_price"]); ?></span>
+        <?php if($_SESSION["ss_mb_viewType"]!="1"){?>
+		<span><?php echo display_price($row["od_total_price"]); ?></span>
+		<?php }?>
         <span><?php echo '주문 : ' . date('n월 j일 (H:i)', strtotime($row['od_time'])); ?></span>
         <?php /* if ($row['ct_direct_delivery_date']) { ?>
           <span><?php echo '출고예정 : ' . date('n월 j일 (H:i)', strtotime($row['ct_direct_delivery_date'])); ?></span>
@@ -565,7 +567,7 @@ $(function(){
             <li class="pro">
               <div class="img" style="min-width:100px; min-height:100px;">
               <?php if($item["it_img"]){ ?>
-                <a href="<?=$row["od_href"]?>"><img src="/data/item/<?=$item["it_img"]?>" onerror="this.src='/img/no_img.png';"></a>
+                <a href="<?php echo ($_SESSION["ss_mb_viewType"]!="1")?$row['od_href']:"javascript:alert('".$_SESSION["ss_manager_name"]."(".$_SESSION["ss_manager_id"].")님은 주문/배송 상세를 확인할 수 없습니다.');"; ?>"><img src="/data/item/<?=$item["it_img"]?>" onerror="this.src='/img/no_img.png';"></a>
               <?php } ?>
               </div>
               <div class="pro-info">
@@ -580,7 +582,7 @@ $(function(){
                 </div>
               <?php } ?>
                 <div class="name">
-                  <a href="<?=$row["od_href"]?>">
+                  <a href="<?php echo ($_SESSION["ss_mb_viewType"]!="1")?$row['od_href']:"javascript:alert('".$_SESSION["ss_manager_name"]."(".$_SESSION["ss_manager_id"].")님은 주문/배송 상세를 확인할 수 없습니다.');"; ?>">
                                     <?php $option_v = $item["ct_option"];?>
                   <?=$item["it_name"]?> <?=($item["ct_option"] && $item["ct_option"] != $item["it_name"]) ? "({$item["ct_option"]})" : ""?>
                   <?=($item["prodSupYn"] == "N") ? "<b>비유통</b>" : ""?>

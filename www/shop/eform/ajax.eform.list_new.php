@@ -219,7 +219,7 @@ for($i = 0; $row = sql_fetch_array($result); $i++) {
     // 바코드 입력이 없는 상품만 주문 가능
     // - 전부 바코드 입력이 되어있는 경우는 상품 주문하기 출력 X
     $it_count = sql_fetch(" select count(*) as cnt from eform_document_item where dc_id = unhex('{$row['uuid']}') and it_barcode = '' ");
-    if($it_count['cnt'] > 0)
+    if($it_count['cnt'] > 0 && $_SESSION["ss_mb_viewType"]!="1")
       echo '<br><a href="javascript:it_filter(\''.$row["uuid"].'\');" class="btn_grey">상품 주문하기</a>';
 	//수급자 조회 관련 추가, 개발완료 시 삭제 필요====================================================================
 		//echo '<br><a href="javascript:swal(\'사용 제한\',\'수급자 조회조건 개선으로 간편조회 및\n일부 서비스가 일시 중단되었습니다.\n서비스 재개는 추후 공지를 통해 안내드리겠습니다.\',\'error\');false;" class="btn_grey">상품 주문하기</a>';

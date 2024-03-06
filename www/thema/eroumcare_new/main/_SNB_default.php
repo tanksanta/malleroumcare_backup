@@ -214,7 +214,7 @@
                         <p style="display: flex; align-items: flex-start; justify-content: center; margin-top: 10px;">
                             <a href="<?=G5_BBS_URL?>/member_confirm.php?url=member_info_newform.php" class="member_modi">· 회원정보 수정</a> &nbsp;
 
-                            <?php if(($member["mb_level"] =="3" || $member["mb_level"] =="4")) { ?>
+                            <?php if(($member["mb_level"] =="3" || $member["mb_level"] =="4") && $_SESSION["ss_mb_viewType"]!="1") { ?>
                             <?php
                                 $_modeBtn_ck = "";
                                 $_modeBtn_type = "adm";
@@ -260,14 +260,16 @@
 
 
                             <!-- 장바구니 시작 -->
-                            <?php //if(get_boxcart_datas_count() > 0) { ?>
+                            <?php //if(get_boxcart_datas_count() > 0) { 
+								if($_SESSION["ss_manager_auth_order"]!="0"){?>
                             <div class="mem_shipWrap f_s14">
                                 <a href="<?=G5_SHOP_URL;?>/cart.php">
                                     <p><?=($_SESSION['recipient']['penId']=="")?"사업소":$_SESSION['recipient']['penNm']."님";?> 장바구니</p>
                                     <p><span class="mInfo"><?=get_boxcart_datas_count(); ?></span><span class="mUnit">건</span></p>
                                 </a>
                             </div>
-                            <?php //} ?>
+                            <?php }
+								//} ?>
                             <!-- 장바구니 종료 -->
 
 
@@ -326,7 +328,11 @@
                                 </tr>
                                 <tr>
                                     <td class="bt btn_simple">
-                                        <a href="#none" onclick="location.href='<?=G5_SHOP_URL;?>/simple_order.php'">
+                                    <?php if($_SESSION["ss_mb_viewType"]!="1"){?>    
+										<a href="#none" onclick="location.href='<?=G5_SHOP_URL;?>/simple_order.php'">
+									<?php }else{?>
+										<a href="#none" onclick="alert('<?=$_SESSION["ss_manager_name"]."(".$_SESSION["ss_manager_id"].")";?>님은 주문 권한이 없습니다.')">
+									<?php }?>
                                             <img src="<?=G5_IMG_URL;?>/new_main_eroum/thkc_ico_easy03.svg" alt="간편주문">
                                             <p class="simTitle">간편<span class="f_bold700">주문</span></p>
                                         </a>

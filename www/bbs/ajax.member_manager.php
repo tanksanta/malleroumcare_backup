@@ -10,6 +10,7 @@ $mm_tel = get_search_string($_POST['mm_tel']);
 $mm_email = sql_real_escape_string($_POST['mm_email']);
 $mm_memo = sql_real_escape_string($_POST['mm_memo']);
 $manager_auth_order = ($_POST['manager_auth_order'])?$_POST['manager_auth_order']:"0";
+$mb_viewType = ($_POST['mb_viewType'])?$_POST['mb_viewType']:"0";
 
 $mb = get_member($member['mb_id']);
 if(!$mb['mb_id'])
@@ -52,6 +53,7 @@ if(!$w) {
       mb_memo = '{$mm_memo}',
       mb_manager = '{$mb_id}',
 	  manager_auth_order = '{$manager_auth_order}',
+	  mb_viewType = '{$mb_viewType}',
       mb_datetime = '".G5_TIME_YMDHIS."'
   ";
 
@@ -75,6 +77,7 @@ else if($w === 'u') {
 	  mb_tel = '{$mm_tel}',
       mb_email = '{$mm_email}',
 	  manager_auth_order = '{$manager_auth_order}',
+	  mb_viewType = '{$mb_viewType}',
       mb_memo = '{$mm_memo}'
       {$sql_password}
     WHERE
