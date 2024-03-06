@@ -214,7 +214,7 @@ expired_rental_item_clean($_GET['prodId']);
         </ul>
         <div class="info-btn">
           <div class="info-btn-area">
-            <a href="javascript:popup01_show();" class="btn-01">신규상품주문</a>
+			<a href="javascript:<?=($_SESSION["ss_mb_viewType"]!="1")?"popup01_show()":"alert('".$_SESSION["ss_manager_name"]."(".$_SESSION["ss_manager_id"].")님은 주문 권한이 없습니다.')";?>;" class="btn-01">신규상품주문</a>
             <a href="<?=G5_SHOP_URL?>/item.php?it_id=<?=$row['it_id']?>" class="btn-02">상세정보</a>
           </div>
           <p>*보유 재고 등록 가능</p>
