@@ -265,7 +265,7 @@ if(preg_match($mobile_agent, $_SERVER['HTTP_USER_AGENT'])){
             </form>
             <div class="table-wrap">
                 <ul>
-                    <li class="head cb">
+                    <li class="head cb m_off">
                         <span class="num">No.</span>
                         <span class="product">상품정보</span>
                         <span class="pro-num m_off">제품코드</span>
