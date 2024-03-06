@@ -42,7 +42,8 @@ if (isset($_GET['qsort']))  {
     $qsort = trim($_GET['qsort']);
     $qsort = preg_replace("/[\<\>\'\"\\\'\\\"\%\=\(\)\s]/", "", $qsort);
 } else {
-    $qsort = '';
+    $qsort = 'it_sum_qty';
+	$_GET['qorder'] = 'desc';
 }
 if (isset($_GET['qorder']))  {
     $qorder = preg_match("/^(asc|desc)$/i", $qorder) ? $qorder : '';
