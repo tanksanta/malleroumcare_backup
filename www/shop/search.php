@@ -35,7 +35,7 @@ $qcaid   = isset($_GET['qcaid']) ? preg_replace('#[^a-z0-9]#i', '', trim($_GET['
 $qfrom   = isset($_GET['qfrom']) ? preg_replace('/[^0-9]/', '', trim($_GET['qfrom'])) : '';
 $qto     = isset($_GET['qto']) ? preg_replace('/[^0-9]/', '', trim($_GET['qto'])) : '';
 $itmodel = isset($_GET['itmodel']) ? trim($_GET['itmodel']) : '';
-$itmodel = isset($_GET['pttag']) ? trim($_GET['pttag']) : '';
+$pttag = isset($_GET['pttag']) ? trim($_GET['pttag']) : '';
 $itmaker = isset($_GET['itmaker']) ? trim($_GET['itmaker']) : '';
 
 if (isset($_GET['qsort']))  {
