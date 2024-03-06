@@ -51,10 +51,13 @@ if(!$w) {
 	  mb_tel = '{$mm_tel}',
       mb_email = '{$mm_email}',
       mb_memo = '{$mm_memo}',
-      mb_manager = '{$mb_id}',
+      mb_manager = '{$mb_id}',";
+if($member["mb_type"] == "default" && $_SESSION["ss_manager_auth_order"] == ""){//사업소 계정일때만 노출
+	$sql .= "
 	  manager_auth_order = '{$manager_auth_order}',
-	  mb_viewType = '{$mb_viewType}',
-      mb_datetime = '".G5_TIME_YMDHIS."'
+	  mb_viewType = '{$mb_viewType}',";
+}
+    $sql .= "  mb_datetime = '".G5_TIME_YMDHIS."'
   ";
 
   $result = sql_query($sql, true);
@@ -75,9 +78,13 @@ else if($w === 'u') {
       mb_name = '{$mm_name}',
       mb_nick = '{$mm_name}',
 	  mb_tel = '{$mm_tel}',
-      mb_email = '{$mm_email}',
+      mb_email = '{$mm_email}',";
+if($member["mb_type"] == "default" && $_SESSION["ss_manager_auth_order"] == ""){//사업소 계정일때만 노출
+	$sql .= "
 	  manager_auth_order = '{$manager_auth_order}',
-	  mb_viewType = '{$mb_viewType}',
+	  mb_viewType = '{$mb_viewType}',";
+}
+    $sql .= "
       mb_memo = '{$mm_memo}'
       {$sql_password}
     WHERE
