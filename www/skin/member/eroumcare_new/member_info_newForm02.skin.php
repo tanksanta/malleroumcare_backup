@@ -283,7 +283,7 @@
                                     <div class="tit03 bbs-pd_01">주문가능</div>
                                     <div class="thkc_cont bbs-pd_01">
                                         <div class="thkc_dfc">
-                                            <label for="manager_auth_order" class="thkc_blind">주문가능</label><input class="thkc_input" type="checkbox" id="manager_auth_order" name="manager_auth_order" value='1' disabled>
+                                            <label for="manager_auth_order" class="thkc_blind">주문가능</label><input class="thkc_input" type="checkbox" id="manager_auth_order" name="manager_auth_order" value='1'>
                                         </div>
                                         <div class="error-txt error"></div>
                                     </div>
@@ -469,10 +469,8 @@
 					}
 					if($(".manager_" + _no + " #mm_viewType").val() == "1"){
 						$("#member_add #mb_viewType").prop('checked',false);
-						$("#member_add #manager_auth_order").attr('disabled',true);
 					}else{
 						$("#member_add #mb_viewType").prop('checked',true);
-						$("#member_add #manager_auth_order").attr('disabled',false);
 					}
 					<?php }?>
                     $("#member_add .boxLeft").text("직원정보 수정");
@@ -649,8 +647,6 @@
 				$(".thkc_btnWrap .btn_submit_02").click(function () {
                     $("#member_add .boxLeft").text("직원신규 등록");
                     $("#member_add input").val("");
-					$("#member_add input").prop('checked',false);
-					$("#member_add #manager_auth_order").attr('disabled',true);
 
                     $("#member_add #mm_id").attr("disabled", false);
                     $("#member_add .boxRright").show();

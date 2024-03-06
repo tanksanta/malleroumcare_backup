@@ -251,9 +251,7 @@ $(function(){
     <a href="javascript:void(0)" class="btn eroumcare_btn2" onclick="downloadExcel();" title="송장정보 다운로드">송장정보 다운로드</a>
 	<a href="./schedule/index.php" class="btn eroumcare_btn2" onclick="return showSchdule(this.href);"
             target="_blank" title="일정 보기">일정 보기</a>
-	<?php if($_SESSION["ss_mb_viewType"]!="1"){?>
 	<a href="javascript:void(0)" id="btn_hidden_order" class="btn eroumcare_btn2" title="숨김처리한 주문">숨김처리<?=($total_hidden_order)?" (".$total_hidden_order."건)":""?></a>
-	<?php }?>
   </div>
   <!--div class="r_btn_area2">
     

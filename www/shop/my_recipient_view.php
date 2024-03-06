@@ -1063,7 +1063,7 @@ $(function() {
       </div>
     </div>
   </div>
-	<?php if($_SESSION["ss_mb_viewType"]!="1"){?>
+
   <div class="sub_title_wrap">
     <div class="sub_title l_title">
       장바구니
@@ -1073,17 +1073,15 @@ $(function() {
       ?>
     </div>
     <div class="cart_btn_wrap r_btn_wrap">
-
 <!--  //수급자 조회 관련 추가, 개발완료 시 삭제 필요====================================================================  -->
 	  <a class="c_btn" href="<?=G5_SHOP_URL.'/connect_recipient.php?pen_id='.$pen['penId'].'&redirect='.urlencode('/shop/list.php?ca_id=10')?>">장바구니 상품 추가하기</a>
 	  <!--a class="c_btn" href="javascript:;" onClick="return error_btn()">장바구니 상품 추가하기</a-->
 	  <a class="c_btn primary" href="<?=G5_SHOP_URL.'/connect_recipient.php?pen_id='.$pen['penId'].'&redirect='.urlencode('/shop/cart.php')?>"><?=$pen['penNm']?>님 장바구니 바로가기</a>
       <!--a class="c_btn primary" href="javascript:;" onClick="return error_btn()"><?=$pen['penNm']?>님 장바구니 바로가기</a-->
 <!--=========================================================================================================== -->
-
     </div>
   </div>
-	<?php }?>
+
   <div class="sub_title_wrap">
     <div class="sub_title l_title">
       대여계약 급여제공기록 BETA
