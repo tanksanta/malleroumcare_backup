@@ -353,38 +353,47 @@ if($_REQUEST["signed"] == "ok"){?>
 	}
 	</script>
 <?php }elseif($_POST["div"] == "sign_stat" || $_POST["div"] == "view_doc" || $_POST["div"] == "rejection_view"){// 서명 상황, 계약서 보기,거절사유보기
-	$api_url = 'https://api.modusign.co.kr/documents?offset=0&limit=1&metadatas=%7B%22dc_id%22%3A%22'.strtolower($_POST["dc_id"]).'%22%7D';
+	if($_POST["doc_id"] == ""){
+		$api_url = 'https://api.modusign.co.kr/documents?offset=0&limit=1&metadatas=%7B%22dc_id%22%3A%22'.strtolower($_POST["dc_id"]).'%22%7D';
+	}else{
+		$api_url = 'https://api.modusign.co.kr/documents/'.$_POST["doc_id"];
+	}
 	$type = "GET";
 	$data = "";
 	$arrResponse = get_modusign($API_Key64,$api_url,$type,$data);
+	if($_POST["doc_id"] == ""){
+		$arrResponse_doc = $arrResponse["documents"][0];
+	}else{
+		$arrResponse_doc = $arrResponse;
+	}
 	if($_POST["div"] == "sign_stat"){//서명 상황
-		$url = $arrResponse["documents"][0]["file"]["downloadUrl"];
-		$participants_count = count($arrResponse["documents"][0]["participants"]);
+		$url = $arrResponse_doc["file"]["downloadUrl"];
+		$participants_count = count($arrResponse_doc["participants"]);
 		$gubun1 = $gubun2 = $gubun3 = "-";
 		$sign_date1 = $sign_date2 = $sign_date3 = "-";
 		$stat1 = $stat2 = $stat3 = "대상아님";
-		for($j=0;$j<count($arrResponse["documents"][0]["signings"]);$j++ ){
-			$p_signedAts[$arrResponse["documents"][0]["signings"][$j]["participantId"]] = $arrResponse["documents"][0]["signings"][$j]["signedAt"];
+		for($j=0;$j<count($arrResponse_doc["signings"]);$j++ ){
+			$p_signedAts[$arrResponse_doc["signings"][$j]["participantId"]] = $arrResponse_doc["signings"][$j]["signedAt"];
 		}
 		
 		for($i=0;$i<$participants_count;$i++){
-			if($arrResponse["documents"][0]["participants"][$i]["name"] == "수급자"){
-				$gubun1 = ($arrResponse["documents"][0]["participants"][$i]["signingMethod"]["type"] == "SECURE_LINK")?"웹페이지":"카카오톡";			
-				$sign_date1 = ($p_signedAts[$arrResponse["documents"][0]["participants"][$i]["id"]] != "")? date("Y-m-d H:i:s",strtotime($p_signedAts[$arrResponse["documents"][0]["participants"][$i]["id"]])):"-"; 
+			if($arrResponse_doc["participants"][$i]["name"] == "수급자"){
+				$gubun1 = ($arrResponse_doc["participants"][$i]["signingMethod"]["type"] == "SECURE_LINK")?"웹페이지":"카카오톡";			
+				$sign_date1 = ($p_signedAts[$arrResponse_doc["participants"][$i]["id"]] != "")? date("Y-m-d H:i:s",strtotime($p_signedAts[$arrResponse_doc["participants"][$i]["id"]])):"-"; 
 				$stat1 = ($sign_date1 == "-")?"진행중":"완료";
-				$part_id1 = $arrResponse["documents"][0]["participants"][$i]["id"];
+				$part_id1 = $arrResponse_doc["participants"][$i]["id"];
 			}
-			if($arrResponse["documents"][0]["participants"][$i]["name"] == "대리인"){
-				$gubun2 = ($arrResponse["documents"][0]["participants"][$i]["signingMethod"]["type"] == "SECURE_LINK")?"웹페이지":"카카오톡";			
-				$sign_date2 = ($p_signedAts[$arrResponse["documents"][0]["participants"][$i]["id"]] != "")? date("Y-m-d H:i:s",strtotime($p_signedAts[$arrResponse["documents"][0]["participants"][$i]["id"]])):"-"; 
+			if($arrResponse_doc["participants"][$i]["name"] == "대리인"){
+				$gubun2 = ($arrResponse_doc["participants"][$i]["signingMethod"]["type"] == "SECURE_LINK")?"웹페이지":"카카오톡";			
+				$sign_date2 = ($p_signedAts[$arrResponse_doc["participants"][$i]["id"]] != "")? date("Y-m-d H:i:s",strtotime($p_signedAts[$arrResponse_doc["participants"][$i]["id"]])):"-"; 
 				$stat2 = ($sign_date2 == "-")?"진행중":"완료";
-				$part_id2 = $arrResponse["documents"][0]["participants"][$i]["id"];
+				$part_id2 = $arrResponse_doc["participants"][$i]["id"];
 			}
-			if($arrResponse["documents"][0]["participants"][$i]["name"] == "신청자"){
-				$gubun3 = ($arrResponse["documents"][0]["participants"][$i]["signingMethod"]["type"] == "SECURE_LINK")?"웹페이지":"카카오톡";			
-				$sign_date3 = ($p_signedAts[$arrResponse["documents"][0]["participants"][$i]["id"]] != "")? date("Y-m-d H:i:s",strtotime($p_signedAts[$arrResponse["documents"][0]["participants"][$i]["id"]])):"-"; 
+			if($arrResponse_doc["participants"][$i]["name"] == "신청자"){
+				$gubun3 = ($arrResponse_doc["participants"][$i]["signingMethod"]["type"] == "SECURE_LINK")?"웹페이지":"카카오톡";			
+				$sign_date3 = ($p_signedAts[$arrResponse_doc["participants"][$i]["id"]] != "")? date("Y-m-d H:i:s",strtotime($p_signedAts[$arrResponse_doc["participants"][$i]["id"]])):"-"; 
 				$stat3 = ($sign_date3 == "-")?"진행중":"완료";
-				$part_id3 = $arrResponse["documents"][0]["participants"][$i]["id"];
+				$part_id3 = $arrResponse_doc["participants"][$i]["id"];
 			}
 		}
 		$sql = "SELECT * FROM `eform_document` WHERE dc_id=UNHEX('".$_POST["dc_id"]."')";
@@ -407,13 +416,13 @@ if($_REQUEST["signed"] == "ok"){?>
 			$response2["part_id1"] = $part_id1;
 			$response2["part_id2"] = $part_id2;
 			$response2["part_id3"] = $part_id3;
-			$response2["doc_id"] = $arrResponse["documents"][0]["id"];
+			$response2["doc_id"] = $arrResponse_doc["id"];
 			$response2["api_stat"] = "1";
 		}else{
 			$response2["url"] = "url생성실패";
 		}
 	}elseif($_POST["div"] == "view_doc"){//계약서 보기
-		$url = ($_POST["gubun"] == 1)?$arrResponse["documents"][0]["file"]["downloadUrl"]:$arrResponse["documents"][0]["auditTrail"]["downloadUrl"];
+		$url = ($_POST["gubun"] == 1)?$arrResponse_doc["file"]["downloadUrl"]:$arrResponse_doc["auditTrail"]["downloadUrl"];
 		if($url != ""){
 			$response2["url"] = $url;
 			$response2["api_stat"] = "1";
@@ -421,16 +430,16 @@ if($_REQUEST["signed"] == "ok"){?>
 			$response2["url"] = "url생성실패";
 		}
 	}elseif($_POST["div"] == "rejection_view"){// 거절사유 보기
-		$url = $arrResponse["documents"][0]["file"]["downloadUrl"];
-		$participants_count = count($arrResponse["documents"][0]["participants"]);
+		$url = $arrResponse_doc["file"]["downloadUrl"];
+		$participants_count = count($arrResponse_doc["participants"]);
 		
 		for($i=0;$i<$participants_count;$i++){
-			if($arrResponse["documents"][0]["participants"][$i]["id"] == $arrResponse["documents"][0]["abort"]["participantId"]){
-				$rejection_member = $arrResponse["documents"][0]["participants"][$i]["name"];
+			if($arrResponse_doc["participants"][$i]["id"] == $arrResponse_doc["abort"]["participantId"]){
+				$rejection_member = $arrResponse_doc["participants"][$i]["name"];
 			}
 		}
-		$rejection_date = date("Y-m-d H:i:s",strtotime($arrResponse["documents"][0]["abort"]["abortedAt"]));
-		$rejection_msg = $arrResponse["documents"][0]["abort"]["message"];
+		$rejection_date = date("Y-m-d H:i:s",strtotime($arrResponse_doc["abort"]["abortedAt"]));
+		$rejection_msg = $arrResponse_doc["abort"]["message"];
 				
 		if($url != ""){
 			$response2["url"] = $url;
@@ -885,7 +894,7 @@ fclose($log_file);
 		$response2["url"] = $url;
 		$response2["d_id"] = $arrResponse["id"];
 		$response2["p_id"] = $arrResponse["participants"][0]["id"];
-		$sql = "update eform_document set dc_sign_send_datetime=now(),dc_status='4' where dc_id=UNHEX('".$_POST["dc_id1"]."')";
+		$sql = "update eform_document set dc_sign_send_datetime=now(),dc_status='4',doc_id='".$arrResponse["id"]."' where dc_id=UNHEX('".$_POST["dc_id1"]."')";
 		sql_query($sql);
 		$response2["api_stat"] = "1";
 	}else{
@@ -893,18 +902,24 @@ fclose($log_file);
 	}
 
 }elseif($_POST["div"] == "resend_doc"){//계약서 재 전송
-	$api_url = 'https://api.modusign.co.kr/documents?offset=0&limit=1&metadatas=%7B%22dc_id%22%3A%22'.strtolower($_POST["dc_id"]).'%22%7D';
+	if($_POST["doc_id"] == ""){
+		$api_url = 'https://api.modusign.co.kr/documents?offset=0&limit=1&metadatas=%7B%22dc_id%22%3A%22'.strtolower($_POST["dc_id"]).'%22%7D';	
+		$arrResponse_doc = $arrResponse["documents"][0];
+	}else{
+		$api_url = 'https://api.modusign.co.kr/documents/'.$_POST["doc_id"];
+		$arrResponse_doc = "";
+	}
 	$type = "GET";
 	$data = "";
 	$arrResponse = get_modusign($API_Key64,$api_url,$type,$data);//문서 ID 확인
-	$url = $arrResponse["documents"][0]["file"]["downloadUrl"];
-	$participants_count = count($arrResponse["documents"][0]["participants"]);
+	$url = $arrResponse_doc["file"]["downloadUrl"];
+	$participants_count = count($arrResponse_doc["participants"]);
 	
 	for($i=0;$i<$participants_count;$i++){
 		$com = ($i != 0)?",":"";
-		$mo_nums .= $com.'"'.$arrResponse["documents"][0]["participants"][$i]["signingMethod"]["value"].'"';
+		$mo_nums .= $com.'"'.$arrResponse_doc["participants"][$i]["signingMethod"]["value"].'"';
 	}
-	$doc_id = $arrResponse["documents"][0]["id"];
+	$doc_id = $arrResponse_doc["id"];
 	$api_url = 'https://api.modusign.co.kr/documents/'.$doc_id.'/forward';
 	$type = "POST";
 	$data = '{"contacts":['.$mo_nums.']}';
@@ -919,17 +934,19 @@ fclose($log_file);
 	}
 
 }elseif($_POST["div"] == "sign_cancel"){//서명 요청 취소
-	$api_url = 'https://api.modusign.co.kr/documents?offset=0&limit=1&metadatas=%7B%22dc_id%22%3A%22'.strtolower($_POST["dc_id"]).'%22%7D';
-	$type = "GET";
-	$data = "";
-	$arrResponse = get_modusign($API_Key64,$api_url,$type,$data);
-	$doc_id = $arrResponse["documents"][0]["id"];//문서 ID 확인
-
+	if($_POST["doc_id"]==""){
+		$api_url = 'https://api.modusign.co.kr/documents?offset=0&limit=1&metadatas=%7B%22dc_id%22%3A%22'.strtolower($_POST["dc_id"]).'%22%7D';
+		$type = "GET";
+		$data = "";
+		$arrResponse = get_modusign($API_Key64,$api_url,$type,$data);
+		$doc_id = $arrResponse["documents"][0]["id"];//문서 ID 확인
+	}else{
+		$doc_id = $_POST["doc_id"];
+	}
 	$api_url = 'https://api.modusign.co.kr/documents/'.$doc_id.'/metadatas';
 	$type = "PUT";
 	$data = '{"metadatas":[{"key":"dc_id","value":"sign_cancel'.strtolower($_POST["dc_id"]).'"}]}';
 	$arrResponse = get_modusign($API_Key64,$api_url,$type,$data);//메타데이터 변경
-
 	$api_url = 'https://api.modusign.co.kr/documents/'.$doc_id.'/cancel';
 	$type = "POST";
 	$data = '{"accessibleByParticipant":false,"message":"서명요청 취소"}';
@@ -945,11 +962,15 @@ fclose($log_file);
 		$response2["url"] = "url생성실패";
 	}
 }elseif($_POST["div"] == "dc_reset"){//거절 계약서 초기화
-	$api_url = 'https://api.modusign.co.kr/documents?offset=0&limit=1&metadatas=%7B%22dc_id%22%3A%22'.strtolower($_POST["dc_id"]).'%22%7D';
-	$type = "GET";
-	$data = "";
-	$arrResponse = get_modusign($API_Key64,$api_url,$type,$data);
-	$doc_id = $arrResponse["documents"][0]["id"];
+	if($_POST["doc_id"] == ""){
+		$api_url = 'https://api.modusign.co.kr/documents?offset=0&limit=1&metadatas=%7B%22dc_id%22%3A%22'.strtolower($_POST["dc_id"]).'%22%7D';
+		$type = "GET";
+		$data = "";
+		$arrResponse = get_modusign($API_Key64,$api_url,$type,$data);
+		$doc_id = $arrResponse["documents"][0]["id"];
+	}else{
+		$doc_id = $_POST["doc_id"];
+	}
 	$api_url = 'https://api.modusign.co.kr/documents/'.$doc_id.'/metadatas';
 	$type = "PUT";
 	$data = '{"metadatas":[{"key":"dc_id","value":"dc_reset'.strtolower($_POST["dc_id"]).'"}]}';
