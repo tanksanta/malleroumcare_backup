@@ -53,7 +53,7 @@ if($tot_sell_price - $tot_sell_discount >=$result_d['de_send_conditional']){
         <table class="div-table table bsk-tbl bg-white">
         <tbody>
         <tr class="<?php echo $head_class;?>">
-            <th scope="col">
+            <th scope="col" id="all_chk">
                 <label for="ct_all" class="sound_only">상품 전체</label>
                 <span><input  type="checkbox" name="ct_all" value="1" id="ct_all" checked="checked"></span>
             </th>
@@ -73,6 +73,7 @@ if($tot_sell_price - $tot_sell_discount >=$result_d['de_send_conditional']){
             for($i=0;$i < count($item); $i++) {
         ?>
             <tr<?php echo ($i == 0) ? ' class="tr-line"' : '';?>>
+			
                 <td class="text-center">
                     <label for="ct_chk_<?php echo $i; ?>" class="sound_only">상품</label>
                     <input class="check_cart" data-discount="<?=($item[$i]['sell_discount'])?>" data-target="<?=($item[$i]['sell_price'])?>" data-target2="
@@ -87,6 +88,14 @@ if($tot_sell_price - $tot_sell_discount >=$result_d['de_send_conditional']){
                     " type="checkbox" name="ct_chk[<?php echo $i; ?>]" value="1" id="ct_chk_<?php echo $i; ?>" checked="checked">
                 </td>
                 <td class="text-center">
+					<?php if($item[$i]['it_soldout'] == 1){//품절상태 상품일 경우?>
+					<div style="position:relative;top:0px;left:0px;widht:0px;height:0px;z-index:99;">
+						<div style="position:absolute; top:-10px;left:-10px;background:#000;height:125px;opacity : 0.5;" class="soldout_div"></div>
+						<div style="position:absolute; top:-10px;left:-10px;height:125px;color:#fff;font-weight:bold;text-align:center;padding-top:55px;" class="soldout_div2">
+							품절 상품입니다.
+						</div>
+					</div>
+					<?php }?>
                     <div class="item-img">
                         <img src="/data/item/<?=$item[$i]['thumbnail']?>" onerror="this.src = '/shop/img/no_image.gif';" style="width: 100px; height: 100px;">
                         <!-- <div class="item-type">
@@ -256,7 +265,7 @@ if($tot_sell_price - $tot_sell_discount >=$result_d['de_send_conditional']){
 }
 </style>
 
-    <div class="pop_sup">
+    <div class="pop_sup" id="pop_sup1">
         <i class="fa fa-close fa-lg close"></i>
         <h3>주문알림</h3>
         <p>
@@ -264,6 +273,28 @@ if($tot_sell_price - $tot_sell_discount >=$result_d['de_send_conditional']){
         수급자 계약서 작성만 가능합니다.
         </p>
         <button type="button" class="btn btn-block btn-lg sub_n_btn">비유통 품목 제외 후 상품주문</button>
+        <?php /* <a href="#" class="btn recipient_btn" onclick="return form_check('sup_recipient');">수급자 계약서 작성하기</a> */?>
+    </div>
+
+	<div class="pop_sup" id="pop_sup2">
+        <i class="fa fa-close fa-lg close"></i>
+        <h3>주문알림</h3>
+        <p>
+        품절 상품은 주문이 불가합니다.
+        </p>
+        <button type="button" class="btn btn-block btn-lg sub_n_btn">품절 상품 제외 후 상품주문</button>
+        <?php /* <a href="#" class="btn recipient_btn" onclick="return form_check('sup_recipient');">수급자 계약서 작성하기</a> */?>
+    </div>
+
+	<div class="pop_sup" id="pop_sup3">
+        <i class="fa fa-close fa-lg close"></i>
+        <h3>주문알림</h3>
+        <p>
+        비유통 품목과 품절 상품은 주문이 불가합니다.<br><br>
+		비유통 품목은 재고등록 후<br>
+        수급자 계약서 작성만 가능합니다.
+        </p>
+        <button type="button" class="btn btn-block btn-lg sub_n_btn">비유통/품절 상품 제외 후 상품주문</button>
         <?php /* <a href="#" class="btn recipient_btn" onclick="return form_check('sup_recipient');">수급자 계약서 작성하기</a> */?>
     </div>
 
@@ -287,7 +318,7 @@ if($tot_sell_price - $tot_sell_discount >=$result_d['de_send_conditional']){
         // 비유통 상품 체크 해제
         var parents = $('input.check_cart:checked').closest('tr');
         for(var i=0; i<parents.length; i++) {
-            if ($($(parents)[i]).find('.sup_n').length) {
+            if ($($(parents)[i]).find('.sup_n').length || $($(parents)[i]).find('.soldout_div').length) {
                 $($(parents)[i]).find('input.check_cart').prop("checked", false);
             }
         }
@@ -320,9 +351,20 @@ if($tot_sell_price - $tot_sell_discount >=$result_d['de_send_conditional']){
         var regexp = /\B(?=(\d{3})+(?!\d))/g;
         return num.toString().replace(regexp, ',');
     }
+	
+	$(window).resize(function() { 
+		var soldout_div_width = $(".sub_section_tit").outerWidth()-$("#all_chk").outerWidth();
+		var soldout_div_width2 = $(".div-table").outerWidth()-$("#all_chk").outerWidth();
+		$(".soldout_div").css("width",soldout_div_width2+'px');
+		$(".soldout_div2").css("width",soldout_div_width+'px');
+	});
 
     $(function() {
-        var close_btn_idx;
+        var soldout_div_width2 = $(".div-table").outerWidth()-$("#all_chk").outerWidth();
+		var soldout_div_width = $(".sub_section_tit").outerWidth()-$("#all_chk").outerWidth();
+		$(".soldout_div").css("width",soldout_div_width2+'px');
+		$(".soldout_div2").css("width",soldout_div_width+'px');
+		var close_btn_idx;
 
         // 선택사항수정
         $(".mod_options").click(function() {
@@ -418,12 +460,27 @@ if($tot_sell_price - $tot_sell_discount >=$result_d['de_send_conditional']){
 
             // 비유통 상품 있는지 체크
             var parents = $('input.check_cart:checked').closest('tr');
-            for(var i=0; i<parents.length; i++) {
+            var sup_count = 0;
+			var soldout_count = 0;
+			for(var i=0; i<parents.length; i++) {
                 if ($($(parents)[i]).find('.sup_n').length) {
-                    $('.pop_sup').fadeIn();
-                    return false;
-                }
+                    sup_count = 1;
+	            }
+				if ($($(parents)[i]).find('.soldout_div').length) {
+                    soldout_count = 1;
+	            }
+
             }
+			if(sup_count == 1 && soldout_count == 0){
+				$('#pop_sup1').fadeIn();
+				return false;
+			}else if(sup_count == 0 && soldout_count == 1){
+				$('#pop_sup2').fadeIn();
+				return false;
+			}else if(sup_count == 1 && soldout_count == 1){
+				$('#pop_sup3').fadeIn();
+				return false;
+			}
 
             f.act.value = act;
             f.submit();
@@ -454,4 +511,3 @@ if($tot_sell_price - $tot_sell_discount >=$result_d['de_send_conditional']){
         return true;
     }
 </script>
-
