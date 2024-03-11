@@ -194,7 +194,7 @@ function agreement_confirm(a){
                 </label>
               </div>
               <select id="sel_pen_pro" style="display: none;"></select>
-              <input type="text" maxlength="11" oninput="max_length_check(this)" name="ms_pen_hp" id="ms_pen_hp" class="form-control input-sm" value="<?=$ms['ms_pen_hp'] ?: ''?>" placeholder="휴대폰번호" data-value="<?=$ms['ms_pen_hp'] ?: ''?>" onchange="phone_ch();">
+              <input type="text" maxlength="11" oninput="max_length_check(this)" name="ms_pen_hp" id="ms_pen_hp" class="form-control input-sm" value="<?=$ms['ms_pen_hp'] ?: ''?>" placeholder="휴대폰번호" data-value="<?=$ms['ms_pen_hp'] ?: ''?>" onchange="phone_ch();" autocomplete="off">
               <span class="form_desc">* 입력된 휴대폰 번호로 메시지가 전송됩니다.</span>
             </div>
           </div>
@@ -408,7 +408,8 @@ $(function(){
 });
 
 //휴대폰번호 변경 체크
-function phone_ch(){
+function phone_ch(){	
+	check_no_item();
 	if($("#ms_pen_hp").val() != $("#ms_pen_hp").data("value") && $("#ms_id").val() != ""){
 		save_item_msg();
 	}
@@ -435,7 +436,7 @@ function copy_to_clipboard(selector) {
 
 // 품목 없는지 체크
 function check_no_item() {
-  if($('.im_write_list li').length == 0) {
+  if($('.im_write_list li').length == 0 || $("#ms_pen_hp").val().length<10) {
     $('.no_item_info').show();
     $('.im_list_hd').hide();
     $('.btn_im_send').removeClass('active');
