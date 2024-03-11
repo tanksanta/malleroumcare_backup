@@ -1160,6 +1160,10 @@ $delivery_companys = array(
     'val' => 'epost'
   ),
   array(
+    'name' => '우리택배(구 호남택배)',
+    'val' => 'honam'
+  ),
+  array(
     'name' => '화물배송',
     'val' => 'hwamul'
   ),
