@@ -18,9 +18,11 @@ $list = array();
 
 // 쿠폰정보
 $sql = "
-  select c.*
+  select c.*,it.it_name,ca.ca_name
   from {$g5['g5_shop_coupon_table']} c
   left join g5_shop_coupon_member m on c.cp_no = m.cp_no
+  left join g5_shop_item it on c.cp_target = it.it_id and c.cp_target !=''
+  left join g5_shop_category ca on c.cp_target = ca.ca_id and c.cp_target !='' 
   where
     (
       c.mb_id IN ( '{$member['mb_id']}', '전체회원' ) or

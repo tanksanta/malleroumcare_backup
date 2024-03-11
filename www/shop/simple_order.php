@@ -25,7 +25,10 @@ add_javascript(G5_POSTCODE_JS, 0);
   <div class="sub_section_tit">간편 주문서 신청 <a href="javascript:void(0);" onclick="window.open('<?=G5_DATA_URL;?>/file/이로움_스마트_서비스_04_간편_주문서_작성.pdf');" class="thkc_btnManual">사용방법 확인하기</a></div>
   <div class="inner">
   <form id="simple_order" name="forderform" class="form-horizontal" action="orderformupdate.php" method="post" onsubmit="return form_submit(this);">
-      <input type="hidden" name="org_od_price" value="0">
+      <input type="hidden" id="cp_method">
+	  <input type="hidden" id="cp_target">
+	  <input type="text" id="dc">
+	  <input type="hidden" name="org_od_price" value="0">
       <input type="hidden" name="od_price" value="0">
       <input type="hidden" name="od_settle_case" value="월 마감 정산">
       <input type="hidden" name="od_send_cost2" value="0">
@@ -925,17 +928,21 @@ function calculate_order_price() {
   $('input[name="od_price"]').val(order_price);
   $('#order_price').text(number_format(order_price));
 
-  // 배송비
-  var od_send_cost2 = parseInt($('input[name=od_send_cost2]').val());
-  $('#delivery_price').text(number_format(delivery_price + od_send_cost2));
-
   // 쿠폰
   var cp_price = parseInt( $('input[name="od_cp_price"]').val() || 0 );
-  if(cp_price > order_price) {
+  if(cp_price > order_price && $("#cp_method").val() != 3) {
     // 쿠폰 금액이 주문금액보다 크면 쿠폰 취소
     $('#od_coupon_cancel').click();
     return;
   }
+  
+  // 배송비
+  if($("#cp_method").val() == 3){//배송비 쿠폰 적용 시
+	delivery_price = (delivery_price>cp_price)?delivery_price-cp_price:0;
+	cp_price = 0;
+  }
+  var od_send_cost2 = parseInt($('input[name=od_send_cost2]').val());
+  $('#delivery_price').text(number_format(delivery_price + od_send_cost2));  
 
   // 포인트
   var pt_price = parseInt( $('input[name="od_temp_point"]').val() || 0 );
@@ -1084,7 +1091,6 @@ function select_item(obj, io_id, ct_qty) {
       obj.it_sale_percent_great_05
     ],
   }
-
   var $li = $('<li class="flex">');
   $li.append('<input type="hidden" name="it_id[]" value="' + obj.it_id + '">')
   .append('<input type="hidden" name="it_price[]" value="' + obj.it_price + '">')
@@ -1098,6 +1104,7 @@ function select_item(obj, io_id, ct_qty) {
   .append('<input type="hidden" name="it_even_odd_price[]" value="' + obj.it_even_odd_price + '">')
   .append('<input type="hidden" name="io_type[]" value="' + obj.io_type + '">')
   .append('<input type="hidden" name="io_price[]" value="' + obj.io_price + '">')
+  .append('<input type="hidden" name="ca_id[]" value="' + obj.ca_id + '">')
   .append('<input type="hidden" name="cp_id[]" value="">')
   .append('<input type="hidden" name="cp_price[]" value="">');
 
@@ -1265,14 +1272,42 @@ function select_item(obj, io_id, ct_qty) {
   $('input[type="text"]').keydown(function() { if (event.keyCode === 13) { event.preventDefault(); } });
   check_no_item();
 }
+function cp_check(){
+	var cp_method = $("#cp_method").val();//쿠폰종류
+	var cp_target = $("#cp_target").val();
+	var ca_ids = '';//카테고리 
+    var it_ids = '';//개별상품
+	var cp_true = 1;
+	  $('input[name="it_id[]"]').each(function() {
+		var it_id = $(this).val();
+		it_ids += ","+it_id;
+	  });
+
+	  $('input[name="ca_id[]"]').each(function() {
+		var ca_id = $(this).val();
+		ca_ids += ","+ca_id;
+	  });
+	if(cp_method == '0'){//개별상품 일 경우
+		cp_true = it_ids.indexOf(cp_target);
+	}
+	if(cp_method == '1'){//카테고리 일 경우
+		cp_true = ca_ids.indexOf(","+cp_target);
+	}
+	if(cp_true < 0){//쿠폰 해제
+		alert("쿠폰적용 가능 상품이 삭제되어 쿠폰적용이 취소 되었습니다.");
+		$("#od_coupon_cancel").trigger('click'); 
+	}
+}
 
 $(function() {
   // 품목 삭제
   $(document).on('click', '.btn_del_item', function() {
     var $li = $(this).closest('li');
     $li.remove();
-
-    calculate_order_price();
+	if($("#cp_method").val() == '0' || $("#cp_method").val() == '1'){//개별상품,카테고리 쿠폰일 경우만 쿠폰 체크함
+		cp_check();
+    }
+	calculate_order_price();
     check_no_item();
   });
 
@@ -1465,14 +1500,27 @@ $(function() {
   $("#od_coupon_btn").click(function() {
     var $this = $(this);
     var price = parseInt($("input[name=org_od_price]").val());
-    if(price <= 0) {
+	var send_cost = $('#delivery_price').text().replace(/,/g, '');//배송비
+	var ca_ids = '';//카테고리 
+    var it_ids = '';//개별상품
+	  $('input[name="it_id[]"]').each(function() {
+		var it_id = $(this).val();
+		it_ids += ","+it_id;
+	  });
+
+	  $('input[name="ca_id[]"]').each(function() {
+		var ca_id = $(this).val();
+		ca_ids += ","+ca_id;
+	  });
+
+	if(price <= 0) {
         alert('금액이 0원이므로 쿠폰을 사용할 수 없습니다.');
         return false;
     }
 
     $('#couponModal').modal('show');
 
-    $.post("./ordercoupon.php", { price: price },
+    $.post("./ordercoupon.php", { price: price,it_ids:it_ids,ca_ids:ca_ids,send_cost:send_cost },
       function(data) {
         $("#couponBox").html(data);
       }
@@ -1486,17 +1534,23 @@ $(function() {
     var price = parseInt($el.find("input[name='o_cp_prc[]']").val());
     var subj = $el.find("input[name='o_cp_subj[]']").val();
     var od_price = parseInt($("input[name=org_od_price]").val());
-
+	var cp_target = $el.find("input[name='o_cp_target[]']").val();//개별상품:it_id, 카테고리:ca_id
+	var cp_method = $el.find("input[name='o_cp_method[]']").val();//쿠폰 종류 0:개별상품,1:카테고리,2:주문금액,3:배송비
+	var dc = $el.find("input[name='o_cp_prc[]']").val();
+	$("#cp_method").val(cp_method);//적용쿠폰 종류
+	$("#cp_target").val(cp_target);//적용쿠폰 개별상품,카테고리
+	$("#dc").val(dc);//할인가격
     if(price == 0) {
       if(!confirm(subj+"쿠폰의 할인 금액은 "+price+"원입니다.\n쿠폰을 적용하시겠습니까?")) {
         return false;
       }
     }
-
-    if(od_price - price <= 0) {
-      alert("쿠폰할인금액이 주문금액보다 크므로 쿠폰을 적용할 수 없습니다.");
-      return false;
-    }
+	if(cp_method != 3){
+		if(od_price - price <= 0) {
+		  alert("쿠폰할인금액이 주문금액보다 크므로 쿠폰을 적용할 수 없습니다.");
+		  return false;
+		}
+	}
 
     $("input[name=od_cp_id]").val(cp_id);
     $("input[name=od_cp_price]").val(price);
@@ -1520,6 +1574,9 @@ $(function() {
     $("#od_cp_price").text(0);
     calculate_order_price();
     $("#od_coupon_btn").text("쿠폰").focus();
+	$("#cp_method").val("");//적용쿠폰 종류
+	$("#cp_target").val("");//적용쿠폰 개별상품,카테고리
+	$("#dc").val("");//할인가격
     $(this).remove();
   });
 
