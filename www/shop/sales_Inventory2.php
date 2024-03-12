@@ -200,7 +200,7 @@ if(preg_match($mobile_agent, $_SERVER['HTTP_USER_AGENT'])){
 	$mobile_yn = "Pc";
 }
 ?>
-<link rel="stylesheet" href="<?=G5_CSS_URL ?>/stock_page.css">
+<link rel="stylesheet" href="<?=G5_CSS_URL ?>/stock_page.css?v=20240305">
     <title>판매재고목록</title>
     <section id="stock" class="wrap stock-list">
         <div class="sub_section_tit">보유 급여상품 관리</div>
@@ -254,13 +254,25 @@ if(preg_match($mobile_agent, $_SERVER['HTTP_USER_AGENT'])){
             </form>
             <div class="table-wrap">
                 <ul>
-                    <li class="head cb">
+                    <li class="head cb m_off">
                         <span class="num">No.</span>
                         <span class="product">상품정보</span>
-                        <span class="pro-num">제품코드</span>
-                        <span class="stock">대여가능(총 <?=number_format($sale_total_count2)?>개)</span>
-                        <span class="order">대여중(총 <?=number_format($sale_total_count22)?>개)</span>
-                        <span class="price">급여가</span>
+                        <span class="pro-num m_off">제품코드</span>
+                        <span class="stock m_off">대여가능(총 <?=number_format($sale_total_count2)?>개)</span>
+                        <span class="order m_off">대여중(총 <?=number_format($sale_total_count22)?>개)</span>
+                        <span class="price m_off">급여가</span>
+                        
+                        <div class="divinfo01 info-m">
+                            <p class="">품목명</p>
+                            <p class="">제품명</p>
+                            <p class="">제품코드</p>
+                            <p class="">대여중(총 <?=number_format($sale_total_count22)?>개)</p>
+                        </div>
+                        <div class="divinfo02 info-m">
+                            <p class="">대여가능</p>
+                            <p class="">(총 <?=number_format($sale_total_count2)?>개)</p>
+                            <p class="">급여가</p>
+                        </div>
                     </li>
                     <?php if(!$list){ ?>
                             <li style="text-align:center" >
@@ -312,7 +324,7 @@ if(preg_match($mobile_agent, $_SERVER['HTTP_USER_AGENT'])){
                                         <span class="pro-num"><?=$prodPayCode?></span><!--상품아이디-->
                                         <span class="stock"><?=$quantity?>개</span><!--대여가능-->
                                         <span class="order">대여중 <?=$orderQuantity?>개</span><!--대여중-->
-                                        <span class="price"><?=number_format($it_cust_price);?>원</span><!--급여가-->
+                                        <span class="price"><?=number_format($row["it_cust_price"]);?>원</span><!--급여가-->
                                     </div>
                                 </div>
                             </div>
@@ -321,7 +333,7 @@ if(preg_match($mobile_agent, $_SERVER['HTTP_USER_AGENT'])){
                         <span class="pro-num m_off"><?=$prodPayCode?></span>
                         <span class="stock m_off"><?=$quantity?></span><!--대여가능-->
                         <span class="order m_off"><?=$orderQuantity?></span><!--대여중-->
-                        <span class="price m_off"><?=number_format($it_cust_price);?>원</span><!--급여가-->
+                        <span class="price m_off"><?=number_format($row["it_cust_price"]);?>원</span><!--급여가-->
                     </li>
                     </a>
                     <?php //추가 
