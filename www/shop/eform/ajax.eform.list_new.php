@@ -219,7 +219,7 @@ for($i = 0; $row = sql_fetch_array($result); $i++) {
     // 바코드 입력이 없는 상품만 주문 가능
     // - 전부 바코드 입력이 되어있는 경우는 상품 주문하기 출력 X
     $it_count = sql_fetch(" select count(*) as cnt from eform_document_item where dc_id = unhex('{$row['uuid']}') and it_barcode = '' ");
-    if($it_count['cnt'] > 0)
+    if($it_count['cnt'] > 0 && $_SESSION["ss_mb_viewType"]!="1")
       echo '<br><a href="javascript:it_filter(\''.$row["uuid"].'\');" class="btn_grey">상품 주문하기</a>';
 	//수급자 조회 관련 추가, 개발완료 시 삭제 필요====================================================================
 		//echo '<br><a href="javascript:swal(\'사용 제한\',\'수급자 조회조건 개선으로 간편조회 및\n일부 서비스가 일시 중단되었습니다.\n서비스 재개는 추후 공지를 통해 안내드리겠습니다.\',\'error\');false;" class="btn_grey">상품 주문하기</a>';
@@ -279,13 +279,13 @@ for($i = 0; $row = sql_fetch_array($result); $i++) {
 		echo '<br>';
 		echo '<a href="javascript:window.open(\''. G5_SHOP_URL . '/eform/renderEform_new.php?download=1&dc_id=' . $row["uuid"].'\', \'PopupDoc\', \'width=1300,height=1000\');" class="btn_basic">계약서 보기</a>';
 	}elseif($row['dc_status'] == '4'){//서명요청
-		echo '<a href="javascript:;" class="btn_basic" onClick="open_sign_stat(\''.$row["uuid"].'\')">진행 상황 확인</a>';
+		echo '<a href="javascript:;" class="btn_basic" onClick="open_sign_stat(\''.$row["uuid"].'\',\''.$row["doc_id"].'\')">진행 상황 확인</a>';
 		echo '<br>';
-		echo '<a href="javascript:;" onClick="mds_download(\''. $row["uuid"] . '\',\'1\')" class="btn_basic">계약서 보기</a>';
+		echo '<a href="javascript:;" onClick="mds_download(\''. $row["uuid"] . '\',\''.$row["doc_id"].'\',\'1\')" class="btn_basic">계약서 보기</a>';
 	}elseif($row['dc_status'] == '5'){//서명거절
-		echo '<a href="javascript:;" class="btn_basic" onClick="open_rejection_view(\''.$row["uuid"].'\')">거절 사유 보기</a>';
+		echo '<a href="javascript:;" class="btn_basic" onClick="open_rejection_view(\''.$row["uuid"].'\',\''.$row["doc_id"].'\')">거절 사유 보기</a>';
 		echo '<br>';
-		echo '<a href="javascript:;" onClick="mds_download(\''. $row["uuid"] . '\',\'1\')" class="btn_basic">계약서 보기</a>';
+		echo '<a href="javascript:;" onClick="mds_download(\''. $row["uuid"] . '\',\''.$row["doc_id"].'\',\'1\')" class="btn_basic">계약서 보기</a>';
 	}elseif($row['dc_status'] == '2' || $row['dc_status'] == '3'){
 		if($row['dc_sign_send_datetime'] == "0000-00-00 00:00:00"){//예전 계약서
 			if($row['dc_status'] == '3' && !$row['od_id']) {
@@ -299,8 +299,8 @@ for($i = 0; $row = sql_fetch_array($result); $i++) {
 				echo '<br><a href="javascript:window.open(\''. G5_SHOP_URL . '/eform/downloadCert.php?dc_id=' . $row["uuid"] .'\', \'PopupDoc\', \'width=1300,height=1000\');" class="btn_basic">감사추적 인증서</a>';
 			}
 		}else{//모두싸인 계약서
-			echo '<a href="javascript:;" onClick="mds_download(\''. $row["uuid"] . '\',\'1\')" class="btn_basic">계약서 보기</a>';
-			echo '<br><a href="javascript:;" onClick="mds_download(\''. $row["uuid"] . '\',\'2\')" class="btn_basic">감사추적 인증서</a>';
+			echo '<a href="javascript:;" onClick="mds_download(\''. $row["uuid"] . '\',\''.$row["doc_id"].'\',\'1\')" class="btn_basic">계약서 보기</a>';
+			echo '<br><a href="javascript:;" onClick="mds_download(\''. $row["uuid"] . '\',\''.$row["doc_id"].'\',\'2\')" class="btn_basic">감사추적 인증서</a>';
 		}
 	}
   
@@ -317,15 +317,15 @@ for($i = 0; $row = sql_fetch_array($result); $i++) {
 		echo '<br>';
 		echo '<a href="javascript:void(0);" class="btn_basic btn_del_eform" data-id="' . $row["uuid"] . '" >생성취소</a>';
 	}elseif(($row['dc_type']!='1')&&$row['dc_status'] == '4'){//서명요청
-		echo '<a href="javascript:void(0);" class="btn_basic " data-id="' . $row["uuid"] . '" onClick="sign_cancel(\''.$row["uuid"].'\')">서명요청취소</a>';
+		echo '<a href="javascript:void(0);" class="btn_basic " data-id="' . $row["uuid"] . '" onClick="sign_cancel(\''.$row["uuid"].'\',\''.$row["doc_id"].'\')">서명요청취소</a>';
 	}elseif(($row['dc_type']!='1')&&$row['dc_status'] == '5'){//서명거절
-		echo '<a href="javascript:;" class="btn_basic" onclick="dc_reset(\'' . $row["uuid"] . '\')">계약서상태 초기화</a>';
+		echo '<a href="javascript:;" class="btn_basic" onclick="dc_reset(\'' . $row["uuid"] . '\',\''.$row["doc_id"].'\')">계약서상태 초기화</a>';
 		echo '<br>';
 		echo '<a href="javascript:void(0);" class="btn_basic btn_del_eform" data-id="' . $row["uuid"] . '" >계약서삭제</a>';
 	}elseif(($row['dc_type']!='1')&&($row['dc_status'] == '2' || $row['dc_status'] == '3')){
 		if($row['dc_sign_send_datetime'] != "0000-00-00 00:00:00" && $row['dc_sign_send_datetime'] != ""){//모두싸인 계약서
 			//echo '<a href="javascript:void(0);" class="btn_basic btn_del_eform" data-id="' . $row["uuid"] . '">서명회수</a><br>';
-			echo '<a href="javascript:void(0);" class="btn_basic " data-id="' . $row["uuid"] . '" onclick="resend_doc(\'' . $row["uuid"] . '\')">계약서 전송</a>';
+			echo '<a href="javascript:void(0);" class="btn_basic " data-id="' . $row["uuid"] . '" onclick="resend_doc(\'' . $row["uuid"] . '\',\''.$row["doc_id"].'\')">계약서 전송</a>';
 		}else{//일반 계약서
       if( ($row['dc_type']!='1') ) {
         if ($row['dc_send_kakao'] == 1) {

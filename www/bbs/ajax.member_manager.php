@@ -10,6 +10,7 @@ $mm_tel = get_search_string($_POST['mm_tel']);
 $mm_email = sql_real_escape_string($_POST['mm_email']);
 $mm_memo = sql_real_escape_string($_POST['mm_memo']);
 $manager_auth_order = ($_POST['manager_auth_order'])?$_POST['manager_auth_order']:"0";
+$mb_viewType = ($_POST['mb_viewType'])?$_POST['mb_viewType']:"0";
 
 $mb = get_member($member['mb_id']);
 if(!$mb['mb_id'])
@@ -50,9 +51,13 @@ if(!$w) {
 	  mb_tel = '{$mm_tel}',
       mb_email = '{$mm_email}',
       mb_memo = '{$mm_memo}',
-      mb_manager = '{$mb_id}',
+      mb_manager = '{$mb_id}',";
+if($member["mb_type"] == "default" && $_SESSION["ss_manager_auth_order"] == ""){//사업소 계정일때만 노출
+	$sql .= "
 	  manager_auth_order = '{$manager_auth_order}',
-      mb_datetime = '".G5_TIME_YMDHIS."'
+	  mb_viewType = '{$mb_viewType}',";
+}
+    $sql .= "  mb_datetime = '".G5_TIME_YMDHIS."'
   ";
 
   $result = sql_query($sql, true);
@@ -73,8 +78,13 @@ else if($w === 'u') {
       mb_name = '{$mm_name}',
       mb_nick = '{$mm_name}',
 	  mb_tel = '{$mm_tel}',
-      mb_email = '{$mm_email}',
+      mb_email = '{$mm_email}',";
+if($member["mb_type"] == "default" && $_SESSION["ss_manager_auth_order"] == ""){//사업소 계정일때만 노출
+	$sql .= "
 	  manager_auth_order = '{$manager_auth_order}',
+	  mb_viewType = '{$mb_viewType}',";
+}
+    $sql .= "
       mb_memo = '{$mm_memo}'
       {$sql_password}
     WHERE

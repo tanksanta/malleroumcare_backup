@@ -922,10 +922,13 @@ function form_check(act) {
 				a:hover { color : black; }
 				a:active { color : green }
 			</style>
+			<?php if($_SESSION["ss_mb_viewType"]!="1"){?>
 			<a href="<?=G5_SHOP_URL.'/connect_recipient.php?pen_id='.$data['penId'].'&redirect='.urlencode('/shop/cart.php')?>"><?php echo $data['carts'] . '개'; ?></a>
-
+			<?php }else{
+				echo $data['carts'] . '개'; 
+			}?>
             <br/>
-            <?php if ($data["penLtmNum"]) { ?>
+            <?php if ($data["penLtmNum"] && $_SESSION["ss_mb_viewType"]!="1") { ?>
 <!--  //수급자 조회 관련 추가, 개발완료 시 삭제 필요====================================================================  -->
 			<a href="<?=G5_SHOP_URL.'/connect_recipient.php?pen_id='.$data['penId'].'&redirect='.urlencode('/shop/list.php?ca_id=10')?>" class="btn eroumcare_btn2 small" title="추가하기">추가하기</a> 
 			<!--a href="javascript:;" onClick="error_btn()" class="btn eroumcare_btn2 small" title="추가하기">추가하기</a--> 
@@ -1008,7 +1011,7 @@ function form_check(act) {
           <?php } ?>
 <!--=========================================================================================================== -->
         </div>
-        <?php if ($data["penLtmNum"]) { ?>
+        <?php if ($data["penLtmNum"] && $_SESSION["ss_mb_viewType"]!="1") { ?>
 <!--  //수급자 조회 관련 추가, 개발완료 시 삭제 필요====================================================================  -->
 		<a href="<?php echo G5_SHOP_URL; ?>/connect_recipient.php?pen_id=<?php echo $data['penId']; ?>&redirect=<?=urlencode('/shop/cart.php')?>" class="li_box_right_btn" title="추가하기">
 		<!--a href="javascript:;" onClick="error_btn()" class="li_box_right_btn" title="추가하기"-->
@@ -1017,7 +1020,11 @@ function form_check(act) {
           <b><?php echo $data['carts'] . '개'; ?></b>
         </a>
 <!--=========================================================================================================== -->
-        <?php } ?>
+        <?php }else{ ?>
+		  장바구니
+          <br/>
+          <b><?php echo $data['carts'] . '개'; ?></b>
+		<?php }?>
       </li>
       <?php } ?>
     </ul>

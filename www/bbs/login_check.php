@@ -36,6 +36,12 @@ if($check_member['mb_type'] === 'manager') {
 		set_session('ss_manager_auth_order', $mb["manager_auth_order"]);
 		set_session('ss_manager_name', $mb["mb_name"]);
 		set_session('ss_manager_id', $mb["mb_id"]);
+		set_session('ss_mb_viewType', $mb["mb_viewType"]);
+		if($mb["mb_viewType"] == "1"){//급여가모드만 적용
+			setcookie("viewType", 'basic', time() + 86400 * 3650, "/");
+		}else{//전체 가능
+			setcookie("viewType", 'adm', time() + 86400 * 3650, "/");
+		}
 	}
 
   }

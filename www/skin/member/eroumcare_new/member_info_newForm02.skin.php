@@ -33,6 +33,16 @@
 		sql_query("ALTER TABLE `g5_member`
 		ADD `manager_auth_order` tinyint(2) NULL DEFAULT '0' COMMENT '직원주문권한' AFTER mb_manager", true);
 	}
+	/* // == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == */
+    /* // 파일명 :  \www\skin\member\eroumcare_new\member_info_newForm02.skin.php */
+    /* // 파일 설명 : 신규파일 - 회원정보 변경 > 직원계정관리 파일 */
+    /* // == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == */
+	$query = "SHOW COLUMNS FROM g5_member WHERE `Field` = 'mb_viewType';";//직원 판매가 모드 없을 시 추가
+	$wzres = sql_fetch( $query );
+	if(!$wzres['Field']) {
+		sql_query("ALTER TABLE `g5_member`
+		ADD `mb_viewType` tinyint(2) NULL DEFAULT '0' COMMENT '직원 판매가 모드 0:노출,1:비노출 ' AFTER manager_auth_order", true);
+	}
 
     $mm_result = sql_query(" SELECT * FROM g5_member WHERE mb_type = 'manager' AND mb_manager = '{$member['mb_id']}'");
 
@@ -161,7 +171,8 @@
                         <div class="table-box table-box_02"><div class="tit tit02">이름</div><div class="thkc_cont thkc_cont02"><div><?=$mm['mb_name']?></div></div></div>
                         <div class="table-box table-box_02"><div class="tit tit02">최근접속일</div><div class="thkc_cont thkc_cont02"><div><?=$mm['mb_today_login']?></div></div></div>
 						<?php if($member["mb_type"] == "default" && $_SESSION["ss_manager_auth_order"] == ""){//사업소 계정일때만 노출?>
-						<div class="table-box table-box_02"><div class="tit tit02">주문권한</div><div class="thkc_cont thkc_cont02"><div><?=($mm['manager_auth_order'] == 0)?"주문불가":"주문가능";?></div></div></div>
+						<div class="table-box table-box_02"><div class="tit tit02">사업소판매가 확인 권한</div><div class="thkc_cont thkc_cont02"><div><?=($mm['mb_viewType'] == '0')?"판매가 확인 가능":"판매가 확인 불가";?></div></div></div>
+						<div class="table-box table-box_02"><div class="tit tit02">주문권한</div><div class="thkc_cont thkc_cont02"><div><?=($mm['manager_auth_order'] == 0)?"주문불가":"주문가능";?></div></div></div>						
 						<?php }?>
                         <div class="thkc_btnWrap_03"><button onclick="manager_del('<?=$mm['mb_no']?>')">삭제</button><button class="on" onclick="manager_modify('<?=$mm['mb_no']?>')">정보수정</button></div>
                     </div>
@@ -173,6 +184,7 @@
                     <input type="hidden" id="mm_memo" name="" value="<?=$mm['mb_memo']?>">
 					<?php if($member["mb_type"] == "default" && $_SESSION["ss_manager_auth_order"] == ""){//사업소 계정일때만 노출?>
 					<input type="hidden" id="mm_auth_order" name="" value="<?=$mm['manager_auth_order']?>">
+					<input type="hidden" id="mm_viewType" name="" value="<?=$mm['mb_viewType']?>">
 					<?php }?>
 
                 </div>
@@ -251,16 +263,32 @@
                                     </div>
                                 </div>
 								<?php if($member["mb_type"] == "default" && $_SESSION["ss_manager_auth_order"] == ""){//사업소 계정일때만 노출?>
+								<!-- 판매가 노출  -->
+                                <div class="table-box table-box_02" style="border-bottom: 0px;">
+                                    <div class="tit03 bbs-pd_01">판매가 노출</div>
+                                    <div class="thkc_cont bbs-pd_01">
+                                        <div class="thkc_dfc">
+                                            <label for="mb_viewType" class="thkc_blind">판매가 노출</label><input class="thkc_input" type="checkbox" id="mb_viewType" name="mb_viewType" value='1' onClick="click_ck();">
+                                        </div>
+                                        <div class="error-txt error"></div>
+                                    </div>
+                                </div>
+								<div class="thkc_btnWrap_03" style="justify-content: flex-start; width:100%;border-bottom: 1px solid #ddd;padding-bottom:15px;margin-top:-5px;">
+                                    * 체크박스 활성화 시, 직원 계정에서도 급여가와 판매가 모두 확인할 수 있습니다.<br>
+									* 직원에게 급여가만 노출하고 싶으신 경우, 체크박스를 비활성화 해주세요.<br>
+									* 급여가만 노출되는 계정은 주문 및 장바구니,주문/배송 상세 확인이 불가합니다.
+                                </div>
 								<!-- 주문  -->
                                 <div class="table-box table-box_02">
                                     <div class="tit03 bbs-pd_01">주문가능</div>
                                     <div class="thkc_cont bbs-pd_01">
                                         <div class="thkc_dfc">
-                                            <label for="memo" class="thkc_blind">주문가능</label><input class="thkc_input" type="checkbox" id="manager_auth_order" name="manager_auth_order" value='1'>
+                                            <label for="manager_auth_order" class="thkc_blind">주문가능</label><input class="thkc_input" type="checkbox" id="manager_auth_order" name="manager_auth_order" value='1' disabled>
                                         </div>
                                         <div class="error-txt error"></div>
                                     </div>
                                 </div>
+								
 								<?php }?>
                                 <div class="thkc_btnWrap_03">
                                     <button class="cancel">취소</button>
@@ -380,6 +408,7 @@
                 function manager_add(){
                     <?php if($member["mb_type"] == "default" && $_SESSION["ss_manager_auth_order"] == ""){//사업소 계정일때만 노출?>
 					var manager_auth_order = ($(".thkc_popUpWrap #manager_auth_order").is(':checked'))?"1":"0";
+					var mb_viewType = ($(".thkc_popUpWrap #mb_viewType").is(':checked'))?"0":"1";
 					<?php }?>
 					if(!confirm("신규직원을 등록 하시겠습니까?")) { return; }
                     if( !ck_input( '' ) ) { return; }
@@ -395,6 +424,7 @@
                             "mm_email":  $(".thkc_popUpWrap #mm_email").val(),                            
 							<?php if($member["mb_type"] == "default" && $_SESSION["ss_manager_auth_order"] == ""){//사업소 계정일때만 노출?>
 							"manager_auth_order":  manager_auth_order,
+							"mb_viewType":  mb_viewType,
 							<?php }?>
 							"mm_memo":  $(".thkc_popUpWrap #mm_memo").val()
                         },
@@ -413,7 +443,14 @@
                     }); 
                 }
 
-
+				//판매가 노출 체크 확인
+				function click_ck(){
+					if($("#mb_viewType").is(':checked')){//판매가 노출 체크 상태
+						$("#manager_auth_order").prop('disabled',false);//주문가능 disabled 해제
+					}else{//판매가 노출 체크 해제 상태
+						$("#manager_auth_order").prop('checked',false).prop('disabled',true);//주문가능 체크 해제
+					}
+				}
                 // 담당자 정보 변경
                 function manager_modify(_no){
                         
@@ -430,6 +467,13 @@
 					}else{
 						$("#member_add #manager_auth_order").prop('checked',true);
 					}
+					if($(".manager_" + _no + " #mm_viewType").val() == "1"){
+						$("#member_add #mb_viewType").prop('checked',false);
+						$("#member_add #manager_auth_order").attr('disabled',true);
+					}else{
+						$("#member_add #mb_viewType").prop('checked',true);
+						$("#member_add #manager_auth_order").attr('disabled',false);
+					}
 					<?php }?>
                     $("#member_add .boxLeft").text("직원정보 수정");
                     $("#member_add .boxRright").hide();
@@ -445,6 +489,7 @@
                 function confirm_modify( no ) {
                     <?php if($member["mb_type"] == "default" && $_SESSION["ss_manager_auth_order"] == ""){//사업소 계정일때만 노출?>
 					var manager_auth_order = ($(".thkc_popUpWrap #manager_auth_order").is(':checked'))?"1":"0";
+					var mb_viewType = ($(".thkc_popUpWrap #mb_viewType").is(':checked'))?"0":"1";
 					<?php }?>
 					if(!confirm("직원 정보를 변경 하시겠습니까?")) { return; }
 
@@ -461,6 +506,7 @@
                             "mm_email":  $("#member_add #mm_email").val(),
 							<?php if($member["mb_type"] == "default" && $_SESSION["ss_manager_auth_order"] == ""){//사업소 계정일때만 노출?>
 							"manager_auth_order":  manager_auth_order,
+							"mb_viewType":  mb_viewType,
 							<?php }?>
                             "mm_memo":  $("#member_add #mm_memo").val()
                         },
@@ -603,6 +649,8 @@
 				$(".thkc_btnWrap .btn_submit_02").click(function () {
                     $("#member_add .boxLeft").text("직원신규 등록");
                     $("#member_add input").val("");
+					$("#member_add input").prop('checked',false);
+					$("#member_add #manager_auth_order").attr('disabled',true);
 
                     $("#member_add #mm_id").attr("disabled", false);
                     $("#member_add .boxRright").show();
