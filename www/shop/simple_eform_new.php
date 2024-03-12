@@ -1588,6 +1588,11 @@ function save_eform() {
   });
 
   // 특약사항 값 적용
+  if($("#acc_chk").is(':checked') === false){
+	$('#entConAcc01_2').attr("disabled",true);
+	$('#entConAcc01').attr("disabled",true);
+	$("#save_conacc").attr("disabled",true);
+  }
   //var data = CKEDITOR.instances.entConAcc01_2.getData();
   //$('#entConAcc01_2').val(data);
 
@@ -2213,6 +2218,9 @@ function contract_info_chk(){
 // 특약 사항 정보 입력
 function btn_acc_click(){
 	if($("#acc_chk").is(":checked")){
+		$('#entConAcc01').attr("disabled",false);
+		$('#entConAcc01_2').attr("disabled",false);
+		$("#save_conacc").attr("disabled",false);
 		$('body').addClass('modal-open');
 		$('#popup_box4').show();
 	}else{
@@ -2231,7 +2239,11 @@ function acc_info_chk(){
 	//}
 	//$("#entConAcc01").val(CKEDITOR.instances.entConAcc01_2.getData());
 	$("#entConAcc01").val($('#entConAcc01_2').val());
-	$("#save_conacc").val($("#entConAcc01_save2").val());
+	if($("#entConAcc01_save2").is(":checked")){
+		$("#save_conacc").val('1');
+	}else{
+		$("#save_conacc").val('');
+	}
 	div_close('popup_box4');
 }
 
