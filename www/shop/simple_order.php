@@ -1104,7 +1104,7 @@ function select_item(obj, io_id, ct_qty) {
   .append('<input type="hidden" name="it_even_odd_price[]" value="' + obj.it_even_odd_price + '">')
   .append('<input type="hidden" name="io_type[]" value="' + obj.io_type + '">')
   .append('<input type="hidden" name="io_price[]" value="' + obj.io_price + '">')
-  .append('<input type="hidden" name="ca_id[]" value="' + obj.ca_id + '">')
+  .append('<input type="hidden" name="ca_id2[]" value="' + obj.ca_id + '">')
   .append('<input type="hidden" name="cp_id[]" value="">')
   .append('<input type="hidden" name="cp_price[]" value="">');
 
@@ -1283,7 +1283,7 @@ function cp_check(){
 		it_ids += ","+it_id;
 	  });
 
-	  $('input[name="ca_id[]"]').each(function() {
+	  $('input[name="ca_id2[]"]').each(function() {
 		var ca_id = $(this).val();
 		ca_ids += ","+ca_id;
 	  });
@@ -1508,7 +1508,7 @@ $(function() {
 		it_ids += ","+it_id;
 	  });
 
-	  $('input[name="ca_id[]"]').each(function() {
+	  $('input[name="ca_id2[]"]').each(function() {
 		var ca_id = $(this).val();
 		ca_ids += ","+ca_id;
 	  });
