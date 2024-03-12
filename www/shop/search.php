@@ -16,6 +16,10 @@ $where[] = " (a.ca_id = b.ca_id and a.it_use = 1 and b.ca_use = 1 and b.as_menu_
 $where[] = " (a.it_id <> 'PRO2021072200012' and a.it_id <> 'PRO2021072200013' ) ";
 
 $search_all = true;
+if($search_all !== false){
+	$_GET['qname'] = true; $_GET['qid'] = true; $_GET['pttag'] = true; $_GET['itmaker'] = true;
+}
+
 // 상세검색 이라면
 if (isset($_GET['qname']) || isset($_GET['qexplan']) || isset($_GET['qid']) || isset($_GET['qtag']) || isset($_GET['qbasic']) || isset($_GET['itmodel']) || isset($_GET['pttag']) || isset($_GET['itmaker']))
     $search_all = false;
@@ -31,14 +35,15 @@ $qcaid   = isset($_GET['qcaid']) ? preg_replace('#[^a-z0-9]#i', '', trim($_GET['
 $qfrom   = isset($_GET['qfrom']) ? preg_replace('/[^0-9]/', '', trim($_GET['qfrom'])) : '';
 $qto     = isset($_GET['qto']) ? preg_replace('/[^0-9]/', '', trim($_GET['qto'])) : '';
 $itmodel = isset($_GET['itmodel']) ? trim($_GET['itmodel']) : '';
-$itmodel = isset($_GET['pttag']) ? trim($_GET['pttag']) : '';
+$pttag = isset($_GET['pttag']) ? trim($_GET['pttag']) : '';
 $itmaker = isset($_GET['itmaker']) ? trim($_GET['itmaker']) : '';
 
 if (isset($_GET['qsort']))  {
     $qsort = trim($_GET['qsort']);
     $qsort = preg_replace("/[\<\>\'\"\\\'\\\"\%\=\(\)\s]/", "", $qsort);
 } else {
-    $qsort = '';
+    $qsort = 'it_sum_qty';
+	$_GET['qorder'] = 'desc';
 }
 if (isset($_GET['qorder']))  {
     $qorder = preg_match("/^(asc|desc)$/i", $qorder) ? $qorder : '';
@@ -161,9 +166,9 @@ $qorder = strtolower($qorder);
 // 아래의 $qsort 필드만 정렬이 가능하게 하여 다른 필드로 하여금 유추해 볼수 없게함
 if (($qsort == "it_sum_qty" || $qsort == "it_price" || $qsort == "it_use_avg" || $qsort == "it_use_cnt" || $qsort == "it_time" || $qsort == "pt_good" || $qsort == "pt_comment") &&
     ($qorder == "asc" || $qorder == "desc")) {
-    $order_by = ' order by ' . $qsort . ' ' . $qorder . ' , it_order, pt_num desc, it_id desc';
+    $order_by = ' order by prodSupYn desc,' . $qsort . ' ' . $qorder . ' , it_order, pt_num desc, it_id desc';
 } else {
-    $order_by = ' order by it_order, pt_num desc, it_id desc';
+    $order_by = ' order by prodSupYn desc,it_sum_qty desc,  it_order, pt_num desc, it_id desc';
 }
 
 // 분류
