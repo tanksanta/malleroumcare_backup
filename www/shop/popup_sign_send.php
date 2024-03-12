@@ -413,7 +413,7 @@
 	}
 
 	// 서명 진행 상황 확인 시 
-	function open_sign_stat(dc_id) {
+	function open_sign_stat(dc_id,doc_id) {
 		for(var i=1; i<4; i++){
 			$("#row"+i).css("background","#eeeeee");
 			$("#gubun"+i).text("-");
@@ -431,6 +431,7 @@
 			});
 		$.post('ajax.eform_mds_api.php', {
 			dc_id:dc_id,
+			doc_id:doc_id,
 			div:'sign_stat'
 		})
 		.done(function(data) {
@@ -489,7 +490,7 @@
 	}
 
 	// 거절 사유 보기
-	function open_rejection_view(dc_id) {
+	function open_rejection_view(dc_id,doc_id) {
 		$("#rejection_date").text('');
 		$("#rejection_msg").text('');
 		$("#rejection_member").text('');
@@ -500,6 +501,7 @@
 			});
 		$.post('ajax.eform_mds_api.php', {
 			dc_id:dc_id,
+			doc_id:doc_id,
 			div:'rejection_view'
 		})
 		.done(function(data) {
@@ -552,9 +554,10 @@
 	}
 
 	// 계약서,감사추적인증서 보기 
-	function mds_download(dc_id,gubun) {//1:계약서,2:감사추적인증서
+	function mds_download(dc_id,doc_id,gubun) {//1:계약서,2:감사추적인증서
  		$.post('ajax.eform_mds_api.php', {
 			dc_id:dc_id,
+			doc_id:doc_id,
 			gubun:gubun,
 			div:'view_doc'
 		})
@@ -578,10 +581,11 @@
 	}
 
 	// 요청취소 
-	function sign_cancel(dc_id){
+	function sign_cancel(dc_id,doc_id){
 		var params = {
-				div : "sign_cancel"
-				,dc_id : dc_id
+				div : "sign_cancel",
+				dc_id : dc_id,
+				doc_id : doc_id,
 			};
 		if(confirm("서명요청을 취소 하시겠습니까?")){
 			$.ajaxSetup({
@@ -618,10 +622,11 @@
 	}
 
 	// 거절 계약서 초기화 
-	function dc_reset(dc_id){
+	function dc_reset(dc_id,doc_id){
 		var params = {
-				div : "dc_reset"
-				,dc_id : dc_id
+				div : "dc_reset",
+				dc_id : dc_id,
+				doc_id : doc_id,
 			};
 		if(confirm("계약서 상태를 초기화 하시겠습니까?")){
 			$.ajaxSetup({
@@ -658,8 +663,8 @@
 	// 서명요청 재전송
 	function sign_resend(){
 		var params = {
-				div : "sign_resend"
-				,doc_id : $("#doc_id").val()
+				div : "sign_resend",
+				doc_id : $("#doc_id").val()
 			};
 		if(confirm("서명요청을 재전송 하시겠습니까?")){
 			$.ajaxSetup({
@@ -693,10 +698,11 @@
 		}
 	}
 	//계약서 전송
-	function resend_doc(dc_id){//계약서 재전송
+	function resend_doc(dc_id,doc_id){//계약서 재전송
 		var params = {
-				div : "resend_doc"
-				,dc_id : dc_id
+				div : "resend_doc",
+				dc_id : dc_id,
+				doc_id : doc_id
 			};
 		if(confirm("계약서를 전송 하시겠습니까?")){
 			$.ajaxSetup({

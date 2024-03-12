@@ -44,6 +44,7 @@ $dc_status = $row["dc_status"];
 $dc_sign_request_datetime = $row["dc_sign_request_datetime"];
 $dc_sign_send_datetime = $row["dc_sign_send_datetime"];
 $dc_subject = $row["dc_subject"];
+$doc_id = $row["doc_id"];
 ?>
 <div class="local_desc01 local_desc" style="background:#eee">
     <b>계약서 정보</b>
@@ -212,24 +213,32 @@ while($row=sql_fetch_array($result)){
     </table>
 </div>
 <?php
-
 if($dc_sign_send_datetime != "0000-00-00 00:00:00"){
-	$api_url = 'https://api.modusign.co.kr/documents?offset=0&limit=1&metadatas=%7B%22dc_id%22%3A%22'.strtolower($uuid).'%22%7D';
+	if($doc_id == ""){
+		$api_url = 'https://api.modusign.co.kr/documents?offset=0&limit=1&metadatas=%7B%22dc_id%22%3A%22'.strtolower($uuid).'%22%7D';
+	}else{
+		$api_url = 'https://api.modusign.co.kr/documents/'.$doc_id;
+	}
+	
 	$type = "GET";
 	$data = "";
 	$arrResponse = get_modusign($API_Key64,$api_url,$type,$data);
-
-	switch ($arrResponse["documents"][0]["status"]){//문서상태
+	if($doc_id == ""){
+		$arrResponse_doc = $arrResponse["documents"][0];
+	}else{
+		$arrResponse_doc = $arrResponse;
+	}
+	switch ($arrResponse_doc["status"]){//문서상태
 		case "ON_GOING" : $status = "서명 대기중"; $div = "sign"; break; 
 		case "ABORTED" : 
-			if($arrResponse["documents"][0]["abort"]["type"] == "REJECTION")$status = "서명 거절"; 
-			if($arrResponse["documents"][0]["abort"]["type"] == "SIGNING_CANCELLED")$status = "서명 취소"; 
-			if($arrResponse["documents"][0]["abort"]["type"] == "REQUEST_CANCELLATION")$status = "서명요청 취소"; 		
+			if($arrResponse_doc["abort"]["type"] == "REJECTION")$status = "서명 거절"; 
+			if($arrResponse_doc["abort"]["type"] == "SIGNING_CANCELLED")$status = "서명 취소"; 
+			if($arrResponse_doc["abort"]["type"] == "REQUEST_CANCELLATION")$status = "서명요청 취소"; 		
 		break; 
-		case "COMPLETED" : $status = "서명 완료"; $resend = '<input type="button" value="계약서 재전송" onclick="resend_doc(\''.$arrResponse["documents"][0]["id"].'\',\'01071534117\')">'; break; 
+		case "COMPLETED" : $status = "서명 완료"; $resend = '<input type="button" value="계약서 재전송" onclick="resend_doc(\''.$arrResponse_doc["id"].'\',\'01071534117\')">'; break; 
 	}
-	$view_bt = '<input class="btn" style="cursor:pointer;" type="button" value="계약서보기" onclick="view_doc(\''.$arrResponse["documents"][0]["file"]["downloadUrl"].'\')">';
-	$view_bt2 = ($arrResponse["documents"][0]["auditTrail"]["downloadUrl"]!="")?'<input class="btn" style="cursor:pointer;" type="button" value="감사추적인증서보기" onclick="view_doc(\''.$arrResponse["documents"][0]["auditTrail"]["downloadUrl"].'\')">':'';
+	$view_bt = '<input class="btn" style="cursor:pointer;" type="button" value="계약서보기" onclick="view_doc(\''.$arrResponse_doc["file"]["downloadUrl"].'\')">';
+	$view_bt2 = ($arrResponse_doc["auditTrail"]["downloadUrl"]!="")?'<input class="btn" style="cursor:pointer;" type="button" value="감사추적인증서보기" onclick="view_doc(\''.$arrResponse_doc["auditTrail"]["downloadUrl"].'\')">':'';
 ?>
 <div class="local_desc01 local_desc" style="background:#eee">
     <b>계약서명 정보 (모두싸인)</b>
@@ -244,8 +253,8 @@ if($dc_sign_send_datetime != "0000-00-00 00:00:00"){
 		<td>감사추적인증서</td-->
     </tr>
 	<tr>
-		<td><?=$arrResponse["documents"][0]["title"]?></td>
-		<td><?=date("Y-m-d H:i:s",strtotime($arrResponse["documents"][0]["createdAt"]));?></td>
+		<td><?=$arrResponse_doc["title"]?></td>
+		<td><?=date("Y-m-d H:i:s",strtotime($arrResponse_doc["createdAt"]));?></td>
 		<td><?=$status?></td>
 		<!--td><?=$view_bt;?></td>
 		<td><?=$view_bt2;?></td-->		
@@ -258,28 +267,28 @@ if($dc_sign_send_datetime != "0000-00-00 00:00:00"){
 		<td>서명방법</td>
 		<td>전화번호</td>
 		<td>진행상태</td>
-		<td><?=($arrResponse["documents"][0]["status"] != "ABORTED")?"서명 완료":$status;?> 일자</td>
+		<td><?=($arrResponse_doc["status"] != "ABORTED")?"서명 완료":$status;?> 일자</td>
     </tr>
 <?php 
-$participants_count = count($arrResponse["documents"][0]["participants"]);
-for($j=0;$j<count($arrResponse["documents"][0]["signings"]);$j++ ){
-	$p_signedAts[$arrResponse["documents"][0]["signings"][$j]["participantId"]] = $arrResponse["documents"][0]["signings"][$j]["signedAt"];
+$participants_count = count($arrResponse_doc["participants"]);
+for($j=0;$j<count($arrResponse_doc["signings"]);$j++ ){
+	$p_signedAts[$arrResponse_doc["signings"][$j]["participantId"]] = $arrResponse_doc["signings"][$j]["signedAt"];
 }
 
 for($i=0;$i<$participants_count;$i++){
-	if($arrResponse["documents"][0]["status"] != "ABORTED"){
-		$p_stataus = ($p_signedAts[$arrResponse["documents"][0]["participants"][$i]["id"]] != "")? "서명완료":"서명 대기중";
-		$p_signedAt = ($p_signedAts[$arrResponse["documents"][0]["participants"][$i]["id"]] != "")? date("Y-m-d H:i:s",strtotime($p_signedAts[$arrResponse["documents"][0]["participants"][$i]["id"]])):"-";
+	if($arrResponse_doc["status"] != "ABORTED"){
+		$p_stataus = ($p_signedAts[$arrResponse_doc["participants"][$i]["id"]] != "")? "서명완료":"서명 대기중";
+		$p_signedAt = ($p_signedAts[$arrResponse_doc["participants"][$i]["id"]] != "")? date("Y-m-d H:i:s",strtotime($p_signedAts[$arrResponse_doc["participants"][$i]["id"]])):"-";
 	}else{
 		$p_stataus = $status;
-		$p_signedAt = ($arrResponse["documents"][0]["abort"]["abortedAt"] != "")? date("Y-m-d H:i:s",strtotime($arrResponse["documents"][0]["abort"]["abortedAt"])):"-";
+		$p_signedAt = ($arrResponse_doc["abort"]["abortedAt"] != "")? date("Y-m-d H:i:s",strtotime($arrResponse_doc["abort"]["abortedAt"])):"-";
 	}
 ?>    
 	<tr>
 		<td><?=$i+1?></td>
-		<td><?=$arrResponse["documents"][0]["participants"][$i]["name"]?></td>
-		<td><?=($arrResponse["documents"][0]["participants"][$i]["signingMethod"]["type"] == "SECURE_LINK")?"웹페이지":"카카오톡"; ?></td>
-		<td><?=$arrResponse["documents"][0]["participants"][$i]["signingMethod"]["value"] ?></td>
+		<td><?=$arrResponse_doc["participants"][$i]["name"]?></td>
+		<td><?=($arrResponse_doc["participants"][$i]["signingMethod"]["type"] == "SECURE_LINK")?"웹페이지":"카카오톡"; ?></td>
+		<td><?=$arrResponse_doc["participants"][$i]["signingMethod"]["value"] ?></td>
 		<td><?=$p_stataus;?></td>
 		<td><?=$p_signedAt;?></td>
     </tr>

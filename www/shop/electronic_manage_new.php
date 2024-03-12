@@ -1,5 +1,14 @@
 <?php
 include_once('./_common.php');
+$sql_check = "
+  show columns from `eform_document` where field in ('doc_id');
+";
+$res_check = sql_query($sql_check);
+if(sql_num_rows($res_check) == 0){
+	$append_col = "alter table `eform_document` 
+				add column doc_id varchar(50) COMMENT '모두싸인 doc_id' after dc_id";
+  sql_query($append_col);
+}
 
 $dc_id = clean_xss_tags($_GET['dc_id']);
 if($dc_id) {
