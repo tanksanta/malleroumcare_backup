@@ -270,7 +270,7 @@ $pro_title = array(//품목명 변경
 		<div id="" style="width: 100%; padding: 15px 50px ; border: #ddd 2px solid; background-color: #f5f5f5; text-align: left; vertical-align: middle;border-radius: 0.3rem;font-size: 14px; font-weight:bold;color:#777;line-height:10px;"> 
 			<input type="hidden" id="penNum" value="<?=$_penNum?>">
 			수급자 성명&nbsp;&nbsp;<input type="text" id="penNm" value="<?=$_penNm?>" style="border:1px solid #ddd;width:146px;" class="input-sm" autocomplete="off">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			생년월일&nbsp;&nbsp;<input type="text" id="BRDT" value="<?=$BRDT;?>" style="border:1px solid #ddd;width:180px;" maxlength="10" class="input-sm" autocomplete="off" placeholder="생연월일 입력">
+			생년월일&nbsp;&nbsp;<input type="text" id="BRDT" value="<?=$BRDT;?>" style="border:1px solid #ddd;width:180px;" maxlength="10" class="input-sm" autocomplete="off" placeholder="생년월일 입력">
 			<br><br>
 			인정유효기간(시작일자) <input type="text" id="penExpiStDtm" name="penExpiStDtm"  style="border:1px solid #ddd;width:180px;" class="input-sm" autocomplete="off" placeholder="시작일자 입력">
 			
