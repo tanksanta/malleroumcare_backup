@@ -75,6 +75,7 @@
     $_penNum = clean_xss_attributes( clean_xss_tags( get_search_string( $_POST['penNum'] ) ) );
     $_penNm = clean_xss_attributes( clean_xss_tags( get_search_string( $_POST['penNm'] ) ) );   
 	$BRDT = clean_xss_attributes( clean_xss_tags( get_search_string( $_POST['BRDT'] ) ) );
+	$BRDT = substr($BRDT,0,4)."-".substr($BRDT,4,2)."-".substr($BRDT,6,2);
     if( !$_penNm ) { alert("수급자 정보를 확인할 수 없습니다."); }
 
 
@@ -269,9 +270,9 @@ $pro_title = array(//품목명 변경
 		<div id="" style="width: 100%; padding: 15px 50px ; border: #ddd 2px solid; background-color: #f5f5f5; text-align: left; vertical-align: middle;border-radius: 0.3rem;font-size: 14px; font-weight:bold;color:#777;line-height:10px;"> 
 			<input type="hidden" id="penNum" value="<?=$_penNum?>">
 			수급자 성명&nbsp;&nbsp;<input type="text" id="penNm" value="<?=$_penNm?>" style="border:1px solid #ddd;width:146px;" class="input-sm" autocomplete="off">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			생년월일&nbsp;&nbsp;<input type="text" id="BRDT" value="<?=$BRDT;?>" style="border:1px solid #ddd;width:180px;" maxlength="8" class="input-sm" autocomplete="off" placeholder="'19501201' 형식입력">
+			생년월일&nbsp;&nbsp;<input type="text" id="BRDT" value="<?=$BRDT;?>" style="border:1px solid #ddd;width:180px;" maxlength="10" class="input-sm" autocomplete="off" placeholder="생연월일 입력">
 			<br><br>
-			인정유효기간(시작일자) <input type="text" id="penExpiStDtm" name="penExpiStDtm"  style="border:1px solid #ddd;width:180px;" class="input-sm" autocomplete="off" placeholder="'<?=date('Y-m-d')?>' 형식입력">
+			인정유효기간(시작일자) <input type="text" id="penExpiStDtm" name="penExpiStDtm"  style="border:1px solid #ddd;width:180px;" class="input-sm" autocomplete="off" placeholder="시작일자 입력">
 			
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			인정등급&nbsp;&nbsp;<select name="penRecGraCd" id="penRecGraCd" class="input-sm" style="width: 80px;border:1px solid #ddd;">
@@ -284,7 +285,7 @@ $pro_title = array(//품목명 변경
 					<option value="06">6등급</option>
 				  </select><br><br>
 			<span style="position:relative;line-height:30px;margin-bottom:10px;">요양인정번호</span>&nbsp;&nbsp;<span style="position:absolute;margin-top:5px;padding:0px 10px;background:<?=($_penNum !="")?"#4568e3":"#e34545";?>;color:#fff;font-size:10px;border-radius: 3px;line-height:20px;"><?=($_penNum !="")?"있어요":"없어요";?></span>
-			<span style="margin-left:56px;"><input type="text" id="penNum2" value="" placeholder="L을 제외한 숫자만 입력" <?=($_penNum !="")?"readonly":"oninput=\"this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');\"";?>  style="border:1px solid #ddd;width:350px;" maxlength="10" class="input-sm" autocomplete="off"></span><br><br>
+			<span style="margin-left:56px;"><input type="text" id="penNum2" value="" placeholder="L을 제외한 숫자만 입력" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" style="border:1px solid #ddd;width:350px;" maxlength="10" class="input-sm" autocomplete="off"></span><br><br>
 			<span style="font-size:12px;font-weight:normal;line-height:15px;">＊'있어요'로 표기된 경우 별도로 L번호를 입력하지 않아도 조회가 가능합니다.<br>
 			＊ 수급자의 L번호가 잘못 입력되어 조회가 불가할 경우, 새로 입력하여 시도해 보시기 바랍니다.</span><br><br>
 			<div style="text-align:center;">
@@ -433,6 +434,8 @@ $pro_title = array(//품목명 변경
         <iframe name="tilko" id="tilko" src="" scrolling="no" frameborder="0" allowTransparency="false" height="0" width="0"></iframe>
 
 		<style>
+			.ui-datepicker{ z-index: 9999 !important;}
+
 			body {
 				padding: 0 5%;
 			}
@@ -693,10 +696,7 @@ $pro_title = array(//품목명 변경
 		</style>
 
 	    <script>
-
-	        $(function () {	
-				let date = document.querySelector("#penExpiStDtm");
-
+			function date_form(date){
 				// 문자열, 하이픈을 막기 위해 input event 사용
 				date.addEventListener("input", () => {
 				  
@@ -725,6 +725,13 @@ $pro_title = array(//품목명 변경
 				  date.value = result;
 
 				})
+			}
+	        $(function () {	
+				let date1 = document.querySelector("#BRDT");
+				date_form(date1);
+				let date2 = document.querySelector("#penExpiStDtm");
+				date_form(date2);
+				
 
 				$.datepicker.setDefaults({
 					dateFormat : 'yy-mm-dd',
@@ -739,7 +746,7 @@ $pro_title = array(//품목명 변경
 					changeMonth: true,
 					changeYear: true
 				  });
-				$('#BRDT').datepicker({ changeMonth: true, changeYear: true, dateFormat: 'yymmdd',yearRange : "c-150:c"  });
+				$('#BRDT').datepicker({ changeMonth: true, changeYear: true, dateFormat: 'yy-mm-dd',yearRange : "c-150:c"  });
 				$('#penExpiStDtm').datepicker({ changeMonth: true, changeYear: true, dateFormat: 'yy-mm-dd',maxDate:0  });
 
                 $('#b1').click(function() {//더보기 클릭                   
@@ -791,21 +798,11 @@ $pro_title = array(//품목명 변경
 						$("#penNm").focus();
 						return false;
 					}
-					if(BRDT == "" || BRDT.length < 8){
-						alert("생년월일을 형식에 맞게 입력해 주세요.");
+					if(BRDT == "" || BRDT.length < 10){
+						alert("생년월일을 입력해 주세요.");
 						$("#BRDT").focus();
 						return false;
-					}
-					if(ID == ""){//요양인정번호 없을 경우
-						if($("#penNum2").val() != ""){
-							ID = $("#penNum2").val();
-						}else{
-							alert("요양인정번호를 입력해 주세요.");
-							$("#penNum2").focus();
-							return false;
-						}
-					}
-					
+					}					
 					if(EXPISTDTM == "" || EXPISTDTM.length < 10){
 						alert("인정유효기간(시작일)을 입력해 주세요.");
 						$('#penExpiStDtm').focus();
@@ -816,6 +813,23 @@ $pro_title = array(//품목명 변경
 						$('#penRecGraCd').focus();
 						return false;
 					}
+					if(ID == ""){//요양인정번호 없을 경우
+						if($("#penNum2").val() == "" || $("#penNum2").val().length < 10){
+							alert("요양인정번호를 정확히 입력해 주세요.");
+							$("#penNum2").focus();
+							return false;							
+						}else{
+							ID = $("#penNum2").val();
+						}
+					}else if($("#penNum2").val() != ""){
+						if( $("#penNum2").val().length < 10){
+							alert("요양인정번호를 정확히 입력해 주세요.");
+							$("#penNum2").focus();
+							return false;	
+						}else{
+							ID = $("#penNum2").val();
+						}
+					}					
 									
 					$(".panNm").text( RN );
 					
